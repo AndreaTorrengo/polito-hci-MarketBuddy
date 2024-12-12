@@ -25,7 +25,6 @@ export default function Navbar(props: any) {
 
   return (
     <BottomNavigation
-      className="tabbar"
       showLabels
       value={activeTab}
       onChange={(_event: any, newValue: any) => {
