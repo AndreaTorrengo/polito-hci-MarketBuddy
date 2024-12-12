@@ -1,58 +1,44 @@
-"use client";
-import { AreaChart, Card } from "@tremor/react";
-import { Sheet } from "react-modal-sheet";
-import { useState } from "react";
+import { Outlet, Route, Routes } from "react-router-dom";
 
-const chartdata = [
-  {
-    date: "Jan 23",
-    "Route Requests": 289,
-    "Station Requests": 233,
-  },
-  // ...rm fl
-  {
-    date: "Sep 23",
-    "Route Requests": 280,
-    "Station Requests": 221,
-  },
-  {
-    date: "Oct 23",
-    "Route Requests": 283,
-    "Station Requests": 247,
-  },
-];
+import Navbar from "./components/Navbar/Navbar";
+import PageShoppingList from "./components/PageShoppingList/PageShoppingList";
+import PageQuest from "./components/PageQuest/PageQuest";
+import PageReward from "./components/PageReward/PageReward";
+import PageProfile from "./components/PageProfile/PageProfile";
+import PageNotFound from "./components/PageNotFound/PageNotFound";
+import PropTypes from "prop-types";
 
-export default function Root() {
-  const [isOpen, setOpen] = useState(false);
+export default function App() {
+  // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-PageNotFound
+  const paths = ["/", "/quests", "/rewards", "/profile", "*"];
 
   return (
     <>
-      <h1>MarketBuddy</h1>
-      <button onClick={() => setOpen(true)}>Open sheet</button>
-      <Sheet isOpen={isOpen} onClose={() => setOpen(false)} detent='content-height' rootId="root">
-        <Sheet.Container>
-          <Sheet.Header />
-          <Sheet.Content>{
-            <Card className="max-w-4xl">
-              <span className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-                Total Requests
-              </span>
-              <p className="text-tremor-metric font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                6,568
-              </p>
-              <AreaChart
-                className="mt-2 h-80"
-                data={chartdata}
-                index="date"
-                categories={["Route Requests", "Station Requests"]}
-                colors={["indigo", "rose"]}
-                yAxisWidth={33}
-              />
-            </Card>
-          }</Sheet.Content>
-        </Sheet.Container>
-        <Sheet.Backdrop onTap={() => setOpen(false)} />
-      </Sheet >
+      <Routes>
+        <Route element={<Layout paths={paths} />}>
+          <Route index path={`${paths[0]}`} element={<PageShoppingList />} />
+          <Route path={`${paths[1]}`} element={<PageQuest />} />
+          <Route path={`${paths[2]}`} element={<PageReward />} />
+          <Route path={`${paths[3]}`} element={<PageProfile />} />
+          <Route path={`${paths[4]}`} element={<PageNotFound />} />
+        </Route>
+      </Routes>
     </>
   );
+}
+
+function Layout(props: any) {
+  return (
+    <>
+      <div className="flex flex-col h-screen">
+        <div className="flex-grow overflow-y-auto">
+          <Outlet />
+        </div>
+        <Navbar paths={props.paths} />
+      </div>
+    </>
+  );
+}
+Layout.propTypes = {
+  paths: PropTypes.array
 }
