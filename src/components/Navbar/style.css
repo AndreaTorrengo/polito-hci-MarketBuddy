@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*.tabbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: -webkit-fill-available;
+    z-index: 8;
+}*/
+.tabbar-elm {
+    text-transform: none;
+    font-size: 12px;
+    padding: 3px;
+    margin: 0px;
+}
