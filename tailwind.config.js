@@ -101,6 +101,25 @@ export default {
         'tremor-title': ['1.125rem', { lineHeight: '1.75rem' }],
         'tremor-metric': ['1.875rem', { lineHeight: '2.25rem' }],
       },
+      keyframes: {
+        "slide-in": {
+          "0%": { transform: "translateX(-100%)", opacity: 0 },
+          "100%": { transform: "translateX(0)", opacity: 1 },
+        },
+        "slide-out": {
+          "0%": { transform: "translateX(0)", opacity: 1 },
+          "100%": { transform: "translateX(100%)", opacity: 0 },
+        },
+        "quest-pulse": {
+          "0%": {opacity: 1},
+          "100%": {opacity: 1}
+        }
+      },
+      animation: {
+        "slide-in": "slide-in 0.5s ease-in-out forwards",
+        "slide-out": "slide-out 0.5s ease-in-out forwards",
+        "quest-pulse": "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"
+      },
     },
   },
   safelist: [

@@ -1,4 +1,3 @@
-import { motion, AnimatePresence } from "framer-motion";
 import { ProgressBar, Card, Title, Text } from "@tremor/react";
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
@@ -61,86 +60,48 @@ export default function PageQuest(props: any) {
     <>
       <div className="w-full h-full bg-gray-800 p-6">
         <Title className="text-center text-4xl mb-6">Quests</Title>
-        <div className="flex flex-col gap-4">
-          <AnimatePresence>
-            {quests.map((quest) =>
-              quest.completed ? (
-                // Note: use layout prop for smooth sorting
-                <motion.div
-                  key={quest.id}
-                  initial={{ x: "-100%" }}
-                  animate={{ x: 0 }}
-                  exit={{ x: "100%", opacity: 0 }}
-                  transition={{
-                    duration: 0.3
-                  }}
-                  layout
-                  className="bg-white shadow-md rounded-lg overflow-hidden"
-                  onClick={() => handleClaim(quest.id)}
-                >
-                  <Card className="p-4 relative">
-                    <div className="absolute top-2 right-2 flex space-x-4">
-                      <div className="flex items-center space-x-1 text-violet-600">
-                        <HexagonIcon />
-                        <span className="font-semibold">5</span>
-                      </div>
-                      <div className="flex items-center space-x-1 text-yellow-500">
-                        <EmojiEmotionsIcon />
-                        <span className="font-semibold">10</span>
-                      </div>
-                    </div>
-
-                    <Title>{quest.title}</Title>
-                    <Text>{quest.description}</Text>
-                    <div className="relative mt-4">
-                      <ProgressBar
-                        className="[&>div]:h-6"
-                        value={parseProgress(quest.progress)}
-                        color="blue"
-                      />
-                      <span className="absolute inset-0 flex justify-center items-center text-white font-semibold">
-                        {quest.progress}
-                      </span>
-                    </div>
-                    <div className="mt-4 flex justify-center animate-pulse">
-                      <Title>Click to claim!</Title>
-                    </div>
-                  </Card>
-                </motion.div>
-              ) : (
-                <div key={quest.id}>
-                  <Card className="p-4 relative" onClick={() => requestClaim(quest.id)}>
-                    <div className="absolute top-2 right-2 flex space-x-4">
-                      <div className="flex items-center space-x-1 text-violet-600">
-                        <HexagonIcon />
-                        <span className="font-semibold">5</span>
-                      </div>
-                      <div className="flex items-center space-x-1 text-yellow-500">
-                        <EmojiEmotionsIcon />
-                        <span className="font-semibold">10</span>
-                      </div>
-                    </div>
-
-                    <Title>{quest.title}</Title>
-                    <Text>{quest.description}</Text>
-                    <div className="relative mt-4">
-                      <ProgressBar
-                        className="[&>div]:h-6"
-                        value={parseProgress(quest.progress)}
-                        color="blue"
-                      />
-                      <span className="absolute inset-0 flex justify-center items-center text-white font-semibold">
-                        {quest.progress}
-                      </span>
-                    </div>
-                    <div className="mt-4 flex justify-center">
-
-                    </div>
-                  </Card>
+        <div className="flex flex-col gap-4 relative">
+          {quests.map((quest) =>
+            <div id={`${quest.id}`} key={quest.id}
+              // slide-in transition when rendering quests
+              className={`relative bg-white shadow-md rounded-lg overflow-hidden transform transition-all duration-500 animate-slide-in`}
+              onClick={() => {
+                if (quest.completed) {
+                  handleClaim(quest.id);
+                } else requestClaim(quest.id);
+              }}
+            >
+              <Card className="p-4 relative">
+                <div className="absolute top-2 right-2 flex space-x-2">
+                  <div className="flex items-center space-x-1 text-violet-600">
+                    <HexagonIcon />
+                    <span className="font-semibold">5</span>
+                  </div>
+                  <div className="flex items-center space-x-1 text-yellow-500">
+                    <EmojiEmotionsIcon />
+                    <span className="font-semibold">10</span>
+                  </div>
                 </div>
-              )
-            )}
-          </AnimatePresence>
+
+                <Title>{quest.title}</Title>
+                <Text className="mt-1">{quest.description}</Text>
+                <div className="relative mt-2">
+                  <ProgressBar
+                    className="[&>div]:h-6"
+                    value={parseProgress(quest.progress)}
+                    color="blue"
+                  />
+                  <span className="absolute inset-0 flex justify-center items-center text-white font-semibold">
+                    {quest.progress}
+                  </span>
+                </div>
+                <div className={`${quest.completed ? 'mt-1' : 'mt-6'} flex justify-center`}>
+                  {/*{quest.completed && <Text className="animate-quest-pulse">Click to claim!</Text>}*/}
+                  {quest.completed && <Text>Click to claim!</Text>}
+                </div>
+              </Card>
+            </div>
+          )}
         </div>
         <div className="absolute left-0 bottom-20 flex flex-col items-center w-full shadow-lg">
           <Button
@@ -159,17 +120,3 @@ export default function PageQuest(props: any) {
 PageQuest.propTypes = {
   setQuestPendingClaims: PropTypes.func
 }
-
-/*
-<h3>Quests</h3>
-      <Stack
-        direction="column"
-        spacing={3}
-        sx={{
-          justifyContent: "center",
-          alignItems: "stretch",
-        }}
-      >
-        
-      </Stack>
-*/
