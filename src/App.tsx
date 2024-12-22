@@ -16,7 +16,7 @@ export default function App() {
     <>
       <Routes>
         <Route element={<Layout paths={paths} />}>
-          <Route index path={`${paths[0]}`} element={<PageShoppingList />} />
+          <Route index path={`${paths[0]}`} element={<PageShoppingList />} id="ShoppingListPage" />
           <Route path={`${paths[1]}`} element={<PageQuest />} />
           <Route path={`${paths[2]}`} element={<PageReward />} />
           <Route path={`${paths[3]}`} element={<PageProfile />} />

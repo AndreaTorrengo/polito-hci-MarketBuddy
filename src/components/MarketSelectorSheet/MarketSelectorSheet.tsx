@@ -1,58 +1,74 @@
 "use client";
-import { AreaChart, Card } from "@tremor/react";
+import { Button, List, TextInput } from "@tremor/react";
 import { Sheet } from "react-modal-sheet";
 import { useState } from "react";
-
-const chartdata = [
-  {
-    date: "Jan 23",
-    "Route Requests": 289,
-    "Station Requests": 233,
-  },
-  // ...rm fl
-  {
-    date: "Sep 23",
-    "Route Requests": 280,
-    "Station Requests": 221,
-  },
-  {
-    date: "Oct 23",
-    "Route Requests": 283,
-    "Station Requests": 247,
-  },
-];
+import CloseIcon from "@mui/icons-material/Close";
+import SearchIcon from "@mui/icons-material/Search";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 
 export default function MarketSelectorSheet() {
-  const [isOpen, setOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedMarket, setSelectedMarket] = useState("Crocetta Market");
 
   return (
     <>
-      <h1>MarketBuddy</h1>
-      <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded" onClick={() => setOpen(true)}>Open sheet</button>
-      <Sheet isOpen={isOpen} onClose={() => setOpen(false)} detent='content-height' rootId="root">
+      <button className="text-black font-bold py-2 px-4 rounded inline-flex items-center" onClick={() => setIsOpen(true)}>
+        <LocationOnOutlinedIcon />
+        <span className="ml-2">{selectedMarket}</span>
+        <ExpandMoreIcon />
+      </button>
+      <Sheet isOpen={isOpen} onClose={() => setIsOpen(false)} detent='content-height' rootId="ShoppingListPage">
         <Sheet.Container>
-          <Sheet.Header />
-          <Sheet.Content>{
-            <Card className="max-w-4xl">
-              <span className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-                Total Requests
-              </span>
-              <p className="text-tremor-metric font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                6,568
-              </p>
-              <AreaChart
-                className="mt-2 h-80"
-                data={chartdata}
-                index="date"
-                categories={["Route Requests", "Station Requests"]}
-                colors={["indigo", "rose"]}
-                yAxisWidth={33}
-              />
-            </Card>
-          }</Sheet.Content>
+          <Sheet.Header className="p-4">
+            <h1 className="font-bold text-3xl">Choose The Market</h1>
+            <Button variant="light" className="absolute top-4 right-4 text-4xl" color="slate" onClick={() => setIsOpen(false)} icon={CloseIcon}>
+            </Button>
+          </Sheet.Header>
+          <Sheet.Content>
+            <div className="mx-16 mb-4">
+              <SearchBar />
+            </div>
+            <MarketsList />
+          </Sheet.Content>
         </Sheet.Container>
-        <Sheet.Backdrop onTap={() => setOpen(false)} />
+        <Sheet.Backdrop onTap={() => setIsOpen(false)} />
       </Sheet >
     </>
+  );
+}
+
+function SearchBar() {
+  return <TextInput
+    placeholder="Search Markets"
+    id="search"
+    name="search"
+    type="search"
+    className="py-1 ps-4 rounded-full"
+    icon={SearchIcon}
+  />;
+}
+
+function MarketsList() {
+  return (
+    <List>
+      <MarketCard name="Crocetta Market" address="Via Crocetta, 10123 Torino" />
+      <MarketCard name="Porta Palazzo Market" address="Piazza della Repubblica, 10122 Torino" />
+      <MarketCard name="Balon Market" address="Piazza della Repubblica, 10122 Torino" />
+    </List>
+  );
+
+}
+
+function MarketCard({ name, address }: Readonly<{ name: string; address: string }>) {
+  return (
+    <div className="p-4 my-2 border-0 flex items-center">
+      <StorefrontOutlinedIcon className="text-black text-4xl" />
+      <div className="ml-4">
+        <h3 className="text-lg font-bold text-black">{name}</h3>
+        <p className="text-gray-500">{address}</p>
+      </div>
+    </div>
   );
 }
