@@ -1,6 +1,6 @@
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, CircleMarker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
 import { Text, Title, Button } from '@tremor/react';
 
 const positions: [number, number][] = [
@@ -11,10 +11,38 @@ const positions: [number, number][] = [
 ];
 
 const PageMap = () => {
+  const [markerPosition, setMarkerPosition] = useState<[number, number]>([45.076779, 7.683829]);
   const centerPosition: [number, number] = [45.076779, 7.683629];
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const [lat, lng] = markerPosition;
+      switch (event.key) {
+        case 'ArrowUp':
+          setMarkerPosition([lat + 0.0001, lng]);
+          break;
+        case 'ArrowDown':
+          setMarkerPosition([lat - 0.0001, lng]);
+          break;
+        case 'ArrowLeft':
+          setMarkerPosition([lat, lng - 0.0001]);
+          break;
+        case 'ArrowRight':
+          setMarkerPosition([lat, lng + 0.0001]);
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [markerPosition]);
+
   return (
-    <div style={{ height: '93vh', width: '100vw' }}>
+    <div style={{ height: '93vh', width: '100vw', position: 'relative' }}>
       <MapContainer center={centerPosition} zoom={18} style={{ height: '100%', width: '100%' }}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -27,6 +55,11 @@ const PageMap = () => {
             </Popup>
           </Marker>
         ))}
+        <CircleMarker center={markerPosition} radius={10} color="white" fillColor="blue" fillOpacity={1}>
+          <Popup>
+            Movable Marker at position {markerPosition[0]}, {markerPosition[1]}
+          </Popup>
+        </CircleMarker>
       </MapContainer>
       <Button style={{
         position: 'absolute',
