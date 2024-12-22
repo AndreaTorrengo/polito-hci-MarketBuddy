@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, CircleMarker } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, CircleMarker, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Text, Title, Button } from '@tremor/react';
 
@@ -10,10 +10,20 @@ const positions: [number, number][] = [
   [45.076904, 7.683068]
 ];
 
+const positionsPortaPalazzo: [number, number][] = [
+  [45.076779, 7.683629],
+  [45.077420, 7.684019],
+  [45.076504, 7.684078],
+  [45.076904, 7.683068]
+];
+
+const centerPortaPalazzo: [number, number] = [45.076779, 7.683629];
+
 const PageMap = () => {
   const [markerPosition, setMarkerPosition] = useState<[number, number]>([45.076779, 7.683829]);
   const centerPosition: [number, number] = [45.076779, 7.683629];
 
+  {/*handle movable marker movement*/ }
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const [lat, lng] = markerPosition;
@@ -48,6 +58,8 @@ const PageMap = () => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
+        <Polyline positions={positions} color="blue" />
+        {/*Vendors position*/}
         {positions.map((position, idx) => (
           <Marker key={idx} position={position}>
             <Popup>
@@ -55,12 +67,14 @@ const PageMap = () => {
             </Popup>
           </Marker>
         ))}
+        {/*user current position*/}
         <CircleMarker center={markerPosition} radius={10} color="white" fillColor="blue" fillOpacity={1}>
           <Popup>
             Movable Marker at position {markerPosition[0]}, {markerPosition[1]}
           </Popup>
         </CircleMarker>
       </MapContainer>
+      {/*Market name position*/}
       <Button style={{
         position: 'absolute',
         top: '10px',
