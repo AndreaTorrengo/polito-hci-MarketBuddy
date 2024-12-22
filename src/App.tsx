@@ -6,11 +6,12 @@ import PageQuest from "./components/PageQuest/PageQuest";
 import PageReward from "./components/PageReward/PageReward";
 import PageProfile from "./components/PageProfile/PageProfile";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
+import PageMap from "./components/PageMap/Pagemap";
 import PropTypes from "prop-types";
 
 export default function App() {
-  // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-PageNotFound
-  const paths = ["/", "/quests", "/rewards", "/profile", "*"];
+  // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-Pagemap, 5-PageNotFound
+  const paths = ["/", "/quests", "/rewards", "/profile", "/map", "*"];
 
   return (
     <>
@@ -20,7 +21,8 @@ export default function App() {
           <Route path={`${paths[1]}`} element={<PageQuest />} />
           <Route path={`${paths[2]}`} element={<PageReward />} />
           <Route path={`${paths[3]}`} element={<PageProfile />} />
-          <Route path={`${paths[4]}`} element={<PageNotFound />} />
+          <Route path={`${paths[4]}`} element={<PageMap />} />
+          <Route path={`${paths[5]}`} element={<PageNotFound />} />
         </Route>
       </Routes>
     </>
