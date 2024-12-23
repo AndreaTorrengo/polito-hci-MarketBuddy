@@ -20,7 +20,7 @@ export default function App() {
     <>
       <Routes>
         <Route element={<Layout paths={paths} />}>
-          <Route index path={`${paths[0]}`} element={<PageShoppingList selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />} id="ShoppingListPage" />
+          <Route index path={`${paths[0]}`} element={<PageShoppingList key="ShoppingListPage" selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />} />
           <Route path={`${paths[1]}`} element={<PageQuest />} />
           <Route path={`${paths[2]}`} element={<PageReward />} />
           <Route path={`${paths[3]}`} element={<PageProfile />} />
@@ -34,7 +34,7 @@ export default function App() {
 function Layout(props: any) {
   return (
     <>
-      <div className="flex flex-col h-screen">
+      <div className="flex flex-col h-screen dark:bg-dark-tremor-background">
         <div className="flex-grow overflow-y-auto">
           <Outlet />
         </div>

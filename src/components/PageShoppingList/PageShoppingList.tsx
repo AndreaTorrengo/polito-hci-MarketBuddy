@@ -5,11 +5,10 @@ export default function PageShoppingList({ selectedMarket, setSelectedMarket }: 
   setSelectedMarket: (market: string) => void;
 }) {
 
-  console.log(selectedMarket);
   return (
-    <>
+    <div className="dark:bg-dark-tremor-background dark:text-dark-tremor-content-emphasis">
       <MarketSelectorSheet selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />
       <h1>Shopping List</h1>
-    </>
+    </div>
   );
 }
