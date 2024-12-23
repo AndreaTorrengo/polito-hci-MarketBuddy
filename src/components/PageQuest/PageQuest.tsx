@@ -58,20 +58,20 @@ export default function PageQuest(props: any) {
 
   return (
     <>
-      <div className="w-full h-full bg-gray-800 p-6">
+      <div className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle p-6">
         <Title className="text-center text-4xl mb-6">Quests</Title>
         <div className="flex flex-col gap-4 relative">
           {quests.map((quest) =>
             <div id={`${quest.id}`} key={quest.id}
               // slide-in transition when rendering quests
-              className={`relative bg-white shadow-md rounded-lg overflow-hidden transform transition-all duration-500 animate-slide-in`}
+              className={`relative bg-tremor-background dark:bg-dark-tremor-background shadow-md rounded-lg overflow-hidden transform transition-all duration-500 animate-slide-in`}
               onClick={() => {
                 if (quest.completed) {
                   handleClaim(quest.id);
                 } else requestClaim(quest.id);
               }}
             >
-              <Card className="p-4 relative">
+              <Card className="bg-tremor-background dark:bg-dark-tremor-background p-4 relative">
                 <div className="absolute top-2 right-2 flex space-x-2">
                   <div className="flex items-center space-x-1 text-violet-600">
                     <HexagonIcon />
@@ -96,14 +96,14 @@ export default function PageQuest(props: any) {
                   </span>
                 </div>
                 <div className={`${quest.completed ? 'mt-1' : 'mt-6'} flex justify-center`}>
-                  {/*{quest.completed && <Text className="animate-quest-pulse">Click to claim!</Text>}*/}
-                  {quest.completed && <Text>Click to claim!</Text>}
+                  {/*quest.completed && <Text className="animate-quest-pulse text-tremor-brand dark:text-dark-tremor-brand-emphasis">Click to claim!</Text>*/}
+                  {quest.completed && <Text className="text-tremor-brand dark:text-dark-tremor-brand-emphasis">Click to claim!</Text>}
                 </div>
               </Card>
             </div>
           )}
         </div>
-        <div className="absolute left-0 bottom-20 flex flex-col items-center w-full shadow-lg">
+        <div className="absolute left-0 bottom-20 flex flex-col items-center w-full">
           <Button
             variant="contained"
             color="primary"

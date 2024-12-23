@@ -25,16 +25,17 @@ export default function Navbar(props: any) {
     <BottomNavigation
       showLabels
       value={props.activeTab}
+      className="bg-tremor-content-inverted dark:bg-dark-tremor-content-inverted"
       onChange={(_event: any, newValue: any) => {
         props.setActiveTab(newValue);
         navigate(`${props.paths[newValue]}`);
       }}
     >
       <BottomNavigationAction
-        label="Shopping"
-        icon={<ShoppingBagIcon />}
+        label="Shopping" className="text-tremor-content dark:text-dark-tremor-content"
+        icon={<ShoppingBagIcon/>}
       />
-      <BottomNavigationAction label="Quests" icon={
+      <BottomNavigationAction label="Quests" className="text-tremor-content dark:text-dark-tremor-content" icon={
         props.questPendingClaims != 0 ?
           <div className="inline-block relative">
             <AssignmentIcon className="relative" />
@@ -45,8 +46,8 @@ export default function Navbar(props: any) {
           </div> :
           <AssignmentIcon />
       } />
-      <BottomNavigationAction label="Rewards" icon={<EmojiEventsIcon />} />
-      <BottomNavigationAction label="Profile" icon={<AccountCircleIcon />} />
+      <BottomNavigationAction label="Rewards" className="text-tremor-content dark:text-dark-tremor-content" icon={<EmojiEventsIcon />} />
+      <BottomNavigationAction label="Profile" className="text-tremor-content dark:text-dark-tremor-content" icon={<AccountCircleIcon />} />
     </BottomNavigation>
   );
 }

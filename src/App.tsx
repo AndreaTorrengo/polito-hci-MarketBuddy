@@ -1,4 +1,5 @@
 import { Outlet, Route, Routes } from "react-router-dom";
+import { ThemeProvider } from 'next-themes'
 
 import Navbar from "./components/Navbar/Navbar";
 import PageShoppingList from "./components/PageShoppingList/PageShoppingList";
@@ -17,17 +18,19 @@ export default function App() {
 
   return (
     <>
-      <Routes>
-        <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
-          <Route index path={`${paths[0]}`} element={<PageShoppingList />} />
-          <Route path={`${paths[1]}`} element={<PageQuest 
-            setQuestPendingClaims={setQuestPendingClaims}
-          />} />
-          <Route path={`${paths[2]}`} element={<PageReward />} />
-          <Route path={`${paths[3]}`} element={<PageProfile />} />
-          <Route path={`${paths[4]}`} element={<PageNotFound />} />
-        </Route>
-      </Routes>
+      <ThemeProvider attribute={'class'} defaultTheme="system">
+        <Routes>
+          <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
+            <Route index path={`${paths[0]}`} element={<PageShoppingList />} />
+            <Route path={`${paths[1]}`} element={<PageQuest
+              setQuestPendingClaims={setQuestPendingClaims}
+            />} />
+            <Route path={`${paths[2]}`} element={<PageReward />} />
+            <Route path={`${paths[3]}`} element={<PageProfile />} />
+            <Route path={`${paths[4]}`} element={<PageNotFound />} />
+          </Route>
+        </Routes>
+      </ThemeProvider>
     </>
   );
 }
@@ -35,7 +38,7 @@ export default function App() {
 function Layout(props: any) {
   return (
     <>
-      <div className="flex flex-col h-screen">
+      <div className="flex flex-col h-screen bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle">
         <div className="flex-grow overflow-y-auto">
           <Outlet />
         </div>
