@@ -17,30 +17,31 @@ export default function App() {
   console.log(selectedMarket);
 
   return (
-    <>
-      <Routes>
-        <Route element={<Layout paths={paths} />}>
-          <Route index path={`${paths[0]}`} element={<PageShoppingList key="ShoppingListPage" selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />} />
-          <Route path={`${paths[1]}`} element={<PageQuest />} />
-          <Route path={`${paths[2]}`} element={<PageReward />} />
-          <Route path={`${paths[3]}`} element={<PageProfile />} />
-          <Route path={`${paths[4]}`} element={<PageNotFound />} />
-        </Route>
-      </Routes>
-    </>
+    <Routes>
+      <Route element={<Layout paths={paths} />}>
+        <Route index path={`${paths[0]}`} element={<PageShoppingList key="ShoppingListPage" selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />} />
+        <Route path={`${paths[1]}`} element={<PageQuest />} />
+        <Route path={`${paths[2]}`} element={<PageReward />} />
+        <Route path={`${paths[3]}`} element={<PageProfile />} />
+        <Route path={`${paths[4]}`} element={<PageNotFound />} />
+      </Route>
+    </Routes>
   );
 }
 
-function Layout(props: any) {
+type LayoutProps =
+  {
+    paths: string[];
+  }
+
+function Layout(props: Readonly<LayoutProps>) {
   return (
-    <>
-      <div className="flex flex-col h-screen dark:bg-dark-tremor-background">
-        <div className="flex-grow overflow-y-auto">
-          <Outlet />
-        </div>
-        <Navbar paths={props.paths} />
+    <div className="flex flex-col h-screen">
+      <div className="flex-grow overflow-y-auto">
+        <Outlet />
       </div>
-    </>
+      <Navbar paths={props.paths} />
+    </div>
   );
 }
 Layout.propTypes = {

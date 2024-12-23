@@ -27,7 +27,7 @@ export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket 
 
   return (
     <>
-      <button className="font-bold py-2 px-4 rounded inline-flex items-center" onClick={() => setIsOpen(true)}>
+      <button className="font-bold py-2 px-4 inline-flex items-center dark:text-dark-tremor-content-strong animated dark:active:text-dark-tremor-content-emphasis active:scale-subtle" onClick={() => setIsOpen(true)}>
         <LocationOnOutlinedIcon />
         <span className="ml-2">{selectedMarket}</span>
         <ExpandMoreIcon />
@@ -36,7 +36,7 @@ export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket 
         <Sheet.Container>
           <Sheet.Header className="p-6 dark:bg-dark-tremor-background dark:text-dark-tremor-content-emphasis">
             <h1 className="font-bold text-3xl">Choose The Market</h1>
-            <Button variant="light" className="absolute top-6 right-6 text-4xl" color="slate" onClick={() => setIsOpen(false)}>
+            <Button variant="light" className="absolute top-6 right-6 text-4xl animated active:scale-105" color="slate" onClick={() => setIsOpen(false)}>
               <CloseIcon fontSize="large" className="align-middle text-tremor-content-strong dark:text-dark-tremor-content-emphasis" />
             </Button>
           </Sheet.Header>
@@ -74,7 +74,7 @@ function MarketsList({ selectMarket, searchInput }: Readonly<{ selectMarket: (na
         <>
           {/* {index != 0 &&
             <hr className="border-gray-200 border-1 mx-4" />} */}
-          <ListItem key={market.id} className="border-t-0">
+          <ListItem key={market.id} className="p-2 animated active:scale-subtle active:bg-tremor-background-subtle dark:active:bg-dark-tremor-background-subtle">
             <MarketCard name={market.name} address={market.address} selectMarket={selectMarket} />
           </ListItem>
         </>
@@ -85,7 +85,7 @@ function MarketsList({ selectMarket, searchInput }: Readonly<{ selectMarket: (na
 
 function MarketCard({ name, address, selectMarket }: Readonly<{ name: string, address: string, selectMarket: (name: string) => void }>) {
   return (
-    <Button className="justify-start" onClick={() => selectMarket(name)} variant="light">
+    <Button className="justify-start w-full " onClick={() => selectMarket(name)} variant="light">
       <div className="flex items-center text-tremor-content-strong dark:text-dark-tremor-content-emphasis">
         <StorefrontOutlinedIcon className="me-2" fontSize="large" />
         <div>

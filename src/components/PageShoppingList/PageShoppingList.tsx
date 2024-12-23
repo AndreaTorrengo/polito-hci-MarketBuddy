@@ -6,7 +6,7 @@ export default function PageShoppingList({ selectedMarket, setSelectedMarket }: 
 }) {
 
   return (
-    <div className="dark:bg-dark-tremor-background dark:text-dark-tremor-content-emphasis">
+    <div>
       <MarketSelectorSheet selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />
       <h1>Shopping List</h1>
     </div>
