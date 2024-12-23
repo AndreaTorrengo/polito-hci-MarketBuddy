@@ -1,4 +1,5 @@
 const API_URL = 'http://localhost:3001/api';
+import { Vendor } from './models';
 
 const getVendorsByMarket = async (market: string) => {
     try {
@@ -12,9 +13,16 @@ const getVendorsByMarket = async (market: string) => {
             throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        return data;
+        return data.map((vendorData: Vendor) => new Vendor(
+            vendorData.id,
+            vendorData.name,
+            vendorData.market,
+            vendorData.position,
+            vendorData.priceMultiplier,
+            vendorData.badges,
+            vendorData.products
+        ));
     } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
         throw error;
     }
 };
