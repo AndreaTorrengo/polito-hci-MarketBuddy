@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import dao from '../dao/dao';
+import dao from './dao';
 
 export const getVendorsByMarket = async (req: Request, res: Response) => {
   const market = req.params.market;
