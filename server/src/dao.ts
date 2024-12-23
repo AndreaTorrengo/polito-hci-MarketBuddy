@@ -4,6 +4,7 @@ const Dao = {
 
     getVendorsByMarket: async (market: string) => {
       try {
+        console.log(market + '3');
         const database = await db;
         const vendors = await database.all('SELECT * FROM vendors WHERE market = ?', [market]);
         return vendors;
