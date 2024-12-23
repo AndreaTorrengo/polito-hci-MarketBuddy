@@ -7,16 +7,20 @@ import PageReward from "./components/PageReward/PageReward";
 import PageProfile from "./components/PageProfile/PageProfile";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
 import PropTypes from "prop-types";
+import { useState } from "react";
 
 export default function App() {
   // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-PageNotFound
   const paths = ["/", "/quests", "/rewards", "/profile", "*"];
+  const [selectedMarket, setSelectedMarket] = useState("Crocetta Market");
+
+  console.log(selectedMarket);
 
   return (
     <>
       <Routes>
         <Route element={<Layout paths={paths} />}>
-          <Route index path={`${paths[0]}`} element={<PageShoppingList />} id="ShoppingListPage" />
+          <Route index path={`${paths[0]}`} element={<PageShoppingList selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />} id="ShoppingListPage" />
           <Route path={`${paths[1]}`} element={<PageQuest />} />
           <Route path={`${paths[2]}`} element={<PageReward />} />
           <Route path={`${paths[3]}`} element={<PageProfile />} />

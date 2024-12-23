@@ -8,9 +8,8 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 
-export default function MarketSelectorSheet() {
+export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket }: { selectedMarket: string, setSelectedMarket: (market: string) => void }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedMarket, setSelectedMarket] = useState("Crocetta Market");
 
   function selectMarket(name: string) {
     setSelectedMarket(name);
