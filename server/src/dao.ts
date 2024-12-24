@@ -4,7 +4,6 @@ import { Vendor, Product } from './models';
 const Dao = {
 
   getVendorsByMarket: async (market: string) => {
-    console.log(market);
     try {
       const database = await db;
       const vendors = await database.all('SELECT * FROM vendors WHERE market = ?', [market]);
@@ -18,6 +17,9 @@ const Dao = {
           vendor.name,
           vendor.market,
           vendor.position.split(',').map(Number),
+          vendor.quality_rating, 
+          vendor.price_rating,
+          vendor.cordiality_rating,
           vendor.price_multiplier,
           badges.map(b => b.name),
           products.map(p => new Product(p.id, p.name, p.description, p.price))

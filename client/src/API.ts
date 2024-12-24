@@ -18,6 +18,9 @@ const getVendorsByMarket = async (market: string) => {
             vendorData.name,
             vendorData.market,
             vendorData.position,
+            vendorData.quality_rating,
+            vendorData.price_rating,
+            vendorData.cordiality_rating,
             vendorData.priceMultiplier,
             vendorData.badges,
             vendorData.products
