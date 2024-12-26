@@ -117,8 +117,8 @@ export default {
         }
       },
       animation: {
-        "slide-in": "slide-in 0.5s ease-in-out forwards",
-        "slide-out": "slide-out 0.5s ease-in-out forwards",
+        "slide-in": "slide-in 0.4s ease-in-out forwards",
+        "slide-out": "slide-out 0.4s ease-in-out forwards",
         "quest-pulse": "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"
       },
     },

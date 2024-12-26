@@ -1,5 +1,4 @@
 import { Outlet, Route, Routes } from "react-router-dom";
-import { ThemeProvider } from 'next-themes'
 
 import Navbar from "./components/Navbar/Navbar";
 import PageShoppingList from "./components/PageShoppingList/PageShoppingList";
@@ -8,37 +7,27 @@ import PageReward from "./components/PageReward/PageReward";
 import PageProfile from "./components/PageProfile/PageProfile";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
 import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
-import { useTheme } from "next-themes";
+import { useState } from "react";
 
 export default function App() {
   // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-PageNotFound
   const paths = ["/", "/quests", "/rewards", "/profile", "*"];
   const [questPendingClaims, setQuestPendingClaims] = useState(0);
   const [activeTab, setActiveTab] = useState(paths.indexOf(window.location.pathname));
-  const {setTheme} = useTheme();
-  // The first time App component is rendered, take default theme preference from system
-  useEffect(() => {
-    const preferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    localStorage.setItem('theme', preferredTheme);
-    setTheme(preferredTheme);
-  }, []);
 
   return (
     <>
-      <ThemeProvider attribute={'class'} defaultTheme="system" storageKey="theme">
-        <Routes>
-          <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
-            <Route index path={`${paths[0]}`} element={<PageShoppingList />} />
-            <Route path={`${paths[1]}`} element={<PageQuest
-              setQuestPendingClaims={setQuestPendingClaims}
-            />} />
-            <Route path={`${paths[2]}`} element={<PageReward />} />
-            <Route path={`${paths[3]}`} element={<PageProfile />} />
-            <Route path={`${paths[4]}`} element={<PageNotFound />} />
-          </Route>
-        </Routes>
-      </ThemeProvider>
+      <Routes>
+        <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
+          <Route index path={`${paths[0]}`} element={<PageShoppingList />} />
+          <Route path={`${paths[1]}`} element={<PageQuest
+            setQuestPendingClaims={setQuestPendingClaims}
+          />} />
+          <Route path={`${paths[2]}`} element={<PageReward />} />
+          <Route path={`${paths[3]}`} element={<PageProfile />} />
+          <Route path={`${paths[4]}`} element={<PageNotFound />} />
+        </Route>
+      </Routes>
     </>
   );
 }

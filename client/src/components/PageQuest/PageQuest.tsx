@@ -37,15 +37,19 @@ export default function PageQuest(props: any) {
     if (qindex < 0) qindex = 0;
 
     setQuests((prevQuests) => [
-      ...prevQuests.map((quest) => quest.id !== id ? quest :
-        {
-          id: newQuestId,
-          title: `New Sample Quest #${newQuestId}`,
-          description: "This is a brand-new quest.",
-          progress: "0/1",
-          completed: false,
-        },
-      )]);
+      ...prevQuests.map((quest) => {
+        if (quest.id !== id)
+          return quest;
+        else {
+          return {
+            id: newQuestId,
+            title: `New Sample Quest #${newQuestId}`,
+            description: "This is a brand-new quest.",
+            progress: "0/1",
+            completed: false
+          };
+        }
+      })]);
     setNewQuestId((prevId) => prevId + 1);
   };
   // Hard-coding for make a quest claimable
