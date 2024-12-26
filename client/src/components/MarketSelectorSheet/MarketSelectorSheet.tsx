@@ -7,11 +7,12 @@ import SearchIcon from "@mui/icons-material/Search";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
+import NearMeOutlinedIcon from '@mui/icons-material/NearMeOutlined';
 
 const markets = [ // To be replaced with a call to the db
-  { id: "1", name: "Crocetta Market", address: "Via Crocetta, 10123 Torino" },
-  { id: "2", name: "Porta Palazzo Market", address: "Piazza della Repubblica, 10122 Torino" },
-  { id: "3", name: "Balon Market", address: "Piazza della Repubblica, 10122 Torino" }
+  { id: "1", name: "Balon Market", address: "Piazza della Repubblica, 10122 Torino" },
+  { id: "2", name: "Crocetta Market", address: "Via Crocetta, 10123 Torino" },
+  { id: "3", name: "Porta Palazzo Market", address: "Piazza della Repubblica, 10122 Torino" }
 ]
 
 
@@ -44,7 +45,7 @@ export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket 
             <div className="mx-20 mt-2 mb-4">
               <SearchBar searchInput={searchInput} setSearchInput={setSearchInput} />
             </div>
-            <MarketsList selectMarket={selectMarket} searchInput={searchInput} />
+            <MarketsList selectMarket={selectMarket} searchInput={searchInput} selectedMarket={selectedMarket} />
           </Sheet.Content>
         </Sheet.Container>
         <Sheet.Backdrop onTap={() => setIsOpen(false)} />
@@ -66,7 +67,7 @@ function SearchBar({ searchInput, setSearchInput }: Readonly<{ searchInput: stri
   />;
 }
 
-function MarketsList({ selectMarket, searchInput }: Readonly<{ selectMarket: (name: string) => void, searchInput: string }>) {
+function MarketsList({ selectMarket, searchInput, selectedMarket }: Readonly<{ selectMarket: (name: string) => void, searchInput: string, selectedMarket: string }>) {
   return (
     <List className="w-auto mx-10 my-2 py-2">
       {markets.map((market, index) => (
@@ -75,7 +76,7 @@ function MarketsList({ selectMarket, searchInput }: Readonly<{ selectMarket: (na
           {/* {index != 0 &&
             <hr className="border-gray-200 border-1 mx-4" />} */}
           <ListItem key={market.id} className="p-2 animated active:scale-subtle active:bg-tremor-background-subtle dark:active:bg-dark-tremor-background-subtle">
-            <MarketCard name={market.name} address={market.address} selectMarket={selectMarket} />
+            <MarketCard name={market.name} address={market.address} selectedMarket={selectedMarket} selectMarket={selectMarket} />
           </ListItem>
         </>
       ))}
@@ -83,11 +84,12 @@ function MarketsList({ selectMarket, searchInput }: Readonly<{ selectMarket: (na
   );
 }
 
-function MarketCard({ name, address, selectMarket }: Readonly<{ name: string, address: string, selectMarket: (name: string) => void }>) {
+function MarketCard({ name, address, selectedMarket, selectMarket }: Readonly<{ name: string, address: string, selectedMarket: string, selectMarket: (name: string) => void }>) {
   return (
     <Button className="justify-start w-full " onClick={() => selectMarket(name)} variant="light">
       <div className="flex items-center text-tremor-content-strong dark:text-dark-tremor-content-emphasis">
-        <StorefrontOutlinedIcon className="me-2" fontSize="large" />
+        {(name === selectedMarket) ? <NearMeOutlinedIcon className="me-2" fontSize="large" /> :
+          <LocationOnOutlinedIcon className="me-2" fontSize="large" />}
         <div>
           <h3 className="text-lg font-bold text-left">{name}</h3>
           <p className="text-gray-500 text-left">{address}</p>
