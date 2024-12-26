@@ -8,17 +8,25 @@ import PageReward from "./components/PageReward/PageReward";
 import PageProfile from "./components/PageProfile/PageProfile";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
 
 export default function App() {
   // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-PageNotFound
   const paths = ["/", "/quests", "/rewards", "/profile", "*"];
   const [questPendingClaims, setQuestPendingClaims] = useState(0);
   const [activeTab, setActiveTab] = useState(paths.indexOf(window.location.pathname));
+  const {setTheme} = useTheme();
+  // The first time App component is rendered, take default theme preference from system
+  useEffect(() => {
+    const preferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    localStorage.setItem('theme', preferredTheme);
+    setTheme(preferredTheme);
+  }, []);
 
   return (
     <>
-      <ThemeProvider attribute={'class'} defaultTheme="system">
+      <ThemeProvider attribute={'class'} defaultTheme="system" storageKey="theme">
         <Routes>
           <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
             <Route index path={`${paths[0]}`} element={<PageShoppingList />} />
