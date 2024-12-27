@@ -27,3 +27,7 @@
     background: #333;
     border: 1px solid #444;
   }
+
+  .vendor-info p {
+    margin: 2px 0;
+  }

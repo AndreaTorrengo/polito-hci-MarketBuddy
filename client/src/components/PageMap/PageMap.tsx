@@ -81,7 +81,7 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, theme }) => {
         center={currentMarket.position as [number, number]}
         zoom={17}
         style={{ height: '100%', width: '100%' }}
-        className = {theme === "dark" ? "dark-mode" : ""}
+        className={theme === "dark" ? "dark-mode" : ""}
       >
         <TileLayer url={tileLayerUrl} attribution={tileLayerAttribution} />
         {/* Update map center dynamically */}
@@ -98,6 +98,14 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, theme }) => {
                   style={{ cursor: "pointer" }}
                 >
                   <strong style={{ fontSize: "1.1rem" }}>{vendor.name}</strong>
+                  <div className="vendor-info">
+                    <p>{vendor.categories.join(", ")}</p>
+                    {vendor.badges.length > 0 && <p>{vendor.badges.join(", ")}</p>}
+                    <p>Quality: {vendor.quality_rating}</p>
+                    <p>Price: {vendor.price_rating}</p>
+                    <p>Cordiality: {vendor.cordiality_rating}</p>
+                  </div>
+                  <strong style={{ fontSize: "1.1rem" }}>Products</strong>
                   <ul>
                     {vendor.products.map((product, productIdx) => (
                       <li key={productIdx}>{product.name}</li>
