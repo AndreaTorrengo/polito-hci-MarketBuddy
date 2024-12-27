@@ -23,6 +23,7 @@ const getVendorsByMarket = async (market: string) => {
             vendorData.cordiality_rating,
             vendorData.priceMultiplier,
             vendorData.categories,
+            vendorData.badges,
             vendorData.products.map((productData: any) => new Product(
                 productData.id,
                 productData.name,

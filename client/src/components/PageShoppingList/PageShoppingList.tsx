@@ -4,7 +4,7 @@ import API from "../../API";
 
 export default function PageShoppingList() {
   useEffect(() => {
-    const vendors = API.getVendorsByMarket("Crocetta");
+    const vendors = API.getVendorsByMarket("Porta Palazzo");
     console.log(vendors);
   })
   return (
