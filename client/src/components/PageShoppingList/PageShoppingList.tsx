@@ -1,6 +1,7 @@
 import MarketSelectorSheet from "../MarketSelectorSheet/MarketSelectorSheet";
 
 export default function PageShoppingList() {
+
   return (
     <>
       <h3>Shopping List page ._.</h3>

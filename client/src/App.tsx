@@ -8,9 +8,10 @@ import PageProfile from "./components/PageProfile/PageProfile";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
 import PropTypes from "prop-types";
 import { useState } from "react";
+import PageVendorProducts from "./components/PageVendorProducts/PageVendorProducts.tsx";
 
 export default function App() {
-  const paths = ["/", "/quests", "/rewards", "/profile", "*"];
+  const paths = ["/", "/quests", "/rewards", "/profile", "*", "/:vendorId"];
 
   const [theme, setTheme] = useState<string>(localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
   const [questPendingClaims, setQuestPendingClaims] = useState(0);
@@ -46,6 +47,7 @@ export default function App() {
       <Routes>
         <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
           <Route index path={`${paths[0]}`} element={<PageShoppingList />} />
+          <Route index path={`${paths[5]}`} element={<PageVendorProducts />} />
           <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} />} />
           <Route path={`${paths[2]}`} element={<PageReward />} />
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} />} />
@@ -60,7 +62,7 @@ function Layout(props: any) {
   return (
     <>
       <div className="flex flex-col h-screen bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle">
-        <div className="flex-grow overflow-y-auto">
+        <div className="flex-grow overflow-y-auto flex-1">
           <Outlet />
         </div>
         <Navbar paths={props.paths} activeTab={props.activeTab} setActiveTab={props.setActiveTab} questPendingClaims={props.questPendingClaims} />
