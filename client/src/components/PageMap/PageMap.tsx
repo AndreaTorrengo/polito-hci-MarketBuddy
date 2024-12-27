@@ -105,10 +105,12 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, theme }) => {
                     <p>Price: {vendor.price_rating}</p>
                     <p>Cordiality: {vendor.cordiality_rating}</p>
                   </div>
-                  <strong style={{ fontSize: "1rem"}}>Products</strong>
+                  <strong style={{ fontSize: "1rem" }}>Products</strong>
                   <ul>
                     {vendor.products.map((product, productIdx) => (
-                      <li key={productIdx}>{product.name}</li>
+                      <li key={productIdx}>
+                        {product.name}  {(product.price * vendor.priceMultiplier).toFixed(2)} €/kg
+                      </li>
                     ))}
                   </ul>
                 </div>
