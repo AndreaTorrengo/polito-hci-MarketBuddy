@@ -1,0 +1,29 @@
+.dark-mode .leaflet-container {
+    background: #2c2c2c;
+  }
+  
+  .dark-mode .leaflet-control {
+    background: #333;
+    color: #fff;
+    border: 1px solid #444;
+  }
+  
+  .dark-mode .leaflet-control a {
+    background: #333;
+    color: #ffffff;
+  }
+  
+  .dark-mode .leaflet-control a:hover {
+    background: #444;
+  }
+  
+  .dark-mode .leaflet-popup-content-wrapper {
+    background: #333;
+    color: #fff;
+    border: 1px solid #444;
+  }
+  
+  .dark-mode .leaflet-popup-tip {
+    background: #333;
+    border: 1px solid #444;
+  }

@@ -4,6 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import { Button } from '@tremor/react';
 import currentMarket from '../../currentMarket.json';
 import { Vendor } from '../../models';
+import './pagemap.css';
 
 
 const getRandomOffset = (): [number, number] => {
@@ -13,6 +14,7 @@ const getRandomOffset = (): [number, number] => {
 
 interface PageMapProps {
   vendors: Vendor[];
+  theme: string;
 }
 
 // Helper component to update map center dynamically
@@ -24,7 +26,7 @@ const UpdateMapCenter: React.FC<{ center: [number, number] }> = ({ center }) => 
   return null;
 };
 
-const PageMap: React.FC<PageMapProps> = ({ vendors }) => {
+const PageMap: React.FC<PageMapProps> = ({ vendors, theme }) => {
   const offset: [number, number] = getRandomOffset();
   const [markerPosition, setMarkerPosition] = useState<[number, number]>([
     currentMarket.position[0] + offset[0],
@@ -63,17 +65,25 @@ const PageMap: React.FC<PageMapProps> = ({ vendors }) => {
     };
   }, [markerPosition]);
 
+  const tileLayerUrl =
+    theme === "dark"
+      ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+      : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+
+  const tileLayerAttribution =
+    theme === "dark"
+      ? '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
+      : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+
   return (
     <div style={{ height: '100%', width: '100%', position: 'relative' }}>
       <MapContainer
         center={currentMarket.position as [number, number]}
         zoom={17}
         style={{ height: '100%', width: '100%' }}
+        className = {theme === "dark" ? "dark-mode" : ""}
       >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        />
+        <TileLayer url={tileLayerUrl} attribution={tileLayerAttribution} />
         {/* Update map center dynamically */}
         <UpdateMapCenter center={currentMarket.position as [number, number]} />
         {/* Vendors position */}
@@ -82,8 +92,12 @@ const PageMap: React.FC<PageMapProps> = ({ vendors }) => {
           return (
             <Marker key={idx} position={position}>
               <Popup>
-                <div onClick={() => (window.location.href = `/vendor/${vendor.id}`)} style={{ cursor: 'pointer' }}>
-                  <strong style={{ fontSize: '1.1rem' }}>{vendor.name}</strong>
+                <div
+                  onClick={() => (window.location.href = `/vendor/${vendor.id}`)}
+                  className={theme === "dark" ? "popup-dark" : "popup-light"}
+                  style={{ cursor: "pointer" }}
+                >
+                  <strong style={{ fontSize: "1.1rem" }}>{vendor.name}</strong>
                   <ul>
                     {vendor.products.map((product, productIdx) => (
                       <li key={productIdx}>{product.name}</li>

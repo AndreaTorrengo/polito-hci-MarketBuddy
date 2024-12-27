@@ -66,7 +66,7 @@ export default function App() {
           <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} />} />
           <Route path={`${paths[2]}`} element={<PageReward />} />
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} />} />
-          <Route path={`${paths[4]}`} element={<PageMap vendors={vendors} />} />
+          <Route path={`${paths[4]}`} element={<PageMap theme={theme} vendors={vendors} />} />
           <Route path={`${paths[5]}`} element={<PageNotFound />} />
         </Route>
       </Routes>
