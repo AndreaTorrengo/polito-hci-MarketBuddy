@@ -3,6 +3,7 @@ import colors from 'tailwindcss/colors';
 import formsPlugin from "@tailwindcss/forms"
 
 export default {
+  darkMode: 'selector',
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -10,7 +11,6 @@ export default {
     // Path to Tremor module
     "./node_modules/@tremor/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: ['class'],
   theme: {
     transparent: 'transparent',
     current: 'currentColor',
