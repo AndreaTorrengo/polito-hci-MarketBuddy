@@ -42,9 +42,9 @@ export default function App() {
   return (
     <div className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
       <Routes>
-        <Route element={<Layout paths={paths} />}>
+        <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
           <Route index path={`${paths[0]}`} element={<PageShoppingList />} />
-          <Route path={`${paths[1]}`} element={<PageQuest />} />
+          <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} />} />
           <Route path={`${paths[2]}`} element={<PageReward />} />
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} />} />
           <Route path={`${paths[4]}`} element={<PageNotFound />} />
@@ -57,15 +57,18 @@ export default function App() {
 function Layout(props: any) {
   return (
     <>
-      <div className="flex flex-col h-screen">
+      <div className="flex flex-col h-screen bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle">
         <div className="flex-grow overflow-y-auto">
           <Outlet />
         </div>
-        <Navbar paths={props.paths} />
+        <Navbar paths={props.paths} activeTab={props.activeTab} setActiveTab={props.setActiveTab} questPendingClaims={props.questPendingClaims} />
       </div>
     </>
   );
 }
 Layout.propTypes = {
-  paths: PropTypes.array
+  paths: PropTypes.array,
+  activeTab: PropTypes.number,
+  setActiveTab: PropTypes.func,
+  questPendingClaims: PropTypes.number
 }
