@@ -13,6 +13,8 @@ export default function App() {
   const paths = ["/", "/quests", "/rewards", "/profile", "*"];
 
   const [theme, setTheme] = useState<string>(localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+  const [questPendingClaims, setQuestPendingClaims] = useState(0);
+  const [activeTab, setActiveTab] = useState(paths.indexOf(window.location.pathname));
 
 
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
