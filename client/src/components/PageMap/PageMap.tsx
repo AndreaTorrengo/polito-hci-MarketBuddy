@@ -101,7 +101,7 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, theme }) => {
                   <div className="vendor-info" style={{ fontSize: "0.75rem", marginBottom: "0.5rem" }}>
                     <p>{vendor.categories.join(", ")}</p>
                     {vendor.badges.length > 0 && <p>{vendor.badges.join(", ")}</p>}
-                    <p>Quality: {vendor.quality_rating}</p>
+                    <p style={{ marginTop: "0.5rem" }}>Quality: {vendor.quality_rating}</p>
                     <p>Price: {vendor.price_rating}</p>
                     <p>Cordiality: {vendor.cordiality_rating}</p>
                   </div>
