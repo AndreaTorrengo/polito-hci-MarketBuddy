@@ -22,8 +22,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-modal-sheet": "^3.3.0",
-    "react-router-dom": "^7.0.2",
-    "tailwind-variants": "^0.3.0"
+    "react-router-dom": "^7.0.2"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.9",
