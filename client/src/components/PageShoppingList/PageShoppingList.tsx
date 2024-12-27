@@ -1,12 +1,6 @@
-import { useEffect } from "react";
 import MarketSelectorSheet from "../MarketSelectorSheet/MarketSelectorSheet";
-import API from "../../API";
 
 export default function PageShoppingList() {
-  useEffect(() => {
-    const vendors = API.getVendorsByMarket("Porta Palazzo");
-    console.log(vendors);
-  })
   return (
     <>
       <h3>Shopping List page ._.</h3>
