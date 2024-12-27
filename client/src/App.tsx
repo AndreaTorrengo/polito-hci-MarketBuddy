@@ -1,21 +1,24 @@
 import { Outlet, Route, Routes } from "react-router-dom";
-
 import Navbar from "./components/Navbar/Navbar";
 import PageShoppingList from "./components/PageShoppingList/PageShoppingList";
 import PageQuest from "./components/PageQuest/PageQuest";
 import PageReward from "./components/PageReward/PageReward";
 import PageProfile from "./components/PageProfile/PageProfile";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
-import PropTypes from "prop-types";
-import { useState } from "react";
 import PageMap from "./components/PageMap/PageMap";
+import PropTypes from "prop-types";
+import { useState, useEffect } from "react";
+import currentMarket from './currentMarket.json';
+import { Vendor } from './models';
+import API from './API';
 
 export default function App() {
-  const paths = ["/", "/quests", "/rewards", "/profile","/map", "*"];
+  const paths = ["/", "/quests", "/rewards", "/profile", "/map", "*"];
 
   const [theme, setTheme] = useState<string>(localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
   const [questPendingClaims, setQuestPendingClaims] = useState(0);
   const [activeTab, setActiveTab] = useState(paths.indexOf(window.location.pathname));
+  const [vendors, setVendors] = useState<Vendor[]>([]);
 
 
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
@@ -41,6 +44,19 @@ export default function App() {
     }
   };
 
+  useEffect(() => {
+    const fetchVendors = async () => {
+      try {
+        const fetchedVendors = await API.getVendorsByMarket(currentMarket.marketName);
+        setVendors(fetchedVendors);
+      } catch (error) {
+        console.error('Error fetching vendors:', error);
+      }
+    };
+
+    fetchVendors();
+  }, [currentMarket]);
+
   // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-PageNotFound
   return (
     <div className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
@@ -50,7 +66,7 @@ export default function App() {
           <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} />} />
           <Route path={`${paths[2]}`} element={<PageReward />} />
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} />} />
-          <Route path={`${paths[4]}`} element={<PageMap />} />
+          <Route path={`${paths[4]}`} element={<PageMap vendors={vendors} />} />
           <Route path={`${paths[5]}`} element={<PageNotFound />} />
         </Route>
       </Routes>
