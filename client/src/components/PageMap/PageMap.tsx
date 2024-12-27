@@ -2,26 +2,40 @@ import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Text, Title, Button } from '@tremor/react';
+import currentMarket from '../../currentMarket.json';
+import API from '../../API';
+import { Vendor } from '../../models';
+import MarketSelectorSheet from '../MarketSelectorSheet/MarketSelectorSheet';
 
-const positions: [number, number][] = [
-  [45.076779, 7.683629],
-  [45.077420, 7.684019],
-  [45.076504, 7.684078],
-  [45.076904, 7.683068]
-];
+const getRandomOffset = (): [number, number] => {
+  const randomValue = () => Math.random() * 0.0008 - 0.0004; // Generates a random number between -0.00002 and 0.00002
+  return [randomValue(), randomValue()];
+};
 
-const positionsPortaPalazzo: [number, number][] = [
-  [45.076779, 7.683629],
-  [45.077420, 7.684019],
-  [45.076504, 7.684078],
-  [45.076904, 7.683068]
-];
-
-const centerPortaPalazzo: [number, number] = [45.076779, 7.683629];
 
 const PageMap = () => {
-  const [markerPosition, setMarkerPosition] = useState<[number, number]>([45.076779, 7.683829]);
-  const centerPosition: [number, number] = [45.076779, 7.683629];
+  const offset: [number, number] = getRandomOffset();
+  const [markerPosition, setMarkerPosition] = useState<[number, number]>([
+    (currentMarket.position as [number, number])[0] + offset[0],
+    (currentMarket.position as [number, number])[1] + offset[1]
+  ]);
+  const [marketName, setMarketName] = useState<string>(currentMarket.marketName);
+  const [centerPosition, _] = useState<[number, number]>(currentMarket.position as [number, number]);
+  const [vendors, setVendors] = useState<Vendor[]>([]);
+
+  useEffect(() => {
+    const fetchVendors = async () => {
+      try {
+        const fetchedVendors = await API.getVendorsByMarket(marketName);
+        setVendors(fetchedVendors);
+        console.log('Fetched vendors:', fetchedVendors);
+      } catch (error) {
+        console.error('Error fetching vendors:', error);
+      }
+    };
+
+    fetchVendors();
+  }, [marketName]);
 
   {/*handle movable marker movement*/ }
   useEffect(() => {
@@ -53,24 +67,34 @@ const PageMap = () => {
 
   return (
     <div style={{ height: '93vh', width: '100vw', position: 'relative' }}>
-      <MapContainer center={centerPosition} zoom={18} style={{ height: '100%', width: '100%' }}>
+      <MapContainer center={centerPosition} zoom={20} style={{ height: '100%', width: '100%' }}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        <Polyline positions={positions} color="blue" />
+        {/*<Polyline positions={positions} color="blue" />*/}
         {/*Vendors position*/}
-        {positions.map((position, idx) => (
-          <Marker key={idx} position={position}>
-            <Popup>
-              Marker at position {position[0]}, {position[1]}
-            </Popup>
-          </Marker>
-        ))}
+        {vendors.map((vendor, idx) => {
+          const position: [number, number] = vendor.position as [number, number];
+          return (
+            <Marker key={idx} position={position}>
+              <Popup>
+                <div onClick={() => window.location.href = `/vendor/${vendor.id}`} style={{ cursor: 'pointer' }}>
+                  <strong>{vendor.name}</strong>
+                  <ul>
+                    {vendor.products.map((product, productIdx) => (
+                      <li key={productIdx}>{product.name}</li>
+                    ))}
+                  </ul>
+                </div>
+              </Popup>
+            </Marker>
+          );
+        })}
         {/*user current position*/}
         <CircleMarker center={markerPosition} radius={10} color="white" fillColor="blue" fillOpacity={1}>
           <Popup>
-            Movable Marker at position {markerPosition[0]}, {markerPosition[1]}
+            This is you!
           </Popup>
         </CircleMarker>
       </MapContainer>
@@ -87,7 +111,7 @@ const PageMap = () => {
         cursor: 'pointer',
         zIndex: 1000 // Bring the button to the front
       }}>
-        Placeholder for market selector
+        <MarketSelectorSheet />
       </Button>
     </div>
   );

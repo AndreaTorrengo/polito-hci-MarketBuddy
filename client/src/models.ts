@@ -2,7 +2,7 @@ class Vendor {
     id: number;
     name: string;
     market: string;
-    position: string;
+    position: number[];
     priceMultiplier: number;
     quality_rating: number;
     price_rating: number;
@@ -11,7 +11,7 @@ class Vendor {
     badges: string[];
     products: Product[];
 
-    constructor(id: number, name: string, market: string, position: string, quality_rating: number, price_rating: number, cordiality_rating: number, priceMultiplier: number, categories: string[], badges: string[], products: Product[]) {
+    constructor(id: number, name: string, market: string, position: number[], quality_rating: number, price_rating: number, cordiality_rating: number, priceMultiplier: number, categories: string[], badges: string[], products: Product[]) {
         this.id = id;
         this.name = name;
         this.market = market;

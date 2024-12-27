@@ -8,9 +8,10 @@ import PageProfile from "./components/PageProfile/PageProfile";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
 import PropTypes from "prop-types";
 import { useState } from "react";
+import PageMap from "./components/PageMap/PageMap";
 
 export default function App() {
-  const paths = ["/", "/quests", "/rewards", "/profile", "*"];
+  const paths = ["/", "/quests", "/rewards", "/profile","/map", "*"];
 
   const [theme, setTheme] = useState<string>(localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
   const [questPendingClaims, setQuestPendingClaims] = useState(0);
@@ -49,7 +50,8 @@ export default function App() {
           <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} />} />
           <Route path={`${paths[2]}`} element={<PageReward />} />
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} />} />
-          <Route path={`${paths[4]}`} element={<PageNotFound />} />
+          <Route path={`${paths[4]}`} element={<PageMap />} />
+          <Route path={`${paths[5]}`} element={<PageNotFound />} />
         </Route>
       </Routes>
     </div>
