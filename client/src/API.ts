@@ -1,5 +1,5 @@
 const API_URL = 'http://localhost:3001/api';
-import { Vendor } from './models';
+import { Vendor, Product } from './models';
 
 const getVendorsByMarket = async (market: string) => {
     try {
@@ -22,8 +22,12 @@ const getVendorsByMarket = async (market: string) => {
             vendorData.price_rating,
             vendorData.cordiality_rating,
             vendorData.priceMultiplier,
-            vendorData.badges,
-            vendorData.products
+            vendorData.categories,
+            vendorData.products.map((productData: any) => new Product(
+                productData.id,
+                productData.name,
+                productData.price,
+            ))
         ));
     } catch (error) {
         throw error;
