@@ -97,15 +97,15 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, theme }) => {
                   className={theme === "dark" ? "popup-dark" : "popup-light"}
                   style={{ cursor: "pointer" }}
                 >
-                  <strong style={{ fontSize: "1.1rem" }}>{vendor.name}</strong>
-                  <div className="vendor-info">
+                  <strong style={{ fontSize: "1rem" }}>{vendor.name}</strong>
+                  <div className="vendor-info" style={{ fontSize: "0.75rem", marginBottom: "0.5rem" }}>
                     <p>{vendor.categories.join(", ")}</p>
                     {vendor.badges.length > 0 && <p>{vendor.badges.join(", ")}</p>}
                     <p>Quality: {vendor.quality_rating}</p>
                     <p>Price: {vendor.price_rating}</p>
                     <p>Cordiality: {vendor.cordiality_rating}</p>
                   </div>
-                  <strong style={{ fontSize: "1.1rem" }}>Products</strong>
+                  <strong style={{ fontSize: "1rem"}}>Products</strong>
                   <ul>
                     {vendor.products.map((product, productIdx) => (
                       <li key={productIdx}>{product.name}</li>
