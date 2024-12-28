@@ -6,7 +6,7 @@ export default function PageShoppingList({ selectedMarket, setSelectedMarket }: 
 }) {
 
   return (
-    <div>
+    <div id="ShoppingListPage">
       <MarketSelectorSheet selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />
       <h1>Shopping List</h1>
     </div>

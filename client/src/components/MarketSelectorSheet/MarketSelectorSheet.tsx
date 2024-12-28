@@ -25,6 +25,7 @@ export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket 
   const [isOpen, setIsOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
 
+  const approot = document.getElementById("approot")!;
 
   function selectMarket(name: string) {
     setSelectedMarket(name);
@@ -49,7 +50,7 @@ export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket 
         <span className="ml-2">{selectedMarket}</span>
         <ExpandMoreIcon />
       </button>
-      <Sheet isOpen={isOpen} onClose={() => setIsOpen(false)} detent='content-height' rootId="ShoppingListPage">
+      <Sheet isOpen={isOpen} onClose={() => setIsOpen(false)} detent='content-height' rootId="ShoppingListPage" mountPoint={approot}>
         <Sheet.Container>
           <Sheet.Header className="p-6 dark:bg-dark-tremor-background dark:text-dark-tremor-content-emphasis">
             <h1 className="font-bold text-3xl">Choose The Market</h1>
