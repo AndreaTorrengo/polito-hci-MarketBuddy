@@ -93,27 +93,39 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, theme }) => {
             <Marker key={idx} position={position}>
               <Popup>
                 <div
+                  className="vendor-info"
+                  style={{
+                    fontSize: "0.75rem",
+                    marginBottom: "0.5rem",
+                    cursor: "pointer",
+                    padding: "10px",
+                    border: "1px solid #ccc",
+                    borderRadius: "5px",
+                    backgroundColor: theme === "dark" ? "#333" : "#f9f9f9",
+                    color: theme === "dark" ? "#fff" : "#000",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                    textAlign: "center"
+                  }}
                   onClick={() => (window.location.href = `/vendor/${vendor.id}`)}
-                  className={theme === "dark" ? "popup-dark" : "popup-light"}
-                  style={{ cursor: "pointer" }}
                 >
-                  <strong style={{ fontSize: "1rem" }}>{vendor.name}</strong>
-                  <div className="vendor-info" style={{ fontSize: "0.75rem", marginBottom: "0.5rem" }}>
-                    <p>{vendor.categories.join(", ")}</p>
-                    {vendor.badges.length > 0 && <p>{vendor.badges.join(", ")}</p>}
-                    <p style={{ marginTop: "0.5rem" }}>Quality: {vendor.quality_rating}</p>
-                    <p>Price: {vendor.price_rating}</p>
-                    <p>Cordiality: {vendor.cordiality_rating}</p>
-                  </div>
-                  <strong style={{ fontSize: "1rem" }}>Products</strong>
-                  <ul>
-                    {vendor.products.map((product, productIdx) => (
-                      <li key={productIdx}>
-                        {product.name}  {(product.price * vendor.priceMultiplier).toFixed(2)} €/kg
-                      </li>
-                    ))}
-                  </ul>
+                  <strong style={{ fontSize: "1rem"}}>{vendor.name}</strong>
+                  <p>{vendor.categories.join(", ")}</p>
+                  {vendor.badges.length > 0 && <p>{vendor.badges.join(", ")}</p>}
                 </div>
+                <div className="vendor-info" style={{ fontSize: "0.75rem", marginBottom: "0.5rem" }}>
+                  <p style={{ marginTop: "0.5rem" }}>Quality: {vendor.quality_rating}</p>
+                  <p>Price: {vendor.price_rating}</p>
+                  <p>Cordiality: {vendor.cordiality_rating}</p>
+                </div>
+                <strong style={{ fontSize: "1rem" }}>Products</strong>
+                <ul>
+                  {vendor.products.map((product, productIdx) => (
+                    <li key={productIdx}>
+                      {product.name}  {(product.price * vendor.priceMultiplier).toFixed(2)} €/kg
+                    </li>
+                  ))}
+                </ul>
+
               </Popup>
             </Marker>
           );
