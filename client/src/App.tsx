@@ -13,11 +13,11 @@ import productsList from './productsList.json';
 
 export default function App() {
   const paths = ["/", "/quests", "/rewards", "/profile", "*"];
-  const [vendors, setVendors] = useState<Vendor[]>([]);
-  const [filteredVendors, setFilteredVendors] = useState<Vendor[]>([]);
   const [theme, setTheme] = useState<string>(localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
   const [questPendingClaims, setQuestPendingClaims] = useState(0);
   const [activeTab, setActiveTab] = useState(paths.indexOf(window.location.pathname));
+  const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [filteredVendors, setFilteredVendors] = useState<Vendor[]>([]);
   const [missingProducts, setMissingProducts] = useState<string[]>([]);
 
 
@@ -36,11 +36,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    // Carica la lista di prodotti dal file JSON
 
-    //const productsList = List.products;
-
-    // Filtra i venditori
     const filtered = [];
     const requiredProducts = new Set(productsList.products);
     const foundProducts = new Set();
@@ -56,48 +52,15 @@ export default function App() {
       }
     }
 
-    console.log("requiredProducts", Array.from(requiredProducts));
-    console.log("foundProducts", Array.from(foundProducts));
-
     // Check for missing products
     const missing = Array.from(requiredProducts).filter(product =>
       !Array.from(foundProducts as Set<Product>).some((fp: Product) => fp.name === product)
     );
     setMissingProducts(missing);
-    console.log("missing", missingProducts);
-
     setFilteredVendors(filtered);
-    console.log("filtered", filtered);
   }, [vendors]);
 
-  const handleMissingProducts = () => {
-    const updatedFiltered = [...filteredVendors];
-    const remainingMissingProducts: string[] = [];
 
-    missingProducts.forEach(product => {
-      if (window.confirm(`Desideri trovare proposte alternative per ${product}?`)) {
-        updatedFiltered.push({
-          id: updatedFiltered.length + 1,
-          name: `SampleVendor#${updatedFiltered.length + 1}`,
-          products: [{ id: updatedFiltered.length + 1, name: product, price: 0 }],
-          position: '0,0', // Use the center of the market location
-          market: 'Porta Palazzo',
-          priceMultiplier: 1,
-          quality_rating: 0,
-          price_rating: 0,
-          cordiality_rating: 0,
-          categories: [], // Add appropriate categories
-          badges: [] // Add appropriate badges
-        });
-      } else {
-        remainingMissingProducts.push(product);
-      }
-    });
-
-    setFilteredVendors(updatedFiltered);
-    setMissingProducts(remainingMissingProducts); // Update missing products with the remaining ones
-    console.log("filtered", updatedFiltered);
-  };
 
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
     if (!localStorage.theme) {
@@ -127,8 +90,8 @@ export default function App() {
 
     <div className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
       <Routes>
-        <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} handleMissingProducts={handleMissingProducts} missingProducts={missingProducts} />}>
-          <Route index path={`${paths[0]}`} element={<PageShoppingList />} />
+        <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
+          <Route index path={`${paths[0]}`} element={<PageShoppingList filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors}  setMissingProducts={setMissingProducts} missingProducts={missingProducts}/>} />
           <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} />} />
           <Route path={`${paths[2]}`} element={<PageReward />} />
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} />} />
@@ -140,12 +103,8 @@ export default function App() {
 }
 
 function Layout(props: any) {
-  const { handleMissingProducts, missingProducts } = props;
   return (
     <>
-      {missingProducts.length > 0 && (
-        <button onClick={handleMissingProducts}>Handle Missing Products</button>
-      )}
       <div className="flex flex-col h-screen bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle">
         <div className="flex-grow overflow-y-auto">
           <Outlet />
@@ -158,8 +117,6 @@ function Layout(props: any) {
 Layout.propTypes = {
   paths: PropTypes.array,
   activeTab: PropTypes.number,
-  handleMissingProducts: PropTypes.func,
-  missingProducts: PropTypes.array,
   questPendingClaims: PropTypes.number,
   setActiveTab: PropTypes.func.isRequired
 }
