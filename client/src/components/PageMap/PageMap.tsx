@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap, Tooltip } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Button } from '@tremor/react';
 import currentMarket from '../../currentMarket.json';
@@ -12,11 +12,6 @@ const getRandomOffset = (): [number, number] => {
   return [randomValue(), randomValue()];
 };
 
-interface PageMapProps {
-  vendors: Vendor[];
-  theme: string;
-}
-
 // Helper component to update map center dynamically
 const UpdateMapCenter: React.FC<{ center: [number, number] }> = ({ center }) => {
   const map = useMap();
@@ -26,12 +21,30 @@ const UpdateMapCenter: React.FC<{ center: [number, number] }> = ({ center }) => 
   return null;
 };
 
+const OnFlyMarker: React.FC<{ center: [number, number] }> = ({ center }) => {
+  const map = useMap();
+  useEffect(() => {
+    map.flyTo(center, map.getZoom(), {
+      animate: true,
+      duration: 0.5,
+    });
+  }, [center, map]);
+  return null;
+};
+
+interface PageMapProps {
+  vendors: Vendor[];
+  theme: string;
+}
+
 const PageMap: React.FC<PageMapProps> = ({ vendors, theme }) => {
   const offset: [number, number] = getRandomOffset();
   const [markerPosition, setMarkerPosition] = useState<[number, number]>([
     currentMarket.position[0] + offset[0],
     currentMarket.position[1] + offset[1],
   ]);
+  const [center, setMapCenter] = useState<[number, number]>(currentMarket.position as [number, number]);
+
 
   useEffect(() => {
     setMarkerPosition([currentMarket.position[0] + offset[0], currentMarket.position[1] + offset[1]]);
@@ -80,17 +93,27 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, theme }) => {
       <MapContainer
         center={currentMarket.position as [number, number]}
         zoom={17}
+        maxZoom={18}
         style={{ height: '100%', width: '100%' }}
         className={theme === "dark" ? "dark-mode" : ""}
       >
         <TileLayer url={tileLayerUrl} attribution={tileLayerAttribution} />
         {/* Update map center dynamically */}
+        <OnFlyMarker center={center} />
         <UpdateMapCenter center={currentMarket.position as [number, number]} />
         {/* Vendors position */}
         {vendors.map((vendor, idx) => {
           const position: [number, number] = vendor.position as [number, number];
           return (
-            <Marker key={idx} position={position}>
+            <Marker key={idx} position={position}
+              eventHandlers={{
+                click: () => {
+                  setMapCenter(position);
+                },
+              }}>
+              <Tooltip direction="top" offset={[30, 30]} opacity={1} permanent className="custom-tooltip">
+                <span>{vendor.name}</span>
+              </Tooltip>
               <Popup>
                 <div
                   className="vendor-info"
@@ -101,14 +124,12 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, theme }) => {
                     padding: "10px",
                     border: "1px solid #ccc",
                     borderRadius: "5px",
-                    backgroundColor: theme === "dark" ? "#333" : "#f9f9f9",
-                    color: theme === "dark" ? "#fff" : "#000",
                     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                     textAlign: "center"
                   }}
                   onClick={() => (window.location.href = `/vendor/${vendor.id}`)}
                 >
-                  <strong style={{ fontSize: "1rem"}}>{vendor.name}</strong>
+                  <strong style={{ fontSize: "1rem" }}>{vendor.name}</strong>
                   <p>{vendor.categories.join(", ")}</p>
                   {vendor.badges.length > 0 && <p>{vendor.badges.join(", ")}</p>}
                 </div>
