@@ -6,6 +6,7 @@ import { useSwipeable } from 'react-swipeable';
 import currentMarket from '../../currentMarket.json';
 import './MissingProductsDialog.css';
 
+
 interface MissingProductsDialogProps {
     filteredVendors: Vendor[];
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
@@ -158,7 +159,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
                 </div >
             )}
 
-            <Dialog open={isOpen} static={true} onClose={handleClose}>
+            <Dialog open={isOpen} static={true} onClose={handleClose} >
                 <DialogPanel {...handlers} className="max-h-screen overflow-y-auto">
 
                     {missingProducts.length > 0 ? (
@@ -167,17 +168,18 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
                             <span>Not all products from your list are available at the market</span>
                             <ul>
                                 <li className="mt-2">
-                                    <span>{"Select alternative/s for "}<strong className="text-black">{missingProducts[currentIndex]}</strong></span>
+                                    <span>{"Select alternative/s for "}<strong>{missingProducts[currentIndex]}</strong></span>
                                     <div className="flex justify-center mt-4">
                                         <div className={`flex justify-center grid gap-4 ${randomAlternatives[missingProducts[currentIndex]]?.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
                                             {randomAlternatives[missingProducts[currentIndex]]?.map((alternative, altIndex) => (
-                                                <div
+                                                <Button
                                                     key={altIndex}
                                                     style={{
                                                         width: '100%',
                                                         padding: '0.25rem 1rem',
                                                         cursor: 'pointer',
                                                         borderRadius: '0.5rem',
+                                                        border: 'none',
                                                         textAlign: 'center',
                                                         backgroundColor: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? '#3b82f6' : '#d1d5db',
                                                         color: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? '#ffffff' : '#000000',
@@ -187,7 +189,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
                                                 >
                                                     <div>{alternative.name}</div>
                                                     <div>{alternative.price} €/kg</div>
-                                                </div>
+                                                </Button>
                                             ))}
                                         </div>
                                     </div>

@@ -19,3 +19,17 @@ div .alert-button:hover {
     background-color: #f0e1e1;
     color: #e34138;
 }
+
+/* Dark mode styles */
+.dark div .alert-button {
+    background-color: #4a5568; /* gray with a bluish tint for dark mode */
+    color: #e34138; /* white text */
+}
+
+.dark div .alert-button:focus,
+.dark div .alert-button:active {
+    background-color: #4a5568; /* maintain the same background color */
+    color: #e34138; /* maintain the same text color */
+    outline: none; /* remove outline */
+    box-shadow: none; /* remove box-shadow */
+}
