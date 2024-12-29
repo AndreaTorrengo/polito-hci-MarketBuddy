@@ -11,7 +11,7 @@ interface MissingProductsDialogProps {
     theme: string;
 }
 
-const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissingProducts, missingProducts, filteredVendors, setFilteredVendors }) => {
+const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissingProducts, missingProducts, filteredVendors, setFilteredVendors, theme }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [showConfirmation, setShowConfirmation] = useState(false);
@@ -147,7 +147,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
                                 <li className="mt-2">
                                     <span>{"Select alternative/s for "}<strong className="text-black">{missingProducts[currentIndex]}</strong></span>
                                     <div className="flex justify-center mt-4">
-                                        <div className=" flex justify-center grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-4">
+                                        <div className={`flex justify-center grid gap-4 ${randomAlternatives[missingProducts[currentIndex]]?.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
                                             {randomAlternatives[missingProducts[currentIndex]]?.map((alternative, altIndex) => (
                                                 <div
                                                     key={altIndex}

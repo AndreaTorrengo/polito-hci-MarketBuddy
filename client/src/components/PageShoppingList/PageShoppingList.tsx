@@ -10,7 +10,7 @@ interface PageShoppingListProps {
   theme: string;
 }
 
-export default function PageShoppingList({ filteredVendors, setFilteredVendors, setMissingProducts, missingProducts, theme}: PageShoppingListProps) {
+export default function PageShoppingList({ filteredVendors, setFilteredVendors, setMissingProducts, missingProducts, theme }: PageShoppingListProps) {
   return (
     <>
       <h3>Shopping List page ._.</h3>
