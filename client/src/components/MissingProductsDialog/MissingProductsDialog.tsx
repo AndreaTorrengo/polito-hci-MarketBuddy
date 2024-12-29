@@ -1,7 +1,10 @@
 import { Button, Dialog, DialogPanel } from '@tremor/react';
+import WarningIcon from '@mui/icons-material/Warning';
 import { Vendor, Product } from '../../models';
 import React, { useState, useEffect, useRef } from 'react';
 import { useSwipeable } from 'react-swipeable';
+import currentMarket from '../../currentMarket.json';
+import './MissingProductsDialog.css';
 
 interface MissingProductsDialogProps {
     filteredVendors: Vendor[];
@@ -9,32 +12,40 @@ interface MissingProductsDialogProps {
     setMissingProducts: React.Dispatch<React.SetStateAction<string[]>>;
     missingProducts: string[];
     theme: string;
+    sortByQuality: boolean;
+    sortByConvenience: boolean;
+    sortByCordiality: boolean;
 }
 
-const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissingProducts, missingProducts, filteredVendors, setFilteredVendors, theme }) => {
+const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissingProducts, missingProducts, filteredVendors, setFilteredVendors, theme, sortByConvenience, sortByCordiality, sortByQuality }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [showConfirmation, setShowConfirmation] = useState(false);
-    const [selectedAlternatives, setSelectedAlternatives] = useState<{ [key: string]: string[] }>({});
-    const [randomAlternatives, setRandomAlternatives] = useState<{ [key: string]: string[] }>({});
+    const [selectedAlternatives, setSelectedAlternatives] = useState<{ [key: string]: Product[] }>({});
+    const [randomAlternatives, setRandomAlternatives] = useState<{ [key: string]: Product[] }>({});
     const hasGeneratedAlternatives = useRef(false);
 
-    const alternatives = ["Alternative 1", "Alternative 2", "Alternative 3", "Alternative 4", "Alternative 5"];
+    const alternatives: Product[] = [
+        { id: 1, name: "Alternative 1", price: 1.2 },
+        { id: 2, name: "Alternative 2", price: 2.3 },
+        { id: 3, name: "Alternative 3", price: 3.4 },
+        { id: 4, name: "Alternative 4", price: 4.5 },
+        { id: 5, name: "Alternative 5", price: 5.1 }
+    ];
 
     useEffect(() => {
         if (!hasGeneratedAlternatives.current && missingProducts.length > 0) {
 
-
-            const shuffleArray = (array: string[]) => {
+            const shuffleArray = (array: Product[]) => {
                 return array.sort(() => 0.5 - Math.random());
             };
 
-            const selectRandomAlternatives = (array: string[], count: number) => {
+            const selectRandomAlternatives = (array: Product[], count: number) => {
                 return shuffleArray(array).slice(0, count);
             };
 
             const generateRandomAlternatives = () => {
-                const newRandomAlternatives: { [key: string]: string[] } = {};
+                const newRandomAlternatives: { [key: string]: Product[] } = {};
                 missingProducts.forEach((product) => {
                     newRandomAlternatives[product] = selectRandomAlternatives(alternatives, Math.floor(Math.random() * alternatives.length) + 1);
                 });
@@ -45,28 +56,31 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
             hasGeneratedAlternatives.current = true;
         }
 
-
     }, [missingProducts]);
 
-    const handleConfirm = (product: string, selectedAlternatives: string[]) => {
+    const handleConfirm = (product: string, selectedAlternatives: Product[]) => {
         const updatedFiltered = [...filteredVendors];
         const remainingMissingProducts = missingProducts.filter((p) => p !== product);
+        const randomOffset = () => (Math.random() * 0.0004 - 0.0002).toFixed(2);
+        const newPosition = `${currentMarket.position[0] + parseFloat(randomOffset())},${currentMarket.position[1] + parseFloat(randomOffset())}`;
+        const getRandomRating = (highRating: boolean) => {
+            if (highRating) {
+                return Math.floor(Math.random() * 11) + 90; // Random rating between 90% and 100%
+            }
+            return Math.floor(Math.random() * 31) + 70; // Random rating between 70% and 100%
+        };
 
         // Create a new vendor with all alternatives as products
         const newVendor = {
             id: updatedFiltered.length + 1,
             name: `SampleVendor#${updatedFiltered.length + 1}`,
-            products: selectedAlternatives.map((alternative, index): Product => ({
-                id: updatedFiltered.length + 1 + index,
-                name: alternative,
-                price: 0
-            })),
-            position: '0,0',
-            market: 'Porta Palazzo',
+            products: selectedAlternatives,
+            position: newPosition,
+            market: currentMarket.marketName,
             priceMultiplier: 1,
-            quality_rating: 0,
-            price_rating: 0,
-            cordiality_rating: 0,
+            quality_rating: getRandomRating(sortByQuality) + "%",
+            convenience_rating: getRandomRating(sortByConvenience) + "%",
+            cordiality_rating: getRandomRating(sortByCordiality) + "%",
             categories: [],
             badges: []
         };
@@ -93,7 +107,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
         setIsOpen(false);
     };
 
-    const handleSelectAlternative = (product: string, alternative: string) => {
+    const handleSelectAlternative = (product: string, alternative: Product) => {
         setSelectedAlternatives((prev) => {
             const currentAlternatives = prev[product] || [];
             if (currentAlternatives.includes(alternative)) {
@@ -132,8 +146,16 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
         <>
             {missingProducts.length > 0 && (
                 <div>
-                    <Button className="mx-auto block" onClick={() => setIsOpen(true)}>Some products require your attention!</Button>
-                </div>
+                    <Button
+                        className="mx-auto block alert-button"
+                        onClick={() => setIsOpen(true)}
+                    >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }} >
+                            <WarningIcon style={{ color: '#e34138' }} />
+                            <span>Some products require your attention!</span>
+                        </div>
+                    </Button >
+                </div >
             )}
 
             <Dialog open={isOpen} static={true} onClose={handleClose}>
@@ -163,7 +185,8 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
                                                     }}
                                                     onClick={() => handleSelectAlternative(missingProducts[currentIndex], alternative)}
                                                 >
-                                                    {alternative}
+                                                    <div>{alternative.name}</div>
+                                                    <div>{alternative.price} €/kg</div>
                                                 </div>
                                             ))}
                                         </div>

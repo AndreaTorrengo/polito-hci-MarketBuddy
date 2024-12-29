@@ -19,6 +19,9 @@ export default function App() {
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [filteredVendors, setFilteredVendors] = useState<Vendor[]>([]);
   const [missingProducts, setMissingProducts] = useState<string[]>([]);
+  const [sortByQuality, setSortByQuality] = useState(true);
+  const [sortByConvenience, setSortByConvenience] = useState(true);
+  const [sortByCordiality, setSortByCordiality] = useState(false);
 
 
   useEffect(() => {
@@ -36,12 +39,34 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    let sortedVendors = [...vendors];
 
+    sortedVendors.sort((a, b) => {
+      let comparison = 0;
+      if (sortByQuality) {
+        const qualityA = parseFloat(a.quality_rating.replace('%', ''));
+        const qualityB = parseFloat(b.quality_rating.replace('%', ''));
+        comparison = qualityB - qualityA;
+      }
+      if (comparison === 0 && sortByConvenience) {
+        const convenienceA = parseFloat(a.convenience_rating.replace('%', ''));
+        const convenienceB = parseFloat(b.convenience_rating.replace('%', ''));
+        comparison = convenienceB - convenienceA;
+      }
+      if (comparison === 0 && sortByCordiality) {
+        const CordialityA = parseFloat(a.cordiality_rating.replace('%', ''));
+        const CordialityB = parseFloat(b.cordiality_rating.replace('%', ''));
+        comparison = CordialityB - CordialityA;
+      }
+      return comparison;
+    });
+
+    
     const filtered = [];
     const requiredProducts = new Set(productsList.products);
     const foundProducts = new Set();
 
-    for (const vendor of vendors) {
+    for (const vendor of sortedVendors) {
       const filteredProducts = vendor.products.filter(product => productsList.products.includes(product.name));
       if (filteredProducts.length > 0) {
         filtered.push({ ...vendor, products: filteredProducts });
@@ -91,7 +116,7 @@ export default function App() {
     <div className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
       <Routes>
         <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
-          <Route index path={`${paths[0]}`} element={<PageShoppingList theme={theme} filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors}  setMissingProducts={setMissingProducts} missingProducts={missingProducts}/>} />
+          <Route index path={`${paths[0]}`} element={<PageShoppingList sortByQuality={sortByQuality} sortByConvenience={sortByConvenience} sortByCordiality={sortByCordiality} theme={theme} filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors} setMissingProducts={setMissingProducts} missingProducts={missingProducts} />} />
           <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} />} />
           <Route path={`${paths[2]}`} element={<PageReward />} />
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} />} />

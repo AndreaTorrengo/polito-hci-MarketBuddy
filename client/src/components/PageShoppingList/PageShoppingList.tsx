@@ -8,9 +8,12 @@ interface PageShoppingListProps {
   setMissingProducts: React.Dispatch<React.SetStateAction<string[]>>;
   missingProducts: string[];
   theme: string;
+  sortByQuality: boolean;
+  sortByConvenience: boolean;
+  sortByCordiality: boolean;
 }
 
-export default function PageShoppingList({ filteredVendors, setFilteredVendors, setMissingProducts, missingProducts, theme }: PageShoppingListProps) {
+export default function PageShoppingList({ filteredVendors, setFilteredVendors, setMissingProducts, missingProducts, theme, sortByQuality, sortByConvenience, sortByCordiality }: PageShoppingListProps) {
   return (
     <>
       <h3>Shopping List page ._.</h3>
@@ -22,6 +25,9 @@ export default function PageShoppingList({ filteredVendors, setFilteredVendors, 
         setMissingProducts={setMissingProducts}
         missingProducts={missingProducts}
         theme={theme}
+        sortByQuality={sortByQuality} 
+        sortByConvenience={sortByConvenience} 
+        sortByCordiality={sortByCordiality}
       />
 
       <h1 className="pt-64">Hi 1</h1>

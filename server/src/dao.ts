@@ -19,7 +19,7 @@ const Dao = {
           vendor.market,
           vendor.position.split(',').map(Number),
           vendor.quality_rating, 
-          vendor.price_rating,
+          vendor.convenience_rating,
           vendor.cordiality_rating,
           vendor.price_multiplier,
           categories.map(c => c.name),

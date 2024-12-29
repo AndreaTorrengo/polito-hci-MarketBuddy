@@ -1,0 +1,21 @@
+div .alert-button {
+    background-color: #f0e1e1;
+    border: none;
+    color: #e34138;
+    font-weight: bold;
+    font-size: 1.2rem;
+    /* increase font size */
+    display: flex;
+    /* use Flexbox */
+    align-items: center;
+    /* center vertically */
+    justify-content: center;
+    /* center horizontally */
+    border-radius: 4px;
+    /* decrease border radius */
+}
+
+div .alert-button:hover {
+    background-color: #f0e1e1;
+    color: #e34138;
+}
