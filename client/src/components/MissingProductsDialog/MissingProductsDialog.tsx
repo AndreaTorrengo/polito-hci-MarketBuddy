@@ -1,6 +1,6 @@
 import { Button, Dialog, DialogPanel } from '@tremor/react';
 import { Vendor, Product } from '../../models';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSwipeable } from 'react-swipeable';
 
 interface MissingProductsDialogProps {
@@ -8,6 +8,7 @@ interface MissingProductsDialogProps {
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     setMissingProducts: React.Dispatch<React.SetStateAction<string[]>>;
     missingProducts: string[];
+    theme: string;
 }
 
 const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissingProducts, missingProducts, filteredVendors, setFilteredVendors }) => {
@@ -16,28 +17,36 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [selectedAlternatives, setSelectedAlternatives] = useState<{ [key: string]: string[] }>({});
     const [randomAlternatives, setRandomAlternatives] = useState<{ [key: string]: string[] }>({});
+    const hasGeneratedAlternatives = useRef(false);
 
-    const alternatives = ["Alternative 1", "Alternative 2", "Alternative 3", "Alternative 4", "Alternative 5"]; // Example alternatives
+    const alternatives = ["Alternative 1", "Alternative 2", "Alternative 3", "Alternative 4", "Alternative 5"];
 
     useEffect(() => {
-        const shuffleArray = (array: string[]) => {
-            return array.sort(() => 0.5 - Math.random());
-        };
+        if (!hasGeneratedAlternatives.current && missingProducts.length > 0) {
 
-        const selectRandomAlternatives = (array: string[], count: number) => {
-            return shuffleArray(array).slice(0, count);
-        };
 
-        const generateRandomAlternatives = () => {
-            const newRandomAlternatives: { [key: string]: string[] } = {};
-            missingProducts.forEach((product) => {
-                newRandomAlternatives[product] = selectRandomAlternatives(alternatives, Math.floor(Math.random() * alternatives.length) + 1);
-            });
-            setRandomAlternatives(newRandomAlternatives);
-        };
+            const shuffleArray = (array: string[]) => {
+                return array.sort(() => 0.5 - Math.random());
+            };
 
-        generateRandomAlternatives();
-    }, [missingProducts]); // Run whenever missingProducts changes
+            const selectRandomAlternatives = (array: string[], count: number) => {
+                return shuffleArray(array).slice(0, count);
+            };
+
+            const generateRandomAlternatives = () => {
+                const newRandomAlternatives: { [key: string]: string[] } = {};
+                missingProducts.forEach((product) => {
+                    newRandomAlternatives[product] = selectRandomAlternatives(alternatives, Math.floor(Math.random() * alternatives.length) + 1);
+                });
+                setRandomAlternatives(newRandomAlternatives);
+            };
+
+            generateRandomAlternatives();
+            hasGeneratedAlternatives.current = true;
+        }
+
+
+    }, [missingProducts]);
 
     const handleConfirm = (product: string, selectedAlternatives: string[]) => {
         const updatedFiltered = [...filteredVendors];
@@ -67,6 +76,11 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
         setFilteredVendors(updatedFiltered);
         setMissingProducts(remainingMissingProducts); // Update missing products with the remaining ones
         console.log("updated ", updatedFiltered);
+
+        // Reset to the first alternative if this was the last one
+        if (currentIndex === missingProducts.length - 1) {
+            setCurrentIndex(0);
+        }
 
         // Show confirmation popup
         setShowConfirmation(true);
@@ -132,25 +146,27 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
                             <ul>
                                 <li className="mt-2">
                                     <span>{"Select alternative/s for "}<strong className="text-black">{missingProducts[currentIndex]}</strong></span>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-center mt-4">
-                                        {randomAlternatives[missingProducts[currentIndex]]?.map((alternative, altIndex) => (
-                                            <div
-                                                key={altIndex}
-                                                style={{
-                                                    width: '65%', // Halve the width
-                                                    padding: '0.25rem 1rem',
-                                                    cursor: 'pointer',
-                                                    borderRadius: '0.5rem',
-                                                    textAlign: 'center',
-                                                    backgroundColor: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? '#3b82f6' : '#d1d5db',
-                                                    color: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? '#ffffff' : '#000000',
-                                                    margin: '0 auto' // Center the alternatives
-                                                }}
-                                                onClick={() => handleSelectAlternative(missingProducts[currentIndex], alternative)}
-                                            >
-                                                {alternative}
-                                            </div>
-                                        ))}
+                                    <div className="flex justify-center mt-4">
+                                        <div className=" flex justify-center grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-4">
+                                            {randomAlternatives[missingProducts[currentIndex]]?.map((alternative, altIndex) => (
+                                                <div
+                                                    key={altIndex}
+                                                    style={{
+                                                        width: '100%',
+                                                        padding: '0.25rem 1rem',
+                                                        cursor: 'pointer',
+                                                        borderRadius: '0.5rem',
+                                                        textAlign: 'center',
+                                                        backgroundColor: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? '#3b82f6' : '#d1d5db',
+                                                        color: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? '#ffffff' : '#000000',
+                                                        margin: '0 auto'
+                                                    }}
+                                                    onClick={() => handleSelectAlternative(missingProducts[currentIndex], alternative)}
+                                                >
+                                                    {alternative}
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                     <div className="flex justify-center mt-4">
                                         <Button

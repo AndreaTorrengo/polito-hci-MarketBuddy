@@ -91,7 +91,7 @@ export default function App() {
     <div className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
       <Routes>
         <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
-          <Route index path={`${paths[0]}`} element={<PageShoppingList filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors}  setMissingProducts={setMissingProducts} missingProducts={missingProducts}/>} />
+          <Route index path={`${paths[0]}`} element={<PageShoppingList theme={theme} filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors}  setMissingProducts={setMissingProducts} missingProducts={missingProducts}/>} />
           <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} />} />
           <Route path={`${paths[2]}`} element={<PageReward />} />
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} />} />
