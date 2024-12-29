@@ -1,16 +1,19 @@
-import {useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import VendorCategoryList from "./VendorCategoryList.tsx";
-import {useState} from "react";
+import React, {useEffect, useState} from "react";
 import AddProductButton from "./AddProductButton.tsx";
-import ProductListItem, {ProductListItemProps} from "./ProductListItem.tsx";
+import ProductListItem, { ProductListItemProps } from "./ProductListItem.tsx";
 import QRButton from "./QRButton.tsx";
-import {Sheet} from 'react-modal-sheet';
+import { Sheet } from 'react-modal-sheet';
 import VendorBadges from "./VendorBadges.tsx";
+import { ButtonBase } from "@mui/material";
+import ContextMenu, {ContextMenuProps} from "../generalPurposeComponents/ContextMenu.tsx";
 
 export default function PageVendorProducts() {
-    const {vendorId} = useParams<{ vendorId: string }>();
-    const [categories, setCategories] = useState<string[]>([
+    const { vendorId } = useParams<{ vendorId: string }>();
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [categories] = useState<string[]>([
         "Category 1",
         "Category 2",
         "Category 3",
@@ -18,104 +21,218 @@ export default function PageVendorProducts() {
         "Category 5"
     ]);
 
-    const [products, setProducts] = useState<ProductListItemProps[]>([
+    const [products] = useState<ProductListItemProps[]>([
         {
+            id: 0,
             name: "Product 1",
             price: "2,00",
             image: "https://www.ortofruttafoglia.it/wp-content/uploads/2021/11/banana-chiquita.jpg"
         },
         {
+            id: 1,
             name: "Product 2",
             price: "4,00",
             image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToroQiAMxPnyX-gVi9xtNkh8liffQKdC_6ZQ&s"
         },
         {
+            id: 2,
             name: "Product 3",
             price: "3,20",
             image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRx2txlL9JImnHCk1v30GWPjrgxHri5I0ig4g&s"
         },
         {
+            id: 3,
             name: "Product 4",
             price: "5,10",
             image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwGRr6MtCnhQa7yyn7X7NN_FEAAOwJDW2fQA&s"
         },
         {
+            id: 4,
             name: "Product 5",
             price: "7,40",
             image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3sTbc5y-hV5F4iPZQ77-NXhfRXqphmjEpyw&s"
         },
         {
+            id: 5,
             name: "Product 1",
             price: "2,00",
             image: "https://www.ortofruttafoglia.it/wp-content/uploads/2021/11/banana-chiquita.jpg"
         },
         {
+            id: 6,
             name: "Product 2",
             price: "4,00",
             image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToroQiAMxPnyX-gVi9xtNkh8liffQKdC_6ZQ&s"
         },
         {
+            id: 7,
             name: "Product 3",
             price: "3,20",
             image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRx2txlL9JImnHCk1v30GWPjrgxHri5I0ig4g&s"
         },
         {
+            id: 8,
             name: "Product 4",
             price: "5,10",
             image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwGRr6MtCnhQa7yyn7X7NN_FEAAOwJDW2fQA&s"
         },
         {
+            id: 9,
             name: "Product 5",
             price: "7,40",
             image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3sTbc5y-hV5F4iPZQ77-NXhfRXqphmjEpyw&s"
         }
     ]);
 
+    const [selectedProducts, setSelectedProducts] = useState<Map<number, ProductListItemProps>|null>(null);
+
     const [isOpen, setOpen] = useState(true);
+    const [contextMenuProps, setContextMenuProps] = useState<ContextMenuProps>({
+        onClose: () => {
+            setContextMenuProps({ ...contextMenuProps, isOpen: false });
+        },
+        isOpen: false,
+        x: 0,
+        y: 0,
+        items: [
+            {
+                label: "Delete",
+                onClick: () => {
+                    console.log("Delete");
+                    setContextMenuProps({ ...contextMenuProps, isOpen: false });
+                }
+            },
+            {
+                label: "Edit",
+                onClick: () => {
+                    console.log("Edit");
+                    setContextMenuProps({ ...contextMenuProps, isOpen: false });
+                }
+            }
+        ]
+    });
+
+    const onLongPress = (event: React.MouseEvent, productId: number) => {
+        event.preventDefault();
+        setContextMenuProps({ ...contextMenuProps, isOpen: true, x: event.clientX, y: event.clientY });
+    };
+
+    const openEditMode = (event: React.MouseEvent, productId: number) => {
+        event.preventDefault();
+        const product = products.find(p => p.id === productId);
+        if (!product) {
+            throw new Error("Product not found");
+        }
+        const newMap = new Map<number, ProductListItemProps>();
+        newMap.set(productId, product);
+        setSelectedProducts(newMap);
+        setIsEditMode(true);
+    };
+
+    const exitEditMode = () => {
+        setSelectedProducts(null);
+        setIsEditMode(false);
+    }
+
+    function addOrRemoveSelected(index: number) {
+        if (!selectedProducts) {
+            throw new Error("Selected products is null");
+        }
+        const product = products[index];
+        if (selectedProducts.has(product.id)) {
+            selectedProducts.delete(product.id);
+            if(selectedProducts.size === 0) {
+                setSelectedProducts(null);
+                setIsEditMode(false);
+                return
+            }
+        } else {
+            selectedProducts.set(product.id, product);
+        }
+        setSelectedProducts(new Map(selectedProducts));
+    }
 
     return (
-        <Sheet isOpen={isOpen} onClose={() => setOpen(false)} detent='content-height' rootId="root">
-            <Sheet.Container>
-                <Sheet.Header className="bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle rounded-lg">
-                </Sheet.Header>
-                <Sheet.Content> {
-                    <div className="h-full overflow-y-auto">
-                        {/* TopBar */}
-                        <TopBar
-                            centerComponent={<h1 className="line-clamp-1 m-0 p-0 text-2xl titleFont font-bold">Name of the vendor check
-                                if the name
-                                is too much long</h1>}
-                            rightComponent={<QRButton/>}>
-                        </TopBar>
-                        <div
-                            className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle px-6 pt-[3.45em] flex flex-col gap-4">
-                            {/* Vendor's Categories */}
-                            <div className="w-full">
-                                <VendorCategoryList categories={categories}/>
-                            </div>
+        <>
+            <Sheet isOpen={isOpen} onClose={() => setOpen(false)} detent='content-height' rootId="root">
+                <Sheet.Container>
+                    <Sheet.Header
+                        className="bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle rounded-t-lg">
+                    </Sheet.Header>
+                    <Sheet.Content>
+                        <Sheet.Scroller> {
+                            <div className="h-full">
+                                {/* ContextMenu */}
+                                <ContextMenu {...contextMenuProps}/>
 
-                            <div className="w-full">
-                                <VendorBadges market="Crocetta Market"/>
-                            </div>
+                                {/* TopBar */}
+                                { isEditMode ?
+                                    <TopBar
+                                        leftComponent={<ButtonBase className="text-xl" onClick={exitEditMode}>Cancel</ButtonBase>}
+                                        centerComponent={<h1
+                                            className="line-clamp-1 m-0 p-0 text-xl font-normal text-center">{ selectedProducts ? (selectedProducts.size + " Selected") : "Charging" }</h1>}
+                                        rightComponent={<QRButton/>}>
+                                    </TopBar>
+                                    :
+                                    <TopBar
+                                        centerComponent={<h1
+                                            className="line-clamp-1 m-0 p-0 text-2xl titleFont font-bold">Name
+                                            of
+                                            the vendor check
+                                            if the name
+                                            is too much long</h1>}
+                                        rightComponent={<QRButton/>}>
+                                    </TopBar>
+                                }
+                                <div
+                                    className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle px-6 pt-[3.45em] flex flex-col gap-4">
+                                    {/* Vendor's Categories */}
+                                    <div className="w-full">
+                                        <VendorCategoryList categories={categories}/>
+                                    </div>
 
-                            <div className="w-full flex-1">
-                                {/* Product list top bar */}
-                                <div className="w-full flex flex-row justify-between items-center">
-                                    <p className="m-0 p-0">Your planned purchases</p>
-                                    <AddProductButton/>
-                                </div>
-                                {/* Product list */}
-                                <div className="w-full flex flex-col gap-3 mt-4 pb-[4rem]">
-                                    {products.map((product, index) => (
-                                        <ProductListItem key={index} {...product}/>
-                                    ))}
+                                    <div className="w-full">
+                                        <VendorBadges market="Crocetta Market"/>
+                                    </div>
+
+                                    <div className="w-full flex-1">
+                                        {/* Product list top bar */}
+                                        <div className="w-full flex flex-row justify-between items-center">
+                                            <p className="m-0 p-0">Your planned purchases</p>
+                                            <AddProductButton/>
+                                        </div>
+                                        {/* Product list */}
+                                        <div className="w-full flex flex-col gap-3 mt-4 pb-[4rem]">
+                                            {products.map((product, index) => (
+                                                    isEditMode ?
+                                                        <ButtonBase key={product.id} component="div"
+                                                                    onClick={() => {
+                                                                        addOrRemoveSelected(index);
+                                                                    }}
+                                                        >
+                                                            <ProductListItem key={index} {...product} editMode={true} isSelected={
+                                                                selectedProducts ? selectedProducts.has(product.id) : false
+                                                            }/>
+                                                        </ButtonBase>
+                                                        :
+                                                        <ButtonBase key={product.id} component="div"
+                                                                    onContextMenu={(e) => {
+                                                                        //onLongPress(e, index);
+                                                                        openEditMode(e, product.id);
+                                                                    }}
+                                                        >
+                                                            <ProductListItem key={index} {...product} editMode={false}/>
+                                                        </ButtonBase>
+                                            ))}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                }</Sheet.Content>
-            </Sheet.Container>
-            <Sheet.Backdrop onTap={() => setOpen(false)}/>
-        </Sheet>
+                        } </Sheet.Scroller>
+                    </Sheet.Content>
+                </Sheet.Container>
+                <Sheet.Backdrop onTap={() => setOpen(false)}/>
+            </Sheet>
+        </>
     );
 }

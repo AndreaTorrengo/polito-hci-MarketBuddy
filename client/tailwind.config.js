@@ -114,12 +114,17 @@ export default {
         "quest-pulse": {
           "0%": {opacity: 1},
           "100%": {opacity: 1}
+        },
+        fadeIn: {
+          from: { opacity: 0 },
+          to: { opacity: 1 },
         }
       },
       animation: {
         "slide-in": "slide-in 0.4s ease-in-out forwards",
         "slide-out": "slide-out 0.4s ease-in-out forwards",
-        "quest-pulse": "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"
+        "quest-pulse": "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        fade: 'fadeIn .5s ease-in-out'
       },
     },
   },
