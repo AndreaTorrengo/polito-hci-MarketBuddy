@@ -1,30 +1,30 @@
 /* map */
-.dark-mode .leaflet-container {
+.dark.leaflet-container {
   background: #2c2c2c;
 }
 
-.dark-mode .leaflet-control {
+.dark .leaflet-control {
   background: #333;
   color: #fff;
   border: 1px solid #444;
 }
 
-.dark-mode .leaflet-control a {
+.dark .leaflet-control a {
   background: #333;
   color: #ffffff;
 }
 
-.dark-mode .leaflet-control a:hover {
+.dark .leaflet-control a:hover {
   background: #444;
 }
 
-.dark-mode .leaflet-popup-content-wrapper {
+.dark .leaflet-popup-content-wrapper {
   background: #333;
   color: #fff;
   border: 1px solid #444;
 }
 
-.dark-mode .leaflet-popup-tip {
+.dark .leaflet-popup-tip {
   background: #333;
   border: 1px solid #444;
 }
@@ -50,4 +50,32 @@
 .custom-tooltip::before,
 .custom-tooltip::after {
   display: none !important;
+}
+
+/* Selected tooltip */
+.selected-tooltip {
+  background-color: transparent;
+  border: none;
+  padding: 5px;
+  color: red;
+  box-shadow: none;
+  font-size: 1rem;
+  text-align: center;
+  font-weight: bold;
+  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+}
+
+.selected-tooltip::before,
+.selected-tooltip::after {
+  display: none !important;
+}
+
+.dark .selected-tooltip {
+  color: rgb(255, 255, 255);
+  text-shadow: -1px -1px 0 #363030, 1px -1px 0 #363030, -1px 1px 0 #363030, 1px 1px 0 #363030;
+}
+
+.dark .custom-tooltip {
+  color: rgb(255, 255, 255);
+  text-shadow: -1px -1px 0 #363030, 1px -1px 0 #363030, -1px 1px 0 #363030, 1px 1px 0 #363030; 
 }

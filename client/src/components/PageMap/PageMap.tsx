@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap, Tooltip } from 'react-leaflet';
+import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Button } from '@tremor/react';
 import currentMarket from '../../currentMarket.json';
 import { Vendor } from '../../models';
 import './pagemap.css';
+import tinycolor from 'tinycolor2';
+
 
 
 const getRandomOffset = (): [number, number] => {
@@ -21,6 +24,7 @@ const UpdateMapCenter: React.FC<{ center: [number, number] }> = ({ center }) => 
   return null;
 };
 
+// Helper component to move map on selected marker
 const OnFlyMarker: React.FC<{ center: [number, number] }> = ({ center }) => {
   const map = useMap();
   useEffect(() => {
@@ -31,6 +35,7 @@ const OnFlyMarker: React.FC<{ center: [number, number] }> = ({ center }) => {
   }, [center, map]);
   return null;
 };
+
 
 interface PageMapProps {
   vendors: Vendor[];
@@ -44,8 +49,14 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, theme }) => {
     currentMarket.position[1] + offset[1],
   ]);
   const [center, setMapCenter] = useState<[number, number]>(currentMarket.position as [number, number]);
+  const [selectedMarker, setSelectedMarker] = useState<[number, number] | null>(null);
 
+  const handleMarkerClick = (position: [number, number]) => {
+    setSelectedMarker(position);
+    setMapCenter(position);
+  };
 
+  //inizialize user marker position
   useEffect(() => {
     setMarkerPosition([currentMarket.position[0] + offset[0], currentMarket.position[1] + offset[1]]);
   }, [currentMarket]);
@@ -78,6 +89,51 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, theme }) => {
     };
   }, [markerPosition]);
 
+  // Handle icons creation
+  const createIcon = (color: string) => {
+
+    const darkenColor = (color: string, amount: number) => {
+      return tinycolor(color).darken(amount).toString();
+    };
+
+    let borderColor, backgroundColor, backgroundColorCircle;
+
+    if (theme === 'dark') {
+      borderColor = color === '#447FC4' ? '##D3D3D3' : darkenColor(color, 20);
+      backgroundColor = color;
+      backgroundColorCircle = color === '#447FC4' ? '##D3D3D3' : darkenColor(color, 20);
+    } else {
+      borderColor = color === '#447FC4' ? '#ffffff' : darkenColor(color, 20);
+      backgroundColor = color;
+      backgroundColorCircle = color === '#447FC4' ? '#ffffff' : darkenColor(color, 20);
+    }
+
+
+    const iconSvg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+    
+      <path fill="${backgroundColor}" stroke="${borderColor}" stroke-width="1" d="M12 2C8.13 2 5 5.13 5 9c0 3.06 2.22 5.63 5.13 6.48L12 22l1.87-6.52C16.78 14.63 19 12.06 19 9c0-3.87-3.13-7-7-7z"/>
+  
+      <circle cx="12" cy="9" r="2.5" fill="${backgroundColorCircle}" stroke-width="2"/>
+    </svg>
+  `;
+
+
+    const iconUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(iconSvg)}`;
+
+
+    return new L.Icon({
+      iconUrl,
+      iconSize: [45, 45],
+      iconAnchor: [22, 30],
+      popupAnchor: [0, -30],
+    });
+  };
+
+  const unselectedIcon = createIcon('#447FC4');
+  const selectedIcon = createIcon('red');
+
+  // Handle map light-mode and dark-mode
   const tileLayerUrl =
     theme === "dark"
       ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
@@ -95,7 +151,6 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, theme }) => {
         zoom={17}
         maxZoom={18}
         style={{ height: '100%', width: '100%' }}
-        className={theme === "dark" ? "dark-mode" : ""}
       >
         <TileLayer url={tileLayerUrl} attribution={tileLayerAttribution} />
         {/* Update map center dynamically */}
@@ -106,12 +161,13 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, theme }) => {
           const position: [number, number] = vendor.position as [number, number];
           return (
             <Marker key={idx} position={position}
+              icon={selectedMarker === position ? selectedIcon : unselectedIcon}
               eventHandlers={{
-                click: () => {
-                  setMapCenter(position);
-                },
+                click: () => handleMarkerClick(position),
               }}>
-              <Tooltip direction="top" offset={[30, 30]} opacity={1} permanent className="custom-tooltip">
+              <Tooltip direction="top" offset={[50, 10]} opacity={1} permanent
+                key={selectedMarker === position ? 'selected-tooltip' : 'custom-tooltip'}
+                className={selectedMarker === position ? 'selected-tooltip' : 'custom-tooltip'}>
                 <span>{vendor.name}</span>
               </Tooltip>
               <Popup>
