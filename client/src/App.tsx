@@ -29,7 +29,7 @@ export default function App() {
       try {
         const vendors = await API.getVendorsByMarket('Porta Palazzo');
         setVendors(vendors);
-        console.log("original ", vendors);
+
       } catch (error) {
         console.error(error);
       }
@@ -39,7 +39,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    let sortedVendors = [...vendors];
+    let sortedVendors: Vendor[] = [...vendors];
 
     sortedVendors.sort((a, b) => {
       let comparison = 0;
@@ -62,27 +62,42 @@ export default function App() {
     });
 
 
-    const filtered = [];
+    const filtered: Vendor[] = [];
     const requiredProducts = new Set(productsList.products);
-    const foundProducts = new Set();
+    const foundProducts = new Set<Product>();
 
     for (const vendor of sortedVendors) {
-      const filteredProducts = vendor.products.filter(product => productsList.products.includes(product.name));
+      const filteredProducts = vendor.products.filter((product: Product) => productsList.products.includes(product.name));
       if (filteredProducts.length > 0) {
-        filtered.push({ ...vendor, products: filteredProducts });
-        filteredProducts.forEach(product => foundProducts.add(product));
+        const newVendor = new Vendor(
+          vendor.id,
+          vendor.name,
+          vendor.market,
+          vendor.position,
+          vendor.quality_rating,
+          vendor.convenience_rating,
+          vendor.cordiality_rating,
+          vendor.priceMultiplier,
+          vendor.categories,
+          vendor.badges,
+          filteredProducts
+        );
+        filtered.push(newVendor);
+        filteredProducts.forEach((product: Product) => foundProducts.add(product));
       }
-      if (Array.from(requiredProducts).every(product => foundProducts.has(product))) {
+      if (Array.from(requiredProducts).every((product: string) => Array.from(foundProducts).some((fp: Product) => fp.name === product))) {
         break;
       }
     }
 
     // Check for missing products
     const missing = Array.from(requiredProducts).filter(product =>
-      !Array.from(foundProducts as Set<Product>).some((fp: Product) => fp.name === product)
+      !Array.from(foundProducts).some((fp: Product) => fp.name === product)
     );
+
     setMissingProducts(missing);
     setFilteredVendors(filtered);
+
   }, [vendors]);
 
 
