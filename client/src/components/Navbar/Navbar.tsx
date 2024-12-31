@@ -14,12 +14,14 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
+
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import "./style.css";
 
 export default function Navbar(props: any) {
   const navigate = useNavigate();
+
 
   return (
     <BottomNavigation

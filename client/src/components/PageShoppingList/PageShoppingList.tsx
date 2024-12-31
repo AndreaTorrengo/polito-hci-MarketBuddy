@@ -1,14 +1,14 @@
 import MarketSelectorSheet from "../MarketSelectorSheet/MarketSelectorSheet";
 
-export default function PageShoppingList() {
+export default function PageShoppingList({ selectedMarket, setSelectedMarket }: {
+  selectedMarket: string;
+  setSelectedMarket: (market: string) => void;
+}) {
+
   return (
-    <>
-      <h3>Shopping List page ._.</h3>
-      <MarketSelectorSheet/>
-      <h1 className="pt-64">Hi 1</h1>
-      <h1 className="pt-64">Hi 2</h1>
-      <h1 className="pt-64">Hi 3</h1>
-      <h1 className="pt-64">Hi 4</h1>
-    </>
+    <div id="ShoppingListPage">
+      <MarketSelectorSheet selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />
+      <h1>Shopping List</h1>
+    </div>
   );
 }
