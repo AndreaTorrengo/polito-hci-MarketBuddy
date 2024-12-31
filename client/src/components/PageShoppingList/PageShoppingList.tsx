@@ -1,8 +1,12 @@
 import MarketSelectorSheet from "../MarketSelectorSheet/MarketSelectorSheet";
 import { Fab, Typography } from '@mui/material';
 import MapIcon from '@mui/icons-material/Map';
+import { useNavigate } from "react-router";
+
 
 export default function PageShoppingList() {
+  const navigate = useNavigate();
+
   return (
     <>
       <h3>Shopping List page ._.</h3>
@@ -23,7 +27,7 @@ export default function PageShoppingList() {
           minWidth: '100px', // Imposta una larghezza minima
           padding: '0 10px',
         }}
-        onClick={() => window.location.href = '/map'}
+        onClick={() => navigate('/map')}
       >
         <MapIcon sx={{ mr: 1 }} />
         <Typography variant="body1" sx={{ fontSize: '0.75rem' }}>Show on Map</Typography>
