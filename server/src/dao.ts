@@ -1,5 +1,5 @@
 import db from './db/db';
-import { Vendor, Product } from './models';
+import { Vendor, Product, Reward } from './models';
 
 const Dao = {
 
@@ -18,7 +18,7 @@ const Dao = {
           vendor.name,
           vendor.market,
           vendor.position.split(',').map(Number),
-          vendor.quality_rating, 
+          vendor.quality_rating,
           vendor.price_rating,
           vendor.cordiality_rating,
           vendor.price_multiplier,
@@ -32,7 +32,18 @@ const Dao = {
     } catch (error) {
       throw new Error('Failed to retrieve vendors');
     }
-  }
+  },
+
+  getAvailableRewards: async () => {
+    try {
+      const database = await db;
+      const rewards = await database.all('SELECT * FROM rewards WHERE redeemed = 0');
+
+      return rewards.map(reward => new Reward(reward.id, reward.description, reward.cost, reward.icon));
+    } catch (error) {
+      throw new Error('Failed to retrieve rewards');
+    }
+  },
 };
 
 export default Dao;
