@@ -17,6 +17,13 @@ const markets = [ // To be replaced with a call to the db
   { id: "4", name: "San Salvario Market", address: "Via Nizza, 10125 Torino", distance: 3.2 },
   { id: "5", name: "Lingotto Market", address: "Via Nizza, 10125 Torino", distance: 4 },
   { id: "6", name: "Corso Svizzera Market", address: "Corso Svizzera, 10125 Torino", distance: 5.7 },
+  { id: "7", name: "Barriera di Milano Market", address: "Corso Svizzera, 10125 Torino", distance: 6.3 },
+  { id: "8", name: "Piazza d'Armi Market", address: "Corso Svizzera, 10125 Torino", distance: 7.1 },
+  { id: "9", name: "Piazza Vittorio Market", address: "Corso Svizzera, 10125 Torino", distance: 8.2 },
+  { id: "10", name: "Piazza Madama Cristina Market", address: "Corso Svizzera, 10125 Torino", distance: 9.5 },
+  { id: "11", name: "Piazza Santa Rita Market", address: "Corso Svizzera, 10125 Torino", distance: 10.2 },
+  { id: "12", name: "Piazza Bengasi Market", address: "Corso Svizzera, 10125 Torino", distance: 11.3 },
+  { id: "13", name: "Piazza Rivoli Market", address: "Corso Svizzera, 10125 Torino", distance: 12.5 },
 ]
 
 
@@ -50,7 +57,7 @@ export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket 
         <span className="ml-2">{selectedMarket}</span>
         <ExpandMoreIcon />
       </button>
-      <Sheet isOpen={isOpen} onClose={() => setIsOpen(false)} detent='content-height' rootId="ShoppingListPage" mountPoint={approot}>
+      <Sheet isOpen={isOpen} onClose={() => setIsOpen(false)} detent='content-height' mountPoint={approot}>
         <Sheet.Container>
           <Sheet.Header className="p-6 dark:bg-dark-tremor-background dark:text-dark-tremor-content-emphasis">
             <h1 className="font-bold text-3xl">Choose The Market</h1>
@@ -62,7 +69,9 @@ export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket 
             <div className="mx-20 mt-2 mb-4">
               <SearchBar searchInput={searchInput} setSearchInput={setSearchInput} />
             </div>
-            <MarketsList selectMarket={selectMarket} searchInput={searchInput} selectedMarket={selectedMarket} />
+            <Sheet.Scroller>
+              <MarketsList selectMarket={selectMarket} searchInput={searchInput} selectedMarket={selectedMarket} />
+            </Sheet.Scroller>
           </Sheet.Content>
         </Sheet.Container>
         <Sheet.Backdrop onTap={() => setIsOpen(false)} />
