@@ -1,14 +1,17 @@
 import { useParams } from "react-router-dom";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import VendorCategoryList from "./VendorCategoryList.tsx";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import AddProductButton from "./AddProductButton.tsx";
 import ProductListItem, { ProductListItemProps } from "./ProductListItem.tsx";
 import QRButton from "./QRButton.tsx";
 import { Sheet } from 'react-modal-sheet';
 import VendorBadges from "./VendorBadges.tsx";
 import { ButtonBase } from "@mui/material";
-import ContextMenu, {ContextMenuProps} from "../generalPurposeComponents/ContextMenu.tsx";
+import ContextMenu, { ContextMenuProps } from "../generalPurposeComponents/ContextMenu.tsx";
+import SwitchButton from "./SwitchButton.tsx";
+import DeleteButton from "./DeleteButton.tsx";
+import SignalErrorButton from "./SignalErrorButton.tsx";
 
 export default function PageVendorProducts() {
     const { vendorId } = useParams<{ vendorId: string }>();
@@ -84,7 +87,7 @@ export default function PageVendorProducts() {
         }
     ]);
 
-    const [selectedProducts, setSelectedProducts] = useState<Map<number, ProductListItemProps>|null>(null);
+    const [selectedProducts, setSelectedProducts] = useState<Map<number, ProductListItemProps> | null>(null);
 
     const [isOpen, setOpen] = useState(true);
     const [contextMenuProps, setContextMenuProps] = useState<ContextMenuProps>({
@@ -141,9 +144,8 @@ export default function PageVendorProducts() {
         const product = products[index];
         if (selectedProducts.has(product.id)) {
             selectedProducts.delete(product.id);
-            if(selectedProducts.size === 0) {
-                setSelectedProducts(null);
-                setIsEditMode(false);
+            if (selectedProducts.size === 0) {
+                setSelectedProducts(new Map());
                 return
             }
         } else {
@@ -163,15 +165,59 @@ export default function PageVendorProducts() {
                         <Sheet.Scroller> {
                             <div className="h-full">
                                 {/* ContextMenu */}
-                                <ContextMenu {...contextMenuProps}/>
+                                <ContextMenu {...contextMenuProps} />
 
                                 {/* TopBar */}
-                                { isEditMode ?
+                                {isEditMode ?
                                     <TopBar
-                                        leftComponent={<ButtonBase className="text-xl" onClick={exitEditMode}>Cancel</ButtonBase>}
+                                        leftComponent={<ButtonBase className="text-md font-semibold" onClick={exitEditMode}><p className="m-0 p-0">Cancel</p></ButtonBase>}
                                         centerComponent={<h1
-                                            className="line-clamp-1 m-0 p-0 text-xl font-normal text-center">{ selectedProducts ? (selectedProducts.size + " Selected") : "Charging" }</h1>}
-                                        rightComponent={<QRButton/>}>
+                                            className="line-clamp-1 m-0 p-0 text-md font-normal text-center">{selectedProducts ? (selectedProducts.size + " Selected") : ""}</h1>}
+                                        rightComponent={
+                                            <>
+                                                {
+                                                    selectedProducts && selectedProducts.size === products.length ?
+                                                        <div className="w-8 h-16 flex items-center justify-center" onClick={
+                                                            () => {
+                                                                setSelectedProducts(new Map());
+                                                            }
+                                                        }>
+                                                            <div
+                                                                className="rounded-full text-green-500 h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
+                                                                <svg
+                                                                    className="h-6 w-6 text-black dark:text-white translate-y-[-0.3em] translate-x-[-0.1em] transition-all duration-300"
+                                                                    fill="none"
+                                                                    stroke="currentColor"
+                                                                    viewBox="0 0 24 24"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                >
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3"
+                                                                        d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                            </div>
+                                                        </div>
+                                                        :
+                                                        <div className="w-8 h-16 flex items-center justify-center animate-fade transition-all duration-300" onClick={
+                                                            () => {
+                                                                setSelectedProducts(new Map(products.map(p => [p.id, p])));
+                                                            }
+                                                        }>
+                                                            <div
+                                                                className="rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
+                                                            </div>
+                                                        </div>
+
+                                                }
+
+                                                {selectedProducts && selectedProducts.size > 0 &&
+                                                    <>
+                                                        <SwitchButton />
+                                                        <SignalErrorButton />
+                                                        <DeleteButton />
+                                                    </>}
+
+                                            </>
+                                        }>
                                     </TopBar>
                                     :
                                     <TopBar
@@ -181,48 +227,48 @@ export default function PageVendorProducts() {
                                             the vendor check
                                             if the name
                                             is too much long</h1>}
-                                        rightComponent={<QRButton/>}>
+                                        rightComponent={<QRButton />}>
                                     </TopBar>
                                 }
                                 <div
                                     className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle px-6 pt-[3.45em] flex flex-col gap-4">
                                     {/* Vendor's Categories */}
                                     <div className="w-full">
-                                        <VendorCategoryList categories={categories}/>
+                                        <VendorCategoryList categories={categories} />
                                     </div>
 
                                     <div className="w-full">
-                                        <VendorBadges market="Crocetta Market"/>
+                                        <VendorBadges market="Crocetta Market" />
                                     </div>
 
                                     <div className="w-full flex-1">
                                         {/* Product list top bar */}
                                         <div className="w-full flex flex-row justify-between items-center">
                                             <p className="m-0 p-0">Your planned purchases</p>
-                                            <AddProductButton/>
+                                            <AddProductButton />
                                         </div>
                                         {/* Product list */}
                                         <div className="w-full flex flex-col gap-3 mt-4 pb-[4rem]">
                                             {products.map((product, index) => (
-                                                    isEditMode ?
-                                                        <ButtonBase key={product.id} component="div"
-                                                                    onClick={() => {
-                                                                        addOrRemoveSelected(index);
-                                                                    }}
-                                                        >
-                                                            <ProductListItem key={index} {...product} editMode={true} isSelected={
-                                                                selectedProducts ? selectedProducts.has(product.id) : false
-                                                            }/>
-                                                        </ButtonBase>
-                                                        :
-                                                        <ButtonBase key={product.id} component="div"
-                                                                    onContextMenu={(e) => {
-                                                                        //onLongPress(e, index);
-                                                                        openEditMode(e, product.id);
-                                                                    }}
-                                                        >
-                                                            <ProductListItem key={index} {...product} editMode={false}/>
-                                                        </ButtonBase>
+                                                isEditMode ?
+                                                    <ButtonBase key={product.id} component="div"
+                                                        onClick={() => {
+                                                            addOrRemoveSelected(index);
+                                                        }}
+                                                    >
+                                                        <ProductListItem key={index} {...product} editMode={true} isSelected={
+                                                            selectedProducts ? selectedProducts.has(product.id) : false
+                                                        } />
+                                                    </ButtonBase>
+                                                    :
+                                                    <ButtonBase key={product.id} component="div"
+                                                        onContextMenu={(e) => {
+                                                            //onLongPress(e, index);
+                                                            openEditMode(e, product.id);
+                                                        }}
+                                                    >
+                                                        <ProductListItem key={index} {...product} editMode={false} />
+                                                    </ButtonBase>
                                             ))}
                                         </div>
                                     </div>
@@ -231,7 +277,7 @@ export default function PageVendorProducts() {
                         } </Sheet.Scroller>
                     </Sheet.Content>
                 </Sheet.Container>
-                <Sheet.Backdrop onTap={() => setOpen(false)}/>
+                <Sheet.Backdrop onTap={() => setOpen(false)} />
             </Sheet>
         </>
     );

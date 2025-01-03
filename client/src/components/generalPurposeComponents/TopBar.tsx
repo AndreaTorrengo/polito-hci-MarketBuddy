@@ -12,7 +12,7 @@ export default function TopBar({leftComponent, centerComponent, rightComponent}:
             <div className="h-full w-full flex flex-row items-center px-5 gap-2">
                 <div className="">{leftComponent}</div>
                 <div className="w-full">{centerComponent}</div>
-                <div className="flex flex-row justify-items-end gap-2">{rightComponent}</div>
+                <div className="flex flex-row justify-items-end">{rightComponent}</div>
             </div>
         </div>
     );
