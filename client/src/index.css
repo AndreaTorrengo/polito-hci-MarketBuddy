@@ -16,3 +16,7 @@
 .titleFont {
     font-family: 'Schibsted Grotesk', sans-serif;
 }
+
+.animated {
+  transition: all 0.2s ease-in-out;
+}
