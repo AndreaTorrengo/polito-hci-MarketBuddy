@@ -8,6 +8,7 @@ import PageProfile from "./components/PageProfile/PageProfile";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
 import PropTypes from "prop-types";
 import { useState } from "react";
+import ConfirmPopup from "./components/ConfirmationPopup";
 
 export default function App() {
   const paths = ["/", "/quests", "/rewards", "/profile", "*"];
@@ -16,6 +17,13 @@ export default function App() {
   const [selectedMarket, setSelectedMarket] = useState("Crocetta Market");
   const [questPendingClaims, setQuestPendingClaims] = useState(0);
   const [activeTab, setActiveTab] = useState(paths.indexOf(window.location.pathname));
+
+  const [popupText, setPopupText] = useState("Are you sure?");
+  const [cancelButtonText, setCancelButtonText] = useState("Cancel");
+  const [confirmButtonText, setConfirmButtonText] = useState("Confirm");
+  const [confirmationCallback, setConfirmationCallback] = useState(() => { });
+  const [showPopup, setShowPopup] = useState(false);
+
 
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
     if (!localStorage.theme) {
@@ -40,6 +48,15 @@ export default function App() {
     }
   };
 
+  const askConfirmation = (onConfirm: Function, text = "Are you sure?", cancelButtonText = "Cancel", confirmButtonText = "Confirm") => {
+    setPopupText(text);
+    setCancelButtonText(cancelButtonText);
+    setConfirmButtonText(confirmButtonText);
+    setConfirmationCallback(() => { return onConfirm });
+    // console.log(confirmationCallback)
+    setShowPopup(true);
+  };
+
   // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-PageNotFound
   return (
     <div id="approot" className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
@@ -47,11 +64,14 @@ export default function App() {
         <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
           <Route index path={`${paths[0]}`} element={<PageShoppingList selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />} />
           <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} />} />
-          <Route path={`${paths[2]}`} element={<PageReward />} />
+          <Route path={`${paths[2]}`} element={<PageReward askConfirmation={askConfirmation} />} />
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} />} />
           <Route path={`${paths[4]}`} element={<PageNotFound />} />
-        </Route>
+        </Route>(
       </Routes>
+      <div hidden={!showPopup}>
+        <ConfirmPopup text={popupText} cancelButtonText={cancelButtonText} confirmButtonText={confirmButtonText} onConfirmCallback={confirmationCallback} closePopup={() => { setShowPopup(false); }} />
+      </div>
     </div>
   );
 }
