@@ -44,6 +44,21 @@ const Dao = {
       throw new Error('Failed to retrieve rewards');
     }
   },
+
+  redeemReward: async (rewardID: number) => {
+    try {
+      const database = await db;
+      await database.run('UPDATE rewards SET redeemed = 1 WHERE id = ?', [rewardID]);
+      const { changes } = await database.get('SELECT changes() as changes');
+      console.log(changes);
+
+      if (changes === 0) {
+        throw new Error('Reward not found');
+      }
+    } catch (error) {
+      throw new Error('Failed to redeem Reward')
+    }
+  }
 };
 
 export default Dao;
