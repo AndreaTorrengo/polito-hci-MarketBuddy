@@ -37,21 +37,21 @@ export default function PageLeaderboard() {
 
       <div className="flex flex-col overflow-hidden bg-tremor-content-inverted dark:bg-dark-tremor-content-inverted p-4 shadow-md rounded-lg">
         {/* Tab Navigation */}
-        <div className="flex justify-center space-x-4 mb-4">
+        <div className="flex justify-center space-x-0 mb-4 rounded-md bg-tremor-border dark:bg-dark-tremor-border">
           <button
             onClick={() => setActiveTab("Global")}
-            className={`px-4 py-2 rounded-md text-sm font-semibold transition-colors ${activeTab === "Global"
+            className={`w-full pl-4 py-2 rounded-md text-sm font-semibold transition-colors ${activeTab === "Global"
               ? "bg-tremor-brand dark:bg-dark-tremor-brand text-white"
-              : "bg-gray-200 text-gray-700"
+              : "bg-tremor-border dark:bg-dark-tremor-border text-gray-700 dark:text-gray-400"
               }`}
           >
             Global
           </button>
           <button
             onClick={() => setActiveTab("Top 10")}
-            className={`px-4 py-2 rounded-md text-sm font-semibold transition-colors ${activeTab === "Top 10"
+            className={`w-full pr-4 py-2 rounded-md text-sm font-semibold transition-colors ${activeTab === "Top 10"
               ? "bg-tremor-brand dark:bg-dark-tremor-brand text-white"
-              : "bg-gray-200 text-gray-700"
+              : "bg-tremor-border dark:bg-dark-tremor-border text-gray-700 dark:text-gray-400"
               }`}
           >
             Top 10
@@ -93,6 +93,6 @@ function LeaderboardItem(props: any) {
       </div>
     </li>);
 }
-LeaderboardItem.PropTypes = {
+LeaderboardItem.propTypes = {
   player: PropTypes.object
 }
