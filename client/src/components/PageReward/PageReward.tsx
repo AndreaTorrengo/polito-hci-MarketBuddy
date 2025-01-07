@@ -4,6 +4,8 @@ import { Reward } from '../../models';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import { LocalOfferOutlined } from '@mui/icons-material';
 import planet from "../../assets/planet03.png";
+import RestoreOutlinedIcon from '@mui/icons-material/RestoreOutlined';
+import { useNavigate } from 'react-router-dom';
 
 const iconsMap: { [key: string]: JSX.Element } = {
   'coupon': <LocalOfferOutlined className='object-scale-down max-h-full m-auto' />,
@@ -12,7 +14,7 @@ const iconsMap: { [key: string]: JSX.Element } = {
 
 
 
-function RewardCard({ reward, confirmRewardRedemption }: Readonly<{ reward: Reward, confirmRewardRedemption: (reward: Reward) => void }>) {
+export function RewardCard({ reward, confirmRewardRedemption = () => { } }: Readonly<{ reward: Reward, confirmRewardRedemption?: (reward: Reward) => void }>) {
 
   return (
     <button className='flex justify-between w-full h-full items-center py-2 px-4 rounded-tremor-default bg-tremor-background-muted dark:bg-dark-tremor-background-muted animated active:brightness-75 dark:active:brightness-125' onClick={() => confirmRewardRedemption(reward)}>
@@ -36,6 +38,7 @@ type AskConfirmation = (callback: () => void, message: string) => void;
 
 export default function PageReward({ askConfirmation }: Readonly<{ askConfirmation: AskConfirmation }>) {
   const [rewards, setRewards] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch rewards
@@ -63,6 +66,9 @@ export default function PageReward({ askConfirmation }: Readonly<{ askConfirmati
     <>
       <h1>Rewards</h1>
       <div className='flex content-center justify-around'>
+        <button className='absolute top-4 right-4' onClick={() => navigate('history')}>
+          <RestoreOutlinedIcon />
+        </button>
         <ul className='flex flex-col gap-4 items-center'>
           {rewards.map((reward: Reward) => (
             <li key={reward.id} className='w-full align-middle'>

@@ -45,6 +45,17 @@ const Dao = {
     }
   },
 
+  getRedeemedRewards: async () => {
+    try {
+      const database = await db;
+      const rewards = await database.all('SELECT * FROM rewards WHERE redeemed = 1');
+
+      return rewards.map(reward => new Reward(reward.id, reward.description, reward.cost, reward.icon));
+    } catch (error) {
+      throw new Error('Failed to retrieve rewards');
+    }
+  },
+
   redeemReward: async (rewardID: number) => {
     try {
       const database = await db;

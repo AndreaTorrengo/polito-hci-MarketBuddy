@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar/Navbar";
 import PageShoppingList from "./components/PageShoppingList/PageShoppingList";
 import PageQuest from "./components/PageQuest/PageQuest";
 import PageReward from "./components/PageReward/PageReward";
+import PageRewardHistory from './components/PageReward/PageRewardHistory';
 import PageProfile from "./components/PageProfile/PageProfile";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
 import PropTypes from "prop-types";
@@ -65,9 +66,10 @@ export default function App() {
           <Route index path={`${paths[0]}`} element={<PageShoppingList selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />} />
           <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} />} />
           <Route path={`${paths[2]}`} element={<PageReward askConfirmation={askConfirmation} />} />
+          <Route path={`${paths[2]}/history`} element={<PageRewardHistory />} />
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} />} />
           <Route path={`${paths[4]}`} element={<PageNotFound />} />
-        </Route>(
+        </Route>
       </Routes>
       <div hidden={!showPopup}>
         <ConfirmPopup text={popupText} cancelButtonText={cancelButtonText} confirmButtonText={confirmButtonText} onConfirmCallback={confirmationCallback} closePopup={() => { setShowPopup(false); }} />

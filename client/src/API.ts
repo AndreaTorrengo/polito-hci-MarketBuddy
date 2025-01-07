@@ -78,8 +78,31 @@ const redeemReward = async (rewardID: number) => {
     }
 };
 
+const getRedeemedRewards = async () => {
+    try {
+        const response = await fetch(`${API_URL}/rewards/redeemed`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        return data.map((rewardData: Reward) => new Reward(
+            rewardData.id,
+            rewardData.description,
+            rewardData.cost,
+            rewardData.icon,
+        ));
+    } catch (error) {
+        throw error;
+    }
+};
+
 const API = {
-    getVendorsByMarket, getRewards, redeemReward
+    getVendorsByMarket, getRewards, getRedeemedRewards, redeemReward
 };
 
 export default API;

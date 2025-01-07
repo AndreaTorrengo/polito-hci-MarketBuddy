@@ -18,7 +18,16 @@ export const getRewards = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
-}
+};
+
+export const getRedeemedRewards = async (req: Request, res: Response) => {
+  try {
+    const rewards = await dao.getRedeemedRewards();
+    res.json(rewards);
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+};
 
 export const redeemReward = async (req: Request, res: Response) => {
   try {
@@ -27,4 +36,4 @@ export const redeemReward = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
-}
+};
