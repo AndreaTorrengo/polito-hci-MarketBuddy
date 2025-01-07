@@ -1,5 +1,5 @@
 
-export default function ConfirmPopup({ text, cancelButtonText, confirmButtonText, closePopup, onConfirmCallback }: Readonly<{ text: string, cancelButtonText: string, confirmButtonText: string, closePopup: Function, onConfirmCallback: Function }>) {
+export default function ConfirmPopup({ text, cancelButtonText, confirmButtonText, closePopup, onConfirmCallback }: Readonly<{ text: string, cancelButtonText: string, confirmButtonText: string, closePopup: () => void, onConfirmCallback: () => void }>) {
     return (
         <div className="fixed inset-0 flex items-center justify-center m-8">
             <div className="p-6 rounded shadow-md bg-tremor-background-muted dark:bg-dark-tremor-background-muted">
