@@ -1,20 +1,24 @@
-import { useParams } from "react-router-dom";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import VendorCategoryList from "./VendorCategoryList.tsx";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AddProductButton from "./AddProductButton.tsx";
 import ProductListItem, { ProductListItemProps } from "./ProductListItem.tsx";
-import QRButton from "./QRButton.tsx";
+import CropFreeIcon from '@mui/icons-material/CropFree';
 import { Sheet } from 'react-modal-sheet';
 import VendorBadges from "./VendorBadges.tsx";
-import { ButtonBase } from "@mui/material";
+import { ButtonBase, IconButton } from "@mui/material";
 import ContextMenu, { ContextMenuProps } from "../generalPurposeComponents/ContextMenu.tsx";
 import SwitchButton from "./SwitchButton.tsx";
 import DeleteButton from "./DeleteButton.tsx";
 import SignalErrorButton from "./SignalErrorButton.tsx";
 
-export default function PageVendorProducts() {
-    const { vendorId } = useParams<{ vendorId: string }>();
+interface PageVendorProductsParams {
+    vendorId: number;
+}
+
+export default function PageVendorProducts({ vendorId }: PageVendorProductsParams) {
+    const approot = document.getElementById("approot")!;
+
     const [isEditMode, setIsEditMode] = useState(false);
     const [categories] = useState<string[]>([
         "Category 1",
@@ -89,7 +93,7 @@ export default function PageVendorProducts() {
 
     const [selectedProducts, setSelectedProducts] = useState<Map<number, ProductListItemProps> | null>(null);
 
-    const [isOpen, setOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     const [contextMenuProps, setContextMenuProps] = useState<ContextMenuProps>({
         onClose: () => {
             setContextMenuProps({ ...contextMenuProps, isOpen: false });
@@ -156,10 +160,14 @@ export default function PageVendorProducts() {
 
     return (
         <>
-            <Sheet isOpen={isOpen} onClose={() => setOpen(false)} detent='content-height' rootId="root">
+            <button className="font-bold py-2 px-4 inline-flex items-center dark:text-dark-tremor-content-strong animated dark:active:text-dark-tremor-content-emphasis active:scale-subtle" onClick={() => setIsOpen(true)}>
+                <IconButton><CropFreeIcon /></IconButton>
+                <span className="ml-2">Example Vendor</span>
+            </button>
+            <Sheet isOpen={isOpen} onClose={() => setIsOpen(false)} detent='content-height' rootId="root" mountPoint={approot}>
                 <Sheet.Container>
                     <Sheet.Header
-                        className="bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle rounded-t-lg">
+                        className="bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle rounded-t-md">
                     </Sheet.Header>
                     <Sheet.Content>
                         <Sheet.Scroller> {
@@ -227,7 +235,11 @@ export default function PageVendorProducts() {
                                             the vendor check
                                             if the name
                                             is too much long</h1>}
-                                        rightComponent={<QRButton />}>
+                                        rightComponent={
+                                            <IconButton>
+                                                <CropFreeIcon className="text-black dark:text-white" />
+                                            </IconButton>
+                                        }>
                                     </TopBar>
                                 }
                                 <div
@@ -277,7 +289,7 @@ export default function PageVendorProducts() {
                         } </Sheet.Scroller>
                     </Sheet.Content>
                 </Sheet.Container>
-                <Sheet.Backdrop onTap={() => setOpen(false)} />
+                <Sheet.Backdrop onTap={() => setIsOpen(false)} />
             </Sheet>
         </>
     );

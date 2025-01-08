@@ -11,7 +11,7 @@ import { useState } from "react";
 import PageVendorProducts from "./components/PageVendorProducts/PageVendorProducts.tsx";
 
 export default function App() {
-  const paths = ["/", "/quests", "/rewards", "/profile", "*", "/:vendorId"];
+  const paths = ["/", "/quests", "/rewards", "/profile", "*"];
 
   const [theme, setTheme] = useState<string>(localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
   const [selectedMarket, setSelectedMarket] = useState("Crocetta Market");
@@ -47,7 +47,6 @@ export default function App() {
       <Routes>
         <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
           <Route index path={`${paths[0]}`} element={<PageShoppingList selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />} />
-          <Route index path={`${paths[5]}`} element={<PageVendorProducts />} />
           <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} />} />
           <Route path={`${paths[2]}`} element={<PageReward />} />
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} />} />
