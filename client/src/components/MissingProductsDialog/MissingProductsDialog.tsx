@@ -48,7 +48,8 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
             const generateRandomAlternatives = () => {
                 const newRandomAlternatives: { [key: string]: Product[] } = {};
                 missingProducts.forEach((product) => {
-                    newRandomAlternatives[product] = selectRandomAlternatives(alternatives, Math.floor(Math.random() * alternatives.length) + 1);
+                    const maxAlternatives = Math.min(alternatives.length, 3);
+                    newRandomAlternatives[product] = selectRandomAlternatives(alternatives, Math.floor(Math.random() * maxAlternatives) + 1);
                 });
                 setRandomAlternatives(newRandomAlternatives);
             };
@@ -167,7 +168,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
                                 <li className="mt-2">
                                     <span>{"Select alternative/s for "}<strong className="alternative">{missingProducts[currentIndex]}</strong></span>
                                     <div className="flex justify-center mt-4">
-                                        <div className={`flex justify-center grid gap-4 ${randomAlternatives[missingProducts[currentIndex]]?.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
+                                        <div className={`flex justify-center grid gap-4 ${randomAlternatives[missingProducts[currentIndex]]?.length === 1 ? 'grid-cols-1' : randomAlternatives[missingProducts[currentIndex]]?.length === 2 ? 'grid-cols-2' : randomAlternatives[missingProducts[currentIndex]]?.length === 3 ? 'grid-cols-3' : 'grid-cols-4'}`}>
                                             {randomAlternatives[missingProducts[currentIndex]]?.map((alternative, altIndex) => (
                                                 <Button
                                                     className="alternative-button"
