@@ -100,7 +100,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
         setShowConfirmation(true);
         setTimeout(() => {
             setShowConfirmation(false);
-        }, 1500);
+        }, 900);
     };
 
     const handleClose = () => {
@@ -165,11 +165,12 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
                             <span>Not all products from your list are available at the market</span>
                             <ul>
                                 <li className="mt-2">
-                                    <span>{"Select alternative/s for "}<strong>{missingProducts[currentIndex]}</strong></span>
+                                    <span>{"Select alternative/s for "}<strong className="alternative">{missingProducts[currentIndex]}</strong></span>
                                     <div className="flex justify-center mt-4">
                                         <div className={`flex justify-center grid gap-4 ${randomAlternatives[missingProducts[currentIndex]]?.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
                                             {randomAlternatives[missingProducts[currentIndex]]?.map((alternative, altIndex) => (
                                                 <Button
+                                                    className="alternative-button"
                                                     key={altIndex}
                                                     style={{
                                                         width: '100%',
@@ -178,6 +179,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
                                                         borderRadius: '0.5rem',
                                                         border: 'none',
                                                         textAlign: 'center',
+                                                        color: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? '#fff' : (theme === 'dark' ? '#000' : '#000'),
                                                         backgroundColor: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? '#3b82f6' : '#d1d5db',
                                                         margin: '0 auto'
                                                     }}
@@ -193,6 +195,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
                                         <Button
                                             onClick={() => handleConfirm(missingProducts[currentIndex], selectedAlternatives[missingProducts[currentIndex]] || [])}
                                             disabled={!selectedAlternatives[missingProducts[currentIndex]] || selectedAlternatives[missingProducts[currentIndex]].length === 0}
+                                            style={{ color: '#fff', }}
                                         >
                                             Add to Shopping List
                                         </Button>
@@ -215,8 +218,8 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
                     )}
                 </DialogPanel>
                 {showConfirmation && (
-                    <div className="fixed top-40 transform z-50">
-                        <div className="bg-green-500 p-2 text-white rounded">
+                    <div className="fixed inset-x-0 bottom-0 flex items-center justify-center z-50 mb-40">
+                        <div className="bg-green-500 p-4 text-white rounded-lg shadow-lg">
                             Alternatives added successfully!
                         </div>
                     </div>
