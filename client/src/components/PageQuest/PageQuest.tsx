@@ -6,6 +6,7 @@ import { Button } from "@mui/material";
 
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Helper function to parse the progress string
 const parseProgress = (progress: any) => {
@@ -21,6 +22,7 @@ export default function PageQuest(props: any) {
     { id: 3, title: "Outside the Box", description: "Visit a vendor off the planned path", progress: "0/1", completed: false },
   ]);
   const [newQuestId, setNewQuestId] = useState(4);
+  const navigate = useNavigate();
 
   // Effect triggered by state change of "quests"
   useEffect(() => {
@@ -112,6 +114,9 @@ export default function PageQuest(props: any) {
             variant="contained"
             color="primary"
             className="flex items-center justify-start gap-2"
+            onClick={() => {
+              navigate(props.leaderboardPath);
+            }}
           >
             <LeaderboardIcon fontSize="medium" />
             <span className="text-base font-semibold">Leaderboard</span>
@@ -122,5 +127,6 @@ export default function PageQuest(props: any) {
   );
 }
 PageQuest.propTypes = {
-  setQuestPendingClaims: PropTypes.func
+  setQuestPendingClaims: PropTypes.func,
+  leaderboardPath: PropTypes.string
 }

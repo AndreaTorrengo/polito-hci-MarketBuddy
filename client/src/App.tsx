@@ -6,11 +6,12 @@ import PageQuest from "./components/PageQuest/PageQuest";
 import PageReward from "./components/PageReward/PageReward";
 import PageProfile from "./components/PageProfile/PageProfile";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
+import PageLeaderboard from "./components/PageLeaderboard/PageLeaderboard";
 import PropTypes from "prop-types";
 import { useState } from "react";
 
 export default function App() {
-  const paths = ["/", "/quests", "/rewards", "/profile", "*"];
+  const paths = ["/", "/quests", "/rewards", "/profile", "*", "/leaderboard"];
 
   const [theme, setTheme] = useState<string>(localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
   const [selectedMarket, setSelectedMarket] = useState<string>(localStorage.market || 'Crocetta Market');
@@ -33,7 +34,6 @@ export default function App() {
     setSelectedMarket(market);
   }
 
-
   const toggleTheme = (event: any) => {
     if (theme === 'dark') {
       setTheme('light');
@@ -45,16 +45,17 @@ export default function App() {
     }
   };
 
-  // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-PageNotFound
+  // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-PageNotFound, 5-Leaderboard
   return (
     <div id="approot" className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
       <Routes>
         <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
           <Route index path={`${paths[0]}`} element={<PageShoppingList selectedMarket={selectedMarket} selectMarket={selectMarket} />} />
-          <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} />} />
+          <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} leaderboardPath={`${paths[5]}`} />} />
           <Route path={`${paths[2]}`} element={<PageReward />} />
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} />} />
           <Route path={`${paths[4]}`} element={<PageNotFound />} />
+          <Route path={`${paths[5]}`} element={<PageLeaderboard/>} />
         </Route>
       </Routes>
     </div>
