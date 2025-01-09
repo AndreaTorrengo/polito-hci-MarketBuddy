@@ -2,7 +2,6 @@
 import { List, ListItem, TextInput } from "@tremor/react";
 import { Sheet } from "react-modal-sheet";
 import { useEffect, useState } from "react";
-import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
@@ -28,16 +27,11 @@ const markets = [ // To be replaced with a call to the db
 
 
 
-export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket }: Readonly<{ selectedMarket: string, setSelectedMarket: (market: string) => void }>) {
+export default function MarketSelectorSheet({ selectedMarket, selectMarket }: Readonly<{ selectedMarket: string, selectMarket: (market: string) => void }>) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
 
   const approot = document.getElementById("approot")!;
-
-  function selectMarket(name: string) {
-    setSelectedMarket(name);
-    setIsOpen(false);
-  }
 
   useEffect(() => {
     // Sort the markets so that the selected market is always at the top
@@ -66,7 +60,7 @@ export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket 
               <SearchBar searchInput={searchInput} setSearchInput={setSearchInput} />
             </div>
             <Sheet.Scroller>
-              <MarketsList selectMarket={selectMarket} searchInput={searchInput} selectedMarket={selectedMarket} />
+              <MarketsList selectMarket={(m) => { selectMarket(m) || setIsOpen(false) }} searchInput={searchInput} selectedMarket={selectedMarket} />
             </Sheet.Scroller>
           </Sheet.Content>
         </Sheet.Container>

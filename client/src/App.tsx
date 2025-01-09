@@ -13,7 +13,7 @@ export default function App() {
   const paths = ["/", "/quests", "/rewards", "/profile", "*"];
 
   const [theme, setTheme] = useState<string>(localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
-  const [selectedMarket, setSelectedMarket] = useState("Crocetta Market");
+  const [selectedMarket, setSelectedMarket] = useState<string>(localStorage.market || 'Crocetta Market');
   const [questPendingClaims, setQuestPendingClaims] = useState(0);
   const [activeTab, setActiveTab] = useState(paths.indexOf(window.location.pathname));
 
@@ -27,6 +27,11 @@ export default function App() {
       }
     }
   });
+
+  const selectMarket = (market: string) => {
+    localStorage.market = market;
+    setSelectedMarket(market);
+  }
 
 
   const toggleTheme = (event: any) => {
@@ -45,7 +50,7 @@ export default function App() {
     <div id="approot" className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
       <Routes>
         <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
-          <Route index path={`${paths[0]}`} element={<PageShoppingList selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />} />
+          <Route index path={`${paths[0]}`} element={<PageShoppingList selectedMarket={selectedMarket} selectMarket={selectMarket} />} />
           <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} />} />
           <Route path={`${paths[2]}`} element={<PageReward />} />
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} />} />
