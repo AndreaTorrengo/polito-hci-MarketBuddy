@@ -150,15 +150,11 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, filteredVendors, theme }) =>
   const selectedIcon = createIcon('red');
 
   // Handle map light-mode and dark-mode
-  const tileLayerUrl =
-    theme === "dark"
-      ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-      : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+  const tileLayerUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 
   const tileLayerAttribution =
-    theme === "dark"
-      ? '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
-      : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+
 
   return (
     <div style={{ height: '100%', width: '100%', position: 'relative' }}>
@@ -168,7 +164,7 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, filteredVendors, theme }) =>
         maxZoom={18}
         style={{ height: '100%', width: '100%' }}
       >
-        <TileLayer url={tileLayerUrl} attribution={tileLayerAttribution} />
+        <TileLayer  className={theme === "dark" ? "dark-mode-filter" : ""} url={tileLayerUrl} attribution={tileLayerAttribution} />
         {/* Update map center dynamically */}
         <OnFlyMarker center={center} />
         <UpdateMapCenter center={currentMarket.position as [number, number]} />

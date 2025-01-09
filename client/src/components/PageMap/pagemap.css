@@ -79,3 +79,7 @@
   color: rgb(255, 255, 255);
   text-shadow: -1px -1px 0 #363030, 1px -1px 0 #363030, -1px 1px 0 #363030, 1px 1px 0 #363030; 
 }
+
+.dark-mode-filter {
+  filter: invert(90%) hue-rotate(180deg);
+}
