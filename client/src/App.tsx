@@ -25,7 +25,6 @@ export default function App() {
   const [confirmationCallback, setConfirmationCallback] = useState(() => { });
   const [showPopup, setShowPopup] = useState(false);
 
-
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
     if (!localStorage.theme) {
       if (theme === 'light') {
@@ -71,9 +70,9 @@ export default function App() {
           <Route path={`${paths[4]}`} element={<PageNotFound />} />
         </Route>
       </Routes>
-      <div hidden={!showPopup}>
+      {showPopup &&
         <ConfirmPopup text={popupText} cancelButtonText={cancelButtonText} confirmButtonText={confirmButtonText} onConfirmCallback={confirmationCallback} closePopup={() => { setShowPopup(false); }} />
-      </div>
+      }
     </div>
   );
 }
