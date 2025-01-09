@@ -32,7 +32,8 @@ export const getRedeemedRewards = async (req: Request, res: Response) => {
 export const redeemReward = async (req: Request, res: Response) => {
   try {
     const redeemed = await dao.redeemReward(req.body['rewardID']);
-    res.json(redeemed);
+
+    res.status(redeemed ? 200 : 404);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }

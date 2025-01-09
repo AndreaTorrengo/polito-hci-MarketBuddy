@@ -61,11 +61,11 @@ const Dao = {
       const database = await db;
       await database.run('UPDATE rewards SET redeemed = 1 WHERE id = ?', [rewardID]);
       const { changes } = await database.get('SELECT changes() as changes');
-      console.log(changes);
 
       if (changes === 0) {
-        throw new Error('Reward not found');
+        return false;
       }
+      return true;
     } catch (error) {
       throw new Error('Failed to redeem Reward')
     }

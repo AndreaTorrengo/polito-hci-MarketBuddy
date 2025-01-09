@@ -45,7 +45,6 @@ export default function PageReward({ askConfirmation }: Readonly<{ askConfirmati
     // Fetch rewards
     API.getRewards()
       .then((rewards) => {
-        console.log(rewards);
         setRewards(rewards);
       })
       .catch((error) => {

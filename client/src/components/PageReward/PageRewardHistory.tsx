@@ -15,7 +15,6 @@ export default function PageRewardHistory() {
         // Fetch rewards
         API.getRedeemedRewards()
             .then((rewards) => {
-                console.log(rewards);
                 setRewards(rewards);
             })
             .catch((error) => {
