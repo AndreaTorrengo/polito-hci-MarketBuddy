@@ -162,7 +162,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
                     {missingProducts.length > 0 ? (
                         <>
                             <h2 className="text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">Missing Products</h2>
-                            <span>Not all products from your list are available at the market</span>
+                            <span>Not all products from your list are available at this market</span>
                             <ul>
                                 <li className="mt-2">
                                     <span>{"Select alternative/s for "}<strong className="alternative">{missingProducts[currentIndex]}</strong></span>
@@ -180,7 +180,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
                                                         border: 'none',
                                                         textAlign: 'center',
                                                         color: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? '#fff' : (theme === 'dark' ? '#000' : '#000'),
-                                                        backgroundColor: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? '#3b82f6' : '#d1d5db',
+                                                        backgroundColor: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? (theme === 'dark' ? '#3b82f6' : '#3b82f6') : (theme === 'dark' ? '#6b7280' : '#e5e7eb'),
                                                         margin: '0 auto'
                                                     }}
                                                     onClick={() => handleSelectAlternative(missingProducts[currentIndex], alternative)}
