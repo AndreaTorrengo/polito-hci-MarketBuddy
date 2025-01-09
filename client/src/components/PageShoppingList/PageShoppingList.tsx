@@ -11,13 +11,17 @@ interface PageShoppingListProps {
   sortByQuality: boolean;
   sortByConvenience: boolean;
   sortByCordiality: boolean;
+  selectedMarket: string;
+  setSelectedMarket: (market: string) => void;
 }
 
-export default function PageShoppingList({ filteredVendors, setFilteredVendors, setMissingProducts, missingProducts, theme, sortByQuality, sortByConvenience, sortByCordiality }: PageShoppingListProps) {
+export default function PageShoppingList({ filteredVendors, setFilteredVendors, setMissingProducts, missingProducts, theme, sortByQuality, sortByConvenience, sortByCordiality,selectedMarket, setSelectedMarket }: PageShoppingListProps) {
   return (
     <>
-      <h3>Shopping List page ._.</h3>
-      <MarketSelectorSheet />
+      <div id="ShoppingListPage">
+        <MarketSelectorSheet selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />
+        <h1>Shopping List</h1>
+      </div>
 
       <MissingProductsDialog
         filteredVendors={filteredVendors}
@@ -30,10 +34,8 @@ export default function PageShoppingList({ filteredVendors, setFilteredVendors, 
         sortByCordiality={sortByCordiality}
       />
 
-      <h1 className="pt-64">Hi 1</h1>
-      <h1 className="pt-64">Hi 2</h1>
-      <h1 className="pt-64">Hi 3</h1>
-      <h1 className="pt-64">Hi 4</h1>
+
     </>
+
   );
 }
