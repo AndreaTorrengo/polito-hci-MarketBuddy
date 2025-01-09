@@ -7,6 +7,10 @@ import currentMarket from '../../currentMarket.json';
 import { Vendor } from '../../models';
 import './pagemap.css';
 import tinycolor from 'tinycolor2';
+import Switch from '@mui/material/Switch';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+
 
 
 
@@ -39,10 +43,11 @@ const OnFlyMarker: React.FC<{ center: [number, number] }> = ({ center }) => {
 
 interface PageMapProps {
   vendors: Vendor[];
+  filteredVendors: Vendor[];
   theme: string;
 }
 
-const PageMap: React.FC<PageMapProps> = ({ vendors, theme }) => {
+const PageMap: React.FC<PageMapProps> = ({ vendors, filteredVendors, theme }) => {
   const offset: [number, number] = getRandomOffset();
   const [markerPosition, setMarkerPosition] = useState<[number, number]>([
     currentMarket.position[0] + offset[0],
@@ -50,6 +55,17 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, theme }) => {
   ]);
   const [center, setMapCenter] = useState<[number, number]>(currentMarket.position as [number, number]);
   const [selectedMarker, setSelectedMarker] = useState<[number, number] | null>(null);
+  const [showAllVendors, setShowAllVendors] = useState(false);
+  const [showedVendors, setShowedVendors] = useState<Vendor[]>(vendors);
+
+  const toggleButton = () => {
+    setShowAllVendors(!showAllVendors);
+    if (showAllVendors) {
+      setShowedVendors(vendors);
+    } else {
+      setShowedVendors(filteredVendors)
+    }
+  };
 
   const handleMarkerClick = (position: [number, number]) => {
     setSelectedMarker(position);
@@ -157,7 +173,7 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, theme }) => {
         <OnFlyMarker center={center} />
         <UpdateMapCenter center={currentMarket.position as [number, number]} />
         {/* Vendors position */}
-        {vendors.map((vendor, idx) => {
+        {showedVendors.map((vendor, idx) => {
           const position: [number, number] = vendor.position as [number, number];
           return (
             <Marker key={idx} position={position}
@@ -213,24 +229,31 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, theme }) => {
         </CircleMarker>
       </MapContainer>
       {/* Market selector */}
-      <Button
+
+      <FormControlLabel
         style={{
           position: 'absolute',
-          top: '10px',
-          right: '10px',
-          padding: '10px 20px',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
+          top: '1rem',
+          right: '0rem',
           zIndex: 1000,
+          color: theme === 'light' ? 'black' : 'white',
+          textShadow: theme === 'light' ? '1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff' : 'none',
+          backgroundColor: theme === 'light' ? 'white' : '#333333',
+          padding: '0rem',
+          borderRadius: '0.25rem',
         }}
-      >
-        {currentMarket.marketName}
-      </Button>
+        onClick={toggleButton}
+        control={<Switch defaultChecked />}
+        label={
+          <span style={{ marginRight: '1rem' }}>Shopping List Only</span> // Aggiungi margine a destra del testo
+        }
+      />
+
     </div>
   );
 };
 
 export default PageMap;
+
+
+
