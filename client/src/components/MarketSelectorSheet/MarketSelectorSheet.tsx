@@ -57,15 +57,11 @@ export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket 
         <span className="ml-2">{selectedMarket}</span>
         <ExpandMoreIcon />
       </button>
-      <Sheet isOpen={isOpen} onClose={() => setIsOpen(false)} detent='content-height' mountPoint={approot}>
+      <Sheet isOpen={isOpen} onClose={() => setIsOpen(false)} detent='content-height' mountPoint={approot} >
         <Sheet.Container>
-          <Sheet.Header className="p-6 dark:bg-dark-tremor-background dark:text-dark-tremor-content-emphasis">
-            <h1 className="font-bold text-3xl">Choose The Market</h1>
-            <button className="absolute top-6 right-6 text-4xl animated active:scale-105" color="slate" onClick={() => setIsOpen(false)}>
-              <CloseIcon fontSize="large" className="align-middle text-tremor-content-strong dark:text-dark-tremor-content-emphasis" />
-            </button>
-          </Sheet.Header>
-          <Sheet.Content className="pb-8 dark:bg-dark-tremor-background">
+          <Sheet.Header className="dark:bg-dark-tremor-background dark:text-dark-tremor-content-emphasis" />
+          <Sheet.Content className="dark:bg-dark-tremor-background">
+            <h1 className="font-bold text-3xl text-center">Choose The Market</h1>
             <div className="mx-20 mt-2 mb-4">
               <SearchBar searchInput={searchInput} setSearchInput={setSearchInput} />
             </div>
@@ -95,12 +91,12 @@ function SearchBar({ searchInput, setSearchInput }: Readonly<{ searchInput: stri
 
 function MarketsList({ selectMarket, searchInput, selectedMarket }: Readonly<{ selectMarket: (name: string) => void, searchInput: string, selectedMarket: string }>) {
   return (
-    <List className="w-auto mx-10 my-2 py-2">
+    <List className="w-auto mx-8 my-2 py-2">
       {markets.map((market) => (
         (searchInput === "" || market.name.toLowerCase().includes(searchInput.toLowerCase())) &&
-          <ListItem key={market.id} className="p-2 animated active:scale-subtle active:bg-tremor-background-subtle dark:active:bg-dark-tremor-background-subtle">
-            <MarketCard market={market} selectedMarket={selectedMarket} selectMarket={selectMarket} />
-          </ListItem>
+        <ListItem key={market.id} className="p-2 animated active:scale-subtle active:bg-tremor-background-subtle dark:active:bg-dark-tremor-background-subtle">
+          <MarketCard market={market} selectedMarket={selectedMarket} selectMarket={selectMarket} />
+        </ListItem>
       ))}
     </List>
   );
@@ -132,8 +128,8 @@ function MarketCard({ market, selectedMarket, selectMarket }: Readonly<MarketCar
             <h3 className="text-lg font-bold text-left w-full grow">{market.name}</h3>
           </div>
           <div className="flex flex-row justify-between text-gray-500">
-            <p className="flex flex-grow">{market.address}</p>
-            <p className="flex flex-shrink ms-auto">{market.distance} km</p>
+            <p className="flex truncate whitespace-nowrap">{market.address}</p>
+            <p className="ms-4 text-right max-w-fit min-w-fit">{market.distance} km</p>
           </div>
         </div>
       </div>
