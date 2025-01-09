@@ -6,6 +6,7 @@ import { LocalOfferOutlined } from '@mui/icons-material';
 import planet from "../../assets/planet03.png";
 import RestoreOutlinedIcon from '@mui/icons-material/RestoreOutlined';
 import { useNavigate } from 'react-router-dom';
+import { Title } from '@tremor/react';
 
 const iconsMap: { [key: string]: JSX.Element } = {
   'coupon': <LocalOfferOutlined className='object-scale-down max-h-full m-auto' />,
@@ -63,12 +64,16 @@ export default function PageReward({ askConfirmation }: Readonly<{ askConfirmati
   }
 
   return (
-    <>
-      <h1>Rewards</h1>
-      <div className='flex content-center justify-around'>
-        <button className='absolute top-4 right-4' onClick={() => navigate('history')}>
+    <div className='w-full h-full p-6'>
+      <div className='flex justify-between mb-6'>
+        <Title className="text-4xl align-middle">Rewards</Title>
+        <div className='flex align-middle'>
+          <button onClick={() => navigate('history')}>
           <RestoreOutlinedIcon />
         </button>
+        </div>
+      </div>
+      <div className='flex content-center justify-between'>
         <ul className='flex flex-col gap-4 items-center'>
           {rewards.map((reward: Reward) => (
             <li key={reward.id} className='w-full align-middle'>
@@ -77,6 +82,6 @@ export default function PageReward({ askConfirmation }: Readonly<{ askConfirmati
           ))}
         </ul>
       </div>
-    </>
+    </div >
   );
 }
