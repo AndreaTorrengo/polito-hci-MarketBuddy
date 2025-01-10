@@ -8,45 +8,52 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 import NearMeOutlinedIcon from '@mui/icons-material/NearMeOutlined';
-
-
-const markets = [ // To be replaced with a call to the db
-  { id: "1", name: "Balon Market", address: "Piazza della Repubblica, 10122 Torino", distance: 0.5 },
-  { id: "2", name: "Crocetta Market", address: "Via Crocetta, 10123 Torino", distance: 1.6 },
-  { id: "3", name: "Porta Palazzo Market", address: "Piazza della Repubblica, 10122 Torino", distance: 2.5 },
-  { id: "4", name: "San Salvario Market", address: "Via Nizza, 10125 Torino", distance: 3.2 },
-  { id: "5", name: "Lingotto Market", address: "Via Nizza, 10125 Torino", distance: 4 },
-  { id: "6", name: "Corso Svizzera Market", address: "Corso Svizzera, 10125 Torino", distance: 5.7 },
-  { id: "7", name: "Barriera di Milano Market", address: "Corso Svizzera, 10125 Torino", distance: 6.3 },
-  { id: "8", name: "Piazza d'Armi Market", address: "Corso Svizzera, 10125 Torino", distance: 7.1 },
-  { id: "9", name: "Piazza Vittorio Market", address: "Corso Svizzera, 10125 Torino", distance: 8.2 },
-  { id: "10", name: "Piazza Madama Cristina Market", address: "Corso Svizzera, 10125 Torino", distance: 9.5 },
-  { id: "11", name: "Piazza Santa Rita Market", address: "Corso Svizzera, 10125 Torino", distance: 10.2 },
-  { id: "12", name: "Piazza Bengasi Market", address: "Corso Svizzera, 10125 Torino", distance: 11.3 },
-  { id: "13", name: "Piazza Rivoli Market", address: "Corso Svizzera, 10125 Torino", distance: 12.5 },
-]
+import { Market } from "../../models";
+import TorinoMarkets from "../../markets.json";
 
 
 
-export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket }: Readonly<{ selectedMarket: string, setSelectedMarket: (market: string) => void }>) {
+function modifyMarketDistances(markets: Market[], selectedMarket: Market) {
+  return markets.map(market => {
+    if (market.id === selectedMarket.id) {
+      market.distance = 0.5; // Set distance to 0.5 for the selected market
+    } else {
+      const randomChange = Math.floor(Math.random() * 11) - 5; // Random number between -5 and 5
+      market.distance = Math.max(1.1, market.distance + randomChange); // Ensure distance is greater than 1
+      market.distance = Math.min(10, market.distance); // Ensure distance does not exceed 10 km
+      market.distance = Math.round(market.distance * 10) / 10; // Round to one decimal place
+    }
+    return market;
+  });
+}
+
+export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket }: Readonly<{
+  selectedMarket: Market;
+  setSelectedMarket: (market: Market) => void;
+}>) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
+  const [markets, setMarkets] = useState(TorinoMarkets);
 
   const approot = document.getElementById("approot")!;
 
-  function selectMarket(name: string) {
-    setSelectedMarket(name);
+  function selectMarket(market: Market) {
+    setSelectedMarket(market);
     setIsOpen(false);
   }
 
+
+
   useEffect(() => {
+    const modifiedMarkets = modifyMarketDistances(TorinoMarkets, selectedMarket);
     // Sort the markets so that the selected market is always at the top
     // The rest is by distance
-    markets.sort((a, b) => {
-      if (a.name === selectedMarket) return -1;
-      if (b.name === selectedMarket) return 1;
+    modifiedMarkets.sort((a, b) => {
+      if (a.name === selectedMarket.name) return -1;
+      if (b.name=== selectedMarket.name) return 1;
       return a.distance - b.distance;
     });
+    setMarkets(modifiedMarkets);
   }, [selectedMarket]);
 
 
@@ -54,7 +61,7 @@ export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket 
     <>
       <button className="font-bold py-2 px-4 inline-flex items-center dark:text-dark-tremor-content-strong animated dark:active:text-dark-tremor-content-emphasis active:scale-subtle" onClick={() => setIsOpen(true)}>
         <LocationOnOutlinedIcon />
-        <span className="ml-2">{selectedMarket}</span>
+        <span className="ml-2">{selectedMarket.name}</span>
         <ExpandMoreIcon />
       </button>
       <Sheet isOpen={isOpen} onClose={() => setIsOpen(false)} detent='content-height' mountPoint={approot}>
@@ -70,7 +77,7 @@ export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket 
               <SearchBar searchInput={searchInput} setSearchInput={setSearchInput} />
             </div>
             <Sheet.Scroller>
-              <MarketsList selectMarket={selectMarket} searchInput={searchInput} selectedMarket={selectedMarket} />
+              <MarketsList selectMarket={selectMarket} searchInput={searchInput} selectedMarket={selectedMarket} markets={markets} />
             </Sheet.Scroller>
           </Sheet.Content>
         </Sheet.Container>
@@ -93,38 +100,33 @@ function SearchBar({ searchInput, setSearchInput }: Readonly<{ searchInput: stri
   />;
 }
 
-function MarketsList({ selectMarket, searchInput, selectedMarket }: Readonly<{ selectMarket: (name: string) => void, searchInput: string, selectedMarket: string }>) {
+function MarketsList({ selectMarket, searchInput, selectedMarket, markets }: Readonly<{ selectMarket: (market: Market) => void, searchInput: string, selectedMarket: Market, markets: Market[] }>) {
   return (
     <List className="w-auto mx-10 my-2 py-2">
       {markets.map((market) => (
         (searchInput === "" || market.name.toLowerCase().includes(searchInput.toLowerCase())) &&
-          <ListItem key={market.id} className="p-2 animated active:scale-subtle active:bg-tremor-background-subtle dark:active:bg-dark-tremor-background-subtle">
-            <MarketCard market={market} selectedMarket={selectedMarket} selectMarket={selectMarket} />
-          </ListItem>
+        <ListItem key={market.id} className="p-2 animated active:scale-subtle active:bg-tremor-background-subtle dark:active:bg-dark-tremor-background-subtle">
+          <MarketCard market={market} selectedMarket={selectedMarket} selectMarket={selectMarket} />
+        </ListItem>
       ))}
     </List>
   );
 }
 
-interface Market {
-  id: string;
-  name: string;
-  address: string;
-  distance: number;
-}
+
 
 interface MarketCardProps {
   market: Market;
-  selectedMarket: string;
-  selectMarket: (name: string) => void;
+  selectedMarket: Market;
+  selectMarket: (market: Market) => void;
 }
 
 function MarketCard({ market, selectedMarket, selectMarket }: Readonly<MarketCardProps>) {
   return (
-    <button className="justify-start w-full " onClick={() => selectMarket(market.name)}>
+    <button className="justify-start w-full " onClick={() => selectMarket(market)}>
       <div className="flex flex-row items-center text-tremor-content-strong dark:text-dark-tremor-content-emphasis w-full">
         <div className="flex flex-col">
-          {(market.name === selectedMarket) ? <NearMeOutlinedIcon className="me-2" fontSize="large" /> :
+          {(market.name === selectedMarket.name) ? <NearMeOutlinedIcon className="me-2" fontSize="large" /> :
             <StorefrontOutlinedIcon className="me-2" fontSize="large" />}
         </div>
         <div className="flex flex-col grow">

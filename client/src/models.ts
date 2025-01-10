@@ -38,4 +38,21 @@ class Product {
     }
 }
 
-export { Vendor, Product };
+
+class Market {
+    id: number;
+    name: string;
+    position: number[];
+    address: string;
+    distance: number;
+
+    constructor(id: number, name: string, position: number[], address: string, distance: number) {
+        this.id = id;
+        this.name = name;
+        this.position = position;
+        this.address = address;
+        this.distance = distance;
+    }
+}
+
+export { Vendor, Product, Market };

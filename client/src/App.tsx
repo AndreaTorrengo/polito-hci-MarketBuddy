@@ -8,13 +8,22 @@ import PageNotFound from "./components/PageNotFound/PageNotFound";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import API from "./API";
-import { Vendor, Product } from "./models";
-import productsList from './productsList.json';
+import { Vendor, Product, Market } from "./models";
+
 
 export default function App() {
   const paths = ["/", "/quests", "/rewards", "/profile", "*"];
   const [theme, setTheme] = useState<string>(localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
-  const [selectedMarket, setSelectedMarket] = useState("Crocetta Market");
+  const [selectedMarket, setSelectedMarket] = useState<Market>({
+    id: 1,
+    "name": "Porta Palazzo Market",
+    "position": [
+      45.076796,
+      7.683614
+    ],
+    address: "Piazza della Repubblica, 10122 Torino TO, Italy",
+    distance: 0.5
+  });
   const [questPendingClaims, setQuestPendingClaims] = useState(0);
   const [activeTab, setActiveTab] = useState(paths.indexOf(window.location.pathname));
   const [vendors, setVendors] = useState<Vendor[]>([]);
@@ -23,12 +32,60 @@ export default function App() {
   const [sortByQuality, setSortByQuality] = useState(true);
   const [sortByConvenience, setSortByConvenience] = useState(true);
   const [sortByCordiality, setSortByCordiality] = useState(false);
+  const [productsList, setProductsList] = useState<{ [key: string]: string[] }>({
+    "Porta Palazzo Market": [
+      "Lettuce",
+      "Orange",
+      "Cucumber",
+      "Chicken Breast",
+      "Milk",
+      "Shrimp",
+      "Breaded Slices",
+      "Octopus",
+      "Liver"
+    ],
+    "Santa Rita Market": [
+      "Lettuce",
+      "Orange",
+      "Cucumber",
+      "Chicken Breast",
+      "Milk",
+      "Shrimp",
+      "Breaded Slices",
+      "Octopus",
+      "Liver"
+    ],
+    "Piazza Benefica Market": [
+      "Lettuce",
+      "Orange",
+      "Cucumber",
+      "Chicken Breast",
+      "Milk",
+      "Shrimp",
+      "Breaded Slices",
+      "Octopus",
+      "Liver"
+    ],
+    "Crocetta Market": [
+      "Lettuce",
+      "Orange",
+      "Cucumber",
+      "Chicken Breast",
+      "Milk",
+      "Shrimp",
+      "Breaded Slices",
+      "Octopus",
+      "Liver"
+    ],
+  });
+
+
 
 
   useEffect(() => {
     const fetchVendors = async () => {
       try {
-        const vendors = await API.getVendorsByMarket('Porta Palazzo');
+        const vendors = await API.getVendorsByMarket(selectedMarket.name);
         setVendors(vendors);
 
       } catch (error) {
@@ -37,10 +94,23 @@ export default function App() {
     }
     fetchVendors();
 
-  }, []);
+  }, [selectedMarket]);
+
 
   useEffect(() => {
-    let sortedVendors: Vendor[] = [...vendors];
+
+    const savedFilteredVendors = localStorage.getItem(`filteredVendors_${selectedMarket.name}`);
+    const savedProductsList = localStorage.getItem('productsList');
+    const savedmissingProducts = localStorage.getItem(`missingProducts_${selectedMarket.name}`);
+    setMissingProducts(savedmissingProducts  && JSON.parse(savedmissingProducts).length ? JSON.parse(savedmissingProducts) : []);
+    console.log(savedmissingProducts);
+    if (savedFilteredVendors && JSON.parse(savedFilteredVendors).length && savedProductsList) {
+      return;
+  }
+    const productsListState = savedProductsList ? JSON.parse(savedProductsList) : productsList;
+
+    let sortedVendors: Vendor[] = savedFilteredVendors && JSON.parse(savedFilteredVendors).length ? JSON.parse(savedFilteredVendors) : [...vendors];
+
 
     sortedVendors.sort((a, b) => {
       let comparison = 0;
@@ -55,51 +125,61 @@ export default function App() {
         comparison = convenienceB - convenienceA;
       }
       if (comparison === 0 && sortByCordiality) {
-        const CordialityA = parseFloat(a.cordiality_rating.replace('%', ''));
-        const CordialityB = parseFloat(b.cordiality_rating.replace('%', ''));
-        comparison = CordialityB - CordialityA;
+        const cordialityA = parseFloat(a.cordiality_rating.replace('%', ''));
+        const cordialityB = parseFloat(b.cordiality_rating.replace('%', ''));
+        comparison = cordialityB - cordialityA;
       }
       return comparison;
     });
 
 
+
     const filtered: Vendor[] = [];
-    const requiredProducts = new Set(productsList.products);
-    const foundProducts = new Set<Product>();
+    if (productsList[selectedMarket.name]) {
+      const requiredProducts = new Set(productsListState[selectedMarket.name]);
+      const foundProducts = new Set<Product>();
+      for (const vendor of sortedVendors) {
+        const filteredProducts = vendor.products.filter((product: Product) => productsList[selectedMarket.name].includes(product.name));
+        if (filteredProducts.length > 0) {
+          const newVendor = new Vendor(
+            vendor.id,
+            vendor.name,
+            vendor.market,
+            vendor.position,
+            vendor.quality_rating,
+            vendor.convenience_rating,
+            vendor.cordiality_rating,
+            vendor.priceMultiplier,
+            vendor.categories,
+            vendor.badges,
+            filteredProducts
+          );
+          filtered.push(newVendor);
+          filteredProducts.forEach((product: Product) => foundProducts.add(product));
+        }
+        if (Array.from(requiredProducts as Set<string>).every((product: string) => Array.from(foundProducts as Set<Product>).some((fp: Product) => fp.name === product))) {
+          break;
+        }
+      }
 
-    for (const vendor of sortedVendors) {
-      const filteredProducts = vendor.products.filter((product: Product) => productsList.products.includes(product.name));
-      if (filteredProducts.length > 0) {
-        const newVendor = new Vendor(
-          vendor.id,
-          vendor.name,
-          vendor.market,
-          vendor.position,
-          vendor.quality_rating,
-          vendor.convenience_rating,
-          vendor.cordiality_rating,
-          vendor.priceMultiplier,
-          vendor.categories,
-          vendor.badges,
-          filteredProducts
-        );
-        filtered.push(newVendor);
-        filteredProducts.forEach((product: Product) => foundProducts.add(product));
-      }
-      if (Array.from(requiredProducts).every((product: string) => Array.from(foundProducts).some((fp: Product) => fp.name === product))) {
-        break;
-      }
+      // Check for missing products
+      const missing: string[] = Array.from(requiredProducts as Set<string>).filter(product =>
+        !Array.from(foundProducts).some((fp: Product) => fp.name === product)
+      );
+
+      setMissingProducts(missing);
+      setFilteredVendors(filtered);
+
+
+      // Save filtered vendors to local storage using the market name as the key
+      localStorage.setItem(`filteredVendors_${selectedMarket.name}`, JSON.stringify(filtered));
+      localStorage.setItem(`missingProducts_${selectedMarket.name}`, JSON.stringify(missing));
+    } else {
+      console.error(`Market ${selectedMarket} not found in productsList`);
     }
-
-    // Check for missing products
-    const missing = Array.from(requiredProducts).filter(product =>
-      !Array.from(foundProducts).some((fp: Product) => fp.name === product)
-    );
-
-    setMissingProducts(missing);
-    setFilteredVendors(filtered);
-
   }, [vendors]);
+
+
 
 
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
@@ -130,7 +210,7 @@ export default function App() {
     <div id='approot' className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
       <Routes>
         <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
-          <Route index path={`${paths[0]}`} element={<PageShoppingList selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} sortByQuality={sortByQuality} sortByConvenience={sortByConvenience} sortByCordiality={sortByCordiality} theme={theme} filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors} setMissingProducts={setMissingProducts} missingProducts={missingProducts} />} />
+          <Route index path={`${paths[0]}`} element={<PageShoppingList productsList={productsList} setProductsList={setProductsList} selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} sortByQuality={sortByQuality} sortByConvenience={sortByConvenience} sortByCordiality={sortByCordiality} theme={theme} filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors} setMissingProducts={setMissingProducts} missingProducts={missingProducts} />} />
           <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} />} />
           <Route path={`${paths[2]}`} element={<PageReward />} />
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} />} />

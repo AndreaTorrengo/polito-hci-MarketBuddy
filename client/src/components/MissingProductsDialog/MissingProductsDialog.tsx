@@ -1,11 +1,9 @@
 import { Button, Dialog, DialogPanel } from '@tremor/react';
 import WarningIcon from '@mui/icons-material/Warning';
-import { Vendor, Product } from '../../models';
-import React, { useState, useEffect, useRef } from 'react';
+import { Vendor, Product, Market } from '../../models';
+import React, { useState, useEffect,} from 'react';
 import { useSwipeable } from 'react-swipeable';
-import currentMarket from '../../currentMarket.json';
 import './MissingProductsDialog.css';
-
 
 interface MissingProductsDialogProps {
     filteredVendors: Vendor[];
@@ -16,15 +14,32 @@ interface MissingProductsDialogProps {
     sortByQuality: boolean;
     sortByConvenience: boolean;
     sortByCordiality: boolean;
+    productsList: { [key: string]: string[] };
+    setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
+    selectedMarket: Market;
+    setSelectedMarket: (market: Market) => void;
 }
 
-const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissingProducts, missingProducts, filteredVendors, setFilteredVendors, theme, sortByConvenience, sortByCordiality, sortByQuality }) => {
+const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
+    setMissingProducts,
+    missingProducts,
+    filteredVendors,
+    setFilteredVendors,
+    theme,
+    sortByConvenience,
+    sortByCordiality,
+    sortByQuality,
+    productsList,
+    setProductsList,
+    selectedMarket,
+    setSelectedMarket
+}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [selectedAlternatives, setSelectedAlternatives] = useState<{ [key: string]: Product[] }>({});
     const [randomAlternatives, setRandomAlternatives] = useState<{ [key: string]: Product[] }>({});
-    const hasGeneratedAlternatives = useRef(false);
+
 
     const alternatives: Product[] = [
         { id: 1, name: "Alternative 1", price: 1.2 },
@@ -34,49 +49,52 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
         { id: 5, name: "Alternative 5", price: 5.1 }
     ];
 
+
     useEffect(() => {
-        if (!hasGeneratedAlternatives.current && missingProducts.length > 0) {
+        const storedMissingProducts = localStorage.getItem(`missingProducts_${selectedMarket.name}`);
+        if (storedMissingProducts) {
+            const parsedProducts: string[] = JSON.parse(storedMissingProducts);
+            if (parsedProducts.length && JSON.stringify(parsedProducts) !== JSON.stringify(missingProducts)) {
+                setMissingProducts(parsedProducts);
+            }
+        }
 
-            const shuffleArray = (array: Product[]) => {
-                return array.sort(() => 0.5 - Math.random());
-            };
+        if (missingProducts.length > 0) {
+            const shuffleArray = (array: Product[]) => array.sort(() => 0.5 - Math.random());
 
-            const selectRandomAlternatives = (array: Product[], count: number) => {
-                return shuffleArray(array).slice(0, count);
-            };
+            const selectRandomAlternatives = (array: Product[], count: number) => shuffleArray(array).slice(0, count);
 
             const generateRandomAlternatives = () => {
                 const newRandomAlternatives: { [key: string]: Product[] } = {};
                 missingProducts.forEach((product) => {
-                    const maxAlternatives = Math.min(alternatives.length, 3);
-                    newRandomAlternatives[product] = selectRandomAlternatives(alternatives, Math.floor(Math.random() * maxAlternatives) + 1);
+                    const storedAlternatives = localStorage.getItem(`alternatives_${selectedMarket.name}_${product}`);
+                    if (storedAlternatives) {
+                        newRandomAlternatives[product] = JSON.parse(storedAlternatives);
+                    } else {
+                        const maxAlternatives = Math.min(alternatives.length, 3);
+                        const selectedAlternatives = selectRandomAlternatives(alternatives, Math.floor(Math.random() * maxAlternatives) + 1);
+                        newRandomAlternatives[product] = selectedAlternatives;
+                        localStorage.setItem(`alternatives_${selectedMarket.name}_${product}`, JSON.stringify(selectedAlternatives));
+                    }
                 });
                 setRandomAlternatives(newRandomAlternatives);
             };
 
             generateRandomAlternatives();
-            hasGeneratedAlternatives.current = true;
         }
-
-    }, [missingProducts]);
+    }, [missingProducts, selectedMarket]);
 
     const handleConfirm = (product: string, selectedAlternatives: Product[]) => {
         const updatedFiltered: Vendor[] = [...filteredVendors];
         const remainingMissingProducts = missingProducts.filter((p) => p !== product);
         const randomOffset = () => (Math.random() * 0.0004 - 0.0002).toFixed(2);
-        const newPosition = `${currentMarket.position[0] + parseFloat(randomOffset())},${currentMarket.position[1] + parseFloat(randomOffset())}`;
-        const getRandomRating = (highRating: boolean) => {
-            if (highRating) {
-                return Math.floor(Math.random() * 11) + 90; // Random rating between 90% and 100%
-            }
-            return Math.floor(Math.random() * 31) + 70; // Random rating between 70% and 100%
-        };
+        const newPosition = `${selectedMarket.position[0] + parseFloat(randomOffset())},${selectedMarket.position[1] + parseFloat(randomOffset())}`;
+        const getRandomRating = (highRating: boolean) => highRating ? Math.floor(Math.random() * 11) + 90 : Math.floor(Math.random() * 31) + 70;
 
-        // Create a new vendor with all alternatives as products
         const newVendor = new Vendor(
             updatedFiltered.length + 1,
             `SampleVendor#${updatedFiltered.length + 1}`,
-            currentMarket.marketName,
+            selectedMarket.name,
             newPosition,
             getRandomRating(sortByQuality) + "%",
             getRandomRating(sortByConvenience) + "%",
@@ -88,16 +106,22 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
         );
 
         updatedFiltered.push(newVendor);
+        console.log(updatedFiltered);
 
         setFilteredVendors(updatedFiltered);
-        setMissingProducts(remainingMissingProducts); // Update missing products with the remaining ones
+        setMissingProducts(remainingMissingProducts);
+        localStorage.setItem(`missingProducts_${selectedMarket.name}`, JSON.stringify(remainingMissingProducts));
+        localStorage.setItem(`filteredVendors_${selectedMarket.name}`, JSON.stringify(updatedFiltered));
 
-        // Reset to the first alternative if this was the last one
+        const updatedProductList = { ...productsList };
+        updatedProductList[selectedMarket.name] = updatedProductList[selectedMarket.name].filter(p => p !== product);
+        setProductsList(updatedProductList);
+        localStorage.setItem('productsList', JSON.stringify(updatedProductList));
+
         if (currentIndex === missingProducts.length - 1) {
             setCurrentIndex(0);
         }
 
-        // Show confirmation popup
         setShowConfirmation(true);
         setTimeout(() => {
             setShowConfirmation(false);
@@ -181,7 +205,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({ setMissin
                                                         border: 'none',
                                                         textAlign: 'center',
                                                         color: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? '#fff' : (theme === 'dark' ? '#000' : '#000'),
-                                                        backgroundColor: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? (theme === 'dark' ? '#3b82f6' : '#3b82f6') : (theme === 'dark' ? '#6b7280' : '#e5e7eb'),
+                                                        backgroundColor: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? (theme === 'dark' ? '#3b82f6' : '#3b82f6') : (theme === 'dark' ? '#a0aec0' : '#e5e7eb'),
                                                         margin: '0 auto'
                                                     }}
                                                     onClick={() => handleSelectAlternative(missingProducts[currentIndex], alternative)}

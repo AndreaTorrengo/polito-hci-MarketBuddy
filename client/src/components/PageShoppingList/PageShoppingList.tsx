@@ -1,6 +1,6 @@
 import MarketSelectorSheet from "../MarketSelectorSheet/MarketSelectorSheet";
 import MissingProductsDialog from "../MissingProductsDialog/MissingProductsDialog";
-import { Vendor } from "../../models";
+import { Vendor, Market } from "../../models";
 
 interface PageShoppingListProps {
   filteredVendors: Vendor[];
@@ -11,11 +11,13 @@ interface PageShoppingListProps {
   sortByQuality: boolean;
   sortByConvenience: boolean;
   sortByCordiality: boolean;
-  selectedMarket: string;
-  setSelectedMarket: (market: string) => void;
+  selectedMarket: Market;
+  setSelectedMarket: (market: Market) => void;
+  productsList: { [key: string]: string[] };
+  setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
 }
 
-export default function PageShoppingList({ filteredVendors, setFilteredVendors, setMissingProducts, missingProducts, theme, sortByQuality, sortByConvenience, sortByCordiality,selectedMarket, setSelectedMarket }: PageShoppingListProps) {
+export default function PageShoppingList({ filteredVendors, setFilteredVendors, setMissingProducts, missingProducts, theme, sortByQuality, sortByConvenience, sortByCordiality,selectedMarket, setSelectedMarket,productsList, setProductsList }: PageShoppingListProps) {
   return (
     <>
       <div id="ShoppingListPage">
@@ -32,6 +34,10 @@ export default function PageShoppingList({ filteredVendors, setFilteredVendors, 
         sortByQuality={sortByQuality} 
         sortByConvenience={sortByConvenience} 
         sortByCordiality={sortByCordiality}
+        productsList={productsList}
+        setProductsList={setProductsList}
+        selectedMarket={selectedMarket}
+        setSelectedMarket={setSelectedMarket}
       />
 
 
