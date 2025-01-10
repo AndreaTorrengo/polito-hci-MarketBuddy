@@ -103,7 +103,7 @@ export default function App() {
     const savedProductsList = localStorage.getItem('productsList');
     const savedmissingProducts = localStorage.getItem(`missingProducts_${selectedMarket.name}`);
     setMissingProducts(savedmissingProducts  && JSON.parse(savedmissingProducts).length ? JSON.parse(savedmissingProducts) : []);
-    console.log(savedmissingProducts);
+
     if (savedFilteredVendors && JSON.parse(savedFilteredVendors).length && savedProductsList) {
       return;
   }

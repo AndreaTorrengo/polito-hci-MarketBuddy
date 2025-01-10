@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogPanel } from '@tremor/react';
 import WarningIcon from '@mui/icons-material/Warning';
 import { Vendor, Product, Market } from '../../models';
-import React, { useState, useEffect,} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import './MissingProductsDialog.css';
 
@@ -50,6 +50,8 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
     ];
 
 
+    const previousMarketRef = useRef(selectedMarket);
+
     useEffect(() => {
         const storedMissingProducts = localStorage.getItem(`missingProducts_${selectedMarket.name}`);
         if (storedMissingProducts) {
@@ -60,6 +62,8 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
         }
 
         if (missingProducts.length > 0) {
+            console.log('alternatives', missingProducts);
+
             const shuffleArray = (array: Product[]) => array.sort(() => 0.5 - Math.random());
 
             const selectRandomAlternatives = (array: Product[], count: number) => shuffleArray(array).slice(0, count);
@@ -82,6 +86,11 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
 
             generateRandomAlternatives();
         }
+
+        if (previousMarketRef.current.name !== selectedMarket.name) {
+            setCurrentIndex(0);
+        }
+        previousMarketRef.current = selectedMarket;
     }, [missingProducts, selectedMarket]);
 
     const handleConfirm = (product: string, selectedAlternatives: Product[]) => {
