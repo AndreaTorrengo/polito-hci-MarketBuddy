@@ -65,6 +65,18 @@
   text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
 }
 
+.filtered-tooltip {
+  background-color: transparent;
+  border: none;
+  padding: 5px;
+  color: #377E22;
+  box-shadow: none;
+  font-size: 1rem;
+  text-align: center;
+  font-weight: bold;
+  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+}
+
 .selected-tooltip::before,
 .selected-tooltip::after {
   display: none !important;
@@ -76,6 +88,11 @@
 }
 
 .dark .custom-tooltip {
+  color: rgb(255, 255, 255);
+  text-shadow: -1px -1px 0 #363030, 1px -1px 0 #363030, -1px 1px 0 #363030, 1px 1px 0 #363030; 
+}
+
+.dark .filtered-tooltip {
   color: rgb(255, 255, 255);
   text-shadow: -1px -1px 0 #363030, 1px -1px 0 #363030, -1px 1px 0 #363030, 1px 1px 0 #363030; 
 }

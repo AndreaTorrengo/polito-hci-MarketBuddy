@@ -47,7 +47,7 @@ interface PageMapProps {
   theme: string;
 }
 
-const PageMap: React.FC<PageMapProps> = ({ vendors, filteredVendors, theme }) => {
+const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme }) => {
   const offset: [number, number] = getRandomOffset();
   const [markerPosition, setMarkerPosition] = useState<[number, number]>([
     currentMarket.position[0] + offset[0],
@@ -105,7 +105,6 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, filteredVendors, theme }) =>
     };
   }, [markerPosition]);
 
-  // Handle icons creation
   const createIcon = (color: string) => {
 
     const darkenColor = (color: string, amount: number) => {
@@ -115,15 +114,18 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, filteredVendors, theme }) =>
     let borderColor, backgroundColor, backgroundColorCircle;
 
     if (theme === 'dark') {
-      borderColor = color === '#447FC4' ? '##D3D3D3' : darkenColor(color, 20);
+      borderColor = color === '#447FC4' ? '#000000' : darkenColor(color, 20);
       backgroundColor = color;
       backgroundColorCircle = color === '#447FC4' ? '##D3D3D3' : darkenColor(color, 20);
+    } else if (color === 'green') {
+      borderColor = '#ffffff'; 
+      backgroundColor = '#008000';
+      backgroundColorCircle = '#ffffff';
     } else {
       borderColor = color === '#447FC4' ? '#ffffff' : darkenColor(color, 20);
       backgroundColor = color;
       backgroundColorCircle = color === '#447FC4' ? '#ffffff' : darkenColor(color, 20);
     }
-
 
     const iconSvg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
@@ -134,9 +136,7 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, filteredVendors, theme }) =>
     </svg>
   `;
 
-
     const iconUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(iconSvg)}`;
-
 
     return new L.Icon({
       iconUrl,
@@ -148,6 +148,7 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, filteredVendors, theme }) =>
 
   const unselectedIcon = createIcon('#447FC4');
   const selectedIcon = createIcon('red');
+  const filteredIcon = createIcon('green');
 
   // Handle map light-mode and dark-mode
   const tileLayerUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
@@ -164,22 +165,28 @@ const PageMap: React.FC<PageMapProps> = ({ vendors, filteredVendors, theme }) =>
         maxZoom={18}
         style={{ height: '100%', width: '100%' }}
       >
-        <TileLayer  className={theme === "dark" ? "dark-mode-filter" : ""} url={tileLayerUrl} attribution={tileLayerAttribution} />
+        <TileLayer className={theme === "dark" ? "dark-mode-filter" : ""} url={tileLayerUrl} attribution={tileLayerAttribution} />
         {/* Update map center dynamically */}
         <OnFlyMarker center={center} />
         <UpdateMapCenter center={currentMarket.position as [number, number]} />
         {/* Vendors position */}
         {showedVendors.map((vendor, idx) => {
           const position: [number, number] = vendor.position as [number, number];
+          const isFiltered = filteredVendors.some(filteredVendor => filteredVendor.id === vendor.id);
+          console.log('filt', filteredVendors)
+          console.log(showedVendors)
+          const icon = selectedMarker === position
+            ? selectedIcon
+            : (isFiltered ? filteredIcon : unselectedIcon);
           return (
             <Marker key={idx} position={position}
-              icon={selectedMarker === position ? selectedIcon : unselectedIcon}
+              icon={icon}
               eventHandlers={{
                 click: () => handleMarkerClick(position),
               }}>
               <Tooltip direction="top" offset={[50, 10]} opacity={1} permanent
-                key={selectedMarker === position ? 'selected-tooltip' : 'custom-tooltip'}
-                className={selectedMarker === position ? 'selected-tooltip' : 'custom-tooltip'}>
+                key={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}
+                className={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}>
                 <span>{vendor.name}</span>
               </Tooltip>
               <Popup>

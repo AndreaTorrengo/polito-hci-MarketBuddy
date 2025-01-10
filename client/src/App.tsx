@@ -21,7 +21,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState(paths.indexOf(window.location.pathname));
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [filteredVendors, setFilteredVendors] = useState<Vendor[]>([
-    new Vendor(1, 'Vendor 1', 'Market 1', [
+    new Vendor(6, 'Alberto', 'Market 1', [
       45.076796,
       7.683614
     ], 4.5, 4.0, 4.8, 1.2, ['Food'], ['Badge 1'], [
