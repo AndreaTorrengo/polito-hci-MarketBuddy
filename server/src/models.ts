@@ -38,4 +38,18 @@ class Product {
     }
 }
 
-export { Vendor, Product };
+class Reward {
+    id: number;
+    description: string;
+    cost: number;
+    icon: string;
+
+    constructor(id: number, description: string, cost: number, icon: string) {
+        this.id = id;
+        this.description = description;
+        this.cost = cost;
+        this.icon = icon;
+    }
+}
+
+export { Vendor, Product, Reward };
