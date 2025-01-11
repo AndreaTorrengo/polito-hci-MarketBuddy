@@ -2,13 +2,10 @@ import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap, Tooltip } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Button } from '@tremor/react';
-import currentMarket from '../../currentMarket.json';
-import { Vendor } from '../../models';
+import { Vendor, Market, Product } from '../../models';
 import './pagemap.css';
 import tinycolor from 'tinycolor2';
 import Switch from '@mui/material/Switch';
-import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 
@@ -45,27 +42,31 @@ interface PageMapProps {
   vendors: Vendor[];
   filteredVendors: Vendor[];
   theme: string;
+  selectedMarket: Market;
 }
 
-const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme }) => {
+const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, selectedMarket }) => {
   const offset: [number, number] = getRandomOffset();
   const [markerPosition, setMarkerPosition] = useState<[number, number]>([
-    currentMarket.position[0] + offset[0],
-    currentMarket.position[1] + offset[1],
+    selectedMarket.position[0] + offset[0],
+    selectedMarket.position[1] + offset[1],
   ]);
-  const [center, setMapCenter] = useState<[number, number]>(currentMarket.position as [number, number]);
+  const [center, setMapCenter] = useState<[number, number]>(selectedMarket.position as [number, number]);
   const [selectedMarker, setSelectedMarker] = useState<[number, number] | null>(null);
   const [showAllVendors, setShowAllVendors] = useState(false);
-  const [showedVendors, setShowedVendors] = useState<Vendor[]>(vendors);
+  const [showedVendors, setShowedVendors] = useState<Vendor[]>();
 
   const toggleButton = () => {
-    setShowAllVendors(!showAllVendors);
-    if (showAllVendors) {
-      setShowedVendors(vendors);
-    } else {
-      setShowedVendors(filteredVendors)
-    }
-  };
+    setShowAllVendors(prevShowAllVendors => {
+        const newShowAllVendors = !prevShowAllVendors;
+        if (newShowAllVendors) {
+            setShowedVendors(vendors);
+        } else {
+            setShowedVendors(filteredVendors);
+        }
+        return newShowAllVendors;
+    });
+};
 
   const handleMarkerClick = (position: [number, number]) => {
     setSelectedMarker(position);
@@ -74,8 +75,17 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme }) =>
 
   //inizialize user marker position
   useEffect(() => {
-    setMarkerPosition([currentMarket.position[0] + offset[0], currentMarket.position[1] + offset[1]]);
-  }, [currentMarket]);
+    setMarkerPosition([selectedMarket.position[0] + offset[0], selectedMarket.position[1] + offset[1]]);
+  }, [selectedMarket]);
+
+  useEffect(() => {
+    if (showAllVendors ) {
+      setShowedVendors(vendors);
+    } else {
+      setShowedVendors(filteredVendors)
+    }
+    console.log('mapfiltered',filteredVendors)
+  }, [vendors, filteredVendors]);
 
   // Handle movable marker movement
   useEffect(() => {
@@ -118,7 +128,7 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme }) =>
       backgroundColor = color;
       backgroundColorCircle = color === '#447FC4' ? '##D3D3D3' : darkenColor(color, 20);
     } else if (color === 'green') {
-      borderColor = '#ffffff'; 
+      borderColor = '#ffffff';
       backgroundColor = '#008000';
       backgroundColorCircle = '#ffffff';
     } else {
@@ -160,7 +170,7 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme }) =>
   return (
     <div style={{ height: '100%', width: '100%', position: 'relative' }}>
       <MapContainer
-        center={currentMarket.position as [number, number]}
+        center={selectedMarket.position as [number, number]}
         zoom={17}
         maxZoom={18}
         style={{ height: '100%', width: '100%' }}
@@ -168,13 +178,11 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme }) =>
         <TileLayer className={theme === "dark" ? "dark-mode-filter" : ""} url={tileLayerUrl} attribution={tileLayerAttribution} />
         {/* Update map center dynamically */}
         <OnFlyMarker center={center} />
-        <UpdateMapCenter center={currentMarket.position as [number, number]} />
+        <UpdateMapCenter center={selectedMarket.position as [number, number]} />
         {/* Vendors position */}
-        {showedVendors.map((vendor, idx) => {
+        {showedVendors?.map((vendor, idx) => {
           const position: [number, number] = vendor.position as [number, number];
           const isFiltered = filteredVendors.some(filteredVendor => filteredVendor.id === vendor.id);
-          console.log('filt', filteredVendors)
-          console.log(showedVendors)
           const icon = selectedMarker === position
             ? selectedIcon
             : (isFiltered ? filteredIcon : unselectedIcon);
@@ -210,7 +218,7 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme }) =>
                 </div>
                 <div className="vendor-info" style={{ fontSize: "0.75rem", marginBottom: "0.5rem" }}>
                   <p style={{ marginTop: "0.5rem" }}>Quality: {vendor.quality_rating}</p>
-                  <p>Price: {vendor.price_rating}</p>
+                  <p>Concenience: {vendor.convenience_rating}</p>
                   <p>Cordiality: {vendor.cordiality_rating}</p>
                 </div>
                 <strong style={{ fontSize: "1rem" }}>Products</strong>

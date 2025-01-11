@@ -1,6 +1,5 @@
 import { Outlet, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
-import PageShoppingList from "./components/PageShoppingList/PageShoppingList";
 import PageQuest from "./components/PageQuest/PageQuest";
 import PageReward from "./components/PageReward/PageReward";
 import PageRewardHistory from './components/PageReward/PageRewardHistory';
@@ -12,6 +11,7 @@ import { useEffect, useState } from "react";
 import API from "./API";
 import { Vendor, Product, Market } from "./models";
 import ConfirmPopup from "./components/ConfirmationPopup";
+import TabsHero from "./components/TabSelector/TabSelector";
 
 
 export default function App() {
@@ -19,8 +19,8 @@ export default function App() {
   const [theme, setTheme] = useState<string>(localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
   const [selectedMarket, setSelectedMarket] = useState<Market>({
     id: 1,
-    "name": "Porta Palazzo Market",
-    "position": [
+    name: "Porta Palazzo Market",
+    position: [
       45.076796,
       7.683614
     ],
@@ -38,47 +38,30 @@ export default function App() {
   const [productsList, setProductsList] = useState<{ [key: string]: string[] }>({
     "Porta Palazzo Market": [
       "Lettuce",
-      "Orange",
-      "Cucumber",
+      "Carrot",
+      "Pears",
       "Chicken Breast",
       "Milk",
-      "Shrimp",
-      "Breaded Slices",
-      "Octopus",
-      "Liver"
+      "Salmon",
+      "Bream"
     ],
     "Santa Rita Market": [
       "Lettuce",
-      "Orange",
-      "Cucumber",
+      "Carrot",
+      "Pears",
       "Chicken Breast",
       "Milk",
-      "Shrimp",
-      "Breaded Slices",
-      "Octopus",
-      "Liver"
-    ],
-    "Piazza Benefica Market": [
-      "Lettuce",
-      "Orange",
-      "Cucumber",
-      "Chicken Breast",
-      "Milk",
-      "Shrimp",
-      "Breaded Slices",
-      "Octopus",
-      "Liver"
+      "Salmon",
+      "Bream"
     ],
     "Crocetta Market": [
       "Lettuce",
-      "Orange",
-      "Cucumber",
+      "Carrot",
+      "Pears",
       "Chicken Breast",
       "Milk",
-      "Shrimp",
-      "Breaded Slices",
-      "Octopus",
-      "Liver"
+      "Salmon",
+      "Bream"
     ],
   });
 
@@ -88,32 +71,23 @@ export default function App() {
   useEffect(() => {
     const fetchVendors = async () => {
       try {
+
         const vendors = await API.getVendorsByMarket(selectedMarket.name);
         setVendors(vendors);
 
-      } catch (error) {
+      }
+      catch (error) {
         console.error(error);
       }
     }
     fetchVendors();
-
   }, [selectedMarket]);
 
 
-  useEffect(() => {
-
-    const savedFilteredVendors = localStorage.getItem(`filteredVendors_${selectedMarket.name}`);
+  const updateVendorsAndProducts = () => {
     const savedProductsList = localStorage.getItem('productsList');
-    const savedmissingProducts = localStorage.getItem(`missingProducts_${selectedMarket.name}`);
-    setMissingProducts(savedmissingProducts && JSON.parse(savedmissingProducts).length ? JSON.parse(savedmissingProducts) : []);
-
-    if (savedFilteredVendors && JSON.parse(savedFilteredVendors).length && savedProductsList) {
-      return;
-    }
     const productsListState = savedProductsList ? JSON.parse(savedProductsList) : productsList;
-
-    let sortedVendors: Vendor[] = savedFilteredVendors && JSON.parse(savedFilteredVendors).length ? JSON.parse(savedFilteredVendors) : [...vendors];
-
+    let sortedVendors: Vendor[] = [...vendors];
 
     sortedVendors.sort((a, b) => {
       let comparison = 0;
@@ -135,32 +109,35 @@ export default function App() {
       return comparison;
     });
 
-
-
     const filtered: Vendor[] = [];
-    if (productsList[selectedMarket.name]) {
+    if (productsListState[selectedMarket.name]) {
       const requiredProducts = new Set(productsListState[selectedMarket.name]);
+
       const foundProducts = new Set<Product>();
+
       for (const vendor of sortedVendors) {
-        const filteredProducts = vendor.products.filter((product: Product) => productsList[selectedMarket.name].includes(product.name));
+        const filteredProducts = vendor.products.filter((product: Product) =>
+          productsListState[selectedMarket.name].includes(product.name),
+        );
+
+
+
+
+
         if (filteredProducts.length > 0) {
-          const newVendor = new Vendor(
-            vendor.id,
-            vendor.name,
-            vendor.market,
-            vendor.position,
-            vendor.quality_rating,
-            vendor.convenience_rating,
-            vendor.cordiality_rating,
-            vendor.priceMultiplier,
-            vendor.categories,
-            vendor.badges,
-            filteredProducts
-          );
+          const newVendor = {
+            ...vendor,
+            products: filteredProducts
+          };
           filtered.push(newVendor);
           filteredProducts.forEach((product: Product) => foundProducts.add(product));
         }
-        if (Array.from(requiredProducts as Set<string>).every((product: string) => Array.from(foundProducts as Set<Product>).some((fp: Product) => fp.name === product))) {
+
+        const allRequiredProductsFound = Array.from(requiredProducts as Set<string>).every((product: string) =>
+          Array.from(foundProducts as Set<Product>).some((fp: Product) => fp.name === product)
+        );
+
+        if (allRequiredProductsFound) {
           break;
         }
       }
@@ -174,12 +151,13 @@ export default function App() {
       setFilteredVendors(filtered);
 
 
-      // Save filtered vendors to local storage using the market name as the key
-      localStorage.setItem(`filteredVendors_${selectedMarket.name}`, JSON.stringify(filtered));
-      localStorage.setItem(`missingProducts_${selectedMarket.name}`, JSON.stringify(missing));
     } else {
-      console.error(`Market ${selectedMarket} not found in productsList`);
+      console.error(`Market ${selectedMarket.name} not found in productsList`);
     }
+  };
+
+  useEffect(() => {
+    updateVendorsAndProducts();
   }, [vendors]);
 
 
@@ -228,7 +206,7 @@ export default function App() {
     <div id='approot' className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
       <Routes>
         <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
-          <Route index path={`${paths[0]}`} element={<PageShoppingList productsList={productsList} setProductsList={setProductsList} selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} sortByQuality={sortByQuality} sortByConvenience={sortByConvenience} sortByCordiality={sortByCordiality} theme={theme} filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors} setMissingProducts={setMissingProducts} missingProducts={missingProducts} />} />
+          <Route index path={`${paths[0]}`} element={<TabsHero theme={theme} vendors={vendors} filteredVendors={filteredVendors} selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} missingProducts={missingProducts} updateVendorsAndProducts={updateVendorsAndProducts} productsList={productsList} setProductsList={setProductsList} />} />
           <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} leaderboardPath={`${paths[5]}`} />} />
           <Route path={`${paths[2]}`} element={<PageReward askConfirmation={askConfirmation} />} />
           <Route path={`${paths[2]}/history`} element={<PageRewardHistory />} />

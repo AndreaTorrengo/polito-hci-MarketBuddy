@@ -2,16 +2,23 @@ import { useState, useEffect } from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import PageMap from '../PageMap/PageMap';
-import { Vendor } from '../../models';
+import { Market, Product, Vendor } from '../../models';
 import PageShoppingList from '../PageShoppingList/PageShoppingList';
+import MarketSelectorSheet from '../MarketSelectorSheet/MarketSelectorSheet';
 
 interface TabsHeroProps {
     theme: string;
     vendors: Vendor[];
     filteredVendors: Vendor[];
+    selectedMarket: Market;
+    setSelectedMarket: (selectedMarket: Market) => void;
+    missingProducts: string[];
+    updateVendorsAndProducts: () => void;
+    productsList: { [key: string]: string[] };
+    setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
 }
 
-export default function TabsHero({ theme, vendors, filteredVendors }: TabsHeroProps): JSX.Element {
+export default function TabsHero({ theme, vendors, filteredVendors, selectedMarket, setSelectedMarket, missingProducts, updateVendorsAndProducts,productsList,setProductsList }: TabsHeroProps): JSX.Element {
     const [activeTab, setActiveTab] = useState(() => {
         return localStorage.getItem('activeTab') || 'map';
     });
@@ -35,6 +42,7 @@ export default function TabsHero({ theme, vendors, filteredVendors }: TabsHeroPr
 
     return (
         <div>
+            <MarketSelectorSheet selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.5rem', marginTop: '0.5rem' }}>
                 <ToggleButtonGroup
                     color="primary"
@@ -73,10 +81,10 @@ export default function TabsHero({ theme, vendors, filteredVendors }: TabsHeroPr
             <div>
                 {activeTab === 'map' && (
                     <div className="flex" style={{ width: '100%', height: '49.2rem' }}>
-                        <PageMap theme={theme} vendors={vendors} filteredVendors={filteredVendors} />
+                        <PageMap theme={theme} vendors={vendors} filteredVendors={filteredVendors} selectedMarket={selectedMarket} />
                     </div>
                 )}
-                {activeTab === 'list' && <PageShoppingList />}
+                {activeTab === 'list' && <PageShoppingList productsList={productsList} setProductsList={setProductsList} theme={theme} selectedMarket={selectedMarket}  missingProducts={missingProducts} updateVendorsAndProducts={updateVendorsAndProducts} />}
             </div>
         </div>
     );
