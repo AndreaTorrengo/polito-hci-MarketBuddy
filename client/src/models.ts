@@ -55,4 +55,18 @@ class Market {
     }
 }
 
-export { Vendor, Product, Market };
+class Reward {
+    id: number;
+    description: string;
+    cost: number;
+    icon: string;
+
+    constructor(id: number, description: string, cost: number, icon: string) {
+        this.id = id;
+        this.description = description;
+        this.cost = cost;
+        this.icon = icon;
+    }
+}
+
+export { Vendor, Product, Reward, Market };
