@@ -104,11 +104,11 @@ export default function App() {
     const savedFilteredVendors = localStorage.getItem(`filteredVendors_${selectedMarket.name}`);
     const savedProductsList = localStorage.getItem('productsList');
     const savedmissingProducts = localStorage.getItem(`missingProducts_${selectedMarket.name}`);
-    setMissingProducts(savedmissingProducts  && JSON.parse(savedmissingProducts).length ? JSON.parse(savedmissingProducts) : []);
+    setMissingProducts(savedmissingProducts && JSON.parse(savedmissingProducts).length ? JSON.parse(savedmissingProducts) : []);
 
     if (savedFilteredVendors && JSON.parse(savedFilteredVendors).length && savedProductsList) {
       return;
-  }
+    }
     const productsListState = savedProductsList ? JSON.parse(savedProductsList) : productsList;
 
     let sortedVendors: Vendor[] = savedFilteredVendors && JSON.parse(savedFilteredVendors).length ? JSON.parse(savedFilteredVendors) : [...vendors];
@@ -187,7 +187,7 @@ export default function App() {
   const [popupText, setPopupText] = useState("Are you sure?");
   const [cancelButtonText, setCancelButtonText] = useState("Cancel");
   const [confirmButtonText, setConfirmButtonText] = useState("Confirm");
-  const [confirmationCallback, setConfirmationCallback] = useState(() => { });
+  const [confirmationCallback, setConfirmationCallback] = useState<() => void>(() => { });
   const [showPopup, setShowPopup] = useState(false);
 
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
@@ -233,7 +233,7 @@ export default function App() {
           <Route path={`${paths[2]}/history`} element={<PageRewardHistory />} />
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} />} />
           <Route path={`${paths[4]}`} element={<PageNotFound />} />
-          <Route path={`${paths[5]}`} element={<PageLeaderboard/>} />
+          <Route path={`${paths[5]}`} element={<PageLeaderboard />} />
         </Route>
       </Routes>
       {showPopup &&
