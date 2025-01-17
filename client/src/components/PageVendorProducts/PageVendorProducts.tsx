@@ -3,7 +3,7 @@ import VendorCategoryList from "./VendorCategoryList.tsx";
 import React, { useState } from "react";
 import AddProductButton from "./AddProductButton.tsx";
 import ProductListItem, { ProductListItemProps } from "./ProductListItem.tsx";
-import CropFreeIcon from '@mui/icons-material/CropFree';
+import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import { Sheet } from 'react-modal-sheet';
 import VendorBadges from "./VendorBadges.tsx";
 import { ButtonBase, IconButton } from "@mui/material";
@@ -23,9 +23,7 @@ export default function PageVendorProducts({ vendorId }: PageVendorProductsParam
     const [categories] = useState<string[]>([
         "Category 1",
         "Category 2",
-        "Category 3",
-        "Category 4",
-        "Category 5"
+        "Category 3"
     ]);
 
     const [products] = useState<ProductListItemProps[]>([
@@ -160,10 +158,10 @@ export default function PageVendorProducts({ vendorId }: PageVendorProductsParam
 
     return (
         <>
-            <button className="font-bold py-2 px-4 inline-flex items-center dark:text-dark-tremor-content-strong animated dark:active:text-dark-tremor-content-emphasis active:scale-subtle" onClick={() => setIsOpen(true)}>
-                <IconButton><CropFreeIcon /></IconButton>
+            <div className="font-bold py-2 px-4 inline-flex items-center dark:text-dark-tremor-content-strong animated dark:active:text-dark-tremor-content-emphasis active:scale-subtle" onClick={() => setIsOpen(true)}>
+                <IconButton><QrCodeScannerIcon /></IconButton>
                 <span className="ml-2">Example Vendor</span>
-            </button>
+            </div>
             <Sheet isOpen={isOpen} onClose={() => setIsOpen(false)} detent='content-height' rootId="root" mountPoint={approot}>
                 <Sheet.Container>
                     <Sheet.Header
@@ -236,9 +234,11 @@ export default function PageVendorProducts({ vendorId }: PageVendorProductsParam
                                             if the name
                                             is too much long</h1>}
                                         rightComponent={
-                                            <IconButton>
-                                                <CropFreeIcon className="text-black dark:text-white" />
-                                            </IconButton>
+                                            <div className="flex flex-row">
+                                                <IconButton>
+                                                    <QrCodeScannerIcon className="text-black dark:text-white" />
+                                                </IconButton>
+                                            </div>
                                         }>
                                     </TopBar>
                                 }
@@ -250,7 +250,7 @@ export default function PageVendorProducts({ vendorId }: PageVendorProductsParam
                                     </div>
 
                                     <div className="w-full">
-                                        <VendorBadges market="Crocetta Market" />
+                                        <VendorBadges market="Crocetta Market" quality={79} cordiality={80} convenience={70.3} />
                                     </div>
 
                                     <div className="w-full flex-1">
