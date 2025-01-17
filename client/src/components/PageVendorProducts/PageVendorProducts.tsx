@@ -159,7 +159,6 @@ export default function PageVendorProducts({ vendorId }: PageVendorProductsParam
     return (
         <>
             <div className="font-bold py-2 px-4 inline-flex items-center dark:text-dark-tremor-content-strong animated dark:active:text-dark-tremor-content-emphasis active:scale-subtle" onClick={() => setIsOpen(true)}>
-                <IconButton><QrCodeScannerIcon /></IconButton>
                 <span className="ml-2">Example Vendor</span>
             </div>
             <Sheet isOpen={isOpen} onClose={() => setIsOpen(false)} detent='content-height' rootId="root" mountPoint={approot}>
