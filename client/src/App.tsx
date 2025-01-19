@@ -226,7 +226,7 @@ function Layout(props: any) {
   return (
     <>
       <div className="flex flex-col h-screen bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle">
-        <div className="flex-grow overflow-y-auto">
+        <div className="flex-grow overflow-y-auto flex-1">
           <Outlet />
         </div>
         <Navbar paths={props.paths} activeTab={props.activeTab} setActiveTab={props.setActiveTab} questPendingClaims={props.questPendingClaims} />

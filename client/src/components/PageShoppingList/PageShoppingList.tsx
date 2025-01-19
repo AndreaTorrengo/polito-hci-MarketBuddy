@@ -1,5 +1,6 @@
 import MissingProductsDialog from "../MissingProductsDialog/MissingProductsDialog";
 import { Vendor, Market } from "../../models";
+import PageVendorProducts from "../PageVendorProducts/PageVendorProducts";
 
 interface PageShoppingListProps {
   theme: string;
@@ -17,6 +18,8 @@ export default function PageShoppingList({ missingProducts, theme, selectedMarke
 
         <h1>Shopping List</h1>
       </div>
+
+      <PageVendorProducts vendorId={0}></PageVendorProducts>
 
       <MissingProductsDialog
         missingProducts={missingProducts}
