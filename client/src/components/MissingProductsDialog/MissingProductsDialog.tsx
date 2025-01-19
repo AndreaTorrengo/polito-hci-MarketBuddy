@@ -6,33 +6,21 @@ import { useSwipeable } from 'react-swipeable';
 import './MissingProductsDialog.css';
 
 interface MissingProductsDialogProps {
-    filteredVendors: Vendor[];
-    setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
-    setMissingProducts: React.Dispatch<React.SetStateAction<string[]>>;
     missingProducts: string[];
     theme: string;
-    sortByQuality: boolean;
-    sortByConvenience: boolean;
-    sortByCordiality: boolean;
     productsList: { [key: string]: string[] };
     setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
     selectedMarket: Market;
-    setSelectedMarket: (market: Market) => void;
+    updateVendorsAndProducts: () => void;
 }
 
 const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
-    setMissingProducts,
     missingProducts,
-    filteredVendors,
-    setFilteredVendors,
     theme,
-    sortByConvenience,
-    sortByCordiality,
-    sortByQuality,
     productsList,
     setProductsList,
     selectedMarket,
-    setSelectedMarket
+    updateVendorsAndProducts
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -41,50 +29,37 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
     const [randomAlternatives, setRandomAlternatives] = useState<{ [key: string]: Product[] }>({});
 
 
-    const alternatives: Product[] = [
-        { id: 1, name: "Alternative 1", price: 1.2 },
-        { id: 2, name: "Alternative 2", price: 2.3 },
-        { id: 3, name: "Alternative 3", price: 3.4 },
-        { id: 4, name: "Alternative 4", price: 4.5 },
-        { id: 5, name: "Alternative 5", price: 5.1 }
-    ];
+
 
 
     const previousMarketRef = useRef(selectedMarket);
 
     useEffect(() => {
-        const storedMissingProducts = localStorage.getItem(`missingProducts_${selectedMarket.name}`);
-        if (storedMissingProducts) {
-            const parsedProducts: string[] = JSON.parse(storedMissingProducts);
-            if (parsedProducts.length && JSON.stringify(parsedProducts) !== JSON.stringify(missingProducts)) {
-                setMissingProducts(parsedProducts);
-            }
-        }
+
 
         if (missingProducts.length > 0) {
-            console.log('alternatives', missingProducts);
 
-            const shuffleArray = (array: Product[]) => array.sort(() => 0.5 - Math.random());
-
-            const selectRandomAlternatives = (array: Product[], count: number) => shuffleArray(array).slice(0, count);
-
-            const generateRandomAlternatives = () => {
-                const newRandomAlternatives: { [key: string]: Product[] } = {};
+            const generateSpecificAlternatives = () => {
+                const newSpecificAlternatives: { [key: string]: Product[] } = {};
                 missingProducts.forEach((product) => {
-                    const storedAlternatives = localStorage.getItem(`alternatives_${selectedMarket.name}_${product}`);
-                    if (storedAlternatives) {
-                        newRandomAlternatives[product] = JSON.parse(storedAlternatives);
-                    } else {
-                        const maxAlternatives = Math.min(alternatives.length, 3);
-                        const selectedAlternatives = selectRandomAlternatives(alternatives, Math.floor(Math.random() * maxAlternatives) + 1);
-                        newRandomAlternatives[product] = selectedAlternatives;
-                        localStorage.setItem(`alternatives_${selectedMarket.name}_${product}`, JSON.stringify(selectedAlternatives));
+                    let alternatives: Product[] = [];
+                    if (product === 'Pears' && selectedMarket.name === 'Crocetta Market') {
+                        alternatives = [
+                            { id: 1, name: 'Kiwi', price: 1.5 },
+                            { id: 2, name: "Apples", price: 1.0 }
+                        ];
+                    } else if (product === "Pears") {
+                        alternatives = [{ id: 3, name: "Apples", price: 1.0 }];
+                    } else if (product === "Bream") {
+                        alternatives = [{ id: 10, name: "Cod", price: 9.5 }];
                     }
+                    newSpecificAlternatives[product] = alternatives;
+
                 });
-                setRandomAlternatives(newRandomAlternatives);
+                setRandomAlternatives(newSpecificAlternatives);
             };
 
-            generateRandomAlternatives();
+            generateSpecificAlternatives();
         }
 
         if (previousMarketRef.current.name !== selectedMarket.name) {
@@ -94,38 +69,21 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
     }, [missingProducts, selectedMarket]);
 
     const handleConfirm = (product: string, selectedAlternatives: Product[]) => {
-        const updatedFiltered: Vendor[] = [...filteredVendors];
-        const remainingMissingProducts = missingProducts.filter((p) => p !== product);
-        const randomOffset = () => (Math.random() * 0.0004 - 0.0002).toFixed(2);
-        const newPosition = `${selectedMarket.position[0] + parseFloat(randomOffset())},${selectedMarket.position[1] + parseFloat(randomOffset())}`;
-        const getRandomRating = (highRating: boolean) => highRating ? Math.floor(Math.random() * 11) + 90 : Math.floor(Math.random() * 31) + 70;
-
-        const newVendor = new Vendor(
-            updatedFiltered.length + 1,
-            `SampleVendor#${updatedFiltered.length + 1}`,
-            selectedMarket.name,
-            newPosition,
-            getRandomRating(sortByQuality) + "%",
-            getRandomRating(sortByConvenience) + "%",
-            getRandomRating(sortByCordiality) + "%",
-            1,
-            [],
-            [],
-            selectedAlternatives.map(alternative => new Product(alternative.id, alternative.name, alternative.price)),
-        );
-
-        updatedFiltered.push(newVendor);
-        console.log(updatedFiltered);
-
-        setFilteredVendors(updatedFiltered);
-        setMissingProducts(remainingMissingProducts);
-        localStorage.setItem(`missingProducts_${selectedMarket.name}`, JSON.stringify(remainingMissingProducts));
-        localStorage.setItem(`filteredVendors_${selectedMarket.name}`, JSON.stringify(updatedFiltered));
-
+ 
         const updatedProductList = { ...productsList };
         updatedProductList[selectedMarket.name] = updatedProductList[selectedMarket.name].filter(p => p !== product);
+
+        // Add the selected alternatives to the updated product list
+        if (selectedAlternatives) {
+            updatedProductList[selectedMarket.name] = [
+                ...updatedProductList[selectedMarket.name],
+                ...selectedAlternatives.map(alternative => alternative.name)
+            ];
+        }
         setProductsList(updatedProductList);
         localStorage.setItem('productsList', JSON.stringify(updatedProductList));
+
+        updateVendorsAndProducts();
 
         if (currentIndex === missingProducts.length - 1) {
             setCurrentIndex(0);
