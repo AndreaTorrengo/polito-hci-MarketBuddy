@@ -36,13 +36,15 @@
 
 /* marker */
 .custom-tooltip {
+  width: 200px;
+  /* Imposta una larghezza fissa */
+  text-align: left;
   background-color: transparent;
   border: none;
   padding: 5px;
   color: #447FC4;
   box-shadow: none;
-  font-size: 1rem;
-  text-align: center;
+  font-size: 0.9rem;
   font-weight: bold;
   text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
 }
@@ -54,13 +56,15 @@
 
 /* Selected tooltip */
 .selected-tooltip {
+  width: 200px;
+  /* Imposta una larghezza fissa */
+  text-align: left;
   background-color: transparent;
   border: none;
   padding: 5px;
   color: red;
   box-shadow: none;
-  font-size: 1rem;
-  text-align: center;
+  font-size: 0.9rem;
   font-weight: bold;
   text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
 }
@@ -71,13 +75,15 @@
 }
 
 .filtered-tooltip {
+  width: 200px;
+  /* Imposta una larghezza fissa */
+  text-align: left;
   background-color: transparent;
   border: none;
   padding: 5px;
-  color: #377E22;
+  color: #447FC4;
   box-shadow: none;
-  font-size: 1rem;
-  text-align: center;
+  font-size: 0.9rem;
   font-weight: bold;
   text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
 }
@@ -95,12 +101,12 @@
 
 .dark .custom-tooltip {
   color: rgb(255, 255, 255);
-  text-shadow: -1px -1px 0 #363030, 1px -1px 0 #363030, -1px 1px 0 #363030, 1px 1px 0 #363030; 
+  text-shadow: -1px -1px 0 #363030, 1px -1px 0 #363030, -1px 1px 0 #363030, 1px 1px 0 #363030;
 }
 
 .dark .filtered-tooltip {
   color: rgb(255, 255, 255);
-  text-shadow: -1px -1px 0 #363030, 1px -1px 0 #363030, -1px 1px 0 #363030, 1px 1px 0 #363030; 
+  text-shadow: -1px -1px 0 #363030, 1px -1px 0 #363030, -1px 1px 0 #363030, 1px 1px 0 #363030;
 }
 
 .dark-mode-filter {

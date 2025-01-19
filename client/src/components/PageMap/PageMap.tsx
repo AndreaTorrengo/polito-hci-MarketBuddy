@@ -84,7 +84,6 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, sele
     } else {
       setShowedVendors(filteredVendors)
     }
-    console.log('mapfiltered',filteredVendors)
   }, [vendors, filteredVendors]);
 
   // Handle movable marker movement
@@ -158,7 +157,7 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, sele
 
   const unselectedIcon = createIcon('#447FC4');
   const selectedIcon = createIcon('red');
-  const filteredIcon = createIcon('green');
+  const filteredIcon = createIcon('#447FC4');
 
   // Handle map light-mode and dark-mode
   const tileLayerUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
@@ -192,7 +191,7 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, sele
               eventHandlers={{
                 click: () => handleMarkerClick(position),
               }}>
-              <Tooltip direction="top" offset={[50, 10]} opacity={1} permanent
+              <Tooltip direction="top" offset={[115, 10]} opacity={1} permanent
                 key={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}
                 className={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}>
                 <span>{vendor.name}</span>
@@ -239,7 +238,7 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, sele
           <Popup>This is you!</Popup>
         </CircleMarker>
       </MapContainer>
-      {/* Market selector */}
+      {/* Market selector 
 
       <FormControlLabel
         style={{
@@ -259,6 +258,7 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, sele
           <span style={{ marginRight: '1rem' }}>Shopping List Only</span> // Aggiungi margine a destra del testo
         }
       />
+      */}
 
     </div>
   );
