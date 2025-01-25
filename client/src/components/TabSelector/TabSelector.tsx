@@ -20,7 +20,7 @@ interface TabsHeroProps {
 
 export default function TabsHero({ theme, vendors, filteredVendors, selectedMarket, setSelectedMarket, missingProducts, updateVendorsAndProducts,productsList,setProductsList }: TabsHeroProps): JSX.Element {
     const [activeTab, setActiveTab] = useState(() => {
-        return localStorage.getItem('activeTab') || 'map';
+        return localStorage.getItem('activeTab') || 'list';
     });
 
     const handleChange = (
