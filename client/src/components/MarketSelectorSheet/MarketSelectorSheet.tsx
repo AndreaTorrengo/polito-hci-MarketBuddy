@@ -94,7 +94,7 @@ function MarketsList({ selectMarket, searchInput, selectedMarket, markets }: Rea
       {markets.map((market) => (
         (searchInput === "" || market.name.toLowerCase().includes(searchInput.toLowerCase())) &&
         <ListItem key={market.id} className="p-2 animated active:scale-subtle active:bg-tremor-background-subtle dark:active:bg-dark-tremor-background-subtle">
-          <MarketCard market={market} selectedMarket={selectedMarket} selectMarket={setSelectedMarket} />
+            <MarketCard market={market} selectedMarket={selectedMarket} selectMarket={selectMarket} />
         </ListItem>
       ))}
     </List>
