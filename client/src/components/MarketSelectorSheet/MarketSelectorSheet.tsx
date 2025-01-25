@@ -65,7 +65,7 @@ export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket 
               <SearchBar searchInput={searchInput} setSearchInput={setSearchInput} />
             </div>
             <Sheet.Scroller>
-              <MarketsList selectMarket={(m) => { setSelectedMarket(m) || setIsOpen(false) }} searchInput={searchInput} selectedMarket={selectedMarket} markets={markets}/>
+              <MarketsList selectMarket={(m) => { setSelectedMarket(m); setIsOpen(false); }} searchInput={searchInput} selectedMarket={selectedMarket} markets={markets} />
             </Sheet.Scroller>
           </Sheet.Content>
         </Sheet.Container>
