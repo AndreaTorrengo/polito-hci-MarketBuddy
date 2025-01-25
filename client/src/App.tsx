@@ -7,7 +7,7 @@ import PageProfile from "./components/PageProfile/PageProfile";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
 import PageLeaderboard from "./components/PageLeaderboard/PageLeaderboard";
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import API from "./API";
 import { Vendor, Product, Market } from "./models";
 import ConfirmPopup from "./components/ConfirmationPopup";
@@ -84,10 +84,10 @@ export default function App() {
   }, [selectedMarket]);
 
 
-  const updateVendorsAndProducts = () => {
+  const updateVendorsAndProducts = useCallback(() => {
     const savedProductsList = localStorage.getItem('productsList');
     const productsListState = savedProductsList ? JSON.parse(savedProductsList) : productsList;
-    let sortedVendors: Vendor[] = [...vendors];
+    const sortedVendors: Vendor[] = [...vendors];
 
     sortedVendors.sort((a, b) => {
       let comparison = 0;
@@ -134,7 +134,7 @@ export default function App() {
         }
 
         const allRequiredProductsFound = Array.from(requiredProducts as Set<string>).every((product: string) =>
-          Array.from(foundProducts as Set<Product>).some((fp: Product) => fp.name === product)
+          Array.from(foundProducts).some((fp: Product) => fp.name === product)
         );
 
         if (allRequiredProductsFound) {
@@ -154,11 +154,11 @@ export default function App() {
     } else {
       console.error(`Market ${selectedMarket.name} not found in productsList`);
     }
-  };
+  }, [productsList, selectedMarket.name, sortByConvenience, sortByCordiality, sortByQuality, vendors]);
 
   useEffect(() => {
     updateVendorsAndProducts();
-  }, [vendors]);
+  }, [vendors, updateVendorsAndProducts]);
 
 
 
@@ -169,7 +169,7 @@ export default function App() {
   const [confirmationCallback, setConfirmationCallback] = useState<() => void>(() => { });
   const [showPopup, setShowPopup] = useState(false);
 
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     if (!localStorage.theme) {
       if (theme === 'light') {
         setTheme('dark');
@@ -185,7 +185,7 @@ export default function App() {
     setSelectedMarket(market);
   }
 
-  const toggleTheme = (event: any) => {
+  const toggleTheme = () => {
     if (theme === 'dark') {
       setTheme('light');
       localStorage.theme = 'light';
@@ -196,7 +196,7 @@ export default function App() {
     }
   };
 
-  const askConfirmation = (onConfirm: Function, text = "Are you sure?", cancelButtonText = "Cancel", confirmButtonText = "Confirm") => {
+  const askConfirmation = (onConfirm: () => void, text = "Are you sure?", cancelButtonText = "Cancel", confirmButtonText = "Confirm") => {
     setPopupText(text);
     setCancelButtonText(cancelButtonText);
     setConfirmButtonText(confirmButtonText);
@@ -226,16 +226,14 @@ export default function App() {
   );
 }
 
-function Layout(props: any) {
+function Layout(props: Readonly<{ paths: string[], activeTab: number, questPendingClaims: number, setActiveTab: (tab: number) => void }>) {
   return (
-    <>
       <div className="flex flex-col h-screen bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle">
         <div className="flex-grow overflow-y-auto flex-1">
           <Outlet />
         </div>
         <Navbar paths={props.paths} activeTab={props.activeTab} setActiveTab={props.setActiveTab} questPendingClaims={props.questPendingClaims} />
-      </div>
-    </>
+    </div>
   );
 }
 Layout.propTypes = {
