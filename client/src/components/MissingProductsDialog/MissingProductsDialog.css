@@ -1,0 +1,55 @@
+/* Dialog button*/
+div .alert-button {
+    background-color: #f0e1e1;
+    border: none;
+    color: #e34138;
+    font-weight: bold;
+    font-size: 1.2rem;
+    /* increase font size */
+    display: flex;
+    /* use Flexbox */
+    align-items: center;
+    /* center vertically */
+    justify-content: center;
+    /* center horizontally */
+    border-radius: 4px;
+    /* decrease border radius */
+}
+
+div .alert-button:hover {
+    background-color: #f0e1e1;
+    color: #e34138;
+}
+
+/* Dark mode styles */
+.dark div .alert-button {
+    background-color: #353d4b;
+    /* gray with a bluish tint for dark mode */
+    color: #e34138;
+    /* white text */
+}
+
+.dark div .alert-button:focus,
+.dark div .alert-button:active {
+    background-color: #353d4b;
+    /* maintain the same background color */
+    color: #e34138;
+    /* maintain the same text color */
+    outline: none;
+    /* remove outline */
+    box-shadow: none;
+    /* remove box-shadow */
+}
+
+/* Light mode styles Dialog*/
+.alternative {
+    color: rgb(54, 54, 54);
+}
+
+/* Dark mode styles  Dialog*/
+
+.dark .alternative {
+    color: rgb(212, 212, 212);
+}
+
+

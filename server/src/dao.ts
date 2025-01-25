@@ -1,5 +1,5 @@
 import db from './db/db';
-import { Vendor, Product } from './models';
+import { Vendor, Product, Reward } from './models';
 
 const Dao = {
 
@@ -19,7 +19,7 @@ const Dao = {
           vendor.market,
           vendor.position.split(',').map(Number),
           vendor.quality_rating, 
-          vendor.price_rating,
+          vendor.convenience_rating,
           vendor.cordiality_rating,
           vendor.price_multiplier,
           categories.map(c => c.name),
@@ -31,6 +31,43 @@ const Dao = {
       return vendorsArray;
     } catch (error) {
       throw new Error('Failed to retrieve vendors');
+    }
+  },
+
+  getAvailableRewards: async () => {
+    try {
+      const database = await db;
+      const rewards = await database.all('SELECT * FROM rewards WHERE redeemed = 0');
+
+      return rewards.map(reward => new Reward(reward.id, reward.description, reward.cost, reward.icon));
+    } catch (error) {
+      throw new Error('Failed to retrieve rewards');
+    }
+  },
+
+  getRedeemedRewards: async () => {
+    try {
+      const database = await db;
+      const rewards = await database.all('SELECT * FROM rewards WHERE redeemed = 1');
+
+      return rewards.map(reward => new Reward(reward.id, reward.description, reward.cost, reward.icon));
+    } catch (error) {
+      throw new Error('Failed to retrieve rewards');
+    }
+  },
+
+  redeemReward: async (rewardID: number) => {
+    try {
+      const database = await db;
+      await database.run('UPDATE rewards SET redeemed = 1 WHERE id = ?', [rewardID]);
+      const { changes } = await database.get('SELECT changes() as changes');
+
+      if (changes === 0) {
+        return false;
+      }
+      return true;
+    } catch (error) {
+      throw new Error('Failed to redeem Reward')
     }
   }
 };

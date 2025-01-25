@@ -1,0 +1,114 @@
+/* map */
+.dark.leaflet-container {
+  background: #2c2c2c;
+}
+
+.dark .leaflet-control {
+  background: #333;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+.dark .leaflet-control a {
+  background: #333;
+  color: #ffffff;
+}
+
+.dark .leaflet-control a:hover {
+  background: #444;
+}
+
+.dark .leaflet-popup-content-wrapper {
+  background: #333;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+.dark .leaflet-popup-tip {
+  background: #333;
+  border: 1px solid #444;
+}
+
+/* popup */
+.vendor-info p {
+  margin: 2px 0;
+}
+
+/* marker */
+.custom-tooltip {
+  width: 200px;
+  /* Imposta una larghezza fissa */
+  text-align: left;
+  background-color: transparent;
+  border: none;
+  padding: 5px;
+  color: #447FC4;
+  box-shadow: none;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+}
+
+.custom-tooltip::before,
+.custom-tooltip::after {
+  display: none !important;
+}
+
+/* Selected tooltip */
+.selected-tooltip {
+  width: 200px;
+  /* Imposta una larghezza fissa */
+  text-align: left;
+  background-color: transparent;
+  border: none;
+  padding: 5px;
+  color: red;
+  box-shadow: none;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+}
+
+.selected-tooltip::before,
+.selected-tooltip::after {
+  display: none !important;
+}
+
+.filtered-tooltip {
+  width: 200px;
+  /* Imposta una larghezza fissa */
+  text-align: left;
+  background-color: transparent;
+  border: none;
+  padding: 5px;
+  color: #447FC4;
+  box-shadow: none;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+}
+
+.filtered-tooltip::before,
+.filtered-tooltip::after {
+  display: none !important;
+}
+
+
+.dark .selected-tooltip {
+  color: rgb(255, 255, 255);
+  text-shadow: -1px -1px 0 #363030, 1px -1px 0 #363030, -1px 1px 0 #363030, 1px 1px 0 #363030;
+}
+
+.dark .custom-tooltip {
+  color: rgb(255, 255, 255);
+  text-shadow: -1px -1px 0 #363030, 1px -1px 0 #363030, -1px 1px 0 #363030, 1px 1px 0 #363030;
+}
+
+.dark .filtered-tooltip {
+  color: rgb(255, 255, 255);
+  text-shadow: -1px -1px 0 #363030, 1px -1px 0 #363030, -1px 1px 0 #363030, 1px 1px 0 #363030;
+}
+
+.dark-mode-filter {
+  filter: invert(90%) hue-rotate(180deg);
+}
