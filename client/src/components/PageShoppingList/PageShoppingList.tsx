@@ -12,6 +12,10 @@ interface PageShoppingListProps {
     readonly missingProducts: string[];
     readonly updateVendorsAndProducts: () => void;
     readonly vendors: Vendor[];
+    readonly openEditMode: (event: React.MouseEvent, vendorId: number, productId: number) => void;
+    readonly addOrRemoveSelected: (vendorId: number, productId: number) => void;
+    readonly isEditMode: boolean;
+    readonly selectedProducts?: Map<number, number[]> | null;
 }
 
 export default function PageShoppingList({
@@ -21,9 +25,14 @@ export default function PageShoppingList({
                                              productsList,
                                              setProductsList,
                                              updateVendorsAndProducts,
-                                             vendors
+                                             vendors,
+                                             openEditMode,
+                                             addOrRemoveSelected,
+                                             isEditMode,
+                                             selectedProducts
                                          }: PageShoppingListProps) {
     const [isVendorPageOpen, setIsVendorPageOpen] = useState(false);
+    const [selectedVendor, setSelectedVendor] = useState<number>(-1);
 
     return (
         <>
@@ -36,29 +45,45 @@ export default function PageShoppingList({
                     setProductsList={setProductsList}
                     selectedMarket={selectedMarket}
                     updateVendorsAndProducts={updateVendorsAndProducts}
-
                 />
 
-                <PageVendorProducts vendorId={0} isOpen={isVendorPageOpen}
-                                    setIsOpen={(value: boolean) => setIsVendorPageOpen(value)}
-                                    theme={theme}></PageVendorProducts>
+                {isEditMode && <div className="h-[0.5rem]"/>}
 
                 {
                     vendors.map((vendor) => (
                         <div key={vendor.id}>
-                        <VendorGroup id={vendor.id}
-                                     setVendorPageOpened={(value: boolean) => setIsVendorPageOpen(value)}
-                                     categories={vendor.categories} name={vendor.name}
-                                     products={vendor.products.map(
-                                         (product) => ({
-                                                 id: product.id,
-                                                 name: product.name,
-                                                 price: product.price,
-                                                 points: product.points,
-                                                 image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg",
+                            {selectedVendor === vendor.id &&
+                                <PageVendorProducts vendor={vendor} isOpen={isVendorPageOpen}
+                                                    setIsOpen={(value: boolean) => setIsVendorPageOpen(value)}
+                                                    theme={theme}></PageVendorProducts>}
+
+                            <VendorGroup id={vendor.id}
+                                         openEditMode={openEditMode}
+                                         addOrRemoveSelected={addOrRemoveSelected}
+                                         vendor={vendor}
+                                         setVendorPageOpened={(value: boolean) => {
+                                             if (!isEditMode) {
+                                                 setIsVendorPageOpen(value)
                                              }
-                                         ))}/>
-                        <div className={"h-[1rem]"}/>
+                                         }}
+                                         setSelectedVendor={() => {
+                                             if (!isEditMode) {
+                                                 setSelectedVendor(vendor.id)
+                                             }
+                                         }}
+                                         products={vendor.products.map(
+                                             (product) => ({
+                                                     id: product.id,
+                                                     name: product.name,
+                                                     price: product.price,
+                                                     points: product.points,
+                                                     image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg",
+                                                 }
+                                             ))}
+                                         selectedProducts={selectedProducts? selectedProducts.get(vendor.id) || [] : []}
+                                         isEditMode={isEditMode}
+                            />
+                            <div className={"h-[1rem]"}/>
                         </div>
                     ))
                 }

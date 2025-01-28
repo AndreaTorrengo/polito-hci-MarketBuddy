@@ -219,6 +219,9 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, sele
                   }
                 },
               }}>
+              {selectedMarker === position && (
+                  <PageVendorProducts isOpen={isOpen} setIsOpen={setIsOpen} vendor={vendor} theme={theme}></PageVendorProducts>
+              )}
               <Tooltip direction="top" offset={[115, 10]} opacity={1} permanent
                 key={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}
                 className={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}>

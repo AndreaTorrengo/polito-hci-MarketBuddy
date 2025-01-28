@@ -2,7 +2,7 @@ export interface ProductListItemProps {
     id: number;
     image: string;
     name: string;
-    price: string;
+    price: number;
     editMode?: boolean;
     isSelected?: boolean;
 }

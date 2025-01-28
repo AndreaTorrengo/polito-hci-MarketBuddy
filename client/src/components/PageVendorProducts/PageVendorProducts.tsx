@@ -1,3 +1,4 @@
+"use client";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import VendorCategoryList from "./VendorCategoryList.tsx";
 import React, { useState } from "react";
@@ -12,87 +13,31 @@ import SwitchButton from "./SwitchButton.tsx";
 import DeleteButton from "./DeleteButton.tsx";
 import SignalErrorButton from "./SignalErrorButton.tsx";
 import ConfirmDeleteAlert from "../generalPurposeComponents/ConfirmDeleteAlert.tsx";
+import {Vendor} from "../../models.ts";
 
 interface PageVendorProductsParams {
     isOpen: boolean;
     setIsOpen: (value: boolean) => void
-    vendorId: number;
+    vendor: Vendor;
     theme: string;
 }
 
-export default function PageVendorProducts({ vendorId, isOpen, setIsOpen, theme }: PageVendorProductsParams) {
+export default function PageVendorProducts({ vendor, isOpen, setIsOpen, theme }: PageVendorProductsParams) {
     const approot = document.getElementById("approot")!;
     const [isDeleteAlertShow, setIsDeleteAlertShow] = useState(false);
 
     const [isEditMode, setIsEditMode] = useState(false);
-    const [categories] = useState<string[]>([
-        "Category 1",
-        "Category 2",
-        "Category 3"
-    ]);
 
-    const [products] = useState<ProductListItemProps[]>([
-        {
-            id: 0,
-            name: "Product 1",
-            price: "2,00",
-            image: "https://www.ortofruttafoglia.it/wp-content/uploads/2021/11/banana-chiquita.jpg"
-        },
-        {
-            id: 1,
-            name: "Product 2",
-            price: "4,00",
-            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToroQiAMxPnyX-gVi9xtNkh8liffQKdC_6ZQ&s"
-        },
-        {
-            id: 2,
-            name: "Product 3",
-            price: "3,20",
-            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRx2txlL9JImnHCk1v30GWPjrgxHri5I0ig4g&s"
-        },
-        {
-            id: 3,
-            name: "Product 4",
-            price: "5,10",
-            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwGRr6MtCnhQa7yyn7X7NN_FEAAOwJDW2fQA&s"
-        },
-        {
-            id: 4,
-            name: "Product 5",
-            price: "7,40",
-            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3sTbc5y-hV5F4iPZQ77-NXhfRXqphmjEpyw&s"
-        },
-        {
-            id: 5,
-            name: "Product 1",
-            price: "2,00",
-            image: "https://www.ortofruttafoglia.it/wp-content/uploads/2021/11/banana-chiquita.jpg"
-        },
-        {
-            id: 6,
-            name: "Product 2",
-            price: "4,00",
-            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToroQiAMxPnyX-gVi9xtNkh8liffQKdC_6ZQ&s"
-        },
-        {
-            id: 7,
-            name: "Product 3",
-            price: "3,20",
-            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRx2txlL9JImnHCk1v30GWPjrgxHri5I0ig4g&s"
-        },
-        {
-            id: 8,
-            name: "Product 4",
-            price: "5,10",
-            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwGRr6MtCnhQa7yyn7X7NN_FEAAOwJDW2fQA&s"
-        },
-        {
-            id: 9,
-            name: "Product 5",
-            price: "7,40",
-            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3sTbc5y-hV5F4iPZQ77-NXhfRXqphmjEpyw&s"
-        }
-    ]);
+    const [products] = useState<ProductListItemProps[]>(
+        vendor.products.map((product) => ({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                image: "",
+                editMode: false,
+                isSelected: false
+            }
+    )));
 
     const [selectedProducts, setSelectedProducts] = useState<Map<number, ProductListItemProps> | null>(null);
 
@@ -165,8 +110,6 @@ export default function PageVendorProducts({ vendorId, isOpen, setIsOpen, theme 
             selectedProducts.set(product.id, product);
         }
         setSelectedProducts(new Map(selectedProducts));
-
-        //todo update products in the database
     }
 
     async function handleDelete() {
@@ -178,7 +121,7 @@ export default function PageVendorProducts({ vendorId, isOpen, setIsOpen, theme 
     return (
         <>
             <ConfirmDeleteAlert theme={theme} isOpen={isDeleteAlertShow} setIsOpen={value => setIsDeleteAlertShow(value)} handleDelete={handleDelete} numberOfProducts={selectedProducts? selectedProducts.size : 0}></ConfirmDeleteAlert>
-            <Sheet isOpen={isOpen} onClose={handleClose} detent={'content-height'} rootId="root" mountPoint={approot} snapPoints={[1000, 800]} initialSnap={1}>
+            <Sheet isOpen={isOpen} onClose={handleClose} rootId="root" mountPoint={approot} snapPoints={[1000, 800, 600, 300, 100]} initialSnap={1}>
                 <Sheet.Container>
                     <Sheet.Header
                         className="bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle rounded-t-md">
@@ -244,11 +187,7 @@ export default function PageVendorProducts({ vendorId, isOpen, setIsOpen, theme 
                                     :
                                     <TopBar
                                         centerComponent={<h1
-                                            className="line-clamp-1 m-0 p-0 text-2xl titleFont font-bold">Name
-                                            of
-                                            the vendor check
-                                            if the name
-                                            is too much long</h1>}
+                                            className="line-clamp-1 m-0 p-0 text-2xl titleFont font-bold">{vendor.name}</h1>}
                                         rightComponent={
                                             <div className="flex flex-row">
                                                 <IconButton>
@@ -262,11 +201,11 @@ export default function PageVendorProducts({ vendorId, isOpen, setIsOpen, theme 
                                     className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle px-6 pt-[3.45em] flex flex-col gap-4">
                                     {/* Vendor's Categories */}
                                     <div className="w-full">
-                                        <VendorCategoryList categories={categories} />
+                                        <VendorCategoryList categories={vendor.categories} />
                                     </div>
 
                                     <div className="w-full">
-                                        <VendorBadges market="Crocetta Market" quality={79} cordiality={80} convenience={70.3} />
+                                        <VendorBadges market={vendor.market} quality={vendor.quality_rating} cordiality={vendor.cordiality_rating} convenience={vendor.convenience_rating} />
                                     </div>
 
                                     <div className="w-full flex-1">
@@ -305,7 +244,7 @@ export default function PageVendorProducts({ vendorId, isOpen, setIsOpen, theme 
                         } </Sheet.Scroller>
                     </Sheet.Content>
                 </Sheet.Container>
-                <Sheet.Backdrop onTap={() => handleClose()} />
+                <Sheet.Backdrop onTap={() => handleClose()} style={{backgroundColor: "transparent"}} />
             </Sheet>
         </>
     );
