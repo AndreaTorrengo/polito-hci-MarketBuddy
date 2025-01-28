@@ -161,8 +161,7 @@ export default function App() {
   }, [vendors, updateVendorsAndProducts]);
 
 
-
-
+  
   const [popupText, setPopupText] = useState("Are you sure?");
   const [cancelButtonText, setCancelButtonText] = useState("Cancel");
   const [confirmButtonText, setConfirmButtonText] = useState("Confirm");

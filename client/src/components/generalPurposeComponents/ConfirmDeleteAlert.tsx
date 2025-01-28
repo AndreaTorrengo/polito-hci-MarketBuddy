@@ -25,7 +25,7 @@ const ConfirmDeleteAlert: React.FC<ConfirmDeleteAlertProps> = ({
                     <div className="flex flex-col gap-4">
                         <h1 className="text-2xl font-bold text-black dark:text-white">Delete Products</h1>
                         <p className="dark:text-[#aaaaaa] text-[#444444]">{"Are you sure you want to delete "+ numberOfProducts + " product/s?"}</p>
-                        <div className="flex gap-4">
+                        <div className="flex justify-end gap-4">
                             <button
                                 className="bg-red-500 text-white px-4 py-2 rounded-lg"
                                 onClick={async () => {

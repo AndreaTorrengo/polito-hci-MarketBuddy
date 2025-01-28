@@ -7,9 +7,7 @@ import './pagemap.css';
 import tinycolor from 'tinycolor2';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
-
-
-
+import PageVendorProducts from "../PageVendorProducts/PageVendorProducts.tsx";
 
 const getRandomOffset = (): [number, number] => {
   const randomValue = () => Math.random() * 0.0008 - 0.0004;
@@ -30,7 +28,7 @@ const OnFlyMarker: React.FC<{ center: [number, number] }> = ({ center }) => {
   const map = useMap();
 
   useEffect(() => {
-    const offset = +200; // Adjust this value to set the fixed point on the screen (negative value to move higher)
+    const offset = +280; // Adjust this value to set the fixed point on the screen (negative value to move higher)
     const latLngPoint = map.latLngToContainerPoint(center);
     const offsetPoint = L.point(latLngPoint.x, latLngPoint.y + offset);
     const offsetLatLng = map.containerPointToLatLng(offsetPoint);
@@ -61,6 +59,8 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, sele
   const [selectedMarker, setSelectedMarker] = useState<[number, number] | null>(null);
   const [showAllVendors, setShowAllVendors] = useState(false);
   const [showedVendors, setShowedVendors] = useState<Vendor[]>();
+
+  const [isOpen, setIsOpen] = useState(false);
 
   const toggleButton = () => {
     setShowAllVendors(prevShowAllVendors => {
@@ -174,6 +174,7 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, sele
 
   return (
     <div style={{ height: '100%', width: '100%', position: 'relative' }}>
+      <PageVendorProducts isOpen={isOpen} setIsOpen={setIsOpen} vendorId={0} theme={theme}></PageVendorProducts>
       <MapContainer
         center={selectedMarket.position as [number, number]}
         zoom={17}
@@ -195,47 +196,13 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, sele
             <Marker key={idx} position={position}
               icon={icon}
               eventHandlers={{
-                click: () => handleMarkerClick(position),
+                click: () => {handleMarkerClick(position); setIsOpen(true)},
               }}>
               <Tooltip direction="top" offset={[115, 10]} opacity={1} permanent
                 key={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}
                 className={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}>
                 <span>{vendor.name}</span>
               </Tooltip>
-              <Popup>
-                <div
-                  className="vendor-info"
-                  style={{
-                    fontSize: "0.75rem",
-                    marginBottom: "0.5rem",
-                    cursor: "pointer",
-                    padding: "10px",
-                    border: "1px solid #ccc",
-                    borderRadius: "5px",
-                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                    textAlign: "center"
-                  }}
-                  onClick={() => (window.location.href = `/vendor/${vendor.id}`)}
-                >
-                  <strong style={{ fontSize: "1rem" }}>{vendor.name}</strong>
-                  <p>{vendor.categories.join(", ")}</p>
-                  {vendor.badges.length > 0 && <p>{vendor.badges.join(", ")}</p>}
-                </div>
-                <div className="vendor-info" style={{ fontSize: "0.75rem", marginBottom: "0.5rem" }}>
-                  <p style={{ marginTop: "0.5rem" }}>Quality: {vendor.quality_rating}</p>
-                  <p>Concenience: {vendor.convenience_rating}</p>
-                  <p>Cordiality: {vendor.cordiality_rating}</p>
-                </div>
-                <strong style={{ fontSize: "1rem" }}>Products</strong>
-                <ul>
-                  {vendor.products.map((product, productIdx) => (
-                    <li key={productIdx}>
-                      {product.name}  {(product.price * vendor.priceMultiplier).toFixed(2)} €/kg
-                    </li>
-                  ))}
-                </ul>
-
-              </Popup>
             </Marker>
           );
         })}

@@ -29,7 +29,6 @@ export default function PageShoppingList({
         <>
             <div id="ShoppingListPage" className="flex flex-col gap-2">
 
-
                 <MissingProductsDialog
                     missingProducts={missingProducts}
                     theme={theme}
@@ -41,20 +40,26 @@ export default function PageShoppingList({
                 />
 
                 <PageVendorProducts vendorId={0} isOpen={isVendorPageOpen}
-                                    setIsOpen={(value: boolean) => setIsVendorPageOpen(value)} theme={theme}></PageVendorProducts>
+                                    setIsOpen={(value: boolean) => setIsVendorPageOpen(value)}
+                                    theme={theme}></PageVendorProducts>
 
                 {
                     vendors.map((vendor) => (
-                        <VendorGroup key={vendor.id} id={vendor.id} setVendorPageOpened={(value: boolean) => setIsVendorPageOpen(value)}
+                        <div key={vendor.id}>
+                        <VendorGroup id={vendor.id}
+                                     setVendorPageOpened={(value: boolean) => setIsVendorPageOpen(value)}
                                      categories={vendor.categories} name={vendor.name}
                                      products={vendor.products.map(
-                                            (product) => ({
-                                                id: product.id,
-                                                name: product.name,
-                                                price: product.price,
-                                                    image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg",
-                                            }
-                                     ))}/>
+                                         (product) => ({
+                                                 id: product.id,
+                                                 name: product.name,
+                                                 price: product.price,
+                                                 points: product.points,
+                                                 image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg",
+                                             }
+                                         ))}/>
+                        <div className={"h-[1rem]"}/>
+                        </div>
                     ))
                 }
 
