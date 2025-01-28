@@ -5,8 +5,6 @@ import 'leaflet/dist/leaflet.css';
 import { Vendor, Market, Product } from '../../models';
 import './pagemap.css';
 import tinycolor from 'tinycolor2';
-import Switch from '@mui/material/Switch';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import PageVendorProducts from "../PageVendorProducts/PageVendorProducts.tsx";
 
 const getRandomOffset = (): [number, number] => {
@@ -227,9 +225,6 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, sele
                 className={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}>
                 <span>{vendor.name}</span>
               </Tooltip>
-              {selectedMarker === position && (
-                <PageVendorProducts isOpen={isOpen} setIsOpen={setIsOpen} vendorId={vendor.id} theme={theme}></PageVendorProducts>
-              )}
             </Marker>
           );
         })}

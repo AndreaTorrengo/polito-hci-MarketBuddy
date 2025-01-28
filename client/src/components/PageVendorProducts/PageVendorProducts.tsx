@@ -33,7 +33,7 @@ export default function PageVendorProducts({ vendor, isOpen, setIsOpen, theme }:
                 id: product.id,
                 name: product.name,
                 price: product.price,
-                image: "",
+                image: product.image,
                 editMode: false,
                 isSelected: false
             }
