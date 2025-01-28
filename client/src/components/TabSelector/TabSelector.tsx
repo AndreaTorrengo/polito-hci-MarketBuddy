@@ -84,7 +84,7 @@ export default function TabsHero({ theme, vendors, filteredVendors, selectedMark
                         <PageMap theme={theme} vendors={vendors} filteredVendors={filteredVendors} selectedMarket={selectedMarket} />
                     </div>
                 )}
-                {activeTab === 'list' && <PageShoppingList productsList={productsList} setProductsList={setProductsList} theme={theme} selectedMarket={selectedMarket}  missingProducts={missingProducts} updateVendorsAndProducts={updateVendorsAndProducts} />}
+                {activeTab === 'list' && <PageShoppingList vendors={vendors} productsList={productsList} setProductsList={setProductsList} theme={theme} selectedMarket={selectedMarket}  missingProducts={missingProducts} updateVendorsAndProducts={updateVendorsAndProducts} />}
             </div>
         </div>
     );

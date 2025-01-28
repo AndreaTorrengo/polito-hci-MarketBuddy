@@ -1,6 +1,4 @@
-import VendorCategoryList from "../PageVendorProducts/VendorCategoryList";
 import ProductItem, {ProductItemProps} from "./ProductItem";
-import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
 import SavingsIcon from "@mui/icons-material/Savings";
@@ -11,13 +9,14 @@ export interface VendorGroupProps {
     name: string;
     categories?: string[];
     products: ProductItemProps[];
+    setVendorPageOpened: (value: boolean) => void;
 }
 
-export default function VendorGroup({name, categories, products}: VendorGroupProps) {
+export default function VendorGroup({name, categories, products, setVendorPageOpened}: VendorGroupProps) {
 
     return (
         <div className="px-4">
-            <div className="flex flex-row gap-2 pb-2 items-center justify-between">
+            <div className="flex flex-row gap-2 pb-2 items-center justify-between" onClick={() => setVendorPageOpened(true)}>
                 <p className="m-0 p-0 titleFont font-bold text-xl max-w-[50%] min-w-[30%] line-clamp-1">
                     {name}
                 </p>

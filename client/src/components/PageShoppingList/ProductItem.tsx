@@ -3,7 +3,7 @@ export interface ProductItemProps {
     image: string;
     name: string;
     points?: number;
-    price: string;
+    price: number;
 }
 
 export default function ProductItem({ image, name, points, price }: ProductItemProps) {

@@ -11,15 +11,18 @@ import ContextMenu, { ContextMenuProps } from "../generalPurposeComponents/Conte
 import SwitchButton from "./SwitchButton.tsx";
 import DeleteButton from "./DeleteButton.tsx";
 import SignalErrorButton from "./SignalErrorButton.tsx";
+import ConfirmDeleteAlert from "../generalPurposeComponents/ConfirmDeleteAlert.tsx";
 
 interface PageVendorProductsParams {
     isOpen: boolean;
     setIsOpen: (value: boolean) => void
     vendorId: number;
+    theme: string;
 }
 
-export default function PageVendorProducts({ vendorId, isOpen, setIsOpen }: PageVendorProductsParams) {
+export default function PageVendorProducts({ vendorId, isOpen, setIsOpen, theme }: PageVendorProductsParams) {
     const approot = document.getElementById("approot")!;
+    const [isDeleteAlertShow, setIsDeleteAlertShow] = useState(false);
 
     const [isEditMode, setIsEditMode] = useState(false);
     const [categories] = useState<string[]>([
@@ -123,6 +126,13 @@ export default function PageVendorProducts({ vendorId, isOpen, setIsOpen }: Page
         setContextMenuProps({ ...contextMenuProps, isOpen: true, x: event.clientX, y: event.clientY });
     };
 
+    const handleClose = () => {
+        setIsOpen(false);
+        setIsDeleteAlertShow(false);
+        setIsEditMode(false);
+        setSelectedProducts(null);
+    }
+
     const openEditMode = (event: React.MouseEvent, productId: number) => {
         event.preventDefault();
         const product = products.find(p => p.id === productId);
@@ -140,7 +150,7 @@ export default function PageVendorProducts({ vendorId, isOpen, setIsOpen }: Page
         setIsEditMode(false);
     }
 
-    function addOrRemoveSelected(index: number) {
+    async function addOrRemoveSelected(index: number) {
         if (!selectedProducts) {
             throw new Error("Selected products is null");
         }
@@ -155,14 +165,20 @@ export default function PageVendorProducts({ vendorId, isOpen, setIsOpen }: Page
             selectedProducts.set(product.id, product);
         }
         setSelectedProducts(new Map(selectedProducts));
+
+        //todo update products in the database
+    }
+
+    async function handleDelete() {
+        setIsEditMode(false);
+        setSelectedProducts(null);
+        //todo delete products
     }
 
     return (
         <>
-            <div className="font-bold py-2 px-4 inline-flex items-center dark:text-dark-tremor-content-strong animated dark:active:text-dark-tremor-content-emphasis active:scale-subtle" onClick={() => setIsOpen(true)}>
-                <span className="ml-2">Example Vendor</span>
-            </div>
-            <Sheet isOpen={isOpen} onClose={() => setIsOpen(false)} detent='content-height' rootId="root" mountPoint={approot}>
+            <ConfirmDeleteAlert theme={theme} isOpen={isDeleteAlertShow} setIsOpen={value => setIsDeleteAlertShow(value)} handleDelete={handleDelete} numberOfProducts={selectedProducts? selectedProducts.size : 0}></ConfirmDeleteAlert>
+            <Sheet isOpen={isOpen} onClose={handleClose} detent='content-height' rootId="root" mountPoint={approot}>
                 <Sheet.Container>
                     <Sheet.Header
                         className="bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle rounded-t-md">
@@ -219,7 +235,7 @@ export default function PageVendorProducts({ vendorId, isOpen, setIsOpen }: Page
                                                     <>
                                                         <SwitchButton />
                                                         <SignalErrorButton />
-                                                        <DeleteButton />
+                                                        <DeleteButton onClick={() => {setIsDeleteAlertShow(true)}}/>
                                                     </>}
 
                                             </>
@@ -289,7 +305,7 @@ export default function PageVendorProducts({ vendorId, isOpen, setIsOpen }: Page
                         } </Sheet.Scroller>
                     </Sheet.Content>
                 </Sheet.Container>
-                <Sheet.Backdrop onTap={() => setIsOpen(false)} />
+                <Sheet.Backdrop onTap={() => handleClose()} />
             </Sheet>
         </>
     );
