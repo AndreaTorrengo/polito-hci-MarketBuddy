@@ -38,7 +38,7 @@ export default function ProductListItem({ image, name, price, editMode, isSelect
             <div
                 className="flex flex-row items-center gap-2 w-full p-2.5 rounded-lg bg-white dark:bg-dark-tremor-background drop-shadow-lg overflow-hidden transition-all duration-300">
                 <div className="w-16 h-16 transition-all duration-300">
-                    <img src={image} alt={name + " image"} className="h-full rounded-md object-cover" />
+                    <img src={image} alt={name + " image"} className="h-full rounded-md aspect-square object-cover" />
                 </div>
                 <div className="flex-1 transition-all duration-300">
                     <p className="p-0 m-0 line-clamp-1">{name}</p>
