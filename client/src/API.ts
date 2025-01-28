@@ -29,6 +29,7 @@ const getVendorsByMarket = async (market: string) => {
                 productData.id,
                 productData.name,
                 productData.price,
+                productData.points
             ))
         ));
     } catch (error) {
