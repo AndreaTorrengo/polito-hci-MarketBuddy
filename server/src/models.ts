@@ -31,12 +31,14 @@ class Product {
     name: string;
     price: number;
     points: number;
+    image: string;
 
-    constructor(id: number, name: string, price: number, points: number) {
+    constructor(id: number, name: string, price: number, points: number, image: string) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.points = points;
+        this.image = image;
 
     }
 }

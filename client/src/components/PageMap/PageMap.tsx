@@ -23,24 +23,29 @@ const UpdateMapCenter: React.FC<{ center: [number, number] }> = ({ center }) => 
   return null;
 };
 
-// Helper component to move map on selected marker
-const OnFlyMarker: React.FC<{ center: [number, number] }> = ({ center }) => {
+const OnFlyMarker: React.FC<{ center: [number, number], isMarketCenter: boolean }> = ({ center, isMarketCenter }) => {
   const map = useMap();
 
   useEffect(() => {
-    const offset = +280; // Adjust this value to set the fixed point on the screen (negative value to move higher)
-    const latLngPoint = map.latLngToContainerPoint(center);
-    const offsetPoint = L.point(latLngPoint.x, latLngPoint.y + offset);
-    const offsetLatLng = map.containerPointToLatLng(offsetPoint);
+    let offsetLatLng = center;
+    if (!isMarketCenter) {
+      const offset = +280; // Adjust this value to set the fixed point on the screen (negative value to move higher)
+      const latLngPoint = map.latLngToContainerPoint(center);
+      const offsetPoint = L.point(latLngPoint.x, latLngPoint.y + offset);
+      const latLng = map.containerPointToLatLng(offsetPoint);
+      offsetLatLng = [latLng.lat, latLng.lng];
+    }
 
     map.flyTo(offsetLatLng, map.getZoom(), {
       animate: true,
       duration: 0.5,
     });
-  }, [center, map]);
+  }, [center, map, isMarketCenter]);
 
   return null;
 };
+
+
 
 interface PageMapProps {
   vendors: Vendor[];
@@ -56,6 +61,7 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, sele
     selectedMarket.position[1] + offset[1],
   ]);
   const [center, setMapCenter] = useState<[number, number]>(selectedMarket.position as [number, number]);
+  const [marketCenter, setMarketCenter] = useState<[number, number]>(selectedMarket.position as [number, number]);
   const [selectedMarker, setSelectedMarker] = useState<[number, number] | null>(null);
   const [showAllVendors, setShowAllVendors] = useState(false);
   const [showedVendors, setShowedVendors] = useState<Vendor[]>();
@@ -91,6 +97,14 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, sele
       setShowedVendors(filteredVendors)
     }
   }, [vendors, filteredVendors]);
+
+
+  useEffect(() => {
+    if (!isOpen) {
+      // Cambia il centro della mappa quando isOpen diventa false
+      setMapCenter(selectedMarket.position as [number, number]); // Esempio: centro su New York
+    }
+  }, [isOpen]);
 
   // Handle movable marker movement
   useEffect(() => {
@@ -174,16 +188,18 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, sele
 
   return (
     <div style={{ height: '100%', width: '100%', position: 'relative' }}>
-      <PageVendorProducts isOpen={isOpen} setIsOpen={setIsOpen} vendorId={0} theme={theme}></PageVendorProducts>
+
       <MapContainer
-        center={selectedMarket.position as [number, number]}
+        center={center}
         zoom={17}
         maxZoom={18}
         style={{ height: '100%', width: '100%' }}
       >
         <TileLayer className={theme === "dark" ? "dark-mode-filter" : ""} url={tileLayerUrl} attribution={tileLayerAttribution} />
         {/* Update map center dynamically */}
-        <OnFlyMarker center={center} />
+        <OnFlyMarker center={center}
+          isMarketCenter={center[0] === selectedMarket.position[0] && center[1] === selectedMarket.position[1]}
+        />
         <UpdateMapCenter center={selectedMarket.position as [number, number]} />
         {/* Vendors position */}
         {showedVendors?.map((vendor, idx) => {
@@ -196,13 +212,21 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, sele
             <Marker key={idx} position={position}
               icon={icon}
               eventHandlers={{
-                click: () => {handleMarkerClick(position); setIsOpen(true)},
+                click: () => {
+                  handleMarkerClick(position);
+                  if (!isOpen) {
+                    setIsOpen(true);
+                  }
+                },
               }}>
               <Tooltip direction="top" offset={[115, 10]} opacity={1} permanent
                 key={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}
                 className={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}>
                 <span>{vendor.name}</span>
               </Tooltip>
+              {selectedMarker === position && (
+                <PageVendorProducts isOpen={isOpen} setIsOpen={setIsOpen} vendorId={vendor.id} theme={theme}></PageVendorProducts>
+              )}
             </Marker>
           );
         })}
