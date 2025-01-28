@@ -1,6 +1,8 @@
 import MissingProductsDialog from "../MissingProductsDialog/MissingProductsDialog";
 import { Market } from "../../models";
 import PageVendorProducts from "../PageVendorProducts/PageVendorProducts";
+import {useState} from "react";
+import VendorGroup from "./VendorGroup";
 
 interface PageShoppingListProps {
   readonly theme: string;
@@ -19,7 +21,20 @@ export default function PageShoppingList({ missingProducts, theme, selectedMarke
         <h1>Shopping List</h1>
       </div>
 
-      <PageVendorProducts vendorId={0}></PageVendorProducts>
+          <MissingProductsDialog
+              filteredVendors={filteredVendors}
+              setFilteredVendors={setFilteredVendors}
+              setMissingProducts={setMissingProducts}
+              missingProducts={missingProducts}
+              theme={theme}
+              sortByQuality={sortByQuality}
+              sortByConvenience={sortByConvenience}
+              sortByCordiality={sortByCordiality}
+              productsList={productsList}
+              setProductsList={setProductsList}
+              selectedMarket={selectedMarket}
+              setSelectedMarket={setSelectedMarket}
+          />
 
       <MissingProductsDialog
         missingProducts={missingProducts}
@@ -31,7 +46,9 @@ export default function PageShoppingList({ missingProducts, theme, selectedMarke
 
       />
 
+          <PageVendorProducts vendorId={0} isOpen={isVendorPageOpen} setIsOpen={(value: boolean) => setIsVendorPageOpen(value)} ></PageVendorProducts>
 
+      </div>
     </>
   );
 }

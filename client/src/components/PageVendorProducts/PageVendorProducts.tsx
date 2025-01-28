@@ -13,10 +13,12 @@ import DeleteButton from "./DeleteButton.tsx";
 import SignalErrorButton from "./SignalErrorButton.tsx";
 
 interface PageVendorProductsParams {
+    isOpen: boolean;
+    setIsOpen: (value: boolean) => void
     vendorId: number;
 }
 
-export default function PageVendorProducts({ vendorId }: PageVendorProductsParams) {
+export default function PageVendorProducts({ vendorId, isOpen, setIsOpen }: PageVendorProductsParams) {
     const approot = document.getElementById("approot")!;
 
     const [isEditMode, setIsEditMode] = useState(false);
@@ -91,7 +93,6 @@ export default function PageVendorProducts({ vendorId }: PageVendorProductsParam
 
     const [selectedProducts, setSelectedProducts] = useState<Map<number, ProductListItemProps> | null>(null);
 
-    const [isOpen, setIsOpen] = useState(false);
     const [contextMenuProps, setContextMenuProps] = useState<ContextMenuProps>({
         onClose: () => {
             setContextMenuProps({ ...contextMenuProps, isOpen: false });
