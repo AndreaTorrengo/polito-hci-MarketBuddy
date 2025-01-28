@@ -28,15 +28,21 @@ const UpdateMapCenter: React.FC<{ center: [number, number] }> = ({ center }) => 
 // Helper component to move map on selected marker
 const OnFlyMarker: React.FC<{ center: [number, number] }> = ({ center }) => {
   const map = useMap();
+
   useEffect(() => {
-    map.flyTo(center, map.getZoom(), {
+    const offset = +200; // Adjust this value to set the fixed point on the screen (negative value to move higher)
+    const latLngPoint = map.latLngToContainerPoint(center);
+    const offsetPoint = L.point(latLngPoint.x, latLngPoint.y + offset);
+    const offsetLatLng = map.containerPointToLatLng(offsetPoint);
+
+    map.flyTo(offsetLatLng, map.getZoom(), {
       animate: true,
       duration: 0.5,
     });
   }, [center, map]);
+
   return null;
 };
-
 
 interface PageMapProps {
   vendors: Vendor[];
@@ -58,15 +64,15 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, sele
 
   const toggleButton = () => {
     setShowAllVendors(prevShowAllVendors => {
-        const newShowAllVendors = !prevShowAllVendors;
-        if (newShowAllVendors) {
-            setShowedVendors(vendors);
-        } else {
-            setShowedVendors(filteredVendors);
-        }
-        return newShowAllVendors;
+      const newShowAllVendors = !prevShowAllVendors;
+      if (newShowAllVendors) {
+        setShowedVendors(vendors);
+      } else {
+        setShowedVendors(filteredVendors);
+      }
+      return newShowAllVendors;
     });
-};
+  };
 
   const handleMarkerClick = (position: [number, number]) => {
     setSelectedMarker(position);
@@ -79,7 +85,7 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, sele
   }, [selectedMarket]);
 
   useEffect(() => {
-    if (showAllVendors ) {
+    if (showAllVendors) {
       setShowedVendors(vendors);
     } else {
       setShowedVendors(filteredVendors)
