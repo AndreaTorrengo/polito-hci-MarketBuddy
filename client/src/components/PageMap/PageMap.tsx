@@ -101,6 +101,7 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, sele
     if (!isOpen) {
       // Cambia il centro della mappa quando isOpen diventa false
       setMapCenter(selectedMarket.position as [number, number]); // Esempio: centro su New York
+      setSelectedMarker(selectedMarket.position as [number, number]);
     }
   }, [isOpen]);
 
