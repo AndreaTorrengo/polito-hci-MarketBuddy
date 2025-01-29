@@ -4,6 +4,7 @@ import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt
 import SavingsIcon from "@mui/icons-material/Savings";
 import {ButtonBase} from "@mui/material";
 import {Vendor} from "../../models";
+import React from "react";
 
 export interface VendorGroupProps {
     id: number;
@@ -15,6 +16,7 @@ export interface VendorGroupProps {
     addOrRemoveSelected: (vendorId: number, productId: number) => void;
     selectedProducts: number[];
     isEditMode: boolean;
+    selectedOrRemoveAllProductsFromVendor: (vendorId: number, remove: boolean) => void;
 }
 
 export default function VendorGroup({
@@ -25,18 +27,60 @@ export default function VendorGroup({
                                         openEditMode,
                                         addOrRemoveSelected,
                                         selectedProducts,
-                                        isEditMode
+                                        isEditMode,
+                                        selectedOrRemoveAllProductsFromVendor
                                     }: VendorGroupProps) {
-
     return (
         <div className="px-4">
             <div className="flex flex-row gap-2 pb-2 items-center justify-between" onClick={() => {
                 setSelectedVendor();
                 setVendorPageOpened(true)
             }}>
-                <p className="m-0 p-0 titleFont font-bold text-xl max-w-[50%] min-w-[30%] line-clamp-1">
+                <div className="max-w-[50%] min-w-[30%] flex flex-row items-center gap-2">
+                {/* Show Select Indicator in Edit Mode */}
+                {
+                    isEditMode &&
+                    (
+                        selectedProducts && selectedProducts.length === products.length ?
+                            <div onClick={
+                                () => {
+                                    selectedOrRemoveAllProductsFromVendor(vendor.id, true);
+                                }
+                            }>
+                                <div
+                                    className="rounded-full text-green-500 h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
+                                    <svg
+                                        className="h-6 w-6 text-black dark:text-white translate-y-[-0.3em] translate-x-[-0.1em] transition-all duration-300"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3"
+                                              d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            :
+                            <div
+                                className="animate-fade transition-all duration-300"
+                                onClick={
+                                    () => {
+                                        selectedOrRemoveAllProductsFromVendor(vendor.id, false);
+                                    }
+                                }>
+                                <div
+                                    className="rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
+                                </div>
+                            </div>
+                    )
+                }
+
+                <p className="m-0 p-0 titleFont font-bold text-xl line-clamp-1">
                     {vendor.name}
                 </p>
+                </div>
+
                 <div className="overflow-x-auto min-w-[50%]">
                     <div className="flex flex-col w-full gap-6">
                         <div className='flex flex-row items-center justify-around'>

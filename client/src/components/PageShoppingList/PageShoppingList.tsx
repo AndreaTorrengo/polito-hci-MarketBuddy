@@ -16,6 +16,8 @@ interface PageShoppingListProps {
     readonly addOrRemoveSelected: (vendorId: number, productId: number) => void;
     readonly isEditMode: boolean;
     readonly selectedProducts?: Map<number, number[]> | null;
+    readonly selectedOrRemoveAllProductsFromVendor: (vendorId: number, remove: boolean) => void;
+    readonly filteredProductsVendors: Vendor[];
 }
 
 export default function PageShoppingList({
@@ -29,7 +31,9 @@ export default function PageShoppingList({
                                              openEditMode,
                                              addOrRemoveSelected,
                                              isEditMode,
-                                             selectedProducts
+                                             selectedProducts,
+                                             selectedOrRemoveAllProductsFromVendor,
+                                             filteredProductsVendors
                                          }: PageShoppingListProps) {
     const [isVendorPageOpen, setIsVendorPageOpen] = useState(false);
     const [selectedVendor, setSelectedVendor] = useState<number>(-1);
@@ -38,19 +42,22 @@ export default function PageShoppingList({
         <>
             <div id="ShoppingListPage" className="flex flex-col gap-2">
 
-                <MissingProductsDialog
-                    missingProducts={missingProducts}
-                    theme={theme}
-                    productsList={productsList}
-                    setProductsList={setProductsList}
-                    selectedMarket={selectedMarket}
-                    updateVendorsAndProducts={updateVendorsAndProducts}
-                />
+                {!isEditMode &&
+                    <MissingProductsDialog
+                        missingProducts={missingProducts}
+                        theme={theme}
+                        productsList={productsList}
+                        setProductsList={setProductsList}
+                        selectedMarket={selectedMarket}
+                        updateVendorsAndProducts={updateVendorsAndProducts}
+                    />
+                }
 
-                {isEditMode && <div className="h-[0.5rem]"/>}
+                {isEditMode && <div className="h-[3rem]"/>}
 
                 {
-                    vendors.map((vendor) => (
+                    filteredProductsVendors.map((vendor) => (
+                        vendor.products.length > 0 &&
                         <div key={vendor.id}>
                             {selectedVendor === vendor.id &&
                                 <PageVendorProducts vendor={vendor} isOpen={isVendorPageOpen}
@@ -80,8 +87,9 @@ export default function PageShoppingList({
                                                      image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg",
                                                  }
                                              ))}
-                                         selectedProducts={selectedProducts? selectedProducts.get(vendor.id) || [] : []}
+                                         selectedProducts={selectedProducts ? selectedProducts.get(vendor.id) || [] : []}
                                          isEditMode={isEditMode}
+                                         selectedOrRemoveAllProductsFromVendor={selectedOrRemoveAllProductsFromVendor}
                             />
                             <div className={"h-[1rem]"}/>
                         </div>

@@ -20,7 +20,7 @@ const ConfirmDeleteAlert: React.FC<ConfirmDeleteAlertProps> = ({
 
     return (
         <>
-            <Dialog open={isOpen} static={true} onClose={() => {setIsOpen(false)}} className={`max-h-screen overflow-y-auto ${theme === 'dark' ? 'dark' : ''}`}>
+            <Dialog open={isOpen} static={true} onClose={() => {setIsOpen(false)}} className={`max-h-screen overflow-y-auto ${theme === 'dark' ? 'dark' : ''} z-[5000]`}>
                 <DialogPanel className="dialog-panel max-h-screen overflow-y-auto">
                     <div className="flex flex-col gap-4">
                         <h1 className="text-2xl font-bold text-black dark:text-white">Delete Products</h1>

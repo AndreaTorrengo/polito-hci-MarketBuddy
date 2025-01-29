@@ -1,160 +1,166 @@
-import { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap, Tooltip } from 'react-leaflet';
+import {useState, useEffect} from 'react';
+import {MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap, Tooltip} from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Vendor, Market, Product } from '../../models';
+import {Vendor, Market, Product} from '../../models';
 import './pagemap.css';
 import tinycolor from 'tinycolor2';
 import PageVendorProducts from "../PageVendorProducts/PageVendorProducts.tsx";
 
 const getRandomOffset = (): [number, number] => {
-  const randomValue = () => Math.random() * 0.0008 - 0.0004;
-  return [randomValue(), randomValue()];
+    const randomValue = () => Math.random() * 0.0008 - 0.0004;
+    return [randomValue(), randomValue()];
 };
 
 // Helper component to update map center dynamically
-const UpdateMapCenter: React.FC<{ center: [number, number] }> = ({ center }) => {
-  const map = useMap();
-  useEffect(() => {
-    map.setView(center);
-  }, [center, map]);
-  return null;
+const UpdateMapCenter: React.FC<{ center: [number, number] }> = ({center}) => {
+    const map = useMap();
+    useEffect(() => {
+        map.setView(center);
+    }, [center, map]);
+    return null;
 };
 
-const OnFlyMarker: React.FC<{ center: [number, number], isMarketCenter: boolean }> = ({ center, isMarketCenter }) => {
-  const map = useMap();
+const OnFlyMarker: React.FC<{ center: [number, number], isMarketCenter: boolean }> = ({center, isMarketCenter}) => {
+    const map = useMap();
 
-  useEffect(() => {
-    let offsetLatLng = center;
-    if (!isMarketCenter) {
-      const offset = +280; // Adjust this value to set the fixed point on the screen (negative value to move higher)
-      const latLngPoint = map.latLngToContainerPoint(center);
-      const offsetPoint = L.point(latLngPoint.x, latLngPoint.y + offset);
-      const latLng = map.containerPointToLatLng(offsetPoint);
-      offsetLatLng = [latLng.lat, latLng.lng];
-    }
+    useEffect(() => {
+        let offsetLatLng = center;
+        if (!isMarketCenter) {
+            const offset = +280; // Adjust this value to set the fixed point on the screen (negative value to move higher)
+            const latLngPoint = map.latLngToContainerPoint(center);
+            const offsetPoint = L.point(latLngPoint.x, latLngPoint.y + offset);
+            const latLng = map.containerPointToLatLng(offsetPoint);
+            offsetLatLng = [latLng.lat, latLng.lng];
+        }
 
-    map.flyTo(offsetLatLng, map.getZoom(), {
-      animate: true,
-      duration: 0.5,
-    });
-  }, [center, map, isMarketCenter]);
+        map.flyTo(offsetLatLng, map.getZoom(), {
+            animate: true,
+            duration: 0.5,
+        });
+    }, [center, map, isMarketCenter]);
 
-  return null;
+    return null;
 };
-
 
 
 interface PageMapProps {
-  vendors: Vendor[];
-  filteredVendors: Vendor[];
-  theme: string;
-  selectedMarket: Market;
+    vendors: Vendor[];
+    filteredVendors: Vendor[];
+    theme: string;
+    selectedMarket: Market;
+    filteredProductsVendors: Vendor[];
 }
 
-const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, selectedMarket }) => {
-  const offset: [number, number] = getRandomOffset();
-  const [markerPosition, setMarkerPosition] = useState<[number, number]>([
-    selectedMarket.position[0] + offset[0],
-    selectedMarket.position[1] + offset[1],
-  ]);
-  const [center, setMapCenter] = useState<[number, number]>(selectedMarket.position as [number, number]);
-  const [marketCenter, setMarketCenter] = useState<[number, number]>(selectedMarket.position as [number, number]);
-  const [selectedMarker, setSelectedMarker] = useState<[number, number] | null>(null);
-  const [showAllVendors, setShowAllVendors] = useState(false);
-  const [showedVendors, setShowedVendors] = useState<Vendor[]>();
+const PageMap: React.FC<PageMapProps> = ({
+                                             filteredVendors,
+                                             vendors,
+                                             theme,
+                                             selectedMarket,
+                                             filteredProductsVendors
+                                         }) => {
+    const offset: [number, number] = getRandomOffset();
+    const [markerPosition, setMarkerPosition] = useState<[number, number]>([
+        selectedMarket.position[0] + offset[0],
+        selectedMarket.position[1] + offset[1],
+    ]);
+    const [center, setMapCenter] = useState<[number, number]>(selectedMarket.position as [number, number]);
+    const [marketCenter, setMarketCenter] = useState<[number, number]>(selectedMarket.position as [number, number]);
+    const [selectedMarker, setSelectedMarker] = useState<[number, number] | null>(null);
+    const [showAllVendors, setShowAllVendors] = useState(false);
+    const [showedVendors, setShowedVendors] = useState<Vendor[]>();
 
-  const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
 
-  const toggleButton = () => {
-    setShowAllVendors(prevShowAllVendors => {
-      const newShowAllVendors = !prevShowAllVendors;
-      if (newShowAllVendors) {
-        setShowedVendors(vendors);
-      } else {
-        setShowedVendors(filteredVendors);
-      }
-      return newShowAllVendors;
-    });
-  };
-
-  const handleMarkerClick = (position: [number, number]) => {
-    setSelectedMarker(position);
-    setMapCenter(position);
-  };
-
-  //inizialize user marker position
-  useEffect(() => {
-    setMarkerPosition([selectedMarket.position[0] + offset[0], selectedMarket.position[1] + offset[1]]);
-  }, [selectedMarket]);
-
-  useEffect(() => {
-    if (showAllVendors) {
-      setShowedVendors(vendors);
-    } else {
-      setShowedVendors(filteredVendors)
-    }
-  }, [vendors, filteredVendors]);
-
-
-  useEffect(() => {
-    if (!isOpen) {
-      // Cambia il centro della mappa quando isOpen diventa false
-      setMapCenter(selectedMarket.position as [number, number]); // Esempio: centro su New York
-    }
-  }, [isOpen]);
-
-  // Handle movable marker movement
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const [lat, lng] = markerPosition;
-      switch (event.key) {
-        case 'ArrowUp':
-          setMarkerPosition([lat + 0.0001, lng]);
-          break;
-        case 'ArrowDown':
-          setMarkerPosition([lat - 0.0001, lng]);
-          break;
-        case 'ArrowLeft':
-          setMarkerPosition([lat, lng - 0.0001]);
-          break;
-        case 'ArrowRight':
-          setMarkerPosition([lat, lng + 0.0001]);
-          break;
-        default:
-          break;
-      }
+    const toggleButton = () => {
+        setShowAllVendors(prevShowAllVendors => {
+            const newShowAllVendors = !prevShowAllVendors;
+            if (newShowAllVendors) {
+                setShowedVendors(vendors);
+            } else {
+                setShowedVendors(filteredProductsVendors);
+            }
+            return newShowAllVendors;
+        });
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [markerPosition]);
-
-  const createIcon = (color: string) => {
-
-    const darkenColor = (color: string, amount: number) => {
-      return tinycolor(color).darken(amount).toString();
+    const handleMarkerClick = (position: [number, number]) => {
+        setSelectedMarker(position);
+        setMapCenter(position);
     };
 
-    let borderColor, backgroundColor, backgroundColorCircle;
+    //inizialize user marker position
+    useEffect(() => {
+        setMarkerPosition([selectedMarket.position[0] + offset[0], selectedMarket.position[1] + offset[1]]);
+    }, [selectedMarket]);
 
-    if (theme === 'dark') {
-      borderColor = color === '#447FC4' ? '#000000' : darkenColor(color, 20);
-      backgroundColor = color;
-      backgroundColorCircle = color === '#447FC4' ? '##D3D3D3' : darkenColor(color, 20);
-    } else if (color === 'green') {
-      borderColor = '#ffffff';
-      backgroundColor = '#008000';
-      backgroundColorCircle = '#ffffff';
-    } else {
-      borderColor = color === '#447FC4' ? '#ffffff' : darkenColor(color, 20);
-      backgroundColor = color;
-      backgroundColorCircle = color === '#447FC4' ? '#ffffff' : darkenColor(color, 20);
-    }
+    useEffect(() => {
+        if (showAllVendors) {
+            setShowedVendors(vendors);
+        } else {
+            setShowedVendors(filteredProductsVendors)
+        }
+    }, [vendors, filteredProductsVendors]);
 
-    const iconSvg = `
+
+    useEffect(() => {
+        if (!isOpen) {
+            // Cambia il centro della mappa quando isOpen diventa false
+            setMapCenter(selectedMarket.position as [number, number]); // Esempio: centro su New York
+        }
+    }, [isOpen]);
+
+    // Handle movable marker movement
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            const [lat, lng] = markerPosition;
+            switch (event.key) {
+                case 'ArrowUp':
+                    setMarkerPosition([lat + 0.0001, lng]);
+                    break;
+                case 'ArrowDown':
+                    setMarkerPosition([lat - 0.0001, lng]);
+                    break;
+                case 'ArrowLeft':
+                    setMarkerPosition([lat, lng - 0.0001]);
+                    break;
+                case 'ArrowRight':
+                    setMarkerPosition([lat, lng + 0.0001]);
+                    break;
+                default:
+                    break;
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [markerPosition]);
+
+    const createIcon = (color: string) => {
+
+        const darkenColor = (color: string, amount: number) => {
+            return tinycolor(color).darken(amount).toString();
+        };
+
+        let borderColor, backgroundColor, backgroundColorCircle;
+
+        if (theme === 'dark') {
+            borderColor = color === '#447FC4' ? '#000000' : darkenColor(color, 20);
+            backgroundColor = color;
+            backgroundColorCircle = color === '#447FC4' ? '##D3D3D3' : darkenColor(color, 20);
+        } else if (color === 'green') {
+            borderColor = '#ffffff';
+            backgroundColor = '#008000';
+            backgroundColorCircle = '#ffffff';
+        } else {
+            borderColor = color === '#447FC4' ? '#ffffff' : darkenColor(color, 20);
+            backgroundColor = color;
+            backgroundColorCircle = color === '#447FC4' ? '#ffffff' : darkenColor(color, 20);
+        }
+
+        const iconSvg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
     
       <path fill="${backgroundColor}" stroke="${borderColor}" stroke-width="1" d="M12 2C8.13 2 5 5.13 5 9c0 3.06 2.22 5.63 5.13 6.48L12 22l1.87-6.52C16.78 14.63 19 12.06 19 9c0-3.87-3.13-7-7-7z"/>
@@ -163,77 +169,80 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, sele
     </svg>
   `;
 
-    const iconUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(iconSvg)}`;
+        const iconUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(iconSvg)}`;
 
-    return new L.Icon({
-      iconUrl,
-      iconSize: [45, 45],
-      iconAnchor: [22, 30],
-      popupAnchor: [0, -30],
-    });
-  };
+        return new L.Icon({
+            iconUrl,
+            iconSize: [45, 45],
+            iconAnchor: [22, 30],
+            popupAnchor: [0, -30],
+        });
+    };
 
-  const unselectedIcon = createIcon('#447FC4');
-  const selectedIcon = createIcon('red');
-  const filteredIcon = createIcon('#447FC4');
+    const unselectedIcon = createIcon('#447FC4');
+    const selectedIcon = createIcon('red');
+    const filteredIcon = createIcon('#447FC4');
 
-  // Handle map light-mode and dark-mode
-  const tileLayerUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+    // Handle map light-mode and dark-mode
+    const tileLayerUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 
-  const tileLayerAttribution =
-    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+    const tileLayerAttribution =
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
 
-  return (
-    <div style={{ height: '100%', width: '100%', position: 'relative' }}>
+    return (
+        <div style={{height: '100%', width: '100%', position: 'relative'}}>
 
-      <MapContainer
-        center={center}
-        zoom={17}
-        maxZoom={18}
-        style={{ height: '100%', width: '100%' }}
-      >
-        <TileLayer className={theme === "dark" ? "dark-mode-filter" : ""} url={tileLayerUrl} attribution={tileLayerAttribution} />
-        {/* Update map center dynamically */}
-        <OnFlyMarker center={center}
-          isMarketCenter={center[0] === selectedMarket.position[0] && center[1] === selectedMarket.position[1]}
-        />
-        <UpdateMapCenter center={selectedMarket.position as [number, number]} />
-        {/* Vendors position */}
-        {showedVendors?.map((vendor, idx) => {
-          const position: [number, number] = vendor.position as [number, number];
-          const isFiltered = filteredVendors.some(filteredVendor => filteredVendor.id === vendor.id);
-          const icon = selectedMarker === position
-            ? selectedIcon
-            : (isFiltered ? filteredIcon : unselectedIcon);
-          return (
-            <Marker key={idx} position={position}
-              icon={icon}
-              eventHandlers={{
-                click: () => {
-                  handleMarkerClick(position);
-                  if (!isOpen) {
-                    setIsOpen(true);
-                  }
-                },
-              }}>
-              {selectedMarker === position && (
-                  <PageVendorProducts isOpen={isOpen} setIsOpen={setIsOpen} vendor={vendor} theme={theme}></PageVendorProducts>
-              )}
-              <Tooltip direction="top" offset={[115, 10]} opacity={1} permanent
-                key={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}
-                className={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}>
-                <span>{vendor.name}</span>
-              </Tooltip>
-            </Marker>
-          );
-        })}
-        {/* User current position */}
-        <CircleMarker center={markerPosition} radius={10} color="white" fillColor="blue" fillOpacity={1}>
-          <Popup>This is you!</Popup>
-        </CircleMarker>
-      </MapContainer>
-      {/* Market selector 
+            <MapContainer
+                center={center}
+                zoom={17}
+                maxZoom={18}
+                style={{height: '100%', width: '100%'}}
+            >
+                <TileLayer className={theme === "dark" ? "dark-mode-filter" : ""} url={tileLayerUrl}
+                           attribution={tileLayerAttribution}/>
+                {/* Update map center dynamically */}
+                <OnFlyMarker center={center}
+                             isMarketCenter={center[0] === selectedMarket.position[0] && center[1] === selectedMarket.position[1]}
+                />
+                <UpdateMapCenter center={selectedMarket.position as [number, number]}/>
+                {/* Vendors position */}
+                {showedVendors?.filter(vendor => vendor.products.length > 0).map((vendor, idx) => {
+                    const position: [number, number] = vendor.position as [number, number];
+                    const isFiltered = filteredVendors.some(filteredVendor => filteredVendor.id === vendor.id);
+                    const icon = selectedMarker === position
+                        ? selectedIcon
+                        : (isFiltered ? filteredIcon : unselectedIcon);
+                    return (
+                        <Marker key={idx} position={position}
+                                icon={icon}
+                                eventHandlers={{
+                                    click: () => {
+                                        handleMarkerClick(position);
+                                        if (!isOpen) {
+                                            setIsOpen(true);
+                                        }
+                                    },
+                                }}>
+                            {selectedMarker === position && (
+                                <PageVendorProducts isOpen={isOpen} setIsOpen={setIsOpen} vendor={
+                                    vendors.find(v => v.id === vendor.id) as Vendor
+                                } theme={theme}></PageVendorProducts>
+                            )}
+                            <Tooltip direction="top" offset={[115, 10]} opacity={1} permanent
+                                     key={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}
+                                     className={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}>
+                                <span>{vendor.name}</span>
+                            </Tooltip>
+                        </Marker>
+                    );
+                })}
+                {/* User current position */}
+                <CircleMarker center={markerPosition} radius={10} color="white" fillColor="blue" fillOpacity={1}>
+                    <Popup>This is you!</Popup>
+                </CircleMarker>
+            </MapContainer>
+            {/* Market selector
 
       <FormControlLabel
         style={{
@@ -255,8 +264,8 @@ const PageMap: React.FC<PageMapProps> = ({ filteredVendors, vendors, theme, sele
       />
       */}
 
-    </div>
-  );
+        </div>
+    );
 };
 
 export default PageMap;
