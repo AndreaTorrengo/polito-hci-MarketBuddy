@@ -16,7 +16,7 @@ import TabsHero from "./components/TabSelector/TabSelector";
 
 export default function App() {
   const paths = ["/", "/quests", "/rewards", "/profile", "*", "/leaderboard"];
-  const [theme, setTheme] = useState<string>(localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+  const [theme, setTheme] = useState<'light' | 'dark'>(localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
   const [selectedMarket, setSelectedMarket] = useState<Market>({
     id: 1,
     name: "Porta Palazzo Market",
@@ -64,9 +64,6 @@ export default function App() {
       "Bream"
     ],
   });
-
-
-
 
   useEffect(() => {
     const fetchVendors = async () => {
@@ -214,7 +211,7 @@ export default function App() {
           <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} leaderboardPath={`${paths[5]}`} />} />
           <Route path={`${paths[2]}`} element={<PageReward askConfirmation={askConfirmation} />} />
           <Route path={`${paths[2]}/history`} element={<PageRewardHistory />} />
-          <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} />} />
+          <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} askConfirmation={askConfirmation} />} />
           <Route path={`${paths[4]}`} element={<PageNotFound />} />
           <Route path={`${paths[5]}`} element={<PageLeaderboard />} />
         </Route>

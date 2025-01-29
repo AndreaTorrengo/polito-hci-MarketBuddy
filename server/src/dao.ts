@@ -18,7 +18,7 @@ const Dao = {
           vendor.name,
           vendor.market,
           vendor.position.split(',').map(Number),
-          vendor.quality_rating, 
+          vendor.quality_rating,
           vendor.convenience_rating,
           vendor.cordiality_rating,
           vendor.price_multiplier,
@@ -70,6 +70,7 @@ const Dao = {
       throw new Error('Failed to redeem Reward')
     }
   }
+
 };
 
 export default Dao;
