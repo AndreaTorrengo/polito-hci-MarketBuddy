@@ -3,6 +3,7 @@ import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import HexagonIcon from '@mui/icons-material/Hexagon';
 import { Button } from "@mui/material";
+import { quest_array, getNewQuestId, saveNewQuestId, getCurrentQuests, saveCurrentQuests } from './Quests';
 
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
@@ -15,19 +16,16 @@ const parseProgress = (progress: any) => {
 };
 
 export default function PageQuest(props: any) {
+  const N_QUESTS: number = 3;
   // Initial quests
-  const [quests, setQuests] = useState([
-    { id: 1, title: "Traveller", description: "Visit 2 vendors", progress: "2/2", completed: true },
-    { id: 2, title: "Hiker", description: "Walk for 1000m", progress: "128/1000", completed: false },
-    { id: 3, title: "Outside the Box", description: "Visit a vendor off the planned path", progress: "0/1", completed: false },
-  ]);
-  const [newQuestId, setNewQuestId] = useState(4);
+  const [quests, setQuests] = useState(getCurrentQuests(N_QUESTS));
+  const [newQuestId, setNewQuestId] = useState(getNewQuestId());
   const navigate = useNavigate();
 
   // Effect triggered by state change of "quests"
   useEffect(() => {
     props.setQuestPendingClaims((_oldValue: number) => {
-      return quests.filter(q => q.completed).length;
+      return quests.filter((q: any) => q.completed).length;
     });
   }, [quests]);
 
@@ -35,31 +33,36 @@ export default function PageQuest(props: any) {
   const handleClaim = (id: number) => {
     // Add a new quest to the same position of the one claimed
     // Find index of the claimed quest
-    let qindex = quests.map(q => q.id).indexOf(id);
+    let qindex = quests.map((q: any) => q.id).indexOf(id);
     if (qindex < 0) qindex = 0;
 
-    setQuests((prevQuests) => [
-      ...prevQuests.map((quest) => {
-        if (quest.id !== id)
-          return quest;
-        else {
-          return {
-            id: newQuestId,
-            title: `New Sample Quest #${newQuestId}`,
-            description: "This is a brand-new quest.",
-            progress: "0/1",
-            completed: false
-          };
-        }
-      })]);
-    setNewQuestId((prevId) => prevId + 1);
+    setQuests((prevQuests: any) => {
+      let newQuests = [
+        ...prevQuests.map((quest: any) => {
+          if (quest.id !== id)
+            return quest;
+          else {
+            console.log(newQuestId);
+            return quest_array.find((q: any) => q.id === newQuestId);
+          }
+        })];
+      saveCurrentQuests(newQuests);
+      return newQuests;
+    });
+    setNewQuestId((prevId: number) => {
+      return saveNewQuestId(prevId + 1);  // Saves on localstorage and get the new value of newQuestId
+    });
   };
   // Hard-coding for make a quest claimable
   const requestClaim = (id: Number) => {
-    setQuests((prevQuests) => [...prevQuests.map(q => {
-      const questTotalProgress = q.progress.split('/')[1];
-      return q.id === id ? { ...q, 'progress': `${questTotalProgress}/${questTotalProgress}`, 'completed': true } : q;
-    })]);
+    setQuests((prevQuests: any) => {
+      let newQuests = [...prevQuests.map((q: any) => {
+        const questTotalProgress = q.progress.split('/')[1];
+        return q.id === id ? { ...q, 'progress': `${questTotalProgress}/${questTotalProgress}`, 'completed': true } : q;
+      })];
+      saveCurrentQuests(newQuests);
+      return newQuests;
+    });
   };
 
   return (
@@ -67,7 +70,7 @@ export default function PageQuest(props: any) {
       <div className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle p-6">
         <Title className="text-center text-4xl mb-6">Quests</Title>
         <div className="flex flex-col gap-4 relative">
-          {quests.map((quest) =>
+          {quests.map((quest: any) =>
             <div id={`${quest.id}`} key={quest.id}
               // slide-in transition when rendering quests
               className={`relative bg-tremor-background dark:bg-dark-tremor-background shadow-md rounded-lg overflow-hidden transform transition-all duration-500 animate-slide-in`}
