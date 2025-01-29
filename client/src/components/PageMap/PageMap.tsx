@@ -103,12 +103,13 @@ const PageMap: React.FC<PageMapProps> = ({
     }, [vendors, filteredProductsVendors]);
 
 
-    useEffect(() => {
-        if (!isOpen) {
-            // Cambia il centro della mappa quando isOpen diventa false
-            setMapCenter(selectedMarket.position as [number, number]); // Esempio: centro su New York
-        }
-    }, [isOpen]);
+  useEffect(() => {
+    if (!isOpen) {
+      // Cambia il centro della mappa quando isOpen diventa false
+      setMapCenter(selectedMarket.position as [number, number]); // Esempio: centro su New York
+      setSelectedMarker(selectedMarket.position as [number, number]);
+    }
+  }, [isOpen]);
 
     // Handle movable marker movement
     useEffect(() => {
