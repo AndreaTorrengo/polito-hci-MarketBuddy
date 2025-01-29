@@ -66,6 +66,8 @@ export default function PageVendorProducts({ vendor, isOpen, setIsOpen, theme }:
         ]
     });
 
+    const activeTab = localStorage.getItem('activeTab') || 'list';
+
     const onLongPress = (event: React.MouseEvent, productId: number) => {
         event.preventDefault();
         setContextMenuProps({ ...contextMenuProps, isOpen: true, x: event.clientX, y: event.clientY });
@@ -244,7 +246,10 @@ export default function PageVendorProducts({ vendor, isOpen, setIsOpen, theme }:
                         } </Sheet.Scroller>
                     </Sheet.Content>
                 </Sheet.Container>
-                <Sheet.Backdrop onTap={() => handleClose()} style={{backgroundColor: "transparent"}} />
+                {
+                    activeTab!="map" ?
+                    <Sheet.Backdrop onTap={() => handleClose()} style={{backgroundColor: "transparent"}} /> : <></>
+                }
             </Sheet>
         </>
     );
