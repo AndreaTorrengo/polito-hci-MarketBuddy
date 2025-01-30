@@ -35,25 +35,25 @@ export default function StatPopup({ coins, exp }: Props) {
     >
       <Card className="p-4 bg-white shadow-lg border rounded-xl flex flex-col space-y-2">
         <div className="flex items-center space-x-2 text-lg font-semibold">
+          <span className="text-violet-600"><HexagonIcon /></span>
           <span
             className={`flex items-center transition-all duration-300 ${
-              coins > prevCoins ? "text-green-600" : "text-red-600"
+              exp >= prevExp ? "text-violet-600" : "text-red-600"
             }`}
           >
-            {coins > prevCoins ? <ArrowUpward /> : <ArrowDownward />}
-            {coins}
+            {exp >= prevExp ? <ArrowUpward /> : <ArrowDownward />}
+            {exp}
           </span>
-          <span><EmojiEmotionsIcon /></span>
         </div>
         <div className="flex items-center space-x-2 text-lg font-semibold">
-          <span><HexagonIcon /></span>
+          <span className="text-yellow-500"><EmojiEmotionsIcon /></span>
           <span
             className={`flex items-center transition-all duration-300 ${
-              exp > prevExp ? "text-blue-600" : "text-red-600"
+              coins >= prevCoins ? "text-yellow-500" : "text-red-600"
             }`}
           >
-            {exp > prevExp ? <ArrowUpward /> : <ArrowDownward />}
-            {exp}
+            {coins >= prevCoins ? <ArrowUpward /> : <ArrowDownward />}
+            {coins}
           </span>
         </div>
       </Card>

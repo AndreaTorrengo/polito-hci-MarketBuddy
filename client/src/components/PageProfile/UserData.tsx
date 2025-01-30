@@ -2,7 +2,7 @@
  * a few function for reading and writing on localstorage
  */
 
-class UserData {
+export class UserData {
     username: string;
     coins: number;
     experience: number;
@@ -12,7 +12,12 @@ class UserData {
         this.coins = coins;
         this.experience = experience;
     }
-
+    // Use this function to get a clone of this instance and use it to update the react state
+    clone(): UserData {
+        let clone = new UserData();
+        Object.assign(clone, this);
+        return clone;
+    }
     // Use this function to increment or decrement coins
     incrCoins(increment: number): void {
         if (increment < 0 && increment > this.coins)
@@ -20,7 +25,7 @@ class UserData {
         else this.coins += increment;
     }
     // Use this function to increment or decrement experience
-    incrExp(increment: number): void {
+    incrExperience(increment: number): void {
         if (increment < 0 && increment > this.experience)
             this.experience = 0;
         else this.experience += increment;
@@ -31,7 +36,7 @@ export function getUserdata(): UserData {
     let userdataStr = localStorage.getItem('UserData');
     let userdata;
     // If user is not already saved into localStorage, create a new one with default values
-    if (userdataStr == null) {
+    if (!userdataStr) {
         userdata = new UserData();
         saveUserData(userdata);
     } else 
