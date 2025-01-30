@@ -47,11 +47,11 @@ export default function ProductItem({image, name, points, price, isSelected, isE
 
             <div className="w-full h-full transition-all duration-300">
                 <img src={image} alt={name + " image"} className="rounded-md aspect-square object-cover"/>
-                <div className="text-white absolute top-0 right-0 bg-tremor-brand px-1.5 rounded-tr-sm rounded-es-md">
+                <div className="absolute top-0 right-0 bg-tremor-background dark:bg-dark-tremor-background px-1.5 rounded-tr-sm rounded-es-md">
                     {points &&
                         <div className="flex flex-row gap-1 items-center">
-                            <p className="m-0 p-0">{points}</p>
-                            <EmojiEmotionsIcon fontSize="small"></EmojiEmotionsIcon>
+                            <p className="m-0 p-0 text-black dark:text-white">{points}</p>
+                            <EmojiEmotionsIcon fontSize="small" className="text-yellow-500"></EmojiEmotionsIcon>
                         </div>
                     }
                 </div>

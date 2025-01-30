@@ -3,6 +3,17 @@ import { Vendor, Product, Reward } from './models';
 
 const Dao = {
 
+  getAllProducts: async () => {
+    try {
+      const database = await db;
+      const products = await database.all('SELECT * FROM products');
+
+      return products.map(product => new Product(product.id, product.name, product.price, product.points, product.image));
+    } catch (error) {
+      throw new Error('Failed to retrieve products');
+    }
+  },
+
   getVendorsByMarket: async (market: string) => {
     try {
       const database = await db;

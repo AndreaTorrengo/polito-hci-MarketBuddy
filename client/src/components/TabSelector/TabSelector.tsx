@@ -13,7 +13,8 @@ import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import ConfirmDeleteAlert from "../generalPurposeComponents/ConfirmDeleteAlert.tsx";
 import {TextInput} from "@tremor/react";
 import SearchIcon from "@mui/icons-material/Search";
-import AddProductButton from "../PageVendorProducts/AddProductButton.tsx";
+import AddProductsButton from "../PageVendorProducts/AddProductsButton.tsx";
+import {useNavigate} from "react-router-dom";
 
 interface TabsHeroProps {
     theme: string;
@@ -39,13 +40,15 @@ export default function TabsHero({
                                      setProductsList
                                  }: TabsHeroProps): JSX.Element {
     const [selectedProducts, setSelectedProducts] = useState<Map<number, number[]> | null>(null);
-    const [filteredProductsVendors, setFilteredProductsVendors] = useState<Vendor[]>(vendors); //vendors with filtered products
+    const [filteredProductsVendors, setFilteredProductsVendors] = useState<Vendor[]>(filteredVendors); //vendors with filtered products
     const [isEditMode, setIsEditMode] = useState(false);
     const [isDeleteAlertShow, setIsDeleteAlertShow] = useState(false);
     const [searchInput, setSearchInput] = useState("");
 
+    const navigate = useNavigate();
+
     //total number of products
-    const totalProducts = vendors.reduce((acc, vendor) => acc + vendor.products.length, 0);
+    const totalProducts = filteredVendors.reduce((acc, vendor) => acc + vendor.products.length, 0);
 
     const [activeTab, setActiveTab] = useState(() => {
         return localStorage.getItem('activeTab') || 'list';
@@ -114,7 +117,7 @@ export default function TabsHero({
 
     function selectAllProducts() {
         const newMap = new Map<number, number[]>();
-        vendors.forEach((vendor) => {
+        filteredVendors.forEach((vendor) => {
             const productIds = vendor.products.map((product) => product.id);
             newMap.set(vendor.id, productIds);
         });
@@ -122,7 +125,7 @@ export default function TabsHero({
     }
 
     function selectedOrRemoveAllProductsFromVendor(vendorId: number, remove: boolean) {
-        const vendor = vendors.find((vendor) => vendor.id === vendorId);
+        const vendor = filteredVendors.find((vendor) => vendor.id === vendorId);
         if (vendor) {
             const newSelectedProducts = new Map(selectedProducts);
             if (remove) {
@@ -149,18 +152,18 @@ export default function TabsHero({
     //Products Filtering
     const filterVendorsByState = () => {
         if (searchInput) {
-            setFilteredProductsVendors(vendors.map(vendor => ({
+            setFilteredProductsVendors(filteredVendors.map(vendor => ({
                 ...vendor,
                 products: vendor.products.filter(product => product.name.toLowerCase().includes(searchInput.toLowerCase()))
             })));
         } else {
-            setFilteredProductsVendors(vendors);
+            setFilteredProductsVendors(filteredVendors);
         }
     };
 
     useEffect(() => {
         filterVendorsByState();
-    }, [searchInput, vendors]);
+    }, [searchInput, filteredVendors]);
 
     //delete selected products in edit mode
     async function handleDelete() {
@@ -173,7 +176,7 @@ export default function TabsHero({
         <div>
             <ConfirmDeleteAlert theme={theme} isOpen={isDeleteAlertShow}
                                 setIsOpen={value => setIsDeleteAlertShow(value)} handleDelete={handleDelete}
-                                numberOfProducts={selectedProducts ? selectedProducts.size : 0}></ConfirmDeleteAlert>
+                                numberOfProducts={countSelectedProducts()}></ConfirmDeleteAlert>
             {
                 isEditMode ?
                     <TopBar
@@ -247,7 +250,10 @@ export default function TabsHero({
                                     value={searchInput}
                                 />
                             </div>
-                            <div className=""><AddProductButton></AddProductButton></div>
+                            <div onClick={ () => {
+                                navigate("/addProducts")
+                            }
+                            }><AddProductsButton></AddProductsButton></div>
                         </div>
                         <div style={{
                             display: 'flex',

@@ -2,6 +2,30 @@
 const API_URL = 'http://localhost:3001/api';
 import { Vendor, Product, Reward } from './models';
 
+const getAllProducts = async () => {
+    try {
+        const response = await fetch(`${API_URL}/products`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        return data.map((productData: Product) => new Product(
+                productData.id,
+                productData.name,
+                productData.price,
+                productData.points,
+                productData.image
+        ));
+    } catch (error) {
+        throw error;
+    }
+};
+
 const getVendorsByMarket = async (market: string) => {
     try {
         const response = await fetch(`${API_URL}/vendors/${market}`, {
@@ -102,7 +126,7 @@ const getRedeemedRewards = async () => {
 };
 
 const API = {
-    getVendorsByMarket, getRewards, getRedeemedRewards, redeemReward
+    getVendorsByMarket, getRewards, getRedeemedRewards, redeemReward, getAllProducts
 };
 
 export default API;

@@ -2,7 +2,7 @@
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import VendorCategoryList from "./VendorCategoryList.tsx";
 import React, { useState } from "react";
-import AddProductButton from "./AddProductButton.tsx";
+import AddProductsButton from "./AddProductsButton.tsx";
 import ProductListItem, { ProductListItemProps } from "./ProductListItem.tsx";
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import { Sheet } from 'react-modal-sheet';
@@ -14,6 +14,7 @@ import DeleteButton from "./DeleteButton.tsx";
 import SignalErrorButton from "./SignalErrorButton.tsx";
 import ConfirmDeleteAlert from "../generalPurposeComponents/ConfirmDeleteAlert.tsx";
 import {Vendor} from "../../models.ts";
+import {useNavigate} from "react-router-dom";
 
 interface PageVendorProductsParams {
     isOpen: boolean;
@@ -32,10 +33,11 @@ export default function PageVendorProducts({ vendor, isOpen, setIsOpen, theme }:
         vendor.products.map((product) => ({
                 id: product.id,
                 name: product.name,
-                price: product.price,
+                price: product.price * vendor.priceMultiplier,
                 image: product.image,
                 editMode: false,
-                isSelected: false
+                isSelected: false,
+                showPrice: true
             }
     )));
 
@@ -67,6 +69,8 @@ export default function PageVendorProducts({ vendor, isOpen, setIsOpen, theme }:
     });
 
     const activeTab = localStorage.getItem('activeTab') || 'list';
+
+    const navigate = useNavigate();
 
     const onLongPress = (event: React.MouseEvent, productId: number) => {
         event.preventDefault();
@@ -214,7 +218,10 @@ export default function PageVendorProducts({ vendor, isOpen, setIsOpen, theme }:
                                         {/* Product list top bar */}
                                         <div className="w-full flex flex-row justify-between items-center">
                                             <p className="m-0 p-0">Your planned purchases</p>
-                                            <AddProductButton />
+                                            <div onClick={ () => {
+                                                navigate("/addProducts/" + vendor.id);
+                                            }
+                                            }><AddProductsButton></AddProductsButton></div>
                                         </div>
                                         {/* Product list */}
                                         <div className="w-full flex flex-col gap-3 mt-4 pb-[4rem]">

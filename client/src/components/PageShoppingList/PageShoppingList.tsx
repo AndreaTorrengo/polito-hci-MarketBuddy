@@ -82,9 +82,10 @@ export default function PageShoppingList({
                                              (product) => ({
                                                      id: product.id,
                                                      name: product.name,
-                                                     price: product.price,
+                                                     price: product.price * vendor.priceMultiplier,
                                                      points: product.points,
                                                      image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg",
+                                                     showPrice: true,
                                                  }
                                              ))}
                                          selectedProducts={selectedProducts ? selectedProducts.get(vendor.id) || [] : []}

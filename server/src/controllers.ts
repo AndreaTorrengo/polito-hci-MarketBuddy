@@ -38,3 +38,12 @@ export const redeemReward = async (req: Request, res: Response) => {
     res.status(500).json({ error: (error as Error).message });
   }
 };
+
+export const getAllProducts = async (req: Request, res: Response) => {
+  try {
+    const products = await dao.getAllProducts();
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+};
