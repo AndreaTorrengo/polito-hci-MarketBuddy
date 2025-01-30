@@ -50,6 +50,7 @@ interface PageMapProps {
     theme: string;
     selectedMarket: Market;
     filteredProductsVendors: Vendor[];
+    setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
 }
 
 const PageMap: React.FC<PageMapProps> = ({
@@ -57,7 +58,8 @@ const PageMap: React.FC<PageMapProps> = ({
                                              vendors,
                                              theme,
                                              selectedMarket,
-                                             filteredProductsVendors
+                                             filteredProductsVendors,
+                                             setFilteredVendors
                                          }) => {
     const offset: [number, number] = getRandomOffset();
     const [markerPosition, setMarkerPosition] = useState<[number, number]>([
@@ -227,8 +229,8 @@ const PageMap: React.FC<PageMapProps> = ({
                                 }}>
                             {selectedMarker === position && (
                                 <PageVendorProducts isOpen={isOpen} setIsOpen={setIsOpen} vendor={
-                                    vendors.find(v => v.id === vendor.id) as Vendor
-                                } theme={theme}></PageVendorProducts>
+                                    filteredVendors.find(v => v.id === vendor.id) as Vendor
+                                } theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket}></PageVendorProducts>
                             )}
                             <Tooltip direction="top" offset={[115, 10]} opacity={1} permanent
                                      key={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}

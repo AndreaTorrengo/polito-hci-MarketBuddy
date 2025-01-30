@@ -81,6 +81,7 @@ const Dao = {
       throw new Error('Failed to redeem Reward')
     }
   }
+
 };
 
 export default Dao;

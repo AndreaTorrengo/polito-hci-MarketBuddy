@@ -10,7 +10,6 @@ import SwitchButton from "../PageVendorProducts/SwitchButton.tsx";
 import SignalErrorButton from "../PageVendorProducts/SignalErrorButton.tsx";
 import DeleteButton from "../PageVendorProducts/DeleteButton.tsx";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
-import ConfirmDeleteAlert from "../generalPurposeComponents/ConfirmDeleteAlert.tsx";
 import {TextInput} from "@tremor/react";
 import SearchIcon from "@mui/icons-material/Search";
 import AddProductsButton from "../PageVendorProducts/AddProductsButton.tsx";
@@ -26,6 +25,7 @@ interface TabsHeroProps {
     updateVendorsAndProducts: () => void;
     productsList: { [key: string]: string[] };
     setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
+    setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
 }
 
 export default function TabsHero({
@@ -37,7 +37,8 @@ export default function TabsHero({
                                      missingProducts,
                                      updateVendorsAndProducts,
                                      productsList,
-                                     setProductsList
+                                     setProductsList,
+                                     setFilteredVendors
                                  }: TabsHeroProps): JSX.Element {
     const [selectedProducts, setSelectedProducts] = useState<Map<number, number[]> | null>(null);
     const [filteredProductsVendors, setFilteredProductsVendors] = useState<Vendor[]>(filteredVendors); //vendors with filtered products
@@ -165,10 +166,9 @@ export default function TabsHero({
     }, [searchInput, filteredVendors]);
 
     //delete selected products in edit mode
-    async function handleDelete() {
+    function closeAfter() {
         setIsEditMode(false);
         setSelectedProducts(null);
-        //todo delete products
     }
 
     return (
@@ -220,11 +220,9 @@ export default function TabsHero({
 
                                 {selectedProducts && selectedProducts.size > 0 &&
                                     <>
-                                        <SwitchButton/>
-                                        <SignalErrorButton/>
-                                        <DeleteButton onClick={() => {
-                                            //todo
-                                        }}/>
+                                        <SwitchButton selectedMarket={selectedMarket} selectedProducts={selectedProducts} setFilteredVendors={setFilteredVendors} theme={theme} closeAfter={closeAfter}/>
+                                        <SignalErrorButton selectedMarket={selectedMarket} selectedProducts={selectedProducts} setFilteredVendors={setFilteredVendors} theme={theme} closeAfter={closeAfter}/>
+                                        <DeleteButton  selectedMarket={selectedMarket} selectedProducts={selectedProducts} setFilteredVendors={setFilteredVendors} theme={theme} closeAfter={closeAfter}/>
                                     </>}
 
                             </>
@@ -298,7 +296,7 @@ export default function TabsHero({
                 {activeTab === 'map' && (
                     <div className="flex" style={{width: '100%', height: '100%'}}>
                         <PageMap theme={theme} vendors={vendors} filteredVendors={filteredVendors}
-                                 selectedMarket={selectedMarket} filteredProductsVendors={filteredProductsVendors}/>
+                                 selectedMarket={selectedMarket} filteredProductsVendors={filteredProductsVendors} setFilteredVendors={setFilteredVendors}/>
                     </div>
                 )}
                 {activeTab === 'list' &&
@@ -309,6 +307,7 @@ export default function TabsHero({
                                       addOrRemoveSelected={addOrRemoveSelected} isEditMode={isEditMode}
                                       selectedOrRemoveAllProductsFromVendor={selectedOrRemoveAllProductsFromVendor}
                                       filteredProductsVendors={filteredProductsVendors}
+                                      setFilteredVendors={setFilteredVendors}
                     />}
             </div>
         </div>

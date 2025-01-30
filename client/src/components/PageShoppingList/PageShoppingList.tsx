@@ -18,6 +18,7 @@ interface PageShoppingListProps {
     readonly selectedProducts?: Map<number, number[]> | null;
     readonly selectedOrRemoveAllProductsFromVendor: (vendorId: number, remove: boolean) => void;
     readonly filteredProductsVendors: Vendor[];
+  readonly setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
 }
 
 export default function PageShoppingList({
@@ -33,7 +34,8 @@ export default function PageShoppingList({
                                              isEditMode,
                                              selectedProducts,
                                              selectedOrRemoveAllProductsFromVendor,
-                                             filteredProductsVendors
+                                             filteredProductsVendors,
+                                             setFilteredVendors
                                          }: PageShoppingListProps) {
     const [isVendorPageOpen, setIsVendorPageOpen] = useState(false);
     const [selectedVendor, setSelectedVendor] = useState<number>(-1);
@@ -44,15 +46,13 @@ export default function PageShoppingList({
 
                 {!isEditMode &&
                     <MissingProductsDialog
-                        missingProducts={missingProducts}
                         theme={theme}
                         productsList={productsList}
                         setProductsList={setProductsList}
                         selectedMarket={selectedMarket}
-                        updateVendorsAndProducts={updateVendorsAndProducts}
+                        setFilteredVendors={setFilteredVendors}
                     />
                 }
-
                 {isEditMode && <div className="h-[3rem]"/>}
 
                 {
@@ -62,7 +62,7 @@ export default function PageShoppingList({
                             {selectedVendor === vendor.id &&
                                 <PageVendorProducts vendor={vendor} isOpen={isVendorPageOpen}
                                                     setIsOpen={(value: boolean) => setIsVendorPageOpen(value)}
-                                                    theme={theme}></PageVendorProducts>}
+                                                    theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket}></PageVendorProducts>}
 
                             <VendorGroup id={vendor.id}
                                          openEditMode={openEditMode}

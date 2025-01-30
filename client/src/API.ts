@@ -125,8 +125,24 @@ const getRedeemedRewards = async () => {
     }
 };
 
+const resetDB = async () => {
+    try {
+        const response = await fetch(`${API_URL}/reset`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+    } catch (error) {
+        throw error;
+    }
+};
+
 const API = {
-    getVendorsByMarket, getRewards, getRedeemedRewards, redeemReward, getAllProducts
+    getVendorsByMarket, getRewards, getRedeemedRewards, redeemReward, getAllProducts, resetDB
 };
 
 export default API;
