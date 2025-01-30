@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { getVendorsByMarket, getRewards, getRedeemedRewards, redeemReward, resetDB } from './controllers';
+import { getVendorsByMarket, getRewards, getRedeemedRewards, redeemReward, getAllProducts, resetDB } from './controllers';
 
 const router = Router();
 
+router.get('/products', getAllProducts);
 router.get('/vendors/:market', getVendorsByMarket);
 router.get('/rewards', getRewards);
 router.get('/rewards/redeemed', getRedeemedRewards);

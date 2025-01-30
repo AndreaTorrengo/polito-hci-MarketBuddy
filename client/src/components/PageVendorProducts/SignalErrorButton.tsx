@@ -5,12 +5,13 @@ import React, { useState } from 'react';
 import './SignalErrorButton.css';
 
 interface SignalErrorButtonProps {
-    selectedProducts: Map<number, any>;
+    selectedProducts: Map<number, number[]>;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
-    theme: string
+    theme: string,
+    closeAfter: () => void;
 }
-const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme }) => {
+const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter }) => {
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
@@ -23,10 +24,6 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
     const vendors: Vendor[] = JSON.parse(localStorage.getItem(vendorsKey) || '[]');
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '[]');
     const missingProduct: string[] = JSON.parse(localStorage.getItem(missingProductsKey) || '[]');
-
-    const selectedProduct = new Map<number, any>();
-    selectedProduct.set(10, [10]);
-    selectedProduct.set(4, [1, 2]);
 
     const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
 
@@ -48,7 +45,7 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
     const handleClick = () => {
         setIsDialogOpen(true);
 
-        const products = Array.from(selectedProduct.values()).flatMap(productIds => {
+        const products = Array.from(selectedProducts.values()).flatMap(productIds => {
             return productIds.map((productId: number) => {
                 const vendor = filteredVendors.find(vendor => vendor.products.some(product => product.id === productId));
                 return vendor ? vendor.products.find(product => product.id === productId) : null;
@@ -59,7 +56,7 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
 
     const handleConfirm = () => {
         if (selectedReasons.includes('reason1')) {
-            selectedProduct.forEach((products, vendorId) => {
+            selectedProducts.forEach((products, vendorId) => {
                 products.forEach((productId: number) => {
                     filteredVendors.forEach(vendor => {
                         const product = vendor.products.find(product => product.id === productId);
@@ -121,7 +118,7 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
                     </svg>
                 </div>
             </SmallIconButton>
-            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
                 <DialogPanel>
                     <h1 className="confirm-text" style={{ fontWeight: 'bold', fontSize: '1rem' }}>Confirm Report</h1>
                     <p className="message-text" style={{ marginTop: '10px' }}>Choose why you decided to report these products:</p>
@@ -172,7 +169,7 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
                     </div>
                 </DialogPanel>
             </Dialog>
-            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isFeedbackDialogOpen} onClose={() => setIsFeedbackDialogOpen(false)}>
+            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isFeedbackDialogOpen} onClose={() => {setIsFeedbackDialogOpen(false); closeAfter();}}>
                 <DialogPanel>
                     {selectedReasons.includes('reason1') ? (
                         <>

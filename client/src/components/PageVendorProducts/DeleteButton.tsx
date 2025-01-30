@@ -6,12 +6,13 @@ import './SwitchButton.css';
 
 
 interface DeleteButtonProps {
-    selectedProducts: Map<number, any>;
+    selectedProducts: Map<number, number[]>;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
-    theme: string
+    theme: string,
+    closeAfter: () => void;
 }
-const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme }) => {
+const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter }) => {
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
@@ -21,14 +22,10 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '[]');
 
-    const selectedProduct = new Map<number, any>();
-    selectedProduct.set(10, [10]);
-    selectedProduct.set(4, [1, 2]);
-
     const handleClick = () => {
         setIsDialogOpen(true);
 
-        const products = Array.from(selectedProduct.values()).flatMap(productIds => {
+        const products = Array.from(selectedProducts.values()).flatMap(productIds => {
             return productIds.map((productId: number) => {
                 const vendor = filteredVendors.find(vendor => vendor.products.some(product => product.id === productId));
                 return vendor ? vendor.products.find(product => product.id === productId) : null;
@@ -38,7 +35,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
     };
 
     const handleConfirm = () => {
-        selectedProduct.forEach((products, vendorId) => {
+        selectedProducts.forEach((products, vendorId) => {
             products.forEach((productId: number) => {
                 filteredVendors.forEach(vendor => {
                     const product = vendor.products.find(product => product.id === productId);
@@ -70,7 +67,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
                     <svg fill="#db1f1f" width="2.5em" height="2.5em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5.755,20.283,4,8H20L18.245,20.283A2,2,0,0,1,16.265,22H7.735A2,2,0,0,1,5.755,20.283ZM21,4H16V3a1,1,0,0,0-1-1H9A1,1,0,0,0,8,3V4H3A1,1,0,0,0,3,6H21a1,1,0,0,0,0-2Z" /></svg>
                 </div>
             </SmallIconButton>
-            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
                 <DialogPanel>
                     <h1 className="confirm-text" style={{ fontWeight: 'bold', fontSize: '1rem' }}>Confirm Delete</h1>
                     <p className="message-text" style={{ marginTop: '10px' }}>The following products will be deleted from your shopping list:</p>
@@ -90,7 +87,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
                     </div>
                 </DialogPanel>
             </Dialog>
-            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isFeedbackDialogOpen} onClose={() => setIsFeedbackDialogOpen(false)}>
+            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isFeedbackDialogOpen} onClose={() => {setIsFeedbackDialogOpen(false); closeAfter();}}>
                 <DialogPanel>
 
                     <>

@@ -5,13 +5,14 @@ import React, { useState } from 'react';
 import './SwitchButton.css';
 
 interface SwitchButtonProps {
-    selectedProducts: Map<number, any>;
+    selectedProducts: Map<number, number[]>;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
-    theme: string
+    theme: string,
+    closeAfter: () => void;
 }
 
-const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme }) => {
+const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
     const [productsWithoutAlternatives, setProductsWithoutAlternatives] = useState<Product[]>([]);
@@ -22,14 +23,10 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '[]');
     const vendors: Vendor[] = JSON.parse(localStorage.getItem(vendorsKey) || '[]');
 
-    const selectedProduct = new Map<number, any>();
-    selectedProduct.set(9, [10]);
-    selectedProduct.set(3, [1, 2]);
-
     const handleClick = () => {
         setIsDialogOpen(true);
 
-        const products = Array.from(selectedProduct.values()).flatMap(productIds => {
+        const products = Array.from(selectedProducts.values()).flatMap(productIds => {
             return productIds.map((productId: number) => {
                 const vendor = vendors.find(vendor => vendor.products.some(product => product.id === productId));
                 return vendor ? vendor.products.find(product => product.id === productId) : null;
@@ -42,7 +39,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
 
         const productsWithoutAlternatives: Product[] = [];
 
-        selectedProduct.forEach((products, vendorId) => {
+        selectedProducts.forEach((products, vendorId) => {
             products.forEach((productId: number) => {
                 let alternativeFound = false;
 
@@ -85,7 +82,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                     </svg>
                 </div>
             </SmallIconButton>
-            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
                 <DialogPanel>
                     <h1 className="confirm-text" style={{ fontWeight: 'bold', fontSize: '1rem' }}>Confirm Switch</h1>
                     <p className="message-text" style={{ marginTop: '10px' }}>For the following products we will find other sellers in this marketplace that match your preferences:</p>
@@ -105,7 +102,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                     </div>
                 </DialogPanel>
             </Dialog>
-            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isFeedbackDialogOpen} onClose={() => setIsFeedbackDialogOpen(false)}>
+            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isFeedbackDialogOpen} onClose={() => {setIsFeedbackDialogOpen(false); closeAfter();}}>
                 <DialogPanel>
                     {productsWithoutAlternatives.length === 0 ? (
                         <>
