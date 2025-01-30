@@ -16,9 +16,10 @@ interface TabsHeroProps {
     updateVendorsAndProducts: () => void;
     productsList: { [key: string]: string[] };
     setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
+    setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
 }
 
-export default function TabsHero({ theme, vendors, filteredVendors, selectedMarket, setSelectedMarket, missingProducts, updateVendorsAndProducts,productsList,setProductsList }: TabsHeroProps): JSX.Element {
+export default function TabsHero({ theme, vendors, filteredVendors, selectedMarket, setSelectedMarket, missingProducts, updateVendorsAndProducts, productsList, setProductsList, setFilteredVendors }: TabsHeroProps): JSX.Element {
     const [activeTab, setActiveTab] = useState(() => {
         return localStorage.getItem('activeTab') || 'list';
     });
@@ -84,7 +85,7 @@ export default function TabsHero({ theme, vendors, filteredVendors, selectedMark
                         <PageMap theme={theme} vendors={vendors} filteredVendors={filteredVendors} selectedMarket={selectedMarket} />
                     </div>
                 )}
-                {activeTab === 'list' && <PageShoppingList productsList={productsList} setProductsList={setProductsList} theme={theme} selectedMarket={selectedMarket}  missingProducts={missingProducts} updateVendorsAndProducts={updateVendorsAndProducts} />}
+                {activeTab === 'list' && <PageShoppingList productsList={productsList} setProductsList={setProductsList} theme={theme} selectedMarket={selectedMarket} missingProducts={missingProducts} setFilteredVendors={setFilteredVendors} />}
             </div>
         </div>
     );

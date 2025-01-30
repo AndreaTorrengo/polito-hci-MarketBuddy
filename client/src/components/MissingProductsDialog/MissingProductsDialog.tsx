@@ -6,21 +6,19 @@ import { useSwipeable } from 'react-swipeable';
 import './MissingProductsDialog.css';
 
 interface MissingProductsDialogProps {
-    missingProducts: string[];
     theme: string;
     productsList: { [key: string]: string[] };
     setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
     selectedMarket: Market;
-    updateVendorsAndProducts: () => void;
+    setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
 }
 
 const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
-    missingProducts,
     theme,
     productsList,
     setProductsList,
     selectedMarket,
-    updateVendorsAndProducts
+    setFilteredVendors
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -28,17 +26,18 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
     const [selectedAlternatives, setSelectedAlternatives] = useState<{ [key: string]: Product[] }>({});
     const [randomAlternatives, setRandomAlternatives] = useState<{ [key: string]: Product[] }>({});
 
+    const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
+    const vendorsKey = `vendors_${selectedMarket.name}`;
+    const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '{}');
+    const vendors: Vendor[] = JSON.parse(localStorage.getItem(vendorsKey) || '{}');
 
-
-
+    const missingProductsKey = `missingProducts_${selectedMarket.name}`;
+    const missingProducts: string[] = JSON.parse(localStorage.getItem(missingProductsKey) || '[]');
 
     const previousMarketRef = useRef(selectedMarket);
 
     useEffect(() => {
-
-
         if (missingProducts.length > 0) {
-
             const generateSpecificAlternatives = () => {
                 const newSpecificAlternatives: { [key: string]: Product[] } = {};
                 missingProducts.forEach((product) => {
@@ -54,7 +53,6 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                         alternatives = [{ id: 10, name: "Cod", price: 9.5 }];
                     }
                     newSpecificAlternatives[product] = alternatives;
-
                 });
                 setRandomAlternatives(newSpecificAlternatives);
             };
@@ -66,10 +64,9 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
             setCurrentIndex(0);
         }
         previousMarketRef.current = selectedMarket;
-    }, [missingProducts, selectedMarket]);
+    }, [selectedMarket,isOpen]);
 
     const handleConfirm = (product: string, selectedAlternatives: Product[]) => {
- 
         const updatedProductList = { ...productsList };
         updatedProductList[selectedMarket.name] = updatedProductList[selectedMarket.name].filter(p => p !== product);
 
@@ -83,7 +80,36 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
         setProductsList(updatedProductList);
         localStorage.setItem('productsList', JSON.stringify(updatedProductList));
 
-        updateVendorsAndProducts();
+        //updateVendorsAndProducts();
+
+
+        const updatedMissingProducts = missingProducts.filter(p => p !== product);
+        localStorage.setItem(missingProductsKey, JSON.stringify(updatedMissingProducts));
+
+        const updatedFilteredVendor: Vendor[] = [...filteredVendors];
+        
+        selectedAlternatives.forEach(alternative => {
+            const vendor = vendors.find(v => v.products.some((product: Product) => product.name === alternative.name));
+            if (vendor) {
+                const product = vendor.products.find(p => p.name === alternative.name);
+                if (product) {
+                    const existingVendor = updatedFilteredVendor.find(v => v.name === vendor.name);
+                    if (existingVendor) {
+                        existingVendor.products.push(product);
+                    } else {
+                        updatedFilteredVendor.push({
+                            ...vendor,
+                            products: [product]
+                        });
+                    }
+                }
+            }
+        });
+
+
+        localStorage.setItem(filteredVendorsKey, JSON.stringify(updatedFilteredVendor));
+        setFilteredVendors(updatedFilteredVendor);
+
 
         if (currentIndex === missingProducts.length - 1) {
             setCurrentIndex(0);

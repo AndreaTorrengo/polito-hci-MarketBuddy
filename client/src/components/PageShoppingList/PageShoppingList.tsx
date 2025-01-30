@@ -1,6 +1,7 @@
 import MissingProductsDialog from "../MissingProductsDialog/MissingProductsDialog";
 import { Market } from "../../models";
 import PageVendorProducts from "../PageVendorProducts/PageVendorProducts";
+import {Vendor} from "../../models";
 
 interface PageShoppingListProps {
   readonly theme: string;
@@ -8,10 +9,10 @@ interface PageShoppingListProps {
   readonly setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
   readonly selectedMarket: Market;
   readonly missingProducts: string[];
-  readonly updateVendorsAndProducts: () => void;
+  readonly setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
 }
 
-export default function PageShoppingList({ missingProducts, theme, selectedMarket, productsList, setProductsList, updateVendorsAndProducts }: PageShoppingListProps) {
+export default function PageShoppingList({ missingProducts, theme, selectedMarket, productsList, setProductsList, setFilteredVendors }: PageShoppingListProps) {
   return (
     <>
       <div id="ShoppingListPage">
@@ -22,13 +23,11 @@ export default function PageShoppingList({ missingProducts, theme, selectedMarke
       <PageVendorProducts vendorId={0}></PageVendorProducts>
 
       <MissingProductsDialog
-        missingProducts={missingProducts}
         theme={theme}
         productsList={productsList}
         setProductsList={setProductsList}
         selectedMarket={selectedMarket}
-        updateVendorsAndProducts={updateVendorsAndProducts}
-
+        setFilteredVendors={setFilteredVendors}
       />
 
 
