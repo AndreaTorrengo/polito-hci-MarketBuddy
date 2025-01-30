@@ -23,7 +23,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
     const vendors: Vendor[] = JSON.parse(localStorage.getItem(vendorsKey) || '[]');
 
     const selectedProduct = new Map<number, any>();
-    selectedProduct.set(10, [10]);
+    selectedProduct.set(9, [10]);
     selectedProduct.set(3, [1, 2]);
 
     const handleClick = () => {
@@ -109,7 +109,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                 <DialogPanel>
                     {productsWithoutAlternatives.length === 0 ? (
                         <>
-                            <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: '#00FF00'}}>Success</h1>
+                            <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: '#32CD32' }}>Success</h1>
                             <p className="message-text" style={{ marginTop: '10px' }}>All products have been successfully assigned to other sellers.</p>
                         </>
                     ) : (

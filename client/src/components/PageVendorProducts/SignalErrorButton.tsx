@@ -176,12 +176,12 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
                 <DialogPanel>
                     {selectedReasons.includes('reason1') ? (
                         <>
-                            <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: '#00FF00' }}>Success</h1>
+                            <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: '#32CD32' }}>Success</h1>
                             <p className="message-text" style={{ marginTop: '10px' }}>Report sent successfully. If one of the missing products was part of your shopping list the alert will show you alternatives.</p>
                         </>
                     ) : (
                         <>
-                            <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: '#00FF00' }}>Success</h1>
+                            <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: '#32CD32' }}>Success</h1>
                             <p className="message-text" style={{ marginTop: '10px' }}>Report sent successfully. We're sorry you're experiencing these issues :(</p>
                         </>
                     )}

@@ -94,7 +94,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
                 <DialogPanel>
 
                     <>
-                        <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: '#00FF00' }}>Success</h1>
+                        <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: '#32CD32' }}>Success</h1>
                         <p className="message-text" style={{ marginTop: '10px' }}>Selected products have been succesfully deleted from your shopping list</p>
                     </>
 
