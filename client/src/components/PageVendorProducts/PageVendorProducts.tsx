@@ -226,8 +226,8 @@ export default function PageVendorProducts({ vendorId, selectedMarket, setFilter
                                                 {selectedProducts && selectedProducts.size > 0 &&
                                                     <>
                                                         <SwitchButton selectedMarket={selectedMarket} selectedProducts={selectedProducts} setFilteredVendors={setFilteredVendors} theme={theme} />
-                                                        <SignalErrorButton />
-                                                        <DeleteButton />
+                                                        <SignalErrorButton selectedMarket={selectedMarket} selectedProducts={selectedProducts} setFilteredVendors={setFilteredVendors} theme={theme} />
+                                                        <DeleteButton  selectedMarket={selectedMarket} selectedProducts={selectedProducts} setFilteredVendors={setFilteredVendors} theme={theme}/>
                                                     </>}
 
                                             </>
