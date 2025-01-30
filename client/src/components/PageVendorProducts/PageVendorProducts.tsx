@@ -11,13 +11,22 @@ import ContextMenu, { ContextMenuProps } from "../generalPurposeComponents/Conte
 import SwitchButton from "./SwitchButton.tsx";
 import DeleteButton from "./DeleteButton.tsx";
 import SignalErrorButton from "./SignalErrorButton.tsx";
+import { Market, Vendor } from "../../models.ts";
 
 interface PageVendorProductsParams {
     vendorId: number;
+    selectedMarket: Market;
+    setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
+    theme: string
 }
 
-export default function PageVendorProducts({ vendorId }: PageVendorProductsParams) {
+export default function PageVendorProducts({ vendorId, selectedMarket, setFilteredVendors, theme }: PageVendorProductsParams) {
     const approot = document.getElementById("approot")!;
+
+    const handleSwitchClick = () => {
+        console.log('SwitchButton clicked!');
+        // Aggiungi qui la logica che vuoi eseguire al clic
+    };
 
     const [isEditMode, setIsEditMode] = useState(false);
     const [categories] = useState<string[]>([
@@ -216,9 +225,9 @@ export default function PageVendorProducts({ vendorId }: PageVendorProductsParam
 
                                                 {selectedProducts && selectedProducts.size > 0 &&
                                                     <>
-                                                        <SwitchButton />
-                                                        <SignalErrorButton />
-                                                        <DeleteButton />
+                                                        <SwitchButton selectedMarket={selectedMarket} selectedProducts={selectedProducts} setFilteredVendors={setFilteredVendors} theme={theme} />
+                                                        <SignalErrorButton selectedMarket={selectedMarket} selectedProducts={selectedProducts} setFilteredVendors={setFilteredVendors} theme={theme} />
+                                                        <DeleteButton  selectedMarket={selectedMarket} selectedProducts={selectedProducts} setFilteredVendors={setFilteredVendors} theme={theme}/>
                                                     </>}
 
                                             </>
