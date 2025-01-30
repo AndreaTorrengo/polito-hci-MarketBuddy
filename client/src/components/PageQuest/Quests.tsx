@@ -4,23 +4,35 @@ export const quest_array: any[] = [
     { id: 3, coins: 8, exp: 15, title: "Outside The Box", description: "Visit a vendor off the planned path", progress: "0/1", completed: false },
     { id: 4, coins: 4, exp: 10, title: "Harvest Hunter", description: "Purchase seasonal vegetable/fruits", progress: "1/2", completed: false },
     { id: 5, coins: 8, exp: 15, title: "Explorer", description: "Visit 3 different vendors", progress: "1/3", completed: false },
-    { id: 6, coins: 4, exp: 5, title: "Backpacker", description: "Walk for 2000m", progress: "512/2000m", completed: false },
+    { id: 6, coins: 4, exp: 5, title: "Backpacker", description: "Walk for 2000m", progress: "512/2000", completed: false },
 ];
 export function getNewQuestId(N_QUESTS: number = 3): number {
     let id: string | null = localStorage.getItem('newQuestId');
-    if(id == null)
-        return N_QUESTS + 1;
+    if (id == null)
+        return N_QUESTS;
     return Number.parseInt(id);
 }
-export function saveNewQuestId(value: number = 1): number {
-    let newval = (value % (quest_array.length+1)) + 1;
-    localStorage.setItem('newQuestId', (newval).toString());
+function nextQuestId(id: number): number {
+    return (id % (quest_array.length)) + 1;
+}
+/* Find a new quest ID which is not already in current_quest,
+ * then return it
+ */
+export function getAndSaveNewQuestId(value: number = 1): number {
+    let current_quests_ids = getCurrentQuests().map(q => q.id);
+    let newval = nextQuestId(value);
+    if(current_quests_ids.length == quest_array.length) {
+        throw new Error("N_QUEST must be strictly less than quest_array.length");
+    }
+    while(current_quests_ids.includes(newval))
+        newval = nextQuestId(newval);
+    localStorage.setItem('newQuestId', newval.toString());
     return newval;
 }
-export function getCurrentQuests(N_QUESTS: number = 3) {
+export function getCurrentQuests(N_QUESTS: number = 3): any[] {
     let ls_quests: string | null = localStorage.getItem('currentQuests');
     let quests = [];
-    if(ls_quests == null) {
+    if (ls_quests == null) {
         let n = N_QUESTS;
         quests = quest_array.slice(0, n);
         saveCurrentQuests(quests);

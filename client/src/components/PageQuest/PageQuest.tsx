@@ -3,7 +3,8 @@ import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import HexagonIcon from '@mui/icons-material/Hexagon';
 import { Button } from "@mui/material";
-import { quest_array, getNewQuestId, saveNewQuestId, getCurrentQuests, saveCurrentQuests } from './Quests';
+import StatPopup from "../generalPurposeComponents/StatPopup";
+import { quest_array, getNewQuestId, getAndSaveNewQuestId, getCurrentQuests, saveCurrentQuests } from './Quests';
 
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
@@ -16,6 +17,7 @@ const parseProgress = (progress: any) => {
 };
 
 export default function PageQuest(props: any) {
+  // Number of quests to generate. Must be < than quest_array length
   const N_QUESTS: number = 3;
   // Initial quests
   const [quests, setQuests] = useState(getCurrentQuests(N_QUESTS));
@@ -30,28 +32,28 @@ export default function PageQuest(props: any) {
   }, [quests]);
 
   // Handle claiming a quest
-  const handleClaim = (id: number) => {
+  const handleClaim = (questToClaim: any) => {
     // Add a new quest to the same position of the one claimed
     // Find index of the claimed quest
-    let qindex = quests.map((q: any) => q.id).indexOf(id);
-    if (qindex < 0) qindex = 0;
+    // let qindex = quests.map((q: any) => q.id).indexOf(id);
+    // if (qindex < 0) qindex = 0;
+
+    // Saves on localstorage and get the new value of newQuestId
+    let newGeneratedId = getAndSaveNewQuestId(newQuestId);
 
     setQuests((prevQuests: any) => {
       let newQuests = [
         ...prevQuests.map((quest: any) => {
-          if (quest.id !== id)
+          if (quest.id !== questToClaim.id)
             return quest;
           else {
-            console.log(newQuestId);
-            return quest_array.find((q: any) => q.id === newQuestId);
+            return quest_array.find((q: any) => q.id === newGeneratedId);
           }
         })];
       saveCurrentQuests(newQuests);
       return newQuests;
     });
-    setNewQuestId((prevId: number) => {
-      return saveNewQuestId(prevId + 1);  // Saves on localstorage and get the new value of newQuestId
-    });
+    setNewQuestId(() => newGeneratedId);
   };
   // Hard-coding for make a quest claimable
   const requestClaim = (id: Number) => {
@@ -67,6 +69,7 @@ export default function PageQuest(props: any) {
 
   return (
     <>
+      <StatPopup coins={props.userdata.coins} exp={props.userdata.experience}/>
       <div className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle p-6">
         <Title className="text-center text-4xl mb-6">Quests</Title>
         <div className="flex flex-col gap-4 relative">
@@ -76,7 +79,7 @@ export default function PageQuest(props: any) {
               className={`relative bg-tremor-background dark:bg-dark-tremor-background shadow-md rounded-lg overflow-hidden transform transition-all duration-500 animate-slide-in`}
               onClick={() => {
                 if (quest.completed) {
-                  handleClaim(quest.id);
+                  handleClaim(quest);
                 } else requestClaim(quest.id);
               }}
             >
@@ -84,11 +87,11 @@ export default function PageQuest(props: any) {
                 <div className="absolute top-2 right-2 flex space-x-2">
                   <div className="flex items-center space-x-1 text-violet-600">
                     <HexagonIcon />
-                    <span className="font-semibold">5</span>
+                    <span className="font-semibold">{quest.exp}</span>
                   </div>
                   <div className="flex items-center space-x-1 text-yellow-500">
                     <EmojiEmotionsIcon />
-                    <span className="font-semibold">10</span>
+                    <span className="font-semibold">{quest.coins}</span>
                   </div>
                 </div>
 
@@ -131,5 +134,7 @@ export default function PageQuest(props: any) {
 }
 PageQuest.propTypes = {
   setQuestPendingClaims: PropTypes.func,
-  leaderboardPath: PropTypes.string
+  leaderboardPath: PropTypes.string,
+  userdata: PropTypes.object,
+  setUserdata: PropTypes.func,
 }
