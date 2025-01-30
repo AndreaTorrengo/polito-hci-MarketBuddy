@@ -12,7 +12,6 @@ import ContextMenu, { ContextMenuProps } from "../generalPurposeComponents/Conte
 import SwitchButton from "./SwitchButton.tsx";
 import DeleteButton from "./DeleteButton.tsx";
 import SignalErrorButton from "./SignalErrorButton.tsx";
-import ConfirmDeleteAlert from "../generalPurposeComponents/ConfirmDeleteAlert.tsx";
 import {Vendor} from "../../models.ts";
 import {useNavigate} from "react-router-dom";
 
@@ -25,7 +24,6 @@ interface PageVendorProductsParams {
 
 export default function PageVendorProducts({ vendor, isOpen, setIsOpen, theme }: PageVendorProductsParams) {
     const approot = document.getElementById("approot")!;
-    const [isDeleteAlertShow, setIsDeleteAlertShow] = useState(false);
 
     const [isEditMode, setIsEditMode] = useState(false);
 
@@ -79,7 +77,6 @@ export default function PageVendorProducts({ vendor, isOpen, setIsOpen, theme }:
 
     const handleClose = () => {
         setIsOpen(false);
-        setIsDeleteAlertShow(false);
         setIsEditMode(false);
         setSelectedProducts(null);
     }
@@ -126,7 +123,6 @@ export default function PageVendorProducts({ vendor, isOpen, setIsOpen, theme }:
 
     return (
         <>
-            <ConfirmDeleteAlert theme={theme} isOpen={isDeleteAlertShow} setIsOpen={value => setIsDeleteAlertShow(value)} handleDelete={handleDelete} numberOfProducts={selectedProducts? selectedProducts.size : 0}></ConfirmDeleteAlert>
             <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot} snapPoints={[1000, 600, 300, 100]} initialSnap={1}>
                 <Sheet.Container>
                     <Sheet.Header
@@ -184,7 +180,7 @@ export default function PageVendorProducts({ vendor, isOpen, setIsOpen, theme }:
                                                     <>
                                                         <SwitchButton />
                                                         <SignalErrorButton />
-                                                        <DeleteButton onClick={() => {setIsDeleteAlertShow(true)}}/>
+                                                        <DeleteButton onClick={() => {}}/>
                                                     </>}
 
                                             </>

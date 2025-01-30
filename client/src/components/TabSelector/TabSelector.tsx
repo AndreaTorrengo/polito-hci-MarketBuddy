@@ -42,7 +42,6 @@ export default function TabsHero({
     const [selectedProducts, setSelectedProducts] = useState<Map<number, number[]> | null>(null);
     const [filteredProductsVendors, setFilteredProductsVendors] = useState<Vendor[]>(filteredVendors); //vendors with filtered products
     const [isEditMode, setIsEditMode] = useState(false);
-    const [isDeleteAlertShow, setIsDeleteAlertShow] = useState(false);
     const [searchInput, setSearchInput] = useState("");
 
     const navigate = useNavigate();
@@ -174,9 +173,6 @@ export default function TabsHero({
 
     return (
         <div className="flex flex-col h-full min-h-0">
-            <ConfirmDeleteAlert theme={theme} isOpen={isDeleteAlertShow}
-                                setIsOpen={value => setIsDeleteAlertShow(value)} handleDelete={handleDelete}
-                                numberOfProducts={countSelectedProducts()}></ConfirmDeleteAlert>
             {
                 isEditMode ?
                     <TopBar
@@ -227,7 +223,7 @@ export default function TabsHero({
                                         <SwitchButton/>
                                         <SignalErrorButton/>
                                         <DeleteButton onClick={() => {
-                                            setIsDeleteAlertShow(true)
+                                            //todo
                                         }}/>
                                     </>}
 
