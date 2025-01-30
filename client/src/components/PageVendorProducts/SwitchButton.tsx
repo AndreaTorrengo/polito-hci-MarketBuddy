@@ -2,14 +2,16 @@ import SmallIconButton from "../generalPurposeComponents/SmallIconButton";
 import { Market, Vendor, Product } from "../../models";
 import { Button, Dialog, DialogPanel } from '@tremor/react';
 import React, { useState } from 'react';
+import './SwitchButton.css';
 
 interface SwitchButtonProps {
     selectedProducts: Map<number, any>;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
+    theme: string
 }
 
-const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors }) => {
+const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
     const [productsWithoutAlternatives, setProductsWithoutAlternatives] = useState<Product[]>([]);
@@ -33,13 +35,11 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                 return vendor ? vendor.products.find(product => product.id === productId) : null;
             });
         });
-
         setProductsSwitching(products.filter((product): product is Product => product !== null && product !== undefined));
-        console.log(products);
     };
 
     const handleConfirm = () => {
-        console.log('SwitchButton clicked!');
+
         const productsWithoutAlternatives: Product[] = [];
 
         selectedProduct.forEach((products, vendorId) => {
@@ -49,7 +49,6 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                 vendors.forEach(vendor => {
                     const product = vendor.products.find(product => product.id === productId);
                     if (vendor.id !== vendorId && product) {
-                        console.log(`Vendor ${vendor.id} also has product ${productId}`);
                         const existingVendor = filteredVendors.find(v => v.id === vendor.id);
                         if (existingVendor) {
                             existingVendor.products.push(product);
@@ -86,12 +85,12 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                     </svg>
                 </div>
             </SmallIconButton>
-            <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
                 <DialogPanel>
-                    <h1 style={{ fontWeight: 'bold', fontSize: '1rem' }}>Confirm Switch</h1>
-                    <p style={{ marginTop: '10px' }}>For the following products we will find other sellers in this marketplace that match your preferences:</p>
+                    <h1 className="confirm-text" style={{ fontWeight: 'bold', fontSize: '1rem' }}>Confirm Switch</h1>
+                    <p className="message-text" style={{ marginTop: '10px' }}>For the following products we will find other sellers in this marketplace that match your preferences:</p>
                     <div>
-                        <div>
+                        <div className="products-text">
                             {productsSwitching.map((product, index) => (
                                 <span key={index} style={{ fontWeight: 'bold' }}>
                                     {product.name}{index < productsSwitching.length - 1 ? ', ' : ''}
@@ -101,25 +100,25 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                     </div>
 
                     <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '20px' }}>
-                        <Button onClick={handleConfirm}>Confirm</Button>
-                        <Button style={{ backgroundColor: 'red', color: 'white', borderColor: "red" }} onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                        <Button className="button" onClick={handleConfirm}>Confirm</Button>
+                        <Button className="button" style={{ backgroundColor: '#DD524C', borderColor: "#DD524C" }} onClick={() => setIsDialogOpen(false)}>Cancel</Button>
                     </div>
                 </DialogPanel>
             </Dialog>
-            <Dialog open={isFeedbackDialogOpen} onClose={() => setIsFeedbackDialogOpen(false)}>
+            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isFeedbackDialogOpen} onClose={() => setIsFeedbackDialogOpen(false)}>
                 <DialogPanel>
                     {productsWithoutAlternatives.length === 0 ? (
                         <>
                             <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: 'green' }}>Success</h1>
-                            <p style={{ marginTop: '10px' }}>All products have been successfully assigned to other sellers.</p>
+                            <p className="message-text" style={{ marginTop: '10px' }}>All products have been successfully assigned to other sellers.</p>
                         </>
                     ) : (
                         <>
                             <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: 'red' }}>Failed to Assign</h1>
-                            <p style={{ marginTop: '10px' }}>The following products could not be assigned to other sellers:</p>
+                            <p className="message-text" style={{ marginTop: '10px' }}>The following products could not be assigned to other sellers:</p>
                             <div>
                                 {productsWithoutAlternatives.map((product, index) => (
-                                    <span key={index} style={{ fontWeight: 'bold' }}>
+                                    <span className="products-text" key={index} style={{ fontWeight: 'bold' }}>
                                         {product.name}{index < productsWithoutAlternatives.length - 1 ? ', ' : ''}
                                     </span>
                                 ))}

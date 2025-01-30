@@ -17,9 +17,10 @@ interface PageVendorProductsParams {
     vendorId: number;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
+    theme: string
 }
 
-export default function PageVendorProducts({ vendorId, selectedMarket, setFilteredVendors }: PageVendorProductsParams) {
+export default function PageVendorProducts({ vendorId, selectedMarket, setFilteredVendors, theme }: PageVendorProductsParams) {
     const approot = document.getElementById("approot")!;
 
     const handleSwitchClick = () => {
@@ -224,7 +225,7 @@ export default function PageVendorProducts({ vendorId, selectedMarket, setFilter
 
                                                 {selectedProducts && selectedProducts.size > 0 &&
                                                     <>
-                                                        <SwitchButton selectedMarket={selectedMarket} selectedProducts={selectedProducts} setFilteredVendors={setFilteredVendors}/>
+                                                        <SwitchButton selectedMarket={selectedMarket} selectedProducts={selectedProducts} setFilteredVendors={setFilteredVendors} theme={theme} />
                                                         <SignalErrorButton />
                                                         <DeleteButton />
                                                     </>}

@@ -20,7 +20,7 @@ export default function PageShoppingList({ missingProducts, theme, selectedMarke
         <h1>Shopping List</h1>
       </div>
 
-      <PageVendorProducts selectedMarket={selectedMarket} setFilteredVendors={setFilteredVendors} vendorId={0}></PageVendorProducts>
+      <PageVendorProducts selectedMarket={selectedMarket} theme={theme} setFilteredVendors={setFilteredVendors} vendorId={0}></PageVendorProducts>
 
       <MissingProductsDialog
         theme={theme}
