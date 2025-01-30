@@ -127,7 +127,7 @@ export default function PageVendorProducts({ vendor, isOpen, setIsOpen, theme }:
     return (
         <>
             <ConfirmDeleteAlert theme={theme} isOpen={isDeleteAlertShow} setIsOpen={value => setIsDeleteAlertShow(value)} handleDelete={handleDelete} numberOfProducts={selectedProducts? selectedProducts.size : 0}></ConfirmDeleteAlert>
-            <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot} snapPoints={[1000, 800, 600, 300, 100]} initialSnap={1}>
+            <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot} snapPoints={[1000, 600, 300, 100]} initialSnap={1}>
                 <Sheet.Container>
                     <Sheet.Header
                         className="bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle rounded-t-md">

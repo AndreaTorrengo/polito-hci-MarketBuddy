@@ -27,7 +27,7 @@ const OnFlyMarker: React.FC<{ center: [number, number], isMarketCenter: boolean 
     useEffect(() => {
         let offsetLatLng = center;
         if (!isMarketCenter) {
-            const offset =+ 300; // Adjust this value to set the fixed point on the screen (negative value to move higher)
+            const offset =+ 230; // Adjust this value to set the fixed point on the screen (negative value to move higher)
             const latLngPoint = map.latLngToContainerPoint(center);
             const offsetPoint = L.point(latLngPoint.x, latLngPoint.y + offset);
             const latLng = map.containerPointToLatLng(offsetPoint);
