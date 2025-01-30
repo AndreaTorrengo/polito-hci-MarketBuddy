@@ -173,7 +173,7 @@ export default function TabsHero({
     }
 
     return (
-        <div>
+        <div className="flex flex-col h-full min-h-0">
             <ConfirmDeleteAlert theme={theme} isOpen={isDeleteAlertShow}
                                 setIsOpen={value => setIsDeleteAlertShow(value)} handleDelete={handleDelete}
                                 numberOfProducts={countSelectedProducts()}></ConfirmDeleteAlert>
@@ -298,9 +298,9 @@ export default function TabsHero({
                     </>
             }
 
-            <div>
+            <div className="flex-1 overflow-y-auto">
                 {activeTab === 'map' && (
-                    <div className="flex" style={{width: '100%', height: '49.2rem'}}>
+                    <div className="flex" style={{width: '100%', height: '100%'}}>
                         <PageMap theme={theme} vendors={vendors} filteredVendors={filteredVendors}
                                  selectedMarket={selectedMarket} filteredProductsVendors={filteredProductsVendors}/>
                     </div>
