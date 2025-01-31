@@ -1,0 +1,20 @@
+import {Button} from "@mui/material";
+
+export default function AddProductsButton() {
+    return (
+        <Button variant="outlined" size="small"
+        >
+            <div className="flex items-center justify-center gap-2 p-0" onClick={() => {
+            }}>
+                <p className="m-0 p-0 pt-0.5 text-[0.8rem]">Add Product/s</p>
+                <i className="m-0 p-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                              d="M12 4v16m8-8H4"/>
+                    </svg>
+                </i>
+            </div>
+        </Button>
+    );
+}
