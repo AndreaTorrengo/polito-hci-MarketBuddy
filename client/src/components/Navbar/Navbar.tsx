@@ -28,7 +28,7 @@ export default function Navbar(props: any) {
   ];
   return (<>
     {/*<nav className="fixed bottom-0 left-0 right-0 bg-tremor-content-inverted dark:bg-dark-tremor-content-inverted shadow-md">*/}
-    <nav className="pb-1 bg-tremor-content-inverted dark:bg-dark-tremor-content-inverted shadow-md">
+    <nav className="pb-1 bg-tremor-background-muted dark:bg-dark-tremor-background-muted border-t-[1px] border-tremor-border dark:border-dark-tremor-border">
       <ul className="flex justify-around">
         {tabs.map((tab) => (
           <li key={tab.id} className="flex flex-col flex-grow items-center">
@@ -38,10 +38,10 @@ export default function Navbar(props: any) {
                 props.setActiveTab(tabIndex);
                 navigate(`${props.paths[tabIndex]}`);
               }}
-              className={`w-full items-center py-1 px-4 
+              className={`w-full items-center py-1 px-4
               ${props.activeTab === tab.id
                   ? "text-tremor-brand dark:text-dark-tremor-brand"
-                  : "text-tremor-content dark:text-dark-tremor-content"
+                : "text-tremor-content-emphasis dark:text-dark-tremor-content-emphasis"
                 } `}
             >
               <div className="flex flex-col">

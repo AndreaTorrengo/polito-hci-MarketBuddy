@@ -1,6 +1,7 @@
 import SmallIconButton from "../generalPurposeComponents/SmallIconButton";
 import { Market, Vendor, Product } from "../../models";
-import { Button, Dialog, DialogPanel } from '@tremor/react';
+import { Dialog, DialogPanel } from '@tremor/react';
+import { Button } from '../generalPurposeComponents/Button';
 import React, { useState } from 'react';
 import './SignalErrorButton.css';
 
@@ -132,40 +133,44 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
                         </div>
                     </div>
 
-                    <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
+                    <div className="flex flex-col mt-5 gap-2 items-center px-8">
                         <Button
-                            className="button"
-                            style={{ backgroundColor: selectedReasons.includes('reason1') ? '#4E80EE' : '#DDDDDD', color: selectedReasons.includes('reason1') ? '#FFFFFF' : '#000000', padding: '8px 12px', fontSize: '0.875rem', width: '200px' }}
+                            className="w-full"
+                            color='secondary'
+                            variant={selectedReasons.includes('reason1') ? 'contained' : 'outlined'}
                             onClick={() => handleReasonSelect('reason1')}
                         >
                             Missing product/s
                         </Button>
                         <Button
-                            className="button"
-                            style={{ backgroundColor: selectedReasons.includes('reason2') ? '#4E80EE' : '#DDDDDD', color: selectedReasons.includes('reason2') ? '#FFFFFF' : '#000000', padding: '8px 12px', fontSize: '0.875rem', width: '200px' }}
+                            className="w-full"
+                            color='secondary'
+                            variant={selectedReasons.includes('reason2') ? 'contained' : 'outlined'}
                             onClick={() => handleReasonSelect('reason2')}
                         >
                             Poor quality
                         </Button>
                         <Button
-                            className="button"
-                            style={{ backgroundColor: selectedReasons.includes('reason3') ? '#4E80EE' : '#DDDDDD', color: selectedReasons.includes('reason3') ? '#FFFFFF' : '#000000', padding: '8px 12px', fontSize: '0.875rem', width: '200px' }}
+                            className="w-full"
+                            color='secondary'
+                            variant={selectedReasons.includes('reason3') ? 'contained' : 'outlined'}
                             onClick={() => handleReasonSelect('reason3')}
                         >
                             Price too high
                         </Button>
                         <Button
-                            className="button"
-                            style={{ backgroundColor: selectedReasons.includes('reason4') ? '#4E80EE' : '#DDDDDD', color: selectedReasons.includes('reason4') ? '#FFFFFF' : '#000000', padding: '8px 12px', fontSize: '0.875rem', width: '200px' }}
+                            className="w-full"
+                            color='secondary'
+                            variant={selectedReasons.includes('reason4') ? 'contained' : 'outlined'}
                             onClick={() => handleReasonSelect('reason4')}
                         >
                             Improperly stored
                         </Button>
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '20px' }}>
-                        <Button className="button" onClick={handleConfirm}>Confirm</Button>
-                        <Button className="button" style={{ backgroundColor: '#DD524C', borderColor: "#DD524C" }} onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                    <div className="flex justify-center gap-4 mt-5">
+                        <Button color="primary" variant="outlined" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                        <Button color="primary" variant="contained" onClick={handleConfirm}>Confirm</Button>
                     </div>
                 </DialogPanel>
             </Dialog>

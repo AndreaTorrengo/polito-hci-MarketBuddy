@@ -175,7 +175,7 @@ export default function App() {
         !Array.from(foundProducts).some((fp: Product) => fp.name === product)
       );
 
-  
+
       setFilteredVendors(filtered);
 
       localStorage.setItem(filteredVendorsKey, JSON.stringify(filtered));
@@ -191,7 +191,7 @@ export default function App() {
   }, [vendors]);
 
 
-  
+
   const [popupText, setPopupText] = useState("Are you sure?");
   const [cancelButtonText, setCancelButtonText] = useState("Cancel");
   const [confirmButtonText, setConfirmButtonText] = useState("Confirm");
@@ -259,7 +259,7 @@ export default function App() {
 
 function Layout(props: Readonly<{ paths: string[], activeTab: number, questPendingClaims: number, setActiveTab: (tab: number) => void }>) {
   return (
-    <div className="flex flex-col h-screen bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle">
+    <div className="flex flex-col h-screen bg-tremor-background dark:bg-dark-tremor-background">
       <div className="flex-grow overflow-y-auto flex-1">
         <Outlet />
       </div>

@@ -1,4 +1,6 @@
-import { Button, Dialog, DialogPanel } from '@tremor/react';
+import { Dialog, DialogPanel } from '@tremor/react';
+// import { Button } from '@tremor/react';
+import { Button } from '../generalPurposeComponents/Button';
 import WarningIcon from '@mui/icons-material/Warning';
 import { Vendor, Product, Market } from '../../models';
 import React, { useState, useEffect, useRef } from 'react';
@@ -164,17 +166,17 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
     return (
         <>
             {missingProducts.length > 0 && (
-                <div>
-                    <Button
-                        className="mx-auto block alert-button"
-                        onClick={() => setIsOpen(true)}
-                    >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                            <WarningIcon style={{ color: '#e34138' }} />
-                            <span>Some products require your attention!</span>
-                        </div>
-                    </Button>
-                </div>
+                <Button
+                    className="mx-auto my-1 py-2 px-5 bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle"
+                    color='danger'
+                    // variant='contained'
+                    onClick={() => setIsOpen(true)}
+                >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <WarningIcon style={{ color: '#e34138' }} />
+                        <span>Some products require your attention!</span>
+                    </div>
+                </Button>
             )}
             <Dialog open={isOpen} static={true} onClose={handleClose} className={`max-h-screen overflow-y-auto ${theme === 'dark' ? 'dark' : ''}`}>
                 <DialogPanel {...handlers} className="dialog-panel max-h-screen overflow-y-auto">
@@ -190,19 +192,10 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                             {Array.isArray(randomAlternatives[missingProducts[currentIndex]]) && randomAlternatives[missingProducts[currentIndex]].length > 0 ? (
                                                 randomAlternatives[missingProducts[currentIndex]].map((alternative, altIndex) => (
                                                     <Button
-                                                        className="alternative-button"
+                                                        // className="alternative-button"
+                                                        variant={selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? 'contained' : 'outlined'}
+                                                        color='secondary'
                                                         key={altIndex}
-                                                        style={{
-                                                            width: '100%',
-                                                            padding: '0.25rem 1rem',
-                                                            cursor: 'pointer',
-                                                            borderRadius: '0.5rem',
-                                                            border: 'none',
-                                                            textAlign: 'center',
-                                                            color: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? '#fff' : (theme === 'dark' ? '#000' : '#000'),
-                                                            backgroundColor: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? (theme === 'dark' ? '#3b82f6' : '#3b82f6') : (theme === 'dark' ? '#a0aec0' : '#e5e7eb'),
-                                                            margin: '0 auto'
-                                                        }}
                                                         onClick={() => handleSelectAlternative(missingProducts[currentIndex], alternative)}
                                                     >
                                                         <div>{alternative.name}</div>
@@ -219,14 +212,13 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                             <Button
                                                 onClick={() => handleConfirm(missingProducts[currentIndex], selectedAlternatives[missingProducts[currentIndex]] || [])}
                                                 disabled={!selectedAlternatives[missingProducts[currentIndex]] || selectedAlternatives[missingProducts[currentIndex]].length === 0}
-                                                style={{ color: '#fff', }}
+                                                variant='contained'
                                             >
                                                 Add to Shopping List
                                             </Button>
                                         ) : (
                                             <Button
-                                                onClick={() => handleConfirm(missingProducts[currentIndex], [])}
-                                                style={{ color: '#fff', }}
+                                                    variant="contained" onClick={() => handleConfirm(missingProducts[currentIndex], [])}
                                             >
                                                 Got it
                                             </Button>

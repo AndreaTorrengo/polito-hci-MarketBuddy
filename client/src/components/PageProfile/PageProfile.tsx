@@ -5,6 +5,7 @@ import API from '../../API';
 import { Dispatch, SetStateAction } from 'react';
 import { UserData } from './UserData';
 import { Card, TextInput, Title, Text } from '@tremor/react';
+import { Button } from '../generalPurposeComponents/Button';
 
 interface PageProfileProps {
   theme: 'light' | 'dark';
@@ -24,51 +25,54 @@ export default function PageProfile({ theme, toggleTheme, askConfirmation, userd
       'Are you sure you want to clear local storage?');
   }
 
+  function resetDB() {
+    askConfirmation(API.resetDB,
+      "Are you sure you want to reset the server's database?")
+  }
+
   return (
-    <>
-      <div className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle p-6">
-        <Title className="text-center text-4xl mb-6">Profile</Title>
-        
-        <Card className="flex flex-col p-4">
-          <div className="grid gap-3 text-tremor-content dark:text-dark-tremor-content">
+    <div className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle p-6">
+      <Title className="text-center text-4xl mb-6">Profile</Title>
 
-            <div className="flex items-center">
-              <label className="min-w-32">Color theme:</label>
-              <DarkModeCustomSwitch sx={{ m: 1 }}
-                checked={theme === 'dark'} onChange={toggleTheme} />
-            </div>
+      <Card className="flex flex-col p-4">
+        <div className="grid gap-3 text-tremor-content dark:text-dark-tremor-content">
 
-            <div className="flex items-center">
-              <label className="min-w-32">Username:</label>
-              <TextInput placeholder="Enter your username" value={userdata.username} disabled/>
-            </div>
-
-            <div className="flex items-center">
-              <label className="min-w-32">Experience:</label>
-              <div className="flex items-center space-x-2 text-violet-600">
-                <span className="font-semibold"><HexagonIcon /></span>
-                <span className="font-semibold">{userdata.experience}</span>
-              </div>
-            </div>
-
-            <div className="flex items-center">
-              <label className="min-w-32">Buddy coins:</label>
-              <div className="flex items-center space-x-2 text-yellow-500">
-                <span className="font-semibold"><EmojiEmotionsIcon /></span>
-                <span className="font-semibold">{userdata.coins}</span>
-              </div>
-            </div>
-
+          <div className="flex items-center">
+            <label htmlFor="color-theme-switch" className="min-w-32">Color theme:</label>
+            <DarkModeCustomSwitch id="color-theme-switch" sx={{ m: 1 }}
+              checked={theme === 'dark'} onChange={toggleTheme} />
           </div>
-        </Card>
 
-        <div className="flex flex-col items-start bg-red-500 my-4 p-2 rounded-lg">
-          <h2>DEBUG</h2>
-          <button className="rounded bg-red-400 p-2 m-1 animated active:bg-opacity-65" onClick={clearStorage}>Reset Local Storage</button>
-          <button className="rounded bg-red-400 p-2 m-1 animated active:bg-opacity-65" onClick={() => { askConfirmation(API.resetDB, "Are you sure you want to reset the server's database?") }}>Reset Server Database</button>
+          <div className="flex items-center">
+            <label htmlFor="username-input" className="min-w-32">Username:</label>
+            <TextInput id="username-input" placeholder="Enter your username" value={userdata.username} disabled />
+          </div>
+
+          <div className="flex items-center">
+            <label htmlFor="experience" className="min-w-32">Experience:</label>
+            <div id="experience" className="flex items-center space-x-2 text-violet-600">
+              <span className="font-semibold"><HexagonIcon /></span>
+              <span className="font-semibold">{userdata.experience}</span>
+            </div>
+          </div>
+
+          <div className="flex items-center">
+            <label htmlFor="buddy-coins" className="min-w-32">Buddy coins:</label>
+            <div id="buddy-coins" className="flex items-center space-x-2 text-yellow-500">
+              <span className="font-semibold"><EmojiEmotionsIcon /></span>
+              <span className="font-semibold">{userdata.coins}</span>
+            </div>
+          </div>
+
         </div>
+      </Card>
 
+      <div className="flex flex-col items-start border-red-500 dark:border-red-600 border-2 my-4 p-2 rounded-lg">
+        <h2 className='text-red-500 dark:text-red-600'>DEBUG</h2>
+        <Button color="danger" variant='contained' className="m-1" onClick={clearStorage}>Reset Local Storage</Button>
+        <Button color="danger" variant='contained' className="m-1" onClick={resetDB}>Reset Server Database</Button>
       </div>
-    </>
+
+    </div>
   );
 }

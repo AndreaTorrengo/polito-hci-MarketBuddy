@@ -1,6 +1,7 @@
 import SmallIconButton from "../generalPurposeComponents/SmallIconButton";
 import { Market, Vendor, Product } from "../../models";
-import { Button, Dialog, DialogPanel } from '@tremor/react';
+import { Dialog, DialogPanel } from '@tremor/react';
+import { Button } from '../generalPurposeComponents/Button';
 import React, { useState } from 'react';
 import './SwitchButton.css';
 
@@ -96,9 +97,9 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                         </div>
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '20px' }}>
-                        <Button className="button" onClick={handleConfirm}>Confirm</Button>
-                        <Button className="button" style={{ backgroundColor: '#DD524C', borderColor: "#DD524C" }} onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                    <div className="flex justify-center gap-10 mt-20">
+                        <Button variant='outlined' color='primary' onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                        <Button variant='contained' color='primary' onClick={handleConfirm}>Confirm</Button>
                     </div>
                 </DialogPanel>
             </Dialog>

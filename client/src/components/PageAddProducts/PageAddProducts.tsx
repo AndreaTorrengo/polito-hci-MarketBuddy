@@ -1,6 +1,7 @@
 "use client";
 import {useEffect, useState} from "react";
-import {Button, ButtonBase} from "@mui/material";
+import { ButtonBase } from "@mui/material";
+import { Button } from "../generalPurposeComponents/Button.tsx";
 import {Product, Vendor} from "../../models.ts";
 import ProductListItem, {ProductListItemProps} from "../PageVendorProducts/ProductListItem.tsx";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
@@ -217,7 +218,7 @@ export default function PageAddProducts({actualVends, allVends, theme}: PageAddP
                                                 }</p>
 
                                     }
-                                    <Button variant={"contained"} onClick={() => {
+                                    <Button variant="contained" onClick={() => {
                                         navigate(-1)
                                     }}>
                                         Go Back
