@@ -25,6 +25,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [selectedAlternatives, setSelectedAlternatives] = useState<{ [key: string]: Product[] }>({});
     const [randomAlternatives, setRandomAlternatives] = useState<{ [key: string]: Product[] }>({});
+    const [confirmationMessage, setConfirmationMessage] = useState('Product added to shopping list!');
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const vendorsKey = `vendors_${selectedMarket.name}`;
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '{}');
@@ -239,7 +240,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                     <div className="flex justify-center mt-4">
                                         {Array.isArray(randomAlternatives[missingProducts[currentIndex]]) && randomAlternatives[missingProducts[currentIndex]].length > 0 ? (
                                             <Button
-                                                onClick={() => handleConfirm(missingProducts[currentIndex], selectedAlternatives[missingProducts[currentIndex]] || [])}
+                                                onClick={() => {handleConfirm(missingProducts[currentIndex], selectedAlternatives[missingProducts[currentIndex]] || []),setConfirmationMessage('Product added to shopping list!')} }
                                                 disabled={!selectedAlternatives[missingProducts[currentIndex]] || selectedAlternatives[missingProducts[currentIndex]].length === 0}
                                                 style={{ color: '#fff', }}
                                             >
@@ -247,7 +248,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                             </Button>
                                         ) : (
                                             <Button
-                                                onClick={() => handleConfirm(missingProducts[currentIndex], [])}
+                                                onClick={() => {handleConfirm(missingProducts[currentIndex], []),setConfirmationMessage('no option')} }
                                                 style={{ color: '#fff', }}
                                             >
                                                 Got it
@@ -280,10 +281,10 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                         </div>
                     )}
                 </DialogPanel>
-                {showConfirmation && (
+                {showConfirmation && confirmationMessage!=='no option' && (
                     <div className="fixed inset-x-0 top-0 flex items-center justify-center z-50 mt-60">
                         <div className="bg-green-500 p-4 text-white rounded-lg shadow-lg">
-                            Alternatives added successfully!
+                            {confirmationMessage}
                         </div>
                     </div>
                 )}
