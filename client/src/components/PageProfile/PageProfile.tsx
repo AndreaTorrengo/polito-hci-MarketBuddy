@@ -29,22 +29,22 @@ export default function PageProfile({ theme, toggleTheme, askConfirmation, userd
       <div className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle p-6">
         <Title className="text-center text-4xl mb-6">Profile</Title>
         
-        <Card className="max-w-md p-4">
-          <div className="grid gap-3">
+        <Card className="flex flex-col p-4">
+          <div className="grid gap-3 text-tremor-content dark:text-dark-tremor-content">
 
             <div className="flex items-center">
-              <Text className="min-w-32 text-gray-700">Color theme:</Text>
+              <label className="min-w-32">Color theme:</label>
               <DarkModeCustomSwitch sx={{ m: 1 }}
                 checked={theme === 'dark'} onChange={toggleTheme} />
             </div>
 
             <div className="flex items-center">
-              <Text className="min-w-32 text-gray-700">Username:</Text>
-              <TextInput placeholder="Enter text" value={userdata.username}/>
+              <label className="min-w-32">Username:</label>
+              <TextInput placeholder="Enter your username" value={userdata.username} disabled/>
             </div>
 
             <div className="flex items-center">
-              <Text className="min-w-32 text-gray-700">Experience:</Text>
+              <label className="min-w-32">Experience:</label>
               <div className="flex items-center space-x-2 text-violet-600">
                 <span className="font-semibold"><HexagonIcon /></span>
                 <span className="font-semibold">{userdata.experience}</span>
@@ -52,7 +52,7 @@ export default function PageProfile({ theme, toggleTheme, askConfirmation, userd
             </div>
 
             <div className="flex items-center">
-              <Text className="min-w-32 text-gray-700">Buddy coins:</Text>
+              <label className="min-w-32">Buddy coins:</label>
               <div className="flex items-center space-x-2 text-yellow-500">
                 <span className="font-semibold"><EmojiEmotionsIcon /></span>
                 <span className="font-semibold">{userdata.coins}</span>

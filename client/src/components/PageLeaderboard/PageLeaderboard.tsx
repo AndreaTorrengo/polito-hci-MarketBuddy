@@ -5,32 +5,34 @@ import TopBar from "../generalPurposeComponents/TopBar";
 import BackButton from "../generalPurposeComponents/BackButton";
 import PropTypes from "prop-types";
 
-export default function PageLeaderboard() {
+export default function PageLeaderboard(props: any) {
   const [activeTab, setActiveTab] = useState("Global");
+  const user_exp = props.userdata.experience;
+  const username = props.userdata.username;
 
   const globalLeaderboard = [
     // Example data for global leaderboard
-    { icon: "👤", name: "Player57", position: 57, xp: 1255 },
-    { icon: "👤", name: "Player58", position: 58, xp: 1250 },
-    { icon: "👤", name: "Player59", position: 59, xp: 1245 },
-    { icon: "👤", name: "You", position: 60, xp: 1240 },
-    { icon: "👤", name: "Player61", position: 61, xp: 1235 },
-    { icon: "👤", name: "Player62", position: 62, xp: 1230 },
-    { icon: "👤", name: "Player63", position: 63, xp: 1225 },
+    { icon: "👤", name: "Player570", position: 570, xp: user_exp + 15 },
+    { icon: "👤", name: "Player580", position: 580, xp: user_exp + 10 },
+    { icon: "👤", name: "Player590", position: 590, xp: user_exp + 5 },
+    { icon: "👤", name: username, position: 600, xp: user_exp },
+    { icon: "👤", name: "Player610", position: 610, xp: user_exp - 15 },
+    { icon: "👤", name: "Player620", position: 620, xp: user_exp - 10 },
+    { icon: "👤", name: "Player630", position: 630, xp: user_exp - 5  },
   ];
 
   const top10Leaderboard = [
     // Example data for top 10 leaderboard
-    { icon: "👾", name: "Player1", position: 1, xp: 2500 },
-    { icon: "👽", name: "Player2", position: 2, xp: 2400 },
-    { icon: "👸", name: "Player3", position: 3, xp: 2300 },
-    { icon: "🍇", name: "Player4", position: 4, xp: 2200 },
-    { icon: "👩", name: "Player5", position: 5, xp: 2100 },
-    { icon: "👜", name: "Player6", position: 6, xp: 2000 },
-    { icon: "👑", name: "Player7", position: 7, xp: 1900 },
-    { icon: "🍓", name: "Player8", position: 8, xp: 1800 },
-    { icon: "🍏", name: "Player9", position: 9, xp: 1700 },
-    { icon: "🍉", name: "Player10", position: 10, xp: 1600 },
+    { icon: "👾", name: "Player1", position: 1, xp: 25000 },
+    { icon: "👽", name: "Player2", position: 2, xp: 24000 },
+    { icon: "👸", name: "Player3", position: 3, xp: 23000 },
+    { icon: "🍇", name: "Player4", position: 4, xp: 22000 },
+    { icon: "👩", name: "Player5", position: 5, xp: 21000 },
+    { icon: "👜", name: "Player6", position: 6, xp: 20000 },
+    { icon: "👑", name: "Player7", position: 7, xp: 19000 },
+    { icon: "🍓", name: "Player8", position: 8, xp: 18000 },
+    { icon: "🍏", name: "Player9", position: 9, xp: 17000 },
+    { icon: "🍉", name: "Player10", position: 10, xp: 16000 },
   ];
 
   return <>
@@ -68,8 +70,8 @@ export default function PageLeaderboard() {
         <div className="flex-1 overflow-hidden">
           <ul key={"leaderboard-list"} className="h-full overflow-y-auto space-y-2">
             {activeTab === "Global" ?
-              globalLeaderboard.map((player) => <LeaderboardItem key={player.position} player={player} />) :
-              top10Leaderboard.map((player) => <LeaderboardItem key={player.position} player={player} />)
+              globalLeaderboard.map((player) => <LeaderboardItem key={player.position} player={player} currentPlayer={username} />) :
+              top10Leaderboard.map((player) => <LeaderboardItem key={player.position} player={player} currentPlayer={username} />)
             }
           </ul>
         </div>
@@ -77,12 +79,16 @@ export default function PageLeaderboard() {
     </div>
   </>;
 }
+PageLeaderboard.propTypes = {
+  userdata: PropTypes.object,
+  setUserdata: PropTypes.func,
+}
 
 function LeaderboardItem(props: any) {
   return (
     <li
       key={`li-${props.player.position}`}
-      className={`flex justify-between items-center p-3 shadow rounded-md ${props.player.name == 'You' ? 'bg-tremor-brand-muted dark:bg-dark-tremor-brand-muted' :
+      className={`flex justify-between items-center p-3 shadow rounded-md ${props.player.name == props.currentPlayer ? 'bg-tremor-brand-muted dark:bg-dark-tremor-brand-muted' :
         'bg-tremor-background-muted dark:bg-dark-tremor-background-muted'}
    `}>
       <div className="flex items-center space-x-4">
@@ -100,5 +106,6 @@ function LeaderboardItem(props: any) {
     </li>);
 }
 LeaderboardItem.propTypes = {
-  player: PropTypes.object
+  player: PropTypes.object,
+  currentPlayer: PropTypes.string
 }
