@@ -6,39 +6,37 @@ import { useSwipeable } from 'react-swipeable';
 import './MissingProductsDialog.css';
 
 interface MissingProductsDialogProps {
-    missingProducts: string[];
     theme: string;
     productsList: { [key: string]: string[] };
     setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
     selectedMarket: Market;
-    updateVendorsAndProducts: () => void;
+    setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
 }
 
 const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
-    missingProducts,
     theme,
     productsList,
     setProductsList,
     selectedMarket,
-    updateVendorsAndProducts
+    setFilteredVendors
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [selectedAlternatives, setSelectedAlternatives] = useState<{ [key: string]: Product[] }>({});
     const [randomAlternatives, setRandomAlternatives] = useState<{ [key: string]: Product[] }>({});
+    const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
+    const vendorsKey = `vendors_${selectedMarket.name}`;
+    const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '{}');
+    const vendors: Vendor[] = JSON.parse(localStorage.getItem(vendorsKey) || '{}');
 
-
-
-
+    const missingProductsKey = `missingProducts_${selectedMarket.name}`;
+    const missingProducts: string[] = JSON.parse(localStorage.getItem(missingProductsKey) || '[]');
 
     const previousMarketRef = useRef(selectedMarket);
 
     useEffect(() => {
-
-
         if (missingProducts.length > 0) {
-
             const generateSpecificAlternatives = () => {
                 const newSpecificAlternatives: { [key: string]: Product[] } = {};
                 missingProducts.forEach((product) => {
@@ -52,9 +50,10 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                         alternatives = [{ id: 3, name: "Apples", price: 1.0 }];
                     } else if (product === "Bream") {
                         alternatives = [{ id: 10, name: "Cod", price: 9.5 }];
+                    } else {
+                        alternatives = [];
                     }
                     newSpecificAlternatives[product] = alternatives;
-
                 });
                 setRandomAlternatives(newSpecificAlternatives);
             };
@@ -66,10 +65,9 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
             setCurrentIndex(0);
         }
         previousMarketRef.current = selectedMarket;
-    }, [missingProducts, selectedMarket]);
+    }, [selectedMarket, isOpen]);
 
     const handleConfirm = (product: string, selectedAlternatives: Product[]) => {
- 
         const updatedProductList = { ...productsList };
         updatedProductList[selectedMarket.name] = updatedProductList[selectedMarket.name].filter(p => p !== product);
 
@@ -83,7 +81,36 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
         setProductsList(updatedProductList);
         localStorage.setItem('productsList', JSON.stringify(updatedProductList));
 
-        updateVendorsAndProducts();
+        //updateVendorsAndProducts();
+
+
+        const updatedMissingProducts = missingProducts.filter(p => p !== product);
+        localStorage.setItem(missingProductsKey, JSON.stringify(updatedMissingProducts));
+
+        const updatedFilteredVendor: Vendor[] = [...filteredVendors];
+
+        selectedAlternatives.forEach(alternative => {
+            const vendor = vendors.find(v => v.products.some((product: Product) => product.name === alternative.name));
+            if (vendor) {
+                const product = vendor.products.find(p => p.name === alternative.name);
+                if (product) {
+                    const existingVendor = updatedFilteredVendor.find(v => v.name === vendor.name);
+                    if (existingVendor) {
+                        existingVendor.products.push(product);
+                    } else {
+                        updatedFilteredVendor.push({
+                            ...vendor,
+                            products: [product]
+                        });
+                    }
+                }
+            }
+        });
+
+
+        localStorage.setItem(filteredVendorsKey, JSON.stringify(updatedFilteredVendor));
+        setFilteredVendors(updatedFilteredVendor);
+
 
         if (currentIndex === missingProducts.length - 1) {
             setCurrentIndex(0);
@@ -160,37 +187,50 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                     <span>{"Select alternative/s for "}<strong className="alternative">{missingProducts[currentIndex]}</strong></span>
                                     <div className="flex justify-center mt-4">
                                         <div className={`flex justify-center grid gap-4 ${randomAlternatives[missingProducts[currentIndex]]?.length === 1 ? 'grid-cols-1' : randomAlternatives[missingProducts[currentIndex]]?.length === 2 ? 'grid-cols-2' : randomAlternatives[missingProducts[currentIndex]]?.length === 3 ? 'grid-cols-3' : 'grid-cols-4'}`}>
-                                            {randomAlternatives[missingProducts[currentIndex]]?.map((alternative, altIndex) => (
-                                                <Button
-                                                    className="alternative-button"
-                                                    key={altIndex}
-                                                    style={{
-                                                        width: '100%',
-                                                        padding: '0.25rem 1rem',
-                                                        cursor: 'pointer',
-                                                        borderRadius: '0.5rem',
-                                                        border: 'none',
-                                                        textAlign: 'center',
-                                                        color: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? '#fff' : (theme === 'dark' ? '#000' : '#000'),
-                                                        backgroundColor: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? (theme === 'dark' ? '#3b82f6' : '#3b82f6') : (theme === 'dark' ? '#a0aec0' : '#e5e7eb'),
-                                                        margin: '0 auto'
-                                                    }}
-                                                    onClick={() => handleSelectAlternative(missingProducts[currentIndex], alternative)}
-                                                >
-                                                    <div>{alternative.name}</div>
-                                                    <div>{alternative.price} €/kg</div>
-                                                </Button>
-                                            ))}
+                                            {Array.isArray(randomAlternatives[missingProducts[currentIndex]]) && randomAlternatives[missingProducts[currentIndex]].length > 0 ? (
+                                                randomAlternatives[missingProducts[currentIndex]].map((alternative, altIndex) => (
+                                                    <Button
+                                                        className="alternative-button"
+                                                        key={altIndex}
+                                                        style={{
+                                                            width: '100%',
+                                                            padding: '0.25rem 1rem',
+                                                            cursor: 'pointer',
+                                                            borderRadius: '0.5rem',
+                                                            border: 'none',
+                                                            textAlign: 'center',
+                                                            color: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? '#fff' : (theme === 'dark' ? '#000' : '#000'),
+                                                            backgroundColor: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? (theme === 'dark' ? '#3b82f6' : '#3b82f6') : (theme === 'dark' ? '#a0aec0' : '#e5e7eb'),
+                                                            margin: '0 auto'
+                                                        }}
+                                                        onClick={() => handleSelectAlternative(missingProducts[currentIndex], alternative)}
+                                                    >
+                                                        <div>{alternative.name}</div>
+                                                        <div>{alternative.price} €/kg</div>
+                                                    </Button>
+                                                ))
+                                            ) : (
+                                                <div className="col-span-full text-center">Sorry, but there don't seem to be any alternatives for this product at the market.</div>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="flex justify-center mt-4">
-                                        <Button
-                                            onClick={() => handleConfirm(missingProducts[currentIndex], selectedAlternatives[missingProducts[currentIndex]] || [])}
-                                            disabled={!selectedAlternatives[missingProducts[currentIndex]] || selectedAlternatives[missingProducts[currentIndex]].length === 0}
-                                            style={{ color: '#fff', }}
-                                        >
-                                            Add to Shopping List
-                                        </Button>
+                                        {Array.isArray(randomAlternatives[missingProducts[currentIndex]]) && randomAlternatives[missingProducts[currentIndex]].length > 0 ? (
+                                            <Button
+                                                onClick={() => handleConfirm(missingProducts[currentIndex], selectedAlternatives[missingProducts[currentIndex]] || [])}
+                                                disabled={!selectedAlternatives[missingProducts[currentIndex]] || selectedAlternatives[missingProducts[currentIndex]].length === 0}
+                                                style={{ color: '#fff', }}
+                                            >
+                                                Add to Shopping List
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                onClick={() => handleConfirm(missingProducts[currentIndex], [])}
+                                                style={{ color: '#fff', }}
+                                            >
+                                                Got it
+                                            </Button>
+                                        )}
                                     </div>
                                 </li>
                             </ul>

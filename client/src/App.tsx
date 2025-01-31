@@ -12,11 +12,12 @@ import API from "./API";
 import { Vendor, Product, Market } from "./models";
 import ConfirmPopup from "./components/ConfirmationPopup";
 import TabsHero from "./components/TabSelector/TabSelector";
+import PageAddProducts from "./components/PageAddProducts/PageAddProducts.tsx";
 import { getUserdata, saveUserData } from "./components/PageProfile/UserData";
 
 
 export default function App() {
-  const paths = ["/", "/quests", "/rewards", "/profile", "*", "/leaderboard"];
+  const paths = ["/", "/quests", "/rewards", "/profile", "*", "/leaderboard", "/addProducts", "/addProducts/:id"];
   const [theme, setTheme] = useState<'light' | 'dark'>(localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
   const [selectedMarket, setSelectedMarket] = useState<Market>({
     id: 1,
@@ -73,22 +74,47 @@ export default function App() {
   useEffect(() => {
     const fetchVendors = async () => {
       try {
+        const vendorsKey = `vendors_${selectedMarket.name}`;
+        const savedVendors = localStorage.getItem(vendorsKey);
+        if (savedVendors) {
+          const parsedVendors = JSON.parse(savedVendors);
+          if (parsedVendors.length > 0) {
+            setVendors(parsedVendors);
+            return;
+          }
+        }
 
         const vendors = await API.getVendorsByMarket(selectedMarket.name);
         setVendors(vendors);
+        localStorage.setItem(vendorsKey, JSON.stringify(vendors));
+      } catch (error) {
+        console.error('Failed to fetch vendors:', error);
+      }
+    };
 
-      }
-      catch (error) {
-        console.error(error);
-      }
-    }
     fetchVendors();
   }, [selectedMarket]);
 
 
-  const updateVendorsAndProducts = useCallback(() => {
+  const updateVendorsAndProducts = () => {
+
     const savedProductsList = localStorage.getItem('productsList');
     const productsListState = savedProductsList ? JSON.parse(savedProductsList) : productsList;
+
+
+
+    const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
+    const missingProductsKey = `missingProducts_${selectedMarket.name}`;
+
+
+    const savedFilteredVendors = localStorage.getItem(filteredVendorsKey);
+
+
+    if (savedFilteredVendors && JSON.parse(savedFilteredVendors).length > 0) {
+      setFilteredVendors(JSON.parse(savedFilteredVendors));
+      return;
+    }
+
     const sortedVendors: Vendor[] = [...vendors];
 
     sortedVendors.sort((a, b) => {
@@ -149,22 +175,23 @@ export default function App() {
         !Array.from(foundProducts).some((fp: Product) => fp.name === product)
       );
 
-      setMissingProducts(missing);
+  
       setFilteredVendors(filtered);
 
+      localStorage.setItem(filteredVendorsKey, JSON.stringify(filtered));
+      localStorage.setItem(missingProductsKey, JSON.stringify(missing));
 
     } else {
       console.error(`Market ${selectedMarket.name} not found in productsList`);
     }
-  }, [productsList, selectedMarket.name, sortByConvenience, sortByCordiality, sortByQuality, vendors]);
+  };
 
   useEffect(() => {
     updateVendorsAndProducts();
-  }, [vendors, updateVendorsAndProducts]);
+  }, [vendors]);
 
 
-
-
+  
   const [popupText, setPopupText] = useState("Are you sure?");
   const [cancelButtonText, setCancelButtonText] = useState("Cancel");
   const [confirmButtonText, setConfirmButtonText] = useState("Confirm");
@@ -212,13 +239,15 @@ export default function App() {
     <div id='approot' className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
       <Routes>
         <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
-          <Route index path={`${paths[0]}`} element={<TabsHero theme={theme} vendors={vendors} filteredVendors={filteredVendors} selectedMarket={selectedMarket} setSelectedMarket={selectMarket} missingProducts={missingProducts} updateVendorsAndProducts={updateVendorsAndProducts} productsList={productsList} setProductsList={setProductsList} />} />
+          <Route index path={`${paths[0]}`} element={<TabsHero theme={theme} vendors={vendors} filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setSelectedMarket={selectMarket} missingProducts={missingProducts} updateVendorsAndProducts={updateVendorsAndProducts} productsList={productsList} setProductsList={setProductsList} />} />
           <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} leaderboardPath={`${paths[5]}`} userdata={userdata} setUserdata={setUserdata} />} />
           <Route path={`${paths[2]}`} element={<PageReward askConfirmation={askConfirmation} />} />
           <Route path={`${paths[2]}/history`} element={<PageRewardHistory />} />
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} askConfirmation={askConfirmation} userdata={userdata} setUserdata={setUserdata}/>} />
           <Route path={`${paths[4]}`} element={<PageNotFound />} />
           <Route path={`${paths[5]}`} element={<PageLeaderboard userdata={userdata} setUserdata={setUserdata} />} />
+          <Route path={`${paths[6]}`} element={<PageAddProducts actualVends={filteredVendors} allVends={vendors} theme={theme}/>} />
+          <Route path={`${paths[7]}`} element={<PageAddProducts actualVends={filteredVendors} allVends={vendors} theme={theme}/>} />
         </Route>
       </Routes>
       {showPopup &&
@@ -230,11 +259,11 @@ export default function App() {
 
 function Layout(props: Readonly<{ paths: string[], activeTab: number, questPendingClaims: number, setActiveTab: (tab: number) => void }>) {
   return (
-      <div className="flex flex-col h-screen bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle">
-        <div className="flex-grow overflow-y-auto flex-1">
-          <Outlet />
-        </div>
-        <Navbar paths={props.paths} activeTab={props.activeTab} setActiveTab={props.setActiveTab} questPendingClaims={props.questPendingClaims} />
+    <div className="flex flex-col h-screen bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle">
+      <div className="flex-grow overflow-y-auto flex-1">
+        <Outlet />
+      </div>
+      <Navbar paths={props.paths} activeTab={props.activeTab} setActiveTab={props.setActiveTab} questPendingClaims={props.questPendingClaims} />
     </div>
   );
 }

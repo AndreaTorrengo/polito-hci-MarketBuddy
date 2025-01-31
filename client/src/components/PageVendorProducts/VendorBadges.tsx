@@ -5,9 +5,9 @@ import SavingsIcon from '@mui/icons-material/Savings';
 
 interface VendorBadgesProps {
     market: string;
-    quality: number;
-    cordiality: number;
-    convenience: number;
+    quality: string;
+    cordiality: string;
+    convenience: string;
 }
 
 export default function VendorBadges({ market, quality, cordiality, convenience }: VendorBadgesProps) {
@@ -23,19 +23,19 @@ export default function VendorBadges({ market, quality, cordiality, convenience 
                 }}>
                     <WorkspacePremiumIcon sx={{ color: "#4b72a6" }} />
                     <p className="m-0 px-1 text-sm font-light">Quality</p>
-                    <p className="m-0 p-0 font-black">{quality}%</p>
+                    <p className="m-0 p-0 font-black">{quality}</p>
                 </div>
                 <div className="w-1/3 flex flex-col items-center justify-center" onClick={() => {
                 }}>
                     <SentimentSatisfiedAltIcon sx={{ color: "#e3c144" }} />
                     <p className="m-0 px-1 text-sm font-light">Cordiality</p>
-                    <p className="m-0 p-0 font-black">{cordiality}%</p>
+                    <p className="m-0 p-0 font-black">{cordiality}</p>
                 </div>
                 <div className="w-1/3 flex flex-col items-center justify-center" onClick={() => {
                 }}>
                     <SavingsIcon sx={{ color: "#52a36a" }} />
                     <p className="m-0 px-1 text-sm font-light">Convenience</p>
-                    <p className="m-0 p-0 font-black">{convenience}%</p>
+                    <p className="m-0 p-0 font-black">{convenience}</p>
                 </div>
             </div>
         </div>

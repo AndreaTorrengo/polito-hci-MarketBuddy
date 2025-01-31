@@ -41,6 +41,15 @@ export const redeemReward = async (req: Request, res: Response) => {
   }
 };
 
+export const getAllProducts = async (req: Request, res: Response) => {
+  try {
+    const products = await dao.getAllProducts();
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+};
+
 export const resetDB = async (req: Request, res: Response) => {
   // Restore the file db/marketbuddy.db.bak to db/marketbuddy.db
   const dbPath = path.resolve(__dirname, 'db/marketbuddy.db');
