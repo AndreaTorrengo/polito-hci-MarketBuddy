@@ -1,5 +1,5 @@
 "use client";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {Button, ButtonBase} from "@mui/material";
 import {Product, Vendor} from "../../models.ts";
 import ProductListItem, {ProductListItemProps} from "../PageVendorProducts/ProductListItem.tsx";
@@ -19,18 +19,18 @@ export default function PageAddProducts({actualVends, allVends, theme}: PageAddP
 
     const [isAddAlertOpen, setIsAddAlertOpen] = useState(false);
 
-    const actualVendorsProducts: Vendor[] = id != null ? actualVends.filter(vendor => vendor.id === Number(id)) : actualVends;
-    const allVendors: Vendor[] = id != null ? allVends.filter(vendor => vendor.id === Number(id)) : allVends;
+    const actualVendorsProducts: Vendor[] = useMemo(() => id != null ? actualVends.filter(vendor => vendor.id === Number(id)) : actualVends, [id, actualVends]);
+    const allVendors: Vendor[] = useMemo(() => id != null ? allVends.filter(vendor => vendor.id === Number(id)) : allVends, [id, allVends]);
 
-    const productsAlreadyAdded: Product[] = Array.from(new Set(actualVendorsProducts.flatMap(
+    const productsAlreadyAdded: Product[] = useMemo(() => Array.from(new Set(actualVendorsProducts.flatMap(
         (vendor: Vendor) => vendor.products
     ).map(product => product.id)))
-        .map(id => actualVendorsProducts.flatMap(vendor => vendor.products).find(product => product.id === id)!);
+        .map(id => actualVendorsProducts.flatMap(vendor => vendor.products).find(product => product.id === id)!), [actualVendorsProducts]);
 
-    const availableProducts: Product[] = Array.from(new Set(allVendors.flatMap(
+    const availableProducts: Product[] = useMemo(() => Array.from(new Set(allVendors.flatMap(
         (vendor: Vendor) => vendor.products
     ).map(product => product.id)))
-        .map(id => allVendors.flatMap(vendor => vendor.products).find(product => product.id === id)!);
+        .map(id => allVendors.flatMap(vendor => vendor.products).find(product => product.id === id)!), [allVendors]);
 
     const [allProducts, setAllProducts] = useState<ProductListItemProps[]>([]);
 
@@ -61,7 +61,7 @@ export default function PageAddProducts({actualVends, allVends, theme}: PageAddP
             }
 
             fetchProducts();
-        }, []
+        }, [availableProducts, productsAlreadyAdded]
     )
 
     function addOrRemoveSelected(index: number) {

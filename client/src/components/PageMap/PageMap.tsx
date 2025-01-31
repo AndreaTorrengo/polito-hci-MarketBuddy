@@ -195,7 +195,7 @@ const PageMap: React.FC<PageMapProps> = ({
                 />
                 <UpdateMapCenter center={selectedMarket.position as [number, number]} />
                 {/* Vendors position */}
-                {filteredVendors?.filter(vendor => vendor.products.length > 0).map((vendor, idx) => {
+                {filteredVendors?.map((vendor, idx) => {
                     const position: [number, number] = vendor.position as [number, number];
                     const isFiltered = filteredVendors.some(filteredVendor => filteredVendor.id === vendor.id);
                     const icon = selectedMarker === position

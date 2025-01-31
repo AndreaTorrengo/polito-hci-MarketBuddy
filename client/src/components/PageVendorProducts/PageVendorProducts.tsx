@@ -1,7 +1,7 @@
 "use client";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import VendorCategoryList from "./VendorCategoryList.tsx";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import AddProductsButton from "./AddProductsButton.tsx";
 import ProductListItem, {ProductListItemProps} from "./ProductListItem.tsx";
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
@@ -36,18 +36,18 @@ export default function PageVendorProducts({
 
     const [isEditMode, setIsEditMode] = useState(false);
 
-    const products = vendor.products.map((product) => ({
-                id: product.id,
-                name: product.name,
-                price: product.price * vendor.priceMultiplier,
-                image: product.image,
-                editMode: false,
-                isSelected: false,
-                showPrice: true
-    }));
+    const products = useMemo(() => vendor.products.map((product) => ({
+        id: product.id,
+        name: product.name,
+        price: product.price * vendor.priceMultiplier,
+        image: product.image,
+        editMode: false,
+        isSelected: false,
+        showPrice: true
+    })), [vendor.products, vendor.priceMultiplier]);
 
     const [selectedProducts, setSelectedProducts] = useState<Map<number, ProductListItemProps> | null>(null);
-    
+
     useEffect(() => {
         closeAfter();
     }, [vendor]);

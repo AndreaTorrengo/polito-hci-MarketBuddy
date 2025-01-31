@@ -57,7 +57,6 @@ export default function PageShoppingList({
 
                 {
                     filteredProductsVendors.map((vendor) => (
-                        vendor.products.length > 0 &&
                         <div key={vendor.id}>
                             {selectedVendor === vendor.id &&
                                 <PageVendorProducts vendor={vendor} isOpen={isVendorPageOpen}
