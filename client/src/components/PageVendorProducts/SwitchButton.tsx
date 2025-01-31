@@ -54,6 +54,18 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                             filteredVendors.push(newVendor);
                         }
                         alternativeFound = true;
+
+                        // Remove the product from the previous vendor
+                        const previousVendor = filteredVendors.find(v => v.id === vendorId);
+                        if (previousVendor) {
+                            previousVendor.products = previousVendor.products.filter(p => p.id !== product.id);
+                            // If the previous vendor has no more products, remove the vendor
+                            if (previousVendor.products.length === 0) {
+                                const updatedFilteredVendors = filteredVendors.filter(v => v.id !== vendorId);
+                                filteredVendors.length = 0;
+                                filteredVendors.push(...updatedFilteredVendors);
+                            }
+                        }
                     }
                 });
 
@@ -96,14 +108,20 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                         </div>
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'right', gap: '10px', marginTop: '20px' }}>
+                        <Button className="button-cancel" style={{ backgroundColor: 'transparent', borderColor: theme === 'dark' ? 'white' : 'black', color: theme === 'dark' ? 'white' : 'black', borderWidth: '1px' }} onClick={() => setIsDialogOpen(false)}>Cancel</Button>
                         <Button className="button" onClick={handleConfirm}>Confirm</Button>
-                        <Button className="button" style={{ backgroundColor: '#DD524C', borderColor: "#DD524C" }} onClick={() => setIsDialogOpen(false)}>Cancel</Button>
                     </div>
                 </DialogPanel>
             </Dialog>
-            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isFeedbackDialogOpen} onClose={() => {setIsFeedbackDialogOpen(false); closeAfter();}}>
+            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isFeedbackDialogOpen} onClose={() => { setIsFeedbackDialogOpen(false); closeAfter(); }}>
                 <DialogPanel>
+                    <button
+                        style={{ position: 'absolute', top: '0px', right: '10px', background: 'transparent', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}
+                        onClick={() => { setIsFeedbackDialogOpen(false); closeAfter(); }}
+                    >
+                        &times;
+                    </button>
                     {productsWithoutAlternatives.length === 0 ? (
                         <>
                             <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: '#32CD32' }}>Success</h1>

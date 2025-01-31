@@ -45,6 +45,7 @@ export default function PageVendorProducts({
                 isSelected: false,
                 showPrice: true
     }));
+    console.log('map',products);
 
     const [selectedProducts, setSelectedProducts] = useState<Map<number, ProductListItemProps> | null>(null);
 
@@ -244,7 +245,7 @@ export default function PageVendorProducts({
                                             }><AddProductsButton></AddProductsButton></div>
                                         </div>
                                         {/* Product list */}
-                                        <div key={vendor} className="w-full flex flex-col gap-3 mt-4 pb-[4rem]">
+                                        <div className="w-full flex flex-col gap-3 mt-4 pb-[4rem]">
                                             {products.map((product, index) => (
                                                 isEditMode ?
                                                     <ButtonBase key={product.id} component="div"

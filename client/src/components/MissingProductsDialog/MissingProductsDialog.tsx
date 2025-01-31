@@ -43,13 +43,13 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                     let alternatives: Product[] = [];
                     if (product === 'Pears' && selectedMarket.name === 'Crocetta Market') {
                         alternatives = [
-                            { id: 1, name: 'Kiwi', price: 1.5 },
-                            { id: 2, name: "Apples", price: 1.0 }
+                            { id: 1, name: 'Kiwi', price: 1.5, points: 10, image: 'kiwi.jpg' },
+                            { id: 2, name: "Apples", price: 1.0, points: 8, image: 'apples.jpg' }
                         ];
                     } else if (product === "Pears") {
-                        alternatives = [{ id: 3, name: "Apples", price: 1.0 }];
+                        alternatives = [{ id: 3, name: "Apples", price: 1.0, points: 8, image: 'apples.jpg' }];
                     } else if (product === "Bream") {
-                        alternatives = [{ id: 10, name: "Cod", price: 9.5 }];
+                        alternatives = [{ id: 10, name: "Cod", price: 9.5, points: 15, image: 'cod.jpg' }];
                     } else {
                         alternatives = [];
                     }
@@ -197,16 +197,32 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                                             padding: '0.25rem 1rem',
                                                             cursor: 'pointer',
                                                             borderRadius: '0.5rem',
-                                                            border: 'none',
                                                             textAlign: 'center',
-                                                            color: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? '#fff' : (theme === 'dark' ? '#000' : '#000'),
-                                                            backgroundColor: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? (theme === 'dark' ? '#3b82f6' : '#3b82f6') : (theme === 'dark' ? '#a0aec0' : '#e5e7eb'),
-                                                            margin: '0 auto'
+                                                            backgroundColor: 'transparent',
+                                                            color: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? (theme === 'dark' ? '#FFFFFF' : '#000000') : (theme === 'dark' ? '#bfbfbf' : '#000000'),
+                                                            border: '2px solid ' + (selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? (theme === 'dark' ? '#FFFFFF' : '#000000') : (theme === 'dark' ? '#bfbfbf' : '#666666')),
+                                                            margin: '0 auto',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'flex-start'
                                                         }}
                                                         onClick={() => handleSelectAlternative(missingProducts[currentIndex], alternative)}
                                                     >
-                                                        <div>{alternative.name}</div>
-                                                        <div>{alternative.price} €/kg</div>
+
+                                                        <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+                                                            <input
+                                                                type="checkbox"
+                                                                className="checkbox"
+                                                                checked={selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative)}
+                                                                onChange={() => handleSelectAlternative(missingProducts[currentIndex], alternative)}
+                                                                style={{
+                                                                    marginRight: '10px',
+                                                                    backgroundColor: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? (theme === 'dark' ? '#888888' : '#000000') : (theme === 'dark' ? '#000000' : '#FFFFFF'),
+                                                                }}
+                                                            />
+                                                            {alternative.name} {alternative.price}€/kg
+                                                        </div>
+
                                                     </Button>
                                                 ))
                                             ) : (
@@ -236,7 +252,16 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                             </ul>
                         </>
                     ) : (
-                        <h2 className="text-lg font-semibold text-center text-tremor-content-strong dark:text-dark-tremor-content-strong">No more missing products</h2>
+                        <>
+                            <button
+                                style={{ position: 'absolute', top: '0px', right: '10px', background: 'transparent', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}
+                                onClick={() => setIsOpen(false)}
+                            >
+
+                                &times;
+                            </button>
+                            <h2 className="text-lg font-semibold text-center text-tremor-content-strong dark:text-dark-tremor-content-strong">No more missing products</h2>
+                        </>
                     )}
                     {missingProducts.length > 0 && (
                         <div className="flex justify-center mt-4">
@@ -250,7 +275,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                     )}
                 </DialogPanel>
                 {showConfirmation && (
-                    <div className="fixed inset-x-0 bottom-0 flex items-center justify-center z-50 mb-40">
+                    <div className="fixed inset-x-0 top-0 flex items-center justify-center z-50 mt-80">
                         <div className="bg-green-500 p-4 text-white rounded-lg shadow-lg">
                             Alternatives added successfully!
                         </div>

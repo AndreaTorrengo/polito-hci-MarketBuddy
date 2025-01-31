@@ -135,29 +135,21 @@ export default function App() {
     const filtered: Vendor[] = [];
     if (productsListState[selectedMarket.name]) {
       const requiredProducts = new Set(productsListState[selectedMarket.name]);
-
-      const foundProducts = new Set<Product>();
-
+      const foundProducts = new Set<string>(); // Use Set<string> to track found product names
       for (const vendor of sortedVendors) {
         const filteredProducts = vendor.products.filter((product: Product) =>
-          productsListState[selectedMarket.name].includes(product.name),
+          productsListState[selectedMarket.name].includes(product.name) && !foundProducts.has(product.name),
         );
-
-
-
-
-
         if (filteredProducts.length > 0) {
           const newVendor = {
             ...vendor,
             products: filteredProducts
           };
           filtered.push(newVendor);
-          filteredProducts.forEach((product: Product) => foundProducts.add(product));
+          filteredProducts.forEach((product: Product) => foundProducts.add(product.name)); // Track found product names
         }
-
         const allRequiredProductsFound = Array.from(requiredProducts as Set<string>).every((product: string) =>
-          Array.from(foundProducts).some((fp: Product) => fp.name === product)
+          foundProducts.has(product)
         );
 
         if (allRequiredProductsFound) {
@@ -167,10 +159,10 @@ export default function App() {
 
       // Check for missing products
       const missing: string[] = Array.from(requiredProducts as Set<string>).filter(product =>
-        !Array.from(foundProducts).some((fp: Product) => fp.name === product)
+        !foundProducts.has(product)
       );
 
-  
+      console.log(filtered);
       setFilteredVendors(filtered);
 
       localStorage.setItem(filteredVendorsKey, JSON.stringify(filtered));
@@ -186,7 +178,7 @@ export default function App() {
   }, [vendors]);
 
 
-  
+
   const [popupText, setPopupText] = useState("Are you sure?");
   const [cancelButtonText, setCancelButtonText] = useState("Cancel");
   const [confirmButtonText, setConfirmButtonText] = useState("Confirm");
@@ -241,8 +233,8 @@ export default function App() {
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} askConfirmation={askConfirmation} />} />
           <Route path={`${paths[4]}`} element={<PageNotFound />} />
           <Route path={`${paths[5]}`} element={<PageLeaderboard />} />
-          <Route path={`${paths[6]}`} element={<PageAddProducts actualVends={filteredVendors} allVends={vendors} theme={theme}/>} />
-          <Route path={`${paths[7]}`} element={<PageAddProducts actualVends={filteredVendors} allVends={vendors} theme={theme}/>} />
+          <Route path={`${paths[6]}`} element={<PageAddProducts actualVends={filteredVendors} allVends={vendors} theme={theme} />} />
+          <Route path={`${paths[7]}`} element={<PageAddProducts actualVends={filteredVendors} allVends={vendors} theme={theme} />} />
         </Route>
       </Routes>
       {showPopup &&

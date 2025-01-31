@@ -18,7 +18,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
     const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
 
     const [productsSwitching, setProductsSwitching] = useState<Product[]>([]);
-
+    const [vendorToDelete, setVendorToDelete] = useState<number | null>(null);
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '[]');
 
@@ -34,6 +34,19 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
         setProductsSwitching(products.filter((product): product is Product => product !== null && product !== undefined));
     };
 
+    const handleVendorDelete = () => {
+        if (vendorToDelete !== null && vendorToDelete !== -1) {
+            if (vendorToDelete !== null) {
+                filteredVendors.splice(vendorToDelete, 1); // Remove the vendor from the filtered vendors list
+                setVendorToDelete(null);
+            }
+
+        }
+        setFilteredVendors(filteredVendors);
+        localStorage.setItem(filteredVendorsKey, JSON.stringify(filteredVendors));
+
+    };
+
     const handleConfirm = () => {
         selectedProducts.forEach((products, vendorId) => {
             products.forEach((productId: number) => {
@@ -47,7 +60,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
                         if (vendor.products.length === 0) {
                             const vendorIndex = filteredVendors.findIndex(v => v.id === vendor.id);
                             if (vendorIndex !== -1) {
-                                filteredVendors.splice(vendorIndex, 1); // Remove the vendor from the filtered vendors list
+                                setVendorToDelete(vendorIndex) // Remove the vendor from the filtered vendors list
                             }
                         }
                     }
@@ -55,10 +68,11 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
             });
         });
 
-        setFilteredVendors(filteredVendors);
-        localStorage.setItem(filteredVendorsKey, JSON.stringify(filteredVendors));
+
         setIsDialogOpen(false);
         setIsFeedbackDialogOpen(true);
+        setFilteredVendors(filteredVendors);
+        localStorage.setItem(filteredVendorsKey, JSON.stringify(filteredVendors));
     };
     return (
         <>
@@ -81,16 +95,22 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
                         </div>
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'right', gap: '10px', marginTop: '20px' }}>
+                        <Button className="button-cancel" style={{ backgroundColor: 'transparent', borderColor: theme === 'dark' ? 'white' : 'black', color: theme === 'dark' ? 'white' : 'black', borderWidth: '1px' }} onClick={() => setIsDialogOpen(false)}>Cancel</Button>
                         <Button className="button" onClick={handleConfirm}>Confirm</Button>
-                        <Button className="button" style={{ backgroundColor: '#DD524C', borderColor: "#DD524C" }} onClick={() => setIsDialogOpen(false)}>Cancel</Button>
                     </div>
                 </DialogPanel>
             </Dialog>
-            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isFeedbackDialogOpen} onClose={() => {setIsFeedbackDialogOpen(false); closeAfter();}}>
+            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isFeedbackDialogOpen} onClose={() => { setIsFeedbackDialogOpen(false); closeAfter(); handleVendorDelete(); }}>
                 <DialogPanel>
 
                     <>
+                        <button
+                            style={{ position: 'absolute', top: '0px', right: '10px', background: 'transparent', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}
+                            onClick={() => setIsFeedbackDialogOpen(false)}
+                        >
+                            &times;
+                        </button>
                         <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: '#32CD32' }}>Success</h1>
                         <p className="message-text" style={{ marginTop: '10px' }}>Selected products have been succesfully deleted from your shopping list</p>
                     </>
