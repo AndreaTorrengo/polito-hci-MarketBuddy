@@ -217,7 +217,8 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                                                 onChange={() => handleSelectAlternative(missingProducts[currentIndex], alternative)}
                                                                 style={{
                                                                     marginRight: '10px',
-                                                                    backgroundColor: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? (theme === 'dark' ? '#888888' : '#000000') : (theme === 'dark' ? '#000000' : '#FFFFFF'),
+                                                                    borderColor: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? (theme === 'dark' ? '#FFFFFF' : '#000000') : (theme === 'dark' ? '#bfbfbf' : '#666666'),
+                                                                    backgroundColor: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? (theme === 'dark' ? '#000000' : '#000000') : (theme === 'dark' ? '#000000' : '#FFFFFF'),
                                                                 }}
                                                             />
                                                             {alternative.name} {alternative.price}€/kg
@@ -275,7 +276,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                     )}
                 </DialogPanel>
                 {showConfirmation && (
-                    <div className="fixed inset-x-0 top-0 flex items-center justify-center z-50 mt-80">
+                    <div className="fixed inset-x-0 top-0 flex items-center justify-center z-50 mt-60">
                         <div className="bg-green-500 p-4 text-white rounded-lg shadow-lg">
                             Alternatives added successfully!
                         </div>

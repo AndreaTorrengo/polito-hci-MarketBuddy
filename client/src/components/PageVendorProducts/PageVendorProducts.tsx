@@ -1,7 +1,7 @@
 "use client";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import VendorCategoryList from "./VendorCategoryList.tsx";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import AddProductsButton from "./AddProductsButton.tsx";
 import ProductListItem, {ProductListItemProps} from "./ProductListItem.tsx";
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
@@ -45,9 +45,12 @@ export default function PageVendorProducts({
                 isSelected: false,
                 showPrice: true
     }));
-    console.log('map',products);
 
     const [selectedProducts, setSelectedProducts] = useState<Map<number, ProductListItemProps> | null>(null);
+    
+    useEffect(() => {
+        closeAfter();
+    }, [vendor]);
 
     const [contextMenuProps, setContextMenuProps] = useState<ContextMenuProps>({
         onClose: () => {

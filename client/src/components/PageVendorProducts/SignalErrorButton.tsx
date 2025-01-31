@@ -163,7 +163,8 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
                                     onChange={() => handleReasonSelect(reason.id)}
                                     style={{
                                         marginRight: '10px',
-                                        backgroundColor: selectedReasons.includes(reason.id) ? (theme === 'dark' ? '#888888' : '#000000') : (theme === 'dark' ? '#000000' : '#FFFFFF'),
+                                        borderColor: selectedReasons.includes(reason.id) ? (theme === 'dark' ? '#FFFFFF' : '#000000') : (theme === 'dark' ? '#bfbfbf' : '#666666'),
+                                        backgroundColor: selectedReasons.includes(reason.id) ? (theme === 'dark' ? '#000000' : '#000000') : (theme === 'dark' ? '#000000' : '#FFFFFF'),
                                     }}
                                 />
                                 <span style={{ flexGrow: 1, textAlign: 'center' }}>{reason.label}</span> {/* Aggiungi uno span per il testo */}
