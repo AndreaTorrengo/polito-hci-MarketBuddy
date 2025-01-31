@@ -97,7 +97,6 @@ export const Button = ({ variant, size, children, className, ...props }: LargeBu
         default:
             className += '';
     }
-    console.log(props.disabled ? 'opacity-60' : 'active:brightness-90');
 
     return (
         <button
