@@ -57,17 +57,13 @@ export default function PageQuest(props: any) {
     setNewQuestId(() => newGeneratedId);
 
     // Update stats
-    props.setUserdata((userdata: any) => {
+    props.setUserdata((userdata: UserData) => {
       //let udCopy = userdata.clone();
       const udCopy = Object.assign(new UserData(), userdata);
       udCopy.incrCoins(questToClaim.coins);
       udCopy.incrExperience(questToClaim.exp);
       return udCopy;
     });
-    /*let userdata: UserData = props.userdata.current;
-    console.log(props.userdata.current);
-    userdata.incrCoins(questToClaim.coins);
-    userdata.incrExperience(questToClaim.exp);*/
   };
   // Hard-coding for make a quest claimable
   const requestClaim = (id: Number) => {
@@ -83,7 +79,7 @@ export default function PageQuest(props: any) {
 
   return (
     <>
-      <StatPopup coins={props.userdata.coins} exp={props.userdata.experience} />
+      <StatPopup coins={props.userdata.coins} exp={props.userdata.experience} popup={true}/>
       <div className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle p-6">
         <Title className="text-center text-4xl mb-6">Quests</Title>
         <div className="flex flex-col gap-4 relative">

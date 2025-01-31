@@ -4,7 +4,7 @@ import { DarkModeCustomSwitch } from './darkModeSwitch';
 import API from '../../API';
 import { Dispatch, SetStateAction } from 'react';
 import { UserData } from './UserData';
-import { Card, TextInput, Title, Text } from '@tremor/react';
+import { Card, TextInput, Title } from '@tremor/react';
 
 interface PageProfileProps {
   theme: 'light' | 'dark';

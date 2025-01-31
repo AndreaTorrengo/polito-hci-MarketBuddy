@@ -3,7 +3,7 @@ export default function ConfirmPopup({ text, cancelButtonText, confirmButtonText
     return (
         <>
             <div className="fixed inset-0 bg-black opacity-35" />
-            <button className="fixed inset-0 flex items-center justify-center" onClick={closePopup} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') closePopup(); }}>
+            <div className="fixed inset-0 flex items-center justify-center" onClick={closePopup} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') closePopup(); }}>
                 <div className="p-6 m-8 rounded-lg shadow-md bg-tremor-background-muted dark:bg-dark-tremor-background-muted">
                     <p className="mb-4 text-left">{text}</p>
                     <div className="flex justify-end space-x-4">
@@ -15,7 +15,7 @@ export default function ConfirmPopup({ text, cancelButtonText, confirmButtonText
                         </button>
                     </div>
                 </div>
-            </button>
+            </div>
         </>
     );
 }

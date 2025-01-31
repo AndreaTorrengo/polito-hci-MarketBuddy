@@ -1,62 +1,126 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Card } from "@tremor/react";
 //import { ArrowUpRight, ArrowDownRight } from "lucide-react";
-import { 
-    ArrowUpward, 
-    ArrowDownward
+import {
+  ArrowUpward,
+  ArrowDownward
 } from "@mui/icons-material";
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import HexagonIcon from '@mui/icons-material/Hexagon';
+import PropTypes from "prop-types";
 
 type Props = {
   coins: number;
   exp: number;
+  popup: boolean;
 };
 
-export default function StatPopup({ coins, exp }: Props) {
+// Function to animate numbers
+const animateValue = (start: number, end: number, setter: (val: number) => void) => {
+  return new Promise<void>((resolve) => {
+    if (start == end) {
+      resolve();
+      return;
+    }
+    let current = start;
+    const step = start < end ? 1 : -1;
+    const timePerStep = 1500 / (Math.abs(end - start) + 1);
+
+    const interval = setInterval(() => {
+      current += step;
+      setter(current);
+      if (current == end) {
+        clearInterval(interval);
+        resolve();
+      }
+    }, timePerStep); // Adjust speed of counting animation
+    // console.log(timePerStep);
+  });
+};
+
+export default function StatPopup({ coins, exp, popup }: Props) {
+  const countDownRef = useRef(0); // use for popup auto dismiss
   const [showPopup, setShowPopup] = useState(false);
   const [prevCoins, setPrevCoins] = useState(coins);
   const [prevExp, setPrevExp] = useState(exp);
+  const [displayCoins, setDisplayCoins] = useState(coins);
+  const [displayExp, setDisplayExp] = useState(exp);
 
   useEffect(() => {
     if (coins !== prevCoins || exp !== prevExp) {
+      //console.log(exp + " " + prevExp);
+      //console.log(coins + " " + prevCoins);
+      countDownRef.current += 1;
       setShowPopup(true);
-      setTimeout(() => setShowPopup(false), 3000); // Hide after 3 sec
+
+      Promise.all([
+        animateValue(prevCoins, coins, setDisplayCoins),
+        animateValue(prevExp, exp, setDisplayExp),
+      ]).then(() => {
+        setTimeout(() => {
+          countDownRef.current -= 1;
+          // Close the popup only if there are no other changes to coins and experience
+          if (countDownRef.current <= 0)
+            setShowPopup(false);
+          /*else
+            setShowPopup(true);*/
+        }, 1000); // Hide once values are stable, after 1 sec
+      });
       setPrevCoins(coins);
       setPrevExp(exp);
     }
-  }, [coins, exp, prevCoins, prevExp]);
+  }, [coins, exp]);
 
   return (
-    <div
-      className={`fixed top-5 right-5 z-50 transition-transform duration-300 ease-in-out ${
-        showPopup ? "translate-x-0 opacity-100" : "translate-x-20 opacity-0 pointer-events-none"
-      }`}
-    >
-      <Card className="p-4 bg-white shadow-lg border rounded-xl flex flex-col space-y-2">
-        <div className="flex items-center space-x-2 text-lg font-semibold">
-          <span className="text-violet-600"><HexagonIcon /></span>
-          <span
-            className={`flex items-center transition-all duration-300 ${
-              exp >= prevExp ? "text-violet-600" : "text-red-600"
+    <>
+      {popup ?
+        <div
+          className={`fixed top-5 right-5 z-50 transition-all duration-700 ease-in-out transform ${showPopup ? "translate-x-0 opacity-100" : "translate-x-5 opacity-0"
             }`}
-          >
-            {exp >= prevExp ? <ArrowUpward /> : <ArrowDownward />}
-            {exp}
-          </span>
+        >
+          <Card className="p-4 bg-white shadow-lg border rounded-xl flex flex-col space-y-2 transition-opacity duration-1000">
+            <div className="flex items-center space-x-2 text-lg font-semibold">
+              <span className="text-violet-600"><HexagonIcon /></span>
+              <span
+                className={`flex items-center transition-all duration-300 ${exp >= prevExp ? "text-violet-600" : "text-red-600"
+                  }`}
+              >
+                {exp >= prevExp ? <ArrowUpward /> : <ArrowDownward />}
+                {displayExp}
+              </span>
+            </div>
+            <div className="flex items-center space-x-2 text-lg font-semibold">
+              <span className="text-yellow-500"><EmojiEmotionsIcon /></span>
+              <span
+                className={`flex items-center transition-all duration-300 ${coins >= prevCoins ? "text-yellow-500" : "text-red-600"
+                  }`}
+              >
+                {coins >= prevCoins ? <ArrowUpward /> : <ArrowDownward />}
+                {displayCoins}
+              </span>
+            </div>
+          </Card>
         </div>
-        <div className="flex items-center space-x-2 text-lg font-semibold">
-          <span className="text-yellow-500"><EmojiEmotionsIcon /></span>
-          <span
-            className={`flex items-center transition-all duration-300 ${
-              coins >= prevCoins ? "text-yellow-500" : "text-red-600"
-            }`}
-          >
-            {coins >= prevCoins ? <ArrowUpward /> : <ArrowDownward />}
-            {coins}
-          </span>
-        </div>
-      </Card>
-    </div>
+        :
+        <div className="">
+          <Card className="p-4 bg-white shadow-lg border rounded-xl flex flex-col space-y-2">
+            <div className="flex items-center space-x-2 text-lg font-semibold">
+              <span className="text-yellow-500"><EmojiEmotionsIcon /></span>
+              <span
+                className={`flex items-center transition-all duration-300 ${coins >= prevCoins ? "text-yellow-500" : "text-red-600"
+                  }`}
+              >
+                {showPopup ? <ArrowDownward /> : <span></span>}
+                {displayCoins}
+              </span>
+            </div>
+          </Card>
+        </div>}
+    </>
   );
+}
+StatPopup.propTypes = {
+  coins: PropTypes.number,
+  exp: PropTypes.number,
+  popup: PropTypes.bool,  // Choose between showing a popup or static <div>
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import API from '../../API';
 import { Reward } from '../../models';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
@@ -7,6 +7,8 @@ import planet from "../../assets/planet03.png";
 import RestoreOutlinedIcon from '@mui/icons-material/RestoreOutlined';
 import { useNavigate } from 'react-router-dom';
 import { Title } from '@tremor/react';
+import StatPopup from '../generalPurposeComponents/StatPopup';
+import { UserData } from '../PageProfile/UserData';
 
 const iconsMap: { [key: string]: JSX.Element } = {
   'coupon': <LocalOfferOutlined className='object-scale-down max-h-full m-auto' />,
@@ -37,7 +39,7 @@ export function RewardCard({ reward, confirmRewardRedemption = () => { } }: Read
 
 type AskConfirmation = (callback: () => void, message: string) => void;
 
-export default function PageReward({ askConfirmation }: Readonly<{ askConfirmation: AskConfirmation }>) {
+export default function PageReward({ askConfirmation, userdata, setUserdata }: Readonly<{ askConfirmation: AskConfirmation, userdata: UserData, setUserdata: Dispatch<SetStateAction<UserData>> }>) {
   const [rewards, setRewards] = useState([]);
   const navigate = useNavigate();
 
@@ -55,7 +57,13 @@ export default function PageReward({ askConfirmation }: Readonly<{ askConfirmati
   const redeemReward = (reward: Reward) => {
     API.redeemReward(reward.id);
     // TODO - Add a feedback to confirm the operation was successful
-    setRewards((prevRewards) => prevRewards.filter((r) => r.id !== reward.id));
+    setUserdata((userdataObj: UserData) => {
+      const udCopy = Object.assign(new UserData(), userdataObj);
+      udCopy.incrCoins(-reward.cost);
+      return udCopy;
+    });
+
+    setRewards((prevRewards) => prevRewards.filter((r: Reward) => r.id !== reward.id));
   }
 
   const confirmRewardRedemption = (reward: Reward) => {
@@ -66,6 +74,7 @@ export default function PageReward({ askConfirmation }: Readonly<{ askConfirmati
     <div className='w-full h-full p-6'>
       <div className='flex justify-between mb-6'>
         <Title className="text-4xl align-middle">Rewards</Title>
+        <StatPopup coins={userdata.coins} exp={userdata.experience} popup={false}/>
         <div className='flex align-middle'>
           <button onClick={() => navigate('history')}>
           <RestoreOutlinedIcon />
