@@ -208,6 +208,11 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                                         }}
                                                         onClick={() => handleSelectAlternative(missingProducts[currentIndex], alternative)}
                                                     >
+                                                        <div
+                                                            style={{ position: 'absolute', top: '10px', right: '10px', background: 'transparent', border: 'none', fontSize: '1rem', color: '#333333', pointerEvents: 'none' }}
+                                                        >
+                                                            {currentIndex + 1}/{missingProducts.length}
+                                                        </div>
 
                                                         <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
                                                             <input
