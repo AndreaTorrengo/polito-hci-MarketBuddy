@@ -19,7 +19,7 @@ import FeedbackReportDialog from "./FeedbackReportDialog";
 
 
 export default function App() {
-  const paths = ["/", "/quests", "/rewards", "/profile", "*", "/leaderboard", "/addProducts", "/addProducts/:id"];
+  const paths = ["/", "/quests", "/rewards", "/profile", "*", "/leaderboard"];
   const [theme, setTheme] = useState<'light' | 'dark'>(localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
   const [selectedMarket, setSelectedMarket] = useState<Market>({
     id: 1,
@@ -249,8 +249,6 @@ export default function App() {
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} askConfirmation={askConfirmation} />} />
           <Route path={`${paths[4]}`} element={<PageNotFound />} />
           <Route path={`${paths[5]}`} element={<PageLeaderboard />} />
-          <Route path={`${paths[6]}`} element={<PageAddProducts setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} actualVends={filteredVendors} allVends={vendors} theme={theme} />} />
-          <Route path={`${paths[7]}`} element={<PageAddProducts setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} actualVends={filteredVendors} allVends={vendors} theme={theme} />} />
         </Route>
       </Routes>
       {showPopup &&

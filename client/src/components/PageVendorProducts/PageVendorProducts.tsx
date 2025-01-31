@@ -25,6 +25,7 @@ interface PageVendorProductsParams {
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     isFeedbackDialogOpen: string | null;
     setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
+    setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 export default function PageVendorProducts({
@@ -35,7 +36,8 @@ export default function PageVendorProducts({
     setIsOpen,
     vendor,
     isFeedbackDialogOpen,
-    setIsFeedbackDialogOpen
+    setIsFeedbackDialogOpen,
+    setAddProductId
 }: PageVendorProductsParams) {
     const approot = document.getElementById("approot")!;
 
@@ -85,8 +87,6 @@ export default function PageVendorProducts({
     });
 
     const activeTab = localStorage.getItem('activeTab') || 'list';
-
-    const navigate = useNavigate();
 
     const onLongPress = (event: React.MouseEvent, productId: number) => {
         event.preventDefault();
@@ -253,7 +253,7 @@ export default function PageVendorProducts({
                                         <div className="w-full flex flex-row justify-between items-center">
                                             <p className="m-0 p-0">Your planned purchases</p>
                                             <div onClick={() => {
-                                                navigate("/addProducts/" + vendor.id);
+                                                setAddProductId(vendor.id);
                                             }
                                             }><AddProductsButton></AddProductsButton></div>
                                         </div>

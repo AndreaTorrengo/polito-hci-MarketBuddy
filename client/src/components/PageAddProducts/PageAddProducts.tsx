@@ -5,7 +5,6 @@ import { Product, Vendor, Market } from "../../models.ts";
 import ProductListItem, { ProductListItemProps } from "../PageVendorProducts/ProductListItem.tsx";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import API from "../../API.ts";
-import { useNavigate, useParams } from "react-router-dom";
 import ConfirmAddAlert from "../generalPurposeComponents/ConfirmAddAlert.tsx";
 
 interface PageAddProductsParams {
@@ -14,18 +13,18 @@ interface PageAddProductsParams {
     theme: string;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
+    setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
+    addProductId: number | null;
 }
 
-export default function PageAddProducts({ actualVends, allVends, theme ,selectedMarket,setFilteredVendors}: PageAddProductsParams) {
+export default function PageAddProducts({ actualVends, allVends, theme ,selectedMarket,setFilteredVendors, addProductId, setAddProductId}: PageAddProductsParams) {
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '[]');
 
-    const { id } = useParams()
-
     const [isAddAlertOpen, setIsAddAlertOpen] = useState(false);
 
-    const actualVendorsProducts: Vendor[] = useMemo(() => id != null ? actualVends.filter(vendor => vendor.id === Number(id)) : actualVends, [id, actualVends]);
-    const allVendors: Vendor[] = useMemo(() => id != null ? allVends.filter(vendor => vendor.id === Number(id)) : allVends, [id, allVends]);
+    const actualVendorsProducts: Vendor[] = useMemo(() => addProductId != -1 ? actualVends.filter(vendor => vendor.id === addProductId) : actualVends, [addProductId, actualVends]);
+    const allVendors: Vendor[] = useMemo(() => addProductId != -1 ? allVends.filter(vendor => vendor.id === addProductId) : allVends, [addProductId, allVends]);
 
     const productsAlreadyAdded: Product[] = useMemo(() => Array.from(new Set(actualVendorsProducts.flatMap(
         (vendor: Vendor) => vendor.products
@@ -41,13 +40,12 @@ export default function PageAddProducts({ actualVends, allVends, theme ,selected
 
     const [selectedProducts, setSelectedProducts] = useState<Map<number, ProductListItemProps>>(new Map());
 
-    const navigate = useNavigate();
-
     useEffect(
         () => {
             const fetchProducts = async () => {
                 try {
                     const products: Product[] = await API.getAllProducts();
+                    console.log(products)
                     setAllProducts(products.map(product => ({
                         id: product.id,
                         name: product.name,
@@ -64,7 +62,6 @@ export default function PageAddProducts({ actualVends, allVends, theme ,selected
                     console.error(error);
                 }
             }
-
             fetchProducts();
         }, [availableProducts, productsAlreadyAdded]
     )
@@ -113,14 +110,14 @@ export default function PageAddProducts({ actualVends, allVends, theme ,selected
     }
 
     return (
-        <div className="h-full">
+        <div className="h-full w-full z-[10000000] absolute">
             {/* TopBar */}
             <ConfirmAddAlert theme={theme} setIsOpen={setIsAddAlertOpen} isOpen={isAddAlertOpen} products={selectedProducts}
                 handleAdd={handleAdd}></ConfirmAddAlert>
             <TopBar
                 leftComponent={selectedProducts &&
                     <ButtonBase className="text-md font-semibold" onClick={() => {
-                        navigate(-1)
+                        setAddProductId(null);
                     }}><p
                         className="m-0 p-0">Cancel</p></ButtonBase>}
                 centerComponent={allProducts && allProducts.length > 0 && <h1
@@ -221,7 +218,7 @@ export default function PageAddProducts({ actualVends, allVends, theme ,selected
                                 :
                                 <div className="flex flex-col h-80 items-center justify-center gap-4">
                                     {
-                                        id != null ?
+                                        addProductId != -1 ?
                                             <p className="m-0 p-0 text-xl text-center">No more products available
                                                 for <br /> {
                                                     actualVendorsProducts ? (actualVendorsProducts.length >= 1 ? actualVendorsProducts[0].name : "this vendor") : ""
@@ -234,7 +231,7 @@ export default function PageAddProducts({ actualVends, allVends, theme ,selected
 
                                     }
                                     <Button variant={"contained"} onClick={() => {
-                                        navigate(-1)
+                                        setAddProductId(null);
                                     }}>
                                         Go Back
                                     </Button>

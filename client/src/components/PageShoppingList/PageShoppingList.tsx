@@ -20,6 +20,7 @@ interface PageShoppingListProps {
     readonly setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     isFeedbackDialogOpen: string | null;
     setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
+    setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 export default function PageShoppingList({
@@ -39,6 +40,7 @@ export default function PageShoppingList({
     setFilteredVendors,
     isFeedbackDialogOpen,
     setIsFeedbackDialogOpen,
+    setAddProductId
 }: PageShoppingListProps) {
     const [isVendorPageOpen, setIsVendorPageOpen] = useState(false);
     const [selectedVendor, setSelectedVendor] = useState<number>(-1);
@@ -66,7 +68,7 @@ export default function PageShoppingList({
                                     setIsFeedbackDialogOpen={setIsFeedbackDialogOpen}
                                     vendor={vendor} isOpen={isVendorPageOpen}
                                     setIsOpen={(value: boolean) => setIsVendorPageOpen(value)}
-                                    theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket}></PageVendorProducts>}
+                                    theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId}></PageVendorProducts>}
 
                             <VendorGroup id={vendor.id}
                                 openEditMode={openEditMode}

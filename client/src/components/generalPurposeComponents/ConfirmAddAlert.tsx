@@ -22,7 +22,7 @@ const ConfirmAddAlert: React.FC<ConfirmAddAlertProps> = ({
 
     return (
         <>
-            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isOpen} onClose={() => setIsOpen(false)}>
+            <Dialog className={theme === 'dark' ? 'dark z-[10000001]' : 'z-[10000001]'} open={isOpen} onClose={() => setIsOpen(false)}>
                 <DialogPanel>
                     <h1 className="confirm-text" style={{ fontWeight: 'bold', fontSize: '1rem' }}>Confirm Add</h1>
                     <p className="message-text" style={{ marginTop: '10px' }}>The following products will be added to your shopping list:</p>
@@ -39,7 +39,7 @@ const ConfirmAddAlert: React.FC<ConfirmAddAlertProps> = ({
                     </div>
                 </DialogPanel>
             </Dialog>
-            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isFeedbackDialogOpen} onClose={() => { setIsFeedbackDialogOpen(false);handleAdd()}}>
+            <Dialog className={theme === 'dark' ? 'dark z-[10000001]' : 'z-[10000001]'} open={isFeedbackDialogOpen} onClose={() => { setIsFeedbackDialogOpen(false);handleAdd()}}>
                 <DialogPanel>
 
                     <>
