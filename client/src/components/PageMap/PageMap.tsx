@@ -51,6 +51,8 @@ interface PageMapProps {
     selectedMarket: Market;
     filteredProductsVendors: Vendor[];
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
+    isFeedbackDialogOpen: string | null;
+    setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const PageMap: React.FC<PageMapProps> = ({
@@ -59,7 +61,9 @@ const PageMap: React.FC<PageMapProps> = ({
     theme,
     selectedMarket,
     filteredProductsVendors,
-    setFilteredVendors
+    setFilteredVendors,
+    isFeedbackDialogOpen,
+    setIsFeedbackDialogOpen,
 }) => {
     const offset: [number, number] = getRandomOffset();
     const [markerPosition, setMarkerPosition] = useState<[number, number]>([
@@ -230,7 +234,7 @@ const PageMap: React.FC<PageMapProps> = ({
             </MapContainer>
             {selectedMarker && (
                 selectedVendor && (
-                    <PageVendorProducts isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket}></PageVendorProducts>
+                    <PageVendorProducts isFeedbackDialogOpen={isFeedbackDialogOpen} setIsFeedbackDialogOpen={setIsFeedbackDialogOpen} isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket}></PageVendorProducts>
                 )
             )}
             {/* Market selector

@@ -13,6 +13,9 @@ import { Vendor, Product, Market } from "./models";
 import ConfirmPopup from "./components/ConfirmationPopup";
 import TabsHero from "./components/TabSelector/TabSelector";
 import PageAddProducts from "./components/PageAddProducts/PageAddProducts.tsx";
+import FeedbackDeleteDialog from "./FeedbackDeleteDialog";
+import FeedbackSwitchDialog from "./FeedbackSwitchDialog";
+import FeedbackReportDialog from "./FeedbackReportDialog";
 
 
 export default function App() {
@@ -161,8 +164,6 @@ export default function App() {
       const missing: string[] = Array.from(requiredProducts as Set<string>).filter(product =>
         !foundProducts.has(product)
       );
-
-      console.log(filtered);
       setFilteredVendors(filtered);
 
       localStorage.setItem(filteredVendorsKey, JSON.stringify(filtered));
@@ -220,21 +221,36 @@ export default function App() {
     // console.log(confirmationCallback)
     setShowPopup(true);
   };
-
+  const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState<string | null>(null);
   // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-PageNotFound, 5-Leaderboard
   return (
     <div id='approot' className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
+      <FeedbackDeleteDialog
+        isOpen={isFeedbackDialogOpen === 'delete'}
+        onClose={() => { setIsFeedbackDialogOpen(null)}}
+        theme={theme}
+      />
+      <FeedbackSwitchDialog
+        isOpen={isFeedbackDialogOpen === 'switch'}
+        onClose={() => { setIsFeedbackDialogOpen(null) }}
+        theme={theme}
+      />
+      <FeedbackReportDialog
+        isOpen={isFeedbackDialogOpen === 'report'}
+        onClose={() => { setIsFeedbackDialogOpen(null) }}
+        theme={theme}
+      />
       <Routes>
         <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
-          <Route index path={`${paths[0]}`} element={<TabsHero theme={theme} vendors={vendors} filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setSelectedMarket={selectMarket} missingProducts={missingProducts} updateVendorsAndProducts={updateVendorsAndProducts} productsList={productsList} setProductsList={setProductsList} />} />
+          <Route index path={`${paths[0]}`} element={<TabsHero isFeedbackDialogOpen={isFeedbackDialogOpen} setIsFeedbackDialogOpen={setIsFeedbackDialogOpen} theme={theme} vendors={vendors} filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setSelectedMarket={selectMarket} missingProducts={missingProducts} updateVendorsAndProducts={updateVendorsAndProducts} productsList={productsList} setProductsList={setProductsList} />} />
           <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} leaderboardPath={`${paths[5]}`} />} />
           <Route path={`${paths[2]}`} element={<PageReward askConfirmation={askConfirmation} />} />
           <Route path={`${paths[2]}/history`} element={<PageRewardHistory />} />
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} askConfirmation={askConfirmation} />} />
           <Route path={`${paths[4]}`} element={<PageNotFound />} />
           <Route path={`${paths[5]}`} element={<PageLeaderboard />} />
-          <Route path={`${paths[6]}`} element={<PageAddProducts actualVends={filteredVendors} allVends={vendors} theme={theme} />} />
-          <Route path={`${paths[7]}`} element={<PageAddProducts actualVends={filteredVendors} allVends={vendors} theme={theme} />} />
+          <Route path={`${paths[6]}`} element={<PageAddProducts setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} actualVends={filteredVendors} allVends={vendors} theme={theme} />} />
+          <Route path={`${paths[7]}`} element={<PageAddProducts setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} actualVends={filteredVendors} allVends={vendors} theme={theme} />} />
         </Route>
       </Routes>
       {showPopup &&
