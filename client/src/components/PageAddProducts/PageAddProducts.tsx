@@ -15,9 +15,11 @@ interface PageAddProductsParams {
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
     addProductId: number | null;
+    isFeedbackDialogOpen: string | null;
+    setIsFeedbackDialogOpen: (value: string | null) => void;
 }
 
-export default function PageAddProducts({ actualVends, allVends, theme ,selectedMarket,setFilteredVendors, addProductId, setAddProductId}: PageAddProductsParams) {
+export default function PageAddProducts({ actualVends, allVends, theme, selectedMarket, setFilteredVendors, addProductId, setAddProductId, isFeedbackDialogOpen, setIsFeedbackDialogOpen }: PageAddProductsParams) {
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '[]');
 
@@ -86,33 +88,35 @@ export default function PageAddProducts({ actualVends, allVends, theme ,selected
     function handleAdd() {
 
         selectedProducts.forEach((product, productId) => {
-                let productAdded = false;
-                allVends.forEach(vendor => {
-                    if (productAdded) return;
-                    const product = vendor.products.find(product => product.id === productId);
-                    if (product) {
-                        const existingVendor = filteredVendors.find(v => v.id === vendor.id);
-                        if (existingVendor) {
-                            existingVendor.products.push(product);
-                        } else {
-                            const newVendor = { ...vendor, products: [product] };
-                            filteredVendors.push(newVendor);
-                        }
-                        productAdded = true;
+            let productAdded = false;
+            allVends.forEach(vendor => {
+                if (productAdded) return;
+                const product = vendor.products.find(product => product.id === productId);
+                if (product) {
+                    const existingVendor = filteredVendors.find(v => v.id === vendor.id);
+                    if (existingVendor) {
+                        existingVendor.products.push(product);
+                    } else {
+                        const newVendor = { ...vendor, products: [product] };
+                        filteredVendors.push(newVendor);
                     }
-                });
+                    productAdded = true;
+                }
+            });
         });
 
+         
         setFilteredVendors(filteredVendors);
         localStorage.setItem(filteredVendorsKey, JSON.stringify(filteredVendors));
+        setAddProductId(null);
 
 
     }
 
     return (
-        <div className="h-full w-full z-[10000000] absolute">
+        <div className="absolute z-[10000000] w-full h-full">
             {/* TopBar */}
-            <ConfirmAddAlert theme={theme} setIsOpen={setIsAddAlertOpen} isOpen={isAddAlertOpen} products={selectedProducts}
+            <ConfirmAddAlert isFeedbackDialogOpen={isFeedbackDialogOpen} setIsFeedbackDialogOpen={setIsFeedbackDialogOpen} theme={theme} setIsOpen={setIsAddAlertOpen} isOpen={isAddAlertOpen} products={selectedProducts}
                 handleAdd={handleAdd}></ConfirmAddAlert>
             <TopBar
                 leftComponent={selectedProducts &&

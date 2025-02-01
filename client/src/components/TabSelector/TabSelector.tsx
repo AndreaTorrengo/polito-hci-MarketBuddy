@@ -187,7 +187,7 @@ export default function TabsHero({
     return (
         <>
             {addProductId != null &&
-                <PageAddProducts setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket}
+                <PageAddProducts isFeedbackDialogOpen={isFeedbackDialogOpen} setIsFeedbackDialogOpen={setIsFeedbackDialogOpen} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket}
                     actualVends={filteredVendors} allVends={vendors} theme={theme} setAddProductId={setAddProductId} addProductId={addProductId} />}
             <div className="flex flex-col h-full min-h-0">
                 {

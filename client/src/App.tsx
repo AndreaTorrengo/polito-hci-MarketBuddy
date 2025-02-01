@@ -16,6 +16,7 @@ import PageAddProducts from "./components/PageAddProducts/PageAddProducts.tsx";
 import FeedbackDeleteDialog from "./components/FeedbackDialogs/FeedbackDeleteDialog.tsx";
 import FeedbackSwitchDialog from "./components/FeedbackDialogs/FeedbackSwitchDialog.tsx";
 import FeedbackReportDialog from "./components/FeedbackDialogs/FeedbackReportDialog.tsx";
+import FeedbackAddDialog from "./components/FeedbackDialogs/FeedbackAddDialog.tsx";
 
 
 export default function App() {
@@ -245,6 +246,11 @@ export default function App() {
         onClose={() => { setIsFeedbackDialogOpen(null), setSelectedReasons([]) }}
         theme={theme}
         selectedReasons={selectedReasons}
+      />
+       <FeedbackAddDialog
+        isOpen={isFeedbackDialogOpen === 'add'}
+        onClose={() => { setIsFeedbackDialogOpen(null)}}
+        theme={theme}
       />
       <Routes>
         <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap, Tooltip } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap, Tooltip, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Vendor, Market, Product } from '../../models';
@@ -96,6 +96,16 @@ const PageMap: React.FC<PageMapProps> = ({
     const handleMarkerClick = (position: [number, number]) => {
         setSelectedMarker(position);
         setMapCenter(position);
+    };
+
+    const MapClickHandler = () => {
+        useMapEvents({
+            click(e) {
+                setSelectedMarker([e.latlng.lat, e.latlng.lng]);
+                setSelectedVendor(undefined);
+            },
+        });
+        return null;
     };
 
     //inizialize user marker position
@@ -201,6 +211,7 @@ const PageMap: React.FC<PageMapProps> = ({
                 maxZoom={18}
                 style={{ height: '100%', width: '100%' }}
             >
+                <MapClickHandler />
                 <TileLayer className={theme === "dark" ? "dark-mode-filter" : ""} url={tileLayerUrl}
                     attribution={tileLayerAttribution} />
                 {/* Update map center dynamically */}
