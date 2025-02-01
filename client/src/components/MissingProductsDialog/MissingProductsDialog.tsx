@@ -4,6 +4,7 @@ import { Vendor, Product, Market } from '../../models';
 import React, { useState, useEffect, useRef } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import './MissingProductsDialog.css';
+import ProductItem from '../PageShoppingList/ProductItem';
 
 interface MissingProductsDialogProps {
     theme: string;
@@ -41,16 +42,16 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
             const generateSpecificAlternatives = () => {
                 const newSpecificAlternatives: { [key: string]: Product[] } = {};
                 missingProducts.forEach((product) => {
-                    let alternatives: Product[] = [];
+                    let alternatives: any[] = [];
                     if (product === 'Pears' && selectedMarket.name === 'Crocetta Market') {
                         alternatives = [
-                            { id: 1, name: 'Kiwi', price: 1.5, points: 10, image: 'kiwi.jpg' },
-                            { id: 2, name: "Apples", price: 1.0, points: 8, image: 'apples.jpg' }
+                            { id: 1, name: 'Kiwi', price: 1.5, points: null, image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg" },
+                            { id: 2, name: "Apples", price: 1.0, points: 15, image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg" }
                         ];
                     } else if (product === "Pears") {
-                        alternatives = [{ id: 3, name: "Apples", price: 1.0, points: 8, image: 'apples.jpg' }];
+                        alternatives = [{ id: 3, name: "Apples", price: 1.0, points: 15, image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg" }];
                     } else if (product === "Bream") {
-                        alternatives = [{ id: 10, name: "Cod", price: 9.5, points: 15, image: 'cod.jpg' }];
+                        alternatives = [{ id: 10, name: "Cod", price: 9.5, points: null, image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg" }];
                     } else {
                         alternatives = [];
                     }
@@ -81,10 +82,6 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
         }
         setProductsList(updatedProductList);
         localStorage.setItem('productsList', JSON.stringify(updatedProductList));
-
-        //updateVendorsAndProducts();
-
-
         const updatedMissingProducts = missingProducts.filter(p => p !== product);
         localStorage.setItem(missingProductsKey, JSON.stringify(updatedMissingProducts));
 
@@ -125,22 +122,21 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
 
     const handleClose = () => {
         setIsOpen(false);
+        setSelectedAlternatives({});
     };
 
-    const handleSelectAlternative = (product: string, alternative: Product) => {
-        setSelectedAlternatives((prev) => {
-            const currentAlternatives = prev[product] || [];
-            if (currentAlternatives.includes(alternative)) {
-                return {
-                    ...prev,
-                    [product]: currentAlternatives.filter((alt) => alt !== alternative),
-                };
-            } else {
-                return {
-                    ...prev,
-                    [product]: [...currentAlternatives, alternative],
-                };
+    const handleSelectAlternative = (missingProductId: string, alternative: Product) => {
+        setSelectedAlternatives(prevSelectedAlternatives => {
+            const updatedAlternatives = { ...prevSelectedAlternatives };
+            if (!updatedAlternatives[missingProductId]) {
+                updatedAlternatives[missingProductId] = [];
             }
+            if (updatedAlternatives[missingProductId].includes(alternative)) {
+                updatedAlternatives[missingProductId] = updatedAlternatives[missingProductId].filter(item => item !== alternative);
+            } else {
+                updatedAlternatives[missingProductId].push(alternative);
+            }
+            return updatedAlternatives;
         });
     };
 
@@ -190,56 +186,36 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                         <div className={`flex justify-center grid gap-4 ${randomAlternatives[missingProducts[currentIndex]]?.length === 1 ? 'grid-cols-1' : randomAlternatives[missingProducts[currentIndex]]?.length === 2 ? 'grid-cols-2' : randomAlternatives[missingProducts[currentIndex]]?.length === 3 ? 'grid-cols-3' : 'grid-cols-4'}`}>
                                             {Array.isArray(randomAlternatives[missingProducts[currentIndex]]) && randomAlternatives[missingProducts[currentIndex]].length > 0 ? (
                                                 randomAlternatives[missingProducts[currentIndex]].map((alternative, altIndex) => (
-                                                    <Button
-                                                        className="alternative-button"
-                                                        key={altIndex}
-                                                        style={{
-                                                            width: '100%',
-                                                            padding: '0.25rem 1rem',
-                                                            cursor: 'pointer',
-                                                            borderRadius: '0.5rem',
-                                                            textAlign: 'center',
-                                                            backgroundColor: 'transparent',
-                                                            color: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? (theme === 'dark' ? '#FFFFFF' : '#000000') : (theme === 'dark' ? '#bfbfbf' : '#000000'),
-                                                            border: '2px solid ' + (selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? (theme === 'dark' ? '#FFFFFF' : '#000000') : (theme === 'dark' ? '#bfbfbf' : '#666666')),
-                                                            margin: '0 auto',
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            justifyContent: 'flex-start'
-                                                        }}
-                                                        onClick={() => handleSelectAlternative(missingProducts[currentIndex], alternative)}
-                                                    >
+                                                    <>
+                                                        <div onClick={() => handleSelectAlternative(missingProducts[currentIndex], alternative) } style={{ width: '120px', height: '120px' }}>
+                                                            <ProductItem
+                                                                key={alternative.id}
+                                                                {...alternative}
+                                                                isSelected={selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) || false}
+                                                                isEditMode={true}
+                                                                
+                                                            />
+
+                                                        </div>
+
                                                         <div
                                                             style={{ position: 'absolute', top: '10px', right: '10px', background: 'transparent', border: 'none', fontSize: '1rem', color: theme === 'dark' ? '#EEEEEE' : '#333333', pointerEvents: 'none' }}
                                                         >
                                                             {currentIndex + 1}/{missingProducts.length}
                                                         </div>
 
-                                                        <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
-                                                            <input
-                                                                type="checkbox"
-                                                                className="checkbox"
-                                                                checked={selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) || false}
-                                                                onChange={() => handleSelectAlternative(missingProducts[currentIndex], alternative)}
-                                                                style={{
-                                                                    marginRight: '10px',
-                                                                    borderColor: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? (theme === 'dark' ? '#FFFFFF' : '#000000') : (theme === 'dark' ? '#bfbfbf' : '#666666'),
-                                                                    backgroundColor: selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) ? (theme === 'dark' ? '#000000' : '#000000') : (theme === 'dark' ? '#000000' : '#FFFFFF'),
-                                                                }}
-                                                            />
-                                                            {alternative.name} {alternative.price}€/kg
-                                                        </div>
+                                                    </>
 
-                                                    </Button>
                                                 ))
                                             ) : (
                                                 <>
+                                                    <div className="col-span-full text-center">Sorry, but there don't seem to be any alternatives for this product at the market.</div>
                                                     <div
                                                         style={{ position: 'absolute', top: '10px', right: '10px', background: 'transparent', border: 'none', fontSize: '1rem', color: theme === 'dark' ? '#EEEEEE' : '#333333', pointerEvents: 'none' }}
                                                     >
                                                         {currentIndex + 1}/{missingProducts.length}
                                                     </div>
-                                                    <div className="col-span-full text-center">Sorry, but there don't seem to be any alternatives for this product at the market.</div>
+
                                                 </>
                                             )}
                                         </div>

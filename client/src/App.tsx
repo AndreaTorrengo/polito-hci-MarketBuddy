@@ -90,7 +90,7 @@ export default function App() {
         console.error('Failed to fetch vendors:', error);
       }
     };
-
+    console.log(vendors);
     fetchVendors();
   }, [selectedMarket]);
 
