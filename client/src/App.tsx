@@ -14,7 +14,8 @@ import ConfirmPopup from "./components/ConfirmationPopup";
 import TabsHero from "./components/TabSelector/TabSelector";
 import PageAddProducts from "./components/PageAddProducts/PageAddProducts.tsx";
 import { getUserdata, saveUserData } from "./components/PageProfile/UserData";
-
+import FeedbackToast from "./components/generalPurposeComponents/FeedbackToast.tsx";
+import globalContext from "./Context";
 
 export default function App() {
   const paths = ["/", "/quests", "/rewards", "/profile", "*", "/leaderboard", "/addProducts", "/addProducts/:id"];
@@ -234,25 +235,45 @@ export default function App() {
     setShowPopup(true);
   };
 
+
+  /* Feedback Toast */
+  const [showToast, setShowToast] = useState(false);
+  const [toastContent, setToastContent] = useState<React.ReactNode | string>("");
+  const [toastVariant, setToastVariant] = useState<"danger" | "error" | "success" | "warning" | "info">("info");
+
+  const showToastMessage = useCallback((content: React.ReactNode | string, variant: "danger" | "error" | "success" | "warning" | "info" = 'info') => {
+    setToastContent(content);
+    setToastVariant(variant);
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+    }, 2000);
+  }, []);
+  /****/
+
+
   // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-PageNotFound, 5-Leaderboard
   return (
     <div id='approot' className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
-      <Routes>
-        <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
-          <Route index path={`${paths[0]}`} element={<TabsHero theme={theme} vendors={vendors} filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setSelectedMarket={selectMarket} missingProducts={missingProducts} updateVendorsAndProducts={updateVendorsAndProducts} productsList={productsList} setProductsList={setProductsList} />} />
-          <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} leaderboardPath={`${paths[5]}`} userdata={userdata} setUserdata={setUserdata} />} />
-          <Route path={`${paths[2]}`} element={<PageReward askConfirmation={askConfirmation} />} />
-          <Route path={`${paths[2]}/history`} element={<PageRewardHistory />} />
-          <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} askConfirmation={askConfirmation} userdata={userdata} setUserdata={setUserdata}/>} />
-          <Route path={`${paths[4]}`} element={<PageNotFound />} />
-          <Route path={`${paths[5]}`} element={<PageLeaderboard userdata={userdata} setUserdata={setUserdata} />} />
-          <Route path={`${paths[6]}`} element={<PageAddProducts actualVends={filteredVendors} allVends={vendors} theme={theme}/>} />
-          <Route path={`${paths[7]}`} element={<PageAddProducts actualVends={filteredVendors} allVends={vendors} theme={theme}/>} />
-        </Route>
-      </Routes>
+      <globalContext.Provider value={{ askConfirmation, showToastMessage }}>
+        <Routes>
+          <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
+            <Route index path={`${paths[0]}`} element={<TabsHero theme={theme} vendors={vendors} filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setSelectedMarket={selectMarket} missingProducts={missingProducts} updateVendorsAndProducts={updateVendorsAndProducts} productsList={productsList} setProductsList={setProductsList} />} />
+            <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} leaderboardPath={`${paths[5]}`} userdata={userdata} setUserdata={setUserdata} />} />
+            <Route path={`${paths[2]}`} element={<PageReward askConfirmation={askConfirmation} />} />
+            <Route path={`${paths[2]}/history`} element={<PageRewardHistory />} />
+            <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} askConfirmation={askConfirmation} userdata={userdata} setUserdata={setUserdata} />} />
+            <Route path={`${paths[4]}`} element={<PageNotFound />} />
+            <Route path={`${paths[5]}`} element={<PageLeaderboard userdata={userdata} setUserdata={setUserdata} />} />
+            <Route path={`${paths[6]}`} element={<PageAddProducts actualVends={filteredVendors} allVends={vendors} theme={theme} />} />
+            <Route path={`${paths[7]}`} element={<PageAddProducts actualVends={filteredVendors} allVends={vendors} theme={theme} />} />
+          </Route>
+        </Routes>
+      </globalContext.Provider>
       {showPopup &&
         <ConfirmPopup text={popupText} cancelButtonText={cancelButtonText} confirmButtonText={confirmButtonText} onConfirmCallback={confirmationCallback} closePopup={() => { setShowPopup(false); }} />
       }
+      <FeedbackToast show={showToast} variant={toastVariant}>{toastContent}</FeedbackToast>
     </div>
   );
 }
