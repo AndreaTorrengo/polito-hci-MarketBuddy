@@ -23,7 +23,8 @@ const FeedbackReportDialog: React.FC<FeedbackReportDialogProps> = ({ isOpen, onC
                     {selectedReasons.includes('reason1') ? (
                         <>
                             <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: '#32CD32' }}>Success</h1>
-                            <p className="message-text" style={{ marginTop: '10px' }}>Report sent successfully. If one of the missing products was part of your shopping list the alert will show you alternatives.</p>
+                            <p className="message-text" style={{ marginTop: '10px' }}>
+                            Report sent successfully. If one of the missing products was on your shopping list and no other vendor sells it, an alert will appear. Click on it to choose alternatives.</p>
                         </>
                     ) : (
                         <>
