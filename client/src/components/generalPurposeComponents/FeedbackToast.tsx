@@ -28,7 +28,7 @@ const FeedbackToast: React.FC<FeedbackToastProps> = ({ show, variant, children, 
 
     return (
         <div
-            className={`fixed bottom-20 left-1/2 transform -translate-x-1/2 py-1.5 px-2.5 rounded-md z-0 ${show ? 'block' : 'hidden'} ${color} ${className}`}
+            className={`fixed bottom-20 left-1/2 animated -translate-x-1/2 py-1.5 px-2.5 rounded-md z-0 ${show ? 'opacity-100' : 'opacity-0 -z-50'} ${color} ${className}`}
             {...props}
         >
             {children}
