@@ -2,10 +2,11 @@ import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import HexagonIcon from '@mui/icons-material/Hexagon';
 import { DarkModeCustomSwitch } from './darkModeSwitch';
 import API from '../../API';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useContext } from 'react';
 import { UserData } from './UserData';
-import { Card, TextInput, Title, Text } from '@tremor/react';
+import { Card, TextInput, Title } from '@tremor/react';
 import { Button } from '../generalPurposeComponents/Button';
+import globalContext from '../../Context';
 
 interface PageProfileProps {
   theme: 'light' | 'dark';
@@ -15,10 +16,14 @@ interface PageProfileProps {
   setUserdata: Dispatch<SetStateAction<UserData>>;
 }
 
-export default function PageProfile({ theme, toggleTheme, askConfirmation, userdata, setUserdata }: Readonly<PageProfileProps>) {
+export default function PageProfile({ theme, toggleTheme, userdata, setUserdata }: Readonly<PageProfileProps>) {
+
+  const context = useContext(globalContext);
+  const askConfirmation = context?.askConfirmation;
+  const showToastMessage = context?.showToastMessage;
 
   function clearStorage() {
-    askConfirmation(() => {
+    askConfirmation && askConfirmation(() => {
       localStorage.clear();
       window.location.reload(); // not optimal but easier to manage for now
     },
@@ -26,7 +31,11 @@ export default function PageProfile({ theme, toggleTheme, askConfirmation, userd
   }
 
   function resetDB() {
-    askConfirmation(API.resetDB,
+    askConfirmation && askConfirmation(async () => {
+      if (await API.resetDB() && showToastMessage) {
+        showToastMessage("Database reset successfully!", "success");
+      }
+    },
       "Are you sure you want to reset the server's database?")
   }
 
