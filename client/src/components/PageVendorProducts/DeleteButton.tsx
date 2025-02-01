@@ -2,8 +2,9 @@ import SmallIconButton from "../generalPurposeComponents/SmallIconButton";
 import { Market, Vendor, Product } from "../../models";
 import { Dialog, DialogPanel } from '@tremor/react';
 import { Button } from '../generalPurposeComponents/Button';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import './SwitchButton.css';
+import globalContext from "../../Context";
 
 
 interface DeleteButtonProps {
@@ -13,15 +14,16 @@ interface DeleteButtonProps {
     theme: string,
     closeAfter: () => void;
 }
-const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter }) => {
+const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme }) => {
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
 
     const [productsSwitching, setProductsSwitching] = useState<Product[]>([]);
 
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '[]');
+
+    const showToastMessage = useContext(globalContext)?.showToastMessage;
 
     const handleClick = () => {
         setIsDialogOpen(true);
@@ -59,7 +61,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
         setFilteredVendors(filteredVendors);
         localStorage.setItem(filteredVendorsKey, JSON.stringify(filteredVendors));
         setIsDialogOpen(false);
-        setIsFeedbackDialogOpen(true);
+        showToastMessage && showToastMessage("Selected products have been succesfully deleted from your shopping list", "success");
     };
     return (
         <>
@@ -86,17 +88,6 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
                         <Button color='primary' variant="outlined" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
                         <Button color='primary' variant="contained" onClick={handleConfirm}>Confirm</Button>
                     </div>
-                </DialogPanel>
-            </Dialog>
-            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isFeedbackDialogOpen} onClose={() => { setIsFeedbackDialogOpen(false); closeAfter(); }}>
-                <DialogPanel>
-
-                    <>
-                        <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: '#32CD32' }}>Success</h1>
-                        <p className="message-text" style={{ marginTop: '10px' }}>Selected products have been succesfully deleted from your shopping list</p>
-                    </>
-
-
                 </DialogPanel>
             </Dialog>
         </>

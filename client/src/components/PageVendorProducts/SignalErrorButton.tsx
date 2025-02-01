@@ -2,8 +2,9 @@ import SmallIconButton from "../generalPurposeComponents/SmallIconButton";
 import { Market, Vendor, Product } from "../../models";
 import { Dialog, DialogPanel } from '@tremor/react';
 import { Button } from '../generalPurposeComponents/Button';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import './SignalErrorButton.css';
+import globalContext from "../../Context";
 
 interface SignalErrorButtonProps {
     selectedProducts: Map<number, number[]>;
@@ -12,10 +13,9 @@ interface SignalErrorButtonProps {
     theme: string,
     closeAfter: () => void;
 }
-const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter }) => {
+const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme }) => {
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
 
     const [productsSwitching, setProductsSwitching] = useState<Product[]>([]);
 
@@ -27,6 +27,8 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
     const missingProduct: string[] = JSON.parse(localStorage.getItem(missingProductsKey) || '[]');
 
     const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
+
+    const showToastMessage = useContext(globalContext)?.showToastMessage;
 
     const handleReasonSelect = (reason: string) => {
         if (reason === 'reason1') {
@@ -56,6 +58,7 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
     };
 
     const handleConfirm = () => {
+        let message = 'Report sent successfully. We\'re sorry you\'re experiencing these issues :(';
         if (selectedReasons.includes('reason1')) {
             selectedProducts.forEach((products, vendorId) => {
                 products.forEach((productId: number) => {
@@ -103,12 +106,13 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
                     });
                 });
             });
+            message = 'Report sent successfully. If one of the missing products was part of your shopping list the alert will show you alternatives.';
         }
         setFilteredVendors(filteredVendors);
         localStorage.setItem(filteredVendorsKey, JSON.stringify(filteredVendors));
         localStorage.setItem(missingProductsKey, JSON.stringify(missingProduct));
         setIsDialogOpen(false);
-        setIsFeedbackDialogOpen(true);
+        showToastMessage && showToastMessage(message, 'success');
     };
     return (
         <>
@@ -172,21 +176,6 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
                         <Button color="primary" variant="outlined" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
                         <Button color="primary" variant="contained" onClick={handleConfirm}>Confirm</Button>
                     </div>
-                </DialogPanel>
-            </Dialog>
-            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isFeedbackDialogOpen} onClose={() => {setIsFeedbackDialogOpen(false); closeAfter();}}>
-                <DialogPanel>
-                    {selectedReasons.includes('reason1') ? (
-                        <>
-                            <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: '#32CD32' }}>Success</h1>
-                            <p className="message-text" style={{ marginTop: '10px' }}>Report sent successfully. If one of the missing products was part of your shopping list the alert will show you alternatives.</p>
-                        </>
-                    ) : (
-                        <>
-                            <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: '#32CD32' }}>Success</h1>
-                            <p className="message-text" style={{ marginTop: '10px' }}>Report sent successfully. We're sorry you're experiencing these issues :(</p>
-                        </>
-                    )}
                 </DialogPanel>
             </Dialog>
         </>

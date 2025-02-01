@@ -2,8 +2,9 @@ import SmallIconButton from "../generalPurposeComponents/SmallIconButton";
 import { Market, Vendor, Product } from "../../models";
 import { Dialog, DialogPanel } from '@tremor/react';
 import { Button } from '../generalPurposeComponents/Button';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import './SwitchButton.css';
+import globalContext from "../../Context";
 
 interface SwitchButtonProps {
     selectedProducts: Map<number, number[]>;
@@ -15,14 +16,15 @@ interface SwitchButtonProps {
 
 const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
     const [productsWithoutAlternatives, setProductsWithoutAlternatives] = useState<Product[]>([]);
     const [productsSwitching, setProductsSwitching] = useState<Product[]>([]);
 
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const vendorsKey = `vendors_${selectedMarket.name}`;
-    const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '[]');
-    const vendors: Vendor[] = JSON.parse(localStorage.getItem(vendorsKey) || '[]');
+    const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) ?? '[]');
+    const vendors: Vendor[] = JSON.parse(localStorage.getItem(vendorsKey) ?? '[]');
+
+    const showToastMessage = useContext(globalContext)?.showToastMessage;
 
     const handleClick = () => {
         setIsDialogOpen(true);
@@ -67,11 +69,23 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
             });
         });
 
+        let message = 'All products have been successfully assigned to other sellers.';
+        let variant = 'success';
+        if (productsWithoutAlternatives.length !== 0) {
+            message = 'The following products could not be assigned to other sellers: ';
+            productsWithoutAlternatives.forEach(product => {
+                message += product.name + ', ';
+            });
+            message = message.slice(0, -2);
+            variant = 'warning';
+        }
+
+
         setProductsWithoutAlternatives(productsWithoutAlternatives);
         setFilteredVendors(filteredVendors);
         localStorage.setItem(filteredVendorsKey, JSON.stringify(filteredVendors));
         setIsDialogOpen(false);
-        setIsFeedbackDialogOpen(true);
+        showToastMessage?.(message, variant);
     };
 
     return (
@@ -101,28 +115,6 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                         <Button variant='outlined' color='primary' onClick={() => setIsDialogOpen(false)}>Cancel</Button>
                         <Button variant='contained' color='primary' onClick={handleConfirm}>Confirm</Button>
                     </div>
-                </DialogPanel>
-            </Dialog>
-            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isFeedbackDialogOpen} onClose={() => {setIsFeedbackDialogOpen(false); closeAfter();}}>
-                <DialogPanel>
-                    {productsWithoutAlternatives.length === 0 ? (
-                        <>
-                            <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: '#32CD32' }}>Success</h1>
-                            <p className="message-text" style={{ marginTop: '10px' }}>All products have been successfully assigned to other sellers.</p>
-                        </>
-                    ) : (
-                        <>
-                            <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: 'red' }}>Failed to Assign</h1>
-                            <p className="message-text" style={{ marginTop: '10px' }}>The following products could not be assigned to other sellers:</p>
-                            <div>
-                                {productsWithoutAlternatives.map((product, index) => (
-                                    <span className="products-text" key={index} style={{ fontWeight: 'bold' }}>
-                                        {product.name}{index < productsWithoutAlternatives.length - 1 ? ', ' : ''}
-                                    </span>
-                                ))}
-                            </div>
-                        </>
-                    )}
                 </DialogPanel>
             </Dialog>
         </>

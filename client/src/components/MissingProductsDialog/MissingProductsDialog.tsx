@@ -3,9 +3,10 @@ import { Dialog, DialogPanel } from '@tremor/react';
 import { Button } from '../generalPurposeComponents/Button';
 import WarningIcon from '@mui/icons-material/Warning';
 import { Vendor, Product, Market } from '../../models';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import './MissingProductsDialog.css';
+import globalContext from '../../Context';
 
 interface MissingProductsDialogProps {
     theme: string;
@@ -24,7 +25,6 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [showConfirmation, setShowConfirmation] = useState(false);
     const [selectedAlternatives, setSelectedAlternatives] = useState<{ [key: string]: Product[] }>({});
     const [randomAlternatives, setRandomAlternatives] = useState<{ [key: string]: Product[] }>({});
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
@@ -36,6 +36,8 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
     const missingProducts: string[] = JSON.parse(localStorage.getItem(missingProductsKey) || '[]');
 
     const previousMarketRef = useRef(selectedMarket);
+
+    const showToastMessage = useContext(globalContext)?.showToastMessage;
 
     useEffect(() => {
         if (missingProducts.length > 0) {
@@ -118,10 +120,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
             setCurrentIndex(0);
         }
 
-        setShowConfirmation(true);
-        setTimeout(() => {
-            setShowConfirmation(false);
-        }, 900);
+        showToastMessage && showToastMessage('Alternatives added successfully!', 'success');
     };
 
     const handleClose = () => {
@@ -241,13 +240,6 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                         </div>
                     )}
                 </DialogPanel>
-                {showConfirmation && (
-                    <div className="fixed inset-x-0 bottom-0 flex items-center justify-center z-50 mb-40">
-                        <div className="bg-green-500 p-4 text-white rounded-lg shadow-lg">
-                            Alternatives added successfully!
-                        </div>
-                    </div>
-                )}
             </Dialog>
         </>
     );
