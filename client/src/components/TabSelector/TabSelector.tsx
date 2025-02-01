@@ -1,19 +1,19 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import PageMap from '../PageMap/PageMap';
-import {Market, Vendor} from '../../models';
+import { Market, Vendor, Product } from '../../models';
 import PageShoppingList from '../PageShoppingList/PageShoppingList';
 import MarketSelectorSheet from '../MarketSelectorSheet/MarketSelectorSheet';
-import {ButtonBase} from "@mui/material";
+import { ButtonBase } from "@mui/material";
 import SwitchButton from "../PageVendorProducts/SwitchButton.tsx";
 import SignalErrorButton from "../PageVendorProducts/SignalErrorButton.tsx";
 import DeleteButton from "../PageVendorProducts/DeleteButton.tsx";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
-import {TextInput} from "@tremor/react";
+import { TextInput } from "@tremor/react";
 import SearchIcon from "@mui/icons-material/Search";
 import AddProductsButton from "../PageVendorProducts/AddProductsButton.tsx";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import PageAddProducts from "../PageAddProducts/PageAddProducts.tsx";
 
 interface TabsHeroProps {
@@ -29,29 +29,36 @@ interface TabsHeroProps {
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     isFeedbackDialogOpen: string | null;
     setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
+    selectedReasons: string[];
+    setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
+    setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
+    productsWithoutAlternatives: Product[];
 }
 
 export default function TabsHero({
-                                     theme,
-                                     vendors,
-                                     filteredVendors,
-                                     selectedMarket,
-                                     setSelectedMarket,
-                                     missingProducts,
-                                     updateVendorsAndProducts,
-                                     productsList,
-                                     setProductsList,
-                                     setFilteredVendors,
-                                     isFeedbackDialogOpen,
-                                     setIsFeedbackDialogOpen,
-
-                                 }: TabsHeroProps): JSX.Element {
+    theme,
+    vendors,
+    filteredVendors,
+    selectedMarket,
+    setSelectedMarket,
+    missingProducts,
+    updateVendorsAndProducts,
+    productsList,
+    setProductsList,
+    setFilteredVendors,
+    isFeedbackDialogOpen,
+    setIsFeedbackDialogOpen,
+    selectedReasons,
+    setSelectedReasons,
+    productsWithoutAlternatives,
+    setProductsWithoutAlternatives
+}: TabsHeroProps): JSX.Element {
     const [selectedProducts, setSelectedProducts] = useState<Map<number, number[]> | null>(null);
     const [filteredProductsVendors, setFilteredProductsVendors] = useState<Vendor[]>(filteredVendors); //vendors with filtered products
     const [isEditMode, setIsEditMode] = useState(false);
     const [searchInput, setSearchInput] = useState("");
 
-    const [addProductId, setAddProductId] = useState<number|null>(null) //the id is -1 in case of add Products from shopping list page or vendorId from vendor Page
+    const [addProductId, setAddProductId] = useState<number | null>(null) //the id is -1 in case of add Products from shopping list page or vendorId from vendor Page
 
     //total number of products
     const totalProducts = filteredVendors.reduce((acc, vendor) => acc + vendor.products.length, 0);
@@ -179,9 +186,9 @@ export default function TabsHero({
 
     return (
         <>
-            { addProductId!=null &&
-            <PageAddProducts setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket}
-                             actualVends={filteredVendors} allVends={vendors} theme={theme} setAddProductId={setAddProductId} addProductId={addProductId}/>}
+            {addProductId != null &&
+                <PageAddProducts setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket}
+                    actualVends={filteredVendors} allVends={vendors} theme={theme} setAddProductId={setAddProductId} addProductId={addProductId} />}
             <div className="flex flex-col h-full min-h-0">
                 {
                     isEditMode ?
@@ -209,8 +216,8 @@ export default function TabsHero({
                                                         xmlns="http://www.w3.org/2000/svg"
                                                     >
                                                         <path strokeLinecap="round" strokeLinejoin="round"
-                                                              strokeWidth="3"
-                                                              d="M5 13l4 4L19 7"/>
+                                                            strokeWidth="3"
+                                                            d="M5 13l4 4L19 7" />
                                                     </svg>
                                                 </div>
                                             </div>
@@ -231,20 +238,29 @@ export default function TabsHero({
 
                                     {selectedProducts && selectedProducts.size > 0 &&
                                         <>
-                                            <SwitchButton selectedMarket={selectedMarket}
-                                                          selectedProducts={selectedProducts}
-                                                          setFilteredVendors={setFilteredVendors} theme={theme}
-                                                          closeAfter={closeAfter}/>
-                                            <SignalErrorButton selectedMarket={selectedMarket}
-                                                               selectedProducts={selectedProducts}
-                                                               setFilteredVendors={setFilteredVendors} theme={theme}
-                                                               closeAfter={closeAfter}/>
+                                            <SwitchButton
+                                                productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                                                isFeedbackDialogOpen={isFeedbackDialogOpen}
+                                                setIsFeedbackDialogOpen={setIsFeedbackDialogOpen}
+                                                selectedMarket={selectedMarket}
+                                                selectedProducts={selectedProducts}
+                                                setFilteredVendors={setFilteredVendors} theme={theme}
+                                                closeAfter={closeAfter} />
+                                            <SignalErrorButton
+                                                isFeedbackDialogOpen={isFeedbackDialogOpen}
+                                                setIsFeedbackDialogOpen={setIsFeedbackDialogOpen}
+                                                selectedReasons={selectedReasons}
+                                                setSelectedReasons={setSelectedReasons}
+                                                selectedMarket={selectedMarket}
+                                                selectedProducts={selectedProducts}
+                                                setFilteredVendors={setFilteredVendors} theme={theme}
+                                                closeAfter={closeAfter} />
                                             <DeleteButton isFeedbackDialogOpen={isFeedbackDialogOpen}
-                                                          setIsFeedbackDialogOpen={setIsFeedbackDialogOpen}
-                                                          selectedMarket={selectedMarket}
-                                                          selectedProducts={selectedProducts}
-                                                          setFilteredVendors={setFilteredVendors} theme={theme}
-                                                          closeAfter={closeAfter}/>
+                                                setIsFeedbackDialogOpen={setIsFeedbackDialogOpen}
+                                                selectedMarket={selectedMarket}
+                                                selectedProducts={selectedProducts}
+                                                setFilteredVendors={setFilteredVendors} theme={theme}
+                                                closeAfter={closeAfter} />
                                         </>}
 
                                 </>
@@ -252,7 +268,7 @@ export default function TabsHero({
                         </TopBar>
                         :
                         <>
-                            <MarketSelectorSheet selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket}/>
+                            <MarketSelectorSheet selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />
                             <div className="px-4 flex flex-row items-center gap-2 justify-between">
                                 <div className="flex-1">
                                     <TextInput
@@ -283,7 +299,7 @@ export default function TabsHero({
                                     exclusive
                                     onChange={handleChange}
                                     aria-label="Tabs"
-                                    style={{width: '100%', marginLeft: '1rem', marginRight: '1rem'}}
+                                    style={{ width: '100%', marginLeft: '1rem', marginRight: '1rem' }}
                                 >
                                     <ToggleButton
                                         value="list"
@@ -316,16 +332,21 @@ export default function TabsHero({
 
                 <div className="flex-1 overflow-y-auto">
                     {activeTab === 'map' && (
-                        <div className="flex" style={{width: '100%', height: '100%'}}>
-                            <PageMap isFeedbackDialogOpen={isFeedbackDialogOpen}
-                                     setIsFeedbackDialogOpen={setIsFeedbackDialogOpen} theme={theme} vendors={vendors}
-                                     filteredVendors={filteredVendors}
-                                     selectedMarket={selectedMarket} filteredProductsVendors={filteredProductsVendors}
-                                     setFilteredVendors={setFilteredVendors} setAddProductId={setAddProductId}/>
+                        <div className="flex" style={{ width: '100%', height: '100%' }}>
+                            <PageMap
+                                productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                                selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
+                                isFeedbackDialogOpen={isFeedbackDialogOpen}
+                                setIsFeedbackDialogOpen={setIsFeedbackDialogOpen} theme={theme} vendors={vendors}
+                                filteredVendors={filteredVendors}
+                                selectedMarket={selectedMarket} filteredProductsVendors={filteredProductsVendors}
+                                setFilteredVendors={setFilteredVendors} setAddProductId={setAddProductId} />
                         </div>
                     )}
                     {activeTab === 'list' &&
                         <PageShoppingList
+                            productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                            selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
                             isFeedbackDialogOpen={isFeedbackDialogOpen}
                             setIsFeedbackDialogOpen={setIsFeedbackDialogOpen}
                             selectedProducts={selectedProducts} vendors={vendors} productsList={productsList}

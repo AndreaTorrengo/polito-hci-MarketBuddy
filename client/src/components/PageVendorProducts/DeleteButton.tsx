@@ -2,8 +2,8 @@ import SmallIconButton from "../generalPurposeComponents/SmallIconButton";
 import { Market, Vendor, Product } from "../../models";
 import { Button, Dialog, DialogPanel } from '@tremor/react';
 import React, { useState } from 'react';
-import './SwitchButton.css';
-import FeedbackDialog from "../../FeedbackDeleteDialog";
+import './Dialogs.css';
+
 
 interface DeleteButtonProps {
     selectedProducts: Map<number, number[]>;
@@ -61,6 +61,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
         setIsFeedbackDialogOpen('delete');
         setFilteredVendors(filteredVendors);
         localStorage.setItem(filteredVendorsKey, JSON.stringify(filteredVendors));
+        closeAfter();
     };
 
     return (

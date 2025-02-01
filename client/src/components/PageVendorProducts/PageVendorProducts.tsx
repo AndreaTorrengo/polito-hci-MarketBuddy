@@ -12,9 +12,7 @@ import ContextMenu, { ContextMenuProps } from "../generalPurposeComponents/Conte
 import SwitchButton from "./SwitchButton.tsx";
 import DeleteButton from "./DeleteButton.tsx";
 import SignalErrorButton from "./SignalErrorButton.tsx";
-import { Market, Vendor } from "../../models.ts";
-import { useNavigate } from "react-router-dom";
-import FeedbackDialog from "../../FeedbackDeleteDialog.tsx";
+import { Market, Vendor, Product } from "../../models.ts";
 
 interface PageVendorProductsParams {
     isOpen: boolean;
@@ -26,6 +24,10 @@ interface PageVendorProductsParams {
     isFeedbackDialogOpen: string | null;
     setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
     setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
+    selectedReasons: string[];
+    setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
+    setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
+    productsWithoutAlternatives: Product[];
 }
 
 export default function PageVendorProducts({
@@ -37,7 +39,11 @@ export default function PageVendorProducts({
     vendor,
     isFeedbackDialogOpen,
     setIsFeedbackDialogOpen,
-    setAddProductId
+    setAddProductId,
+    selectedReasons,
+    setSelectedReasons,
+    productsWithoutAlternatives,
+    setProductsWithoutAlternatives,
 }: PageVendorProductsParams) {
     const approot = document.getElementById("approot")!;
 
@@ -136,6 +142,7 @@ export default function PageVendorProducts({
     function closeAfter() {
         setIsEditMode(false);
         setSelectedProducts(null);
+        console.log(closeAfter);
     }
 
     return (
@@ -202,11 +209,17 @@ export default function PageVendorProducts({
 
                                                 {selectedProducts && selectedProducts.size > 0 &&
                                                     <>
-                                                        <SwitchButton selectedMarket={selectedMarket}
+                                                        <SwitchButton
+                                                            productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                                                            selectedMarket={selectedMarket}
+                                                            isFeedbackDialogOpen={isFeedbackDialogOpen} setIsFeedbackDialogOpen={setIsFeedbackDialogOpen}
                                                             selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
                                                             setFilteredVendors={setFilteredVendors}
                                                             theme={theme} closeAfter={closeAfter} />
-                                                        <SignalErrorButton selectedMarket={selectedMarket}
+                                                        <SignalErrorButton
+                                                            selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
+                                                            isFeedbackDialogOpen={isFeedbackDialogOpen} setIsFeedbackDialogOpen={setIsFeedbackDialogOpen}
+                                                            selectedMarket={selectedMarket}
                                                             selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
                                                             setFilteredVendors={setFilteredVendors}
                                                             theme={theme} closeAfter={closeAfter} />

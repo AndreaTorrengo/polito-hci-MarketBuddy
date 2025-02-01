@@ -219,7 +219,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                                             <input
                                                                 type="checkbox"
                                                                 className="checkbox"
-                                                                checked={selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative)}
+                                                                checked={selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) || false}
                                                                 onChange={() => handleSelectAlternative(missingProducts[currentIndex], alternative)}
                                                                 style={{
                                                                     marginRight: '10px',
@@ -233,14 +233,21 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                                     </Button>
                                                 ))
                                             ) : (
-                                                <div className="col-span-full text-center">Sorry, but there don't seem to be any alternatives for this product at the market.</div>
+                                                <>
+                                                    <div
+                                                        style={{ position: 'absolute', top: '10px', right: '10px', background: 'transparent', border: 'none', fontSize: '1rem', color: theme === 'dark' ? '#EEEEEE' : '#333333', pointerEvents: 'none' }}
+                                                    >
+                                                        {currentIndex + 1}/{missingProducts.length}
+                                                    </div>
+                                                    <div className="col-span-full text-center">Sorry, but there don't seem to be any alternatives for this product at the market.</div>
+                                                </>
                                             )}
                                         </div>
                                     </div>
                                     <div className="flex justify-center mt-4">
                                         {Array.isArray(randomAlternatives[missingProducts[currentIndex]]) && randomAlternatives[missingProducts[currentIndex]].length > 0 ? (
                                             <Button
-                                                onClick={() => {handleConfirm(missingProducts[currentIndex], selectedAlternatives[missingProducts[currentIndex]] || []),setConfirmationMessage('Product added to shopping list!')} }
+                                                onClick={() => { handleConfirm(missingProducts[currentIndex], selectedAlternatives[missingProducts[currentIndex]] || []), setConfirmationMessage('Product added to shopping list!') }}
                                                 disabled={!selectedAlternatives[missingProducts[currentIndex]] || selectedAlternatives[missingProducts[currentIndex]].length === 0}
                                                 style={{ color: '#fff', }}
                                             >
@@ -248,7 +255,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                             </Button>
                                         ) : (
                                             <Button
-                                                onClick={() => {handleConfirm(missingProducts[currentIndex], []),setConfirmationMessage('no option')} }
+                                                onClick={() => { handleConfirm(missingProducts[currentIndex], []), setConfirmationMessage('no option') }}
                                                 style={{ color: '#fff', }}
                                             >
                                                 Got it
@@ -281,7 +288,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                         </div>
                     )}
                 </DialogPanel>
-                {showConfirmation && confirmationMessage!=='no option' && (
+                {showConfirmation && confirmationMessage !== 'no option' && (
                     <div className="fixed inset-x-0 top-0 flex items-center justify-center z-50 mt-60">
                         <div className="bg-green-500 p-4 text-white rounded-lg shadow-lg">
                             {confirmationMessage}

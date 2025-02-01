@@ -13,9 +13,9 @@ import { Vendor, Product, Market } from "./models";
 import ConfirmPopup from "./components/ConfirmationPopup";
 import TabsHero from "./components/TabSelector/TabSelector";
 import PageAddProducts from "./components/PageAddProducts/PageAddProducts.tsx";
-import FeedbackDeleteDialog from "./FeedbackDeleteDialog";
-import FeedbackSwitchDialog from "./FeedbackSwitchDialog";
-import FeedbackReportDialog from "./FeedbackReportDialog";
+import FeedbackDeleteDialog from "./components/FeedbackDialogs/FeedbackDeleteDialog.tsx";
+import FeedbackSwitchDialog from "./components/FeedbackDialogs/FeedbackSwitchDialog.tsx";
+import FeedbackReportDialog from "./components/FeedbackDialogs/FeedbackReportDialog.tsx";
 
 
 export default function App() {
@@ -221,7 +221,11 @@ export default function App() {
     // console.log(confirmationCallback)
     setShowPopup(true);
   };
+
+  //feedback dialogs states
   const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState<string | null>(null);
+  const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
+  const [productsWithoutAlternatives, setProductsWithoutAlternatives] = useState<Product[]>([]);
   // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-PageNotFound, 5-Leaderboard
   return (
     <div id='approot' className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
@@ -234,15 +238,26 @@ export default function App() {
         isOpen={isFeedbackDialogOpen === 'switch'}
         onClose={() => { setIsFeedbackDialogOpen(null) }}
         theme={theme}
+        productsWithoutAlternatives={productsWithoutAlternatives}
       />
       <FeedbackReportDialog
         isOpen={isFeedbackDialogOpen === 'report'}
-        onClose={() => { setIsFeedbackDialogOpen(null) }}
+        onClose={() => { setIsFeedbackDialogOpen(null), setSelectedReasons([]) }}
         theme={theme}
+        selectedReasons={selectedReasons}
       />
       <Routes>
         <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
-          <Route index path={`${paths[0]}`} element={<TabsHero isFeedbackDialogOpen={isFeedbackDialogOpen} setIsFeedbackDialogOpen={setIsFeedbackDialogOpen} theme={theme} vendors={vendors} filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setSelectedMarket={selectMarket} missingProducts={missingProducts} updateVendorsAndProducts={updateVendorsAndProducts} productsList={productsList} setProductsList={setProductsList} />} />
+          <Route index path={`${paths[0]}`} element={<TabsHero 
+          productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+          selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons} 
+          isFeedbackDialogOpen={isFeedbackDialogOpen} setIsFeedbackDialogOpen={setIsFeedbackDialogOpen} 
+          theme={theme} vendors={vendors} 
+          filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors} 
+          selectedMarket={selectedMarket} setSelectedMarket={selectMarket} 
+          missingProducts={missingProducts} 
+          updateVendorsAndProducts={updateVendorsAndProducts} 
+          productsList={productsList} setProductsList={setProductsList} />} />
           <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} leaderboardPath={`${paths[5]}`} />} />
           <Route path={`${paths[2]}`} element={<PageReward askConfirmation={askConfirmation} />} />
           <Route path={`${paths[2]}/history`} element={<PageRewardHistory />} />

@@ -2,7 +2,7 @@ import SmallIconButton from "../generalPurposeComponents/SmallIconButton";
 import { Market, Vendor, Product } from "../../models";
 import { Button, Dialog, DialogPanel } from '@tremor/react';
 import React, { useState } from 'react';
-import './SignalErrorButton.css';
+import './Dialogs.css';
 
 interface SignalErrorButtonProps {
     selectedProducts: Map<number, number[]>;
@@ -10,11 +10,14 @@ interface SignalErrorButtonProps {
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     theme: string,
     closeAfter: () => void;
+    selectedReasons: string[];
+    setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
+    isFeedbackDialogOpen: string | null;
+    setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
 }
-const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter }) => {
+const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter, selectedReasons, setSelectedReasons, isFeedbackDialogOpen, setIsFeedbackDialogOpen }) => {
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
 
     const [productsSwitching, setProductsSwitching] = useState<Product[]>([]);
 
@@ -24,8 +27,6 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
     const vendors: Vendor[] = JSON.parse(localStorage.getItem(vendorsKey) || '[]');
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '[]');
     const missingProduct: string[] = JSON.parse(localStorage.getItem(missingProductsKey) || '[]');
-
-    const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
 
     const handleReasonSelect = (reason: string) => {
         if (reason === 'reason1') {
@@ -107,7 +108,8 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
         localStorage.setItem(filteredVendorsKey, JSON.stringify(filteredVendors));
         localStorage.setItem(missingProductsKey, JSON.stringify(missingProduct));
         setIsDialogOpen(false);
-        setIsFeedbackDialogOpen(true);
+        setIsFeedbackDialogOpen('report');
+        closeAfter();
     };
     return (
         <>
@@ -178,27 +180,7 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
                     </div>
                 </DialogPanel>
             </Dialog >
-            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isFeedbackDialogOpen} onClose={() => { setIsFeedbackDialogOpen(false); closeAfter(); }}>
-                <DialogPanel>
-                    <button
-                        style={{ position: 'absolute', top: '0px', right: '10px', background: 'transparent', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}
-                        onClick={() => { setIsFeedbackDialogOpen(false); closeAfter(); }}
-                    >
-                        &times;
-                    </button>
-                    {selectedReasons.includes('reason1') ? (
-                        <>
-                            <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: '#32CD32' }}>Success</h1>
-                            <p className="message-text" style={{ marginTop: '10px' }}>Report sent successfully. If one of the missing products was part of your shopping list the alert will show you alternatives.</p>
-                        </>
-                    ) : (
-                        <>
-                            <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: '#32CD32' }}>Success</h1>
-                            <p className="message-text" style={{ marginTop: '10px' }}>Report sent successfully. We're sorry you're experiencing these issues :(</p>
-                        </>
-                    )}
-                </DialogPanel>
-            </Dialog>
+
         </>
     );
 }

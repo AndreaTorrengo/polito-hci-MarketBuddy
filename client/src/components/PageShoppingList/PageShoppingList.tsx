@@ -1,5 +1,5 @@
 import MissingProductsDialog from "../MissingProductsDialog/MissingProductsDialog";
-import { Market, Vendor } from "../../models";
+import { Market, Vendor, Product } from "../../models";
 import PageVendorProducts from "../PageVendorProducts/PageVendorProducts";
 import { useState } from "react";
 import VendorGroup from "./VendorGroup";
@@ -21,6 +21,10 @@ interface PageShoppingListProps {
     isFeedbackDialogOpen: string | null;
     setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
     setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
+    selectedReasons: string[];
+    setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
+    setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
+    productsWithoutAlternatives: Product[];
 }
 
 export default function PageShoppingList({
@@ -40,7 +44,12 @@ export default function PageShoppingList({
     setFilteredVendors,
     isFeedbackDialogOpen,
     setIsFeedbackDialogOpen,
-    setAddProductId
+    setAddProductId,
+    selectedReasons,
+    setSelectedReasons,
+    productsWithoutAlternatives,
+    setProductsWithoutAlternatives,
+
 }: PageShoppingListProps) {
     const [isVendorPageOpen, setIsVendorPageOpen] = useState(false);
     const [selectedVendor, setSelectedVendor] = useState<number>(-1);
@@ -64,6 +73,8 @@ export default function PageShoppingList({
                         <div key={vendor.id}>
                             {selectedVendor === vendor.id &&
                                 <PageVendorProducts
+                                    productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                                    selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
                                     isFeedbackDialogOpen={isFeedbackDialogOpen}
                                     setIsFeedbackDialogOpen={setIsFeedbackDialogOpen}
                                     vendor={vendor} isOpen={isVendorPageOpen}

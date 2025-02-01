@@ -13,3 +13,7 @@
 .dark .button {
     color: #ffffff;
 }
+
+.button {
+    border: none;
+}

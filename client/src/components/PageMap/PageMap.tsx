@@ -54,6 +54,10 @@ interface PageMapProps {
     isFeedbackDialogOpen: string | null;
     setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
     setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
+    selectedReasons: string[];
+    setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
+    setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
+    productsWithoutAlternatives: Product[];
 }
 
 const PageMap: React.FC<PageMapProps> = ({
@@ -65,7 +69,11 @@ const PageMap: React.FC<PageMapProps> = ({
     setFilteredVendors,
     isFeedbackDialogOpen,
     setIsFeedbackDialogOpen,
-    setAddProductId
+    setAddProductId,
+    selectedReasons,
+    setSelectedReasons,
+    productsWithoutAlternatives,
+    setProductsWithoutAlternatives,
 }) => {
     const offset: [number, number] = getRandomOffset();
     const [markerPosition, setMarkerPosition] = useState<[number, number]>([
@@ -236,7 +244,10 @@ const PageMap: React.FC<PageMapProps> = ({
             </MapContainer>
             {selectedMarker && (
                 selectedVendor && (
-                    <PageVendorProducts isFeedbackDialogOpen={isFeedbackDialogOpen} setIsFeedbackDialogOpen={setIsFeedbackDialogOpen} isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId}></PageVendorProducts>
+                    <PageVendorProducts
+                        productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                        selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
+                        isFeedbackDialogOpen={isFeedbackDialogOpen} setIsFeedbackDialogOpen={setIsFeedbackDialogOpen} isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId}></PageVendorProducts>
                 )
             )}
             {/* Market selector
