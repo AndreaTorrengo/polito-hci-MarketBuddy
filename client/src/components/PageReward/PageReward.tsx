@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import API from '../../API';
 import { Reward } from '../../models';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
@@ -7,6 +7,7 @@ import planet from "../../assets/planet03.png";
 import RestoreOutlinedIcon from '@mui/icons-material/RestoreOutlined';
 import { useNavigate } from 'react-router-dom';
 import { Title } from '@tremor/react';
+import globalContext from '../../Context';
 
 const iconsMap: { [key: string]: JSX.Element } = {
   'coupon': <LocalOfferOutlined className='object-scale-down max-h-full m-auto' />,
@@ -38,8 +39,9 @@ export function RewardCard({ reward, confirmRewardRedemption = () => { } }: Read
 type AskConfirmation = (callback: () => void, message: string) => void;
 
 export default function PageReward({ askConfirmation }: Readonly<{ askConfirmation: AskConfirmation }>) {
-  const [rewards, setRewards] = useState([]);
+  const [rewards, setRewards] = useState<Reward[]>([]);
   const navigate = useNavigate();
+  const showToastMessage = useContext(globalContext)?.showToastMessage;
 
   useEffect(() => {
     // Fetch rewards
@@ -54,8 +56,8 @@ export default function PageReward({ askConfirmation }: Readonly<{ askConfirmati
 
   const redeemReward = (reward: Reward) => {
     API.redeemReward(reward.id);
-    // TODO - Add a feedback to confirm the operation was successful
     setRewards((prevRewards) => prevRewards.filter((r) => r.id !== reward.id));
+    showToastMessage && showToastMessage("Reward redeemed successfully!", "success");
   }
 
   const confirmRewardRedemption = (reward: Reward) => {
