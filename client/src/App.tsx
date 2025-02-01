@@ -7,7 +7,7 @@ import PageProfile from "./components/PageProfile/PageProfile";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
 import PageLeaderboard from "./components/PageLeaderboard/PageLeaderboard";
 import PropTypes from "prop-types";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import API from "./API";
 import { Vendor, Product, Market } from "./models";
 import ConfirmPopup from "./components/ConfirmationPopup";
@@ -149,10 +149,6 @@ export default function App() {
           productsListState[selectedMarket.name].includes(product.name),
         );
 
-
-
-
-
         if (filteredProducts.length > 0) {
           const newVendor = {
             ...vendor,
@@ -193,12 +189,12 @@ export default function App() {
 
 
 
-  const [popupText, setPopupText] = useState("Are you sure?");
-  const [cancelButtonText, setCancelButtonText] = useState("Cancel");
-  const [confirmButtonText, setConfirmButtonText] = useState("Confirm");
-  const [confirmationCallback, setConfirmationCallback] = useState<() => void>(() => { });
-  const [showPopup, setShowPopup] = useState(false);
+  const selectMarket = (market: Market) => {
+    localStorage.market = market;
+    setSelectedMarket(market);
+  }
 
+  /* Theme */
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     if (!localStorage.theme) {
       if (theme === 'light') {
@@ -210,11 +206,6 @@ export default function App() {
     }
   });
 
-  const selectMarket = (market: Market) => {
-    localStorage.market = market;
-    setSelectedMarket(market);
-  }
-
   const toggleTheme = () => {
     if (theme === 'dark') {
       setTheme('light');
@@ -225,37 +216,47 @@ export default function App() {
       localStorage.theme = 'dark';
     }
   };
+  /****/
 
-  const askConfirmation = (onConfirm: () => void, text = "Are you sure?", cancelButtonText = "Cancel", confirmButtonText = "Confirm") => {
+  /* Confirmation Popup */
+  const [popupText, setPopupText] = useState("Are you sure?");
+  const [cancelButtonText, setCancelButtonText] = useState("Cancel");
+  const [confirmButtonText, setConfirmButtonText] = useState("Confirm");
+  const [confirmationCallback, setConfirmationCallback] = useState<() => void>(() => { });
+  const [showPopup, setShowPopup] = useState(false);
+
+  const askConfirmation = useCallback((onConfirm: () => void, text = "Are you sure?", cancelButtonText = "Cancel", confirmButtonText = "Confirm") => {
     setPopupText(text);
     setCancelButtonText(cancelButtonText);
     setConfirmButtonText(confirmButtonText);
     setConfirmationCallback(() => { return onConfirm });
     // console.log(confirmationCallback)
     setShowPopup(true);
-  };
+  }, []);
+  /****/
 
 
   /* Feedback Toast */
   const [showToast, setShowToast] = useState(false);
   const [toastContent, setToastContent] = useState<React.ReactNode | string>("");
-  const [toastVariant, setToastVariant] = useState<"danger" | "error" | "success" | "warning" | "info">("info");
+  const [toastVariant, setToastVariant] = useState<string>("info");
 
-  const showToastMessage = useCallback((content: React.ReactNode | string, variant: "danger" | "error" | "success" | "warning" | "info" = 'info') => {
+  const showToastMessage = useCallback((content: React.ReactNode | string, variant: string = 'info') => {
     setToastContent(content);
     setToastVariant(variant);
     setShowToast(true);
     setTimeout(() => {
       setShowToast(false);
-    }, 2000);
+    }, 2500);
   }, []);
   /****/
 
+  const contextValue = useMemo(() => ({ askConfirmation, showToastMessage }), [askConfirmation, showToastMessage]);
 
   // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-PageNotFound, 5-Leaderboard
   return (
     <div id='approot' className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
-      <globalContext.Provider value={{ askConfirmation, showToastMessage }}>
+      <globalContext.Provider value={contextValue}>
         <Routes>
           <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
             <Route index path={`${paths[0]}`} element={<TabsHero theme={theme} vendors={vendors} filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setSelectedMarket={selectMarket} missingProducts={missingProducts} updateVendorsAndProducts={updateVendorsAndProducts} productsList={productsList} setProductsList={setProductsList} />} />
