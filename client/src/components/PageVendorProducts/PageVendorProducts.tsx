@@ -11,6 +11,8 @@ import ContextMenu, { ContextMenuProps } from "../generalPurposeComponents/Conte
 import SwitchButton from "./SwitchButton.tsx";
 import DeleteButton from "./DeleteButton.tsx";
 import SignalErrorButton from "./SignalErrorButton.tsx";
+import { Dialog, DialogContent, DialogTitle } from "@mui/material";
+import { QRCodeSVG } from "qrcode.react";
 
 interface PageVendorProductsParams {
     vendorId: number;
@@ -92,6 +94,7 @@ export default function PageVendorProducts({ vendorId }: PageVendorProductsParam
     const [selectedProducts, setSelectedProducts] = useState<Map<number, ProductListItemProps> | null>(null);
 
     const [isOpen, setIsOpen] = useState(false);
+
     const [contextMenuProps, setContextMenuProps] = useState<ContextMenuProps>({
         onClose: () => {
             setContextMenuProps({ ...contextMenuProps, isOpen: false });
@@ -154,6 +157,15 @@ export default function PageVendorProducts({ vendorId }: PageVendorProductsParam
             selectedProducts.set(product.id, product);
         }
         setSelectedProducts(new Map(selectedProducts));
+    }
+
+
+    const [isQrCodeDialogOpen, setIsQrCodeDialogOpen] = useState(false);
+
+    function confirmSale() {
+        setIsQrCodeDialogOpen(false);
+        console.log("Sale confirmed");
+        // TODO: Show toast message with the context in the other PR
     }
 
     return (
@@ -234,7 +246,7 @@ export default function PageVendorProducts({ vendorId }: PageVendorProductsParam
                                             is too much long</h1>}
                                         rightComponent={
                                             <div className="flex flex-row">
-                                                <IconButton>
+                                                <IconButton onClick={() => setIsQrCodeDialogOpen(true)}>
                                                     <QrCodeScannerIcon className="text-black dark:text-white" />
                                                 </IconButton>
                                             </div>
@@ -290,6 +302,13 @@ export default function PageVendorProducts({ vendorId }: PageVendorProductsParam
                 </Sheet.Container>
                 <Sheet.Backdrop onTap={() => setIsOpen(false)} />
             </Sheet>
+            <Dialog open={isQrCodeDialogOpen} onClose={() => setIsQrCodeDialogOpen(false)} onClick={confirmSale}>
+                {/* <DialogTitle>QR Code</DialogTitle> */}
+                <DialogContent className="flex flex-col items-center">
+                    <QRCodeSVG value="http://google.com" />
+                    <p>Show this to the vendor!</p>
+                </DialogContent>
+            </Dialog>
         </>
     );
 }
