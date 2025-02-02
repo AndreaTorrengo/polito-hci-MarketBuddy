@@ -1,38 +1,47 @@
 import { Title } from "@tremor/react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import HexagonIcon from '@mui/icons-material/Hexagon';
 import TopBar from "../generalPurposeComponents/TopBar";
 import BackButton from "../generalPurposeComponents/BackButton";
 import PropTypes from "prop-types";
+import { DEFAULT_ICON_PATH, ICONS } from "../PageProfile/Icons";
+import { UserData } from "../PageProfile/UserData";
 
-export default function PageLeaderboard(props: any) {
+interface PageLeaderboardProps {
+  userdata: UserData;
+  setUserdata: Dispatch<SetStateAction<UserData>>;
+}
+
+export default function PageLeaderboard({userdata, setUserdata}: Readonly<PageLeaderboardProps>) {
   const [activeTab, setActiveTab] = useState("Global");
-  const user_exp = props.userdata.experience;
-  const username = props.userdata.username;
+  const user_exp = userdata.experience;
+  const username = userdata.username;
+  const userIconPath = UserData.getIconPath(userdata.iconId);
+  const iconPaths = ICONS.map(i => i.path);
 
   const globalLeaderboard = [
     // Example data for global leaderboard
-    { icon: "👤", name: "Player570", position: 570, xp: user_exp + 15 },
-    { icon: "👤", name: "Player580", position: 580, xp: user_exp + 10 },
-    { icon: "👤", name: "Player590", position: 590, xp: user_exp + 5 },
-    { icon: "👤", name: username, position: 600, xp: user_exp },
-    { icon: "👤", name: "Player610", position: 610, xp: user_exp - 15 },
-    { icon: "👤", name: "Player620", position: 620, xp: user_exp - 10 },
-    { icon: "👤", name: "Player630", position: 630, xp: user_exp - 5  },
+    { icon: DEFAULT_ICON_PATH, name: "Player570", position: 570, xp: user_exp + 15 },
+    { icon: DEFAULT_ICON_PATH, name: "Player580", position: 580, xp: user_exp + 10 },
+    { icon: DEFAULT_ICON_PATH, name: "Player590", position: 590, xp: user_exp + 5 },
+    { icon: userIconPath, name: username, position: 600, xp: user_exp },
+    { icon: DEFAULT_ICON_PATH, name: "Player610", position: 610, xp: user_exp - 15 },
+    { icon: DEFAULT_ICON_PATH, name: "Player620", position: 620, xp: user_exp - 10 },
+    { icon: DEFAULT_ICON_PATH, name: "Player630", position: 630, xp: user_exp - 5 },
   ];
 
   const top10Leaderboard = [
     // Example data for top 10 leaderboard
-    { icon: "👾", name: "Player1", position: 1, xp: 25000 },
-    { icon: "👽", name: "Player2", position: 2, xp: 24000 },
-    { icon: "👸", name: "Player3", position: 3, xp: 23000 },
-    { icon: "🍇", name: "Player4", position: 4, xp: 22000 },
-    { icon: "👩", name: "Player5", position: 5, xp: 21000 },
-    { icon: "👜", name: "Player6", position: 6, xp: 20000 },
-    { icon: "👑", name: "Player7", position: 7, xp: 19000 },
-    { icon: "🍓", name: "Player8", position: 8, xp: 18000 },
-    { icon: "🍏", name: "Player9", position: 9, xp: 17000 },
-    { icon: "🍉", name: "Player10", position: 10, xp: 16000 },
+    { icon: iconPaths[7], name: "Player1", position: 1, xp: 25000 },
+    { icon: iconPaths[2], name: "Player2", position: 2, xp: 24000 },
+    { icon: DEFAULT_ICON_PATH, name: "Player3", position: 3, xp: 23000 },
+    { icon: iconPaths[3], name: "Player4", position: 4, xp: 22000 },
+    { icon: iconPaths[4], name: "Player5", position: 5, xp: 21000 },
+    { icon: iconPaths[5], name: "Player6", position: 6, xp: 20000 },
+    { icon: iconPaths[6], name: "Player7", position: 7, xp: 19000 },
+    { icon: iconPaths[1], name: "Player8", position: 8, xp: 18000 },
+    { icon: DEFAULT_ICON_PATH, name: "Player9", position: 9, xp: 17000 },
+    { icon: DEFAULT_ICON_PATH, name: "Player10", position: 10, xp: 16000 },
   ];
 
   return <>
@@ -79,10 +88,6 @@ export default function PageLeaderboard(props: any) {
     </div>
   </>;
 }
-PageLeaderboard.propTypes = {
-  userdata: PropTypes.object,
-  setUserdata: PropTypes.func,
-}
 
 function LeaderboardItem(props: any) {
   return (
@@ -93,7 +98,10 @@ function LeaderboardItem(props: any) {
    `}>
       <div className="flex items-center space-x-4">
         <div className="justify-items-center">
-          <span className="text-xl">{props.player.icon}</span>
+          {/* <span className="text-xl">{props.player.icon}</span> */}
+          <div className="w-8 h-8">
+            <img src={props.player.icon} className='object-scale-down max-h-full m-auto' />
+          </div>
           <span className="font-semibold block text-xs">
             {props.player.position}
           </span>
