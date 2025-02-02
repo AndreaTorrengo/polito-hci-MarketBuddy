@@ -3,16 +3,16 @@ import API from '../../API';
 import { Reward } from '../../models';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import { LocalOfferOutlined } from '@mui/icons-material';
-import planet from "../../assets/planet03.png";
 import RestoreOutlinedIcon from '@mui/icons-material/RestoreOutlined';
 import { useNavigate } from 'react-router-dom';
 import { Title } from '@tremor/react';
 import StatPopup from '../generalPurposeComponents/StatPopup';
 import { UserData } from '../PageProfile/UserData';
+import { ICONS, IconLocker } from '../PageProfile/Icons';
 
 const iconsMap: { [key: string]: JSX.Element } = {
   'coupon': <LocalOfferOutlined className='object-scale-down max-h-full m-auto' />,
-  'profile_picture': <img src={planet} alt="planet" className='object-scale-down max-h-full m-auto' />,
+  'profile_picture': <img src={ICONS.find(i => i.id == 2)?.path} alt="planet" className='object-scale-down max-h-full m-auto' />,
 }
 
 
@@ -56,12 +56,18 @@ export default function PageReward({ askConfirmation, userdata, setUserdata }: R
 
   const redeemReward = (reward: Reward) => {
     API.redeemReward(reward.id);
-    // TODO - Add a feedback to confirm the operation was successful
+    // Feedback to confirm the operation was successful: update the user's coins
     setUserdata((userdataObj: UserData) => {
       const udCopy = Object.assign(new UserData(), userdataObj);
       udCopy.incrCoins(-reward.cost);
       return udCopy;
     });
+    // If the redeemed reward is a profile picture, unlock it
+    if (reward.icon.includes('profile_picture')) {
+      const iconLocker = new IconLocker();
+      iconLocker.load();
+      iconLocker.unlock(reward.id);
+    }
 
     setRewards((prevRewards) => prevRewards.filter((r: Reward) => r.id !== reward.id));
   }
