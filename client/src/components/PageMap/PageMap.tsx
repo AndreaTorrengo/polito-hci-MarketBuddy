@@ -103,6 +103,8 @@ const PageMap: React.FC<PageMapProps> = ({
             click(e) {
                 setSelectedMarker([e.latlng.lat, e.latlng.lng]);
                 setSelectedVendor(undefined);
+                setMapCenter(selectedMarket.position as [number, number]);
+
             },
         });
         return null;
@@ -117,7 +119,7 @@ const PageMap: React.FC<PageMapProps> = ({
     useEffect(() => {
         if (!isOpen) {
             // Cambia il centro della mappa quando isOpen diventa false
-            setMapCenter(selectedMarket.position as [number, number]); // Esempio: centro su New York
+            setMapCenter(selectedMarket.position as [number, number]);
             setSelectedMarker(selectedMarket.position as [number, number]);
         }
     }, [isOpen]);
