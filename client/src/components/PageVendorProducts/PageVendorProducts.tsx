@@ -7,13 +7,12 @@ import ProductListItem, { ProductListItemProps } from "./ProductListItem.tsx";
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import { Sheet } from 'react-modal-sheet';
 import VendorBadges from "./VendorBadges.tsx";
-import { ButtonBase, IconButton } from "@mui/material";
+import { ButtonBase, IconButton, Dialog, DialogContent, DialogTitle } from "@mui/material";
 import ContextMenu, { ContextMenuProps } from "../generalPurposeComponents/ContextMenu.tsx";
 import SwitchButton from "./SwitchButton.tsx";
 import DeleteButton from "./DeleteButton.tsx";
 import SignalErrorButton from "./SignalErrorButton.tsx";
 import { Market, Vendor, Product } from "../../models.ts";
-import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 import { QRCodeSVG } from "qrcode.react";
 
 interface PageVendorProductsParams {
@@ -46,7 +45,7 @@ export default function PageVendorProducts({
     setSelectedReasons,
     productsWithoutAlternatives,
     setProductsWithoutAlternatives,
-}: PageVendorProductsParams) {
+}: Readonly<PageVendorProductsParams>) {
     const approot = document.getElementById("approot")!;
 
     const [isEditMode, setIsEditMode] = useState(false);
@@ -95,12 +94,7 @@ export default function PageVendorProducts({
         ]
     });
 
-    const activeTab = localStorage.getItem('activeTab') || 'list';
-
-    const onLongPress = (event: React.MouseEvent, productId: number) => {
-        event.preventDefault();
-        setContextMenuProps({ ...contextMenuProps, isOpen: true, x: event.clientX, y: event.clientY });
-    };
+    const activeTab = localStorage.getItem('activeTab') ?? 'list';
 
     const handleClose = () => {
         setIsOpen(false);
@@ -299,7 +293,6 @@ export default function PageVendorProducts({
                                                     :
                                                     <ButtonBase key={product.id} component="div"
                                                         onContextMenu={(e) => {
-                                                            //onLongPress(e, index);
                                                             openEditMode(e, product.id);
                                                         }}
                                                     >
