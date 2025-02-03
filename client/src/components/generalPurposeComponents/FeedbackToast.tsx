@@ -30,7 +30,7 @@ const FeedbackToast: React.FC<FeedbackToastProps> = ({ show, variant, children, 
     return (
         // left-1/2 -translate-x-1/2
         <button
-            className={`fixed top-24 right-4 animated py-2 px-3 rounded-md flex max-w-72 z-[100] gap-2 ${show ? 'opacity-100' : 'opacity-0 -z-50'} ${color} ${className}`}
+            className={`fixed top-24 right-4 animated py-2 px-3 rounded-md flex max-w-72 gap-2 ${show ? 'opacity-100 z-[100]' : 'opacity-0 -z-50'} ${color} ${className}`}
             onClick={props.onClick}
             {...props}
         >
