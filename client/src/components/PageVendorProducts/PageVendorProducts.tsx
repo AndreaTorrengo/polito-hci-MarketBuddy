@@ -145,6 +145,11 @@ export default function PageVendorProducts({
 
     const [isQrCodeDialogOpen, setIsQrCodeDialogOpen] = useState(false);
 
+    function openQrCodeDialog() {
+        handleClose();
+        setIsQrCodeDialogOpen(true);
+    }
+
     function confirmSale() {
         setIsQrCodeDialogOpen(false);
         console.log("Sale confirmed");
@@ -247,7 +252,7 @@ export default function PageVendorProducts({
                                             className="line-clamp-1 m-0 p-0 text-2xl titleFont font-bold">{vendor.name}</h1>}
                                         rightComponent={
                                             <div className="flex flex-row">
-                                                <IconButton onClick={() => setIsQrCodeDialogOpen(true)}>
+                                                <IconButton onClick={openQrCodeDialog}>
                                                     <QrCodeScannerIcon className="text-black dark:text-white" />
                                                 </IconButton>
                                             </div>
@@ -311,11 +316,11 @@ export default function PageVendorProducts({
                         <Sheet.Backdrop onTap={() => handleClose()} style={{ backgroundColor: "transparent" }} /> : <></>
                 }
             </Sheet>
-            <Dialog open={isQrCodeDialogOpen} onClose={() => setIsQrCodeDialogOpen(false)} onClick={confirmSale}>
+            <Dialog open={isQrCodeDialogOpen} onClose={() => { setIsQrCodeDialogOpen(false); setIsOpen(true) }} onClick={confirmSale}>
                 {/* <DialogTitle>QR Code</DialogTitle> */}
-                <DialogContent className="flex flex-col items-center">
-                    <QRCodeSVG value="http://google.com" />
-                    <p>Show this to the vendor!</p>
+                <DialogContent className={`flex flex-col items-center justify-between gap-4 font-medium text-xl text-center ${theme === "dark" ? "bg-dark-tremor-background text-white" : "bg-tremor-background text-black"}`}>
+                    <QRCodeSVG bgColor={theme === "dark" ? "oklch(0.21 0.034 264.665)" : "white"} fgColor={theme === "dark" ? "white" : "black"} value={products.map(p => p.name).join(', ')} size={256} marginSize={4} level="Q" />
+                    <p>Show this to the vendor to confirm the purchase!</p>
                 </DialogContent>
             </Dialog>
         </>
