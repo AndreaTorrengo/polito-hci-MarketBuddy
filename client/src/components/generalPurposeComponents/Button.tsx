@@ -14,7 +14,6 @@ export const Button = ({ variant, size, children, className, ...props }: LargeBu
     let active_dark_bg_color;
 
     switch (props.color) {
-        case undefined:
         case 'primary':
             bg_color = 'blue-500';
             fg_color = 'white';
@@ -56,6 +55,7 @@ export const Button = ({ variant, size, children, className, ...props }: LargeBu
             dark_fg_color = 'white';
             active_dark_bg_color = 'yellow-800';
             break;
+        case undefined:
         case 'bw':
             bg_color = 'black';
             fg_color = 'white';
@@ -83,7 +83,7 @@ export const Button = ({ variant, size, children, className, ...props }: LargeBu
             break;
         case 'text':
         default:
-            className = `${className} bg-transparent text-${bg_color} stroke-${bg_color} active:text-${active_bg_color} active:stroke-${active_bg_color} dark:text-${dark_bg_color} dark:stroke-${bg_color} active:dark:text-${active_dark_bg_color} active:dark:storke-${active_dark_bg_color}`;
+            className = `${className} bg-transparent text-${bg_color} stroke-${bg_color} active:text-${active_bg_color} active:stroke-${active_bg_color} dark:text-${dark_bg_color} dark:stroke-${dark_bg_color} active:dark:text-${active_dark_bg_color} active:dark:storke-${active_dark_bg_color}`;
     }
 
     switch (size) {
