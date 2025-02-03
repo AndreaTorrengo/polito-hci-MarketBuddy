@@ -5,6 +5,7 @@ import SavingsIcon from "@mui/icons-material/Savings";
 import {ButtonBase} from "@mui/material";
 import {Vendor} from "../../models";
 import React from "react";
+import VendorCategoryList from "../PageVendorProducts/VendorCategoryList";
 
 export interface VendorGroupProps {
     id: number;
@@ -76,7 +77,7 @@ export default function VendorGroup({
                     )
                 }
 
-                <p className="m-0 p-0 titleFont font-bold text-xl line-clamp-1">
+                    <p className="m-0 p-0 font-bold text-xl line-clamp-1">
                     {vendor.name}
                 </p>
                 </div>
@@ -104,15 +105,7 @@ export default function VendorGroup({
                 </div>
             </div>
             <div className="w-full pb-2 overflow-x-auto">
-                <div className="flex flex-row gap-1">
-                    {vendor.categories?.map((category, index) => (
-                        /* <span key={index} className="px-1.5 py-1.5 bg-white dark:bg-dark-tremor-background rounded-full border border-1 border-[#ddeeee] dark:border-[#444444] text-sm"> */
-                        <p key={index}
-                           className="whitespace-nowrap px-1.5 py-1.5 bg-white dark:bg-dark-tremor-background rounded-full text-sm">
-                            {category}
-                        </p>
-                    ))}
-                </div>
+                <VendorCategoryList categories={vendor.categories} />
             </div>
             <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {products.map((product) => (
