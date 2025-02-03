@@ -1,19 +1,20 @@
 "use client";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import VendorCategoryList from "./VendorCategoryList.tsx";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import AddProductsButton from "./AddProductsButton.tsx";
-import ProductListItem, {ProductListItemProps} from "./ProductListItem.tsx";
+import ProductListItem, { ProductListItemProps } from "./ProductListItem.tsx";
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
-import {Sheet} from 'react-modal-sheet';
+import { Sheet } from 'react-modal-sheet';
 import VendorBadges from "./VendorBadges.tsx";
-import {ButtonBase, IconButton} from "@mui/material";
-import ContextMenu, {ContextMenuProps} from "../generalPurposeComponents/ContextMenu.tsx";
+import { ButtonBase, IconButton } from "@mui/material";
+import ContextMenu, { ContextMenuProps } from "../generalPurposeComponents/ContextMenu.tsx";
 import SwitchButton from "./SwitchButton.tsx";
 import DeleteButton from "./DeleteButton.tsx";
 import SignalErrorButton from "./SignalErrorButton.tsx";
-import {Market, Vendor} from "../../models.ts";
-import {useNavigate} from "react-router-dom";
+import { Market, Vendor } from "../../models.ts";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../generalPurposeComponents/Button.tsx";
 
 interface PageVendorProductsParams {
     isOpen: boolean;
@@ -25,32 +26,32 @@ interface PageVendorProductsParams {
 }
 
 export default function PageVendorProducts({
-                                               selectedMarket,
-                                               setFilteredVendors,
-                                               theme,
-                                               isOpen,
-                                               setIsOpen,
-                                               vendor
-                                           }: PageVendorProductsParams) {
+    selectedMarket,
+    setFilteredVendors,
+    theme,
+    isOpen,
+    setIsOpen,
+    vendor
+}: PageVendorProductsParams) {
     const approot = document.getElementById("approot")!;
 
     const [isEditMode, setIsEditMode] = useState(false);
 
     const products = vendor.products.map((product) => ({
-                id: product.id,
-                name: product.name,
-                price: product.price * vendor.priceMultiplier,
-                image: product.image,
-                editMode: false,
-                isSelected: false,
-                showPrice: true
+        id: product.id,
+        name: product.name,
+        price: product.price * vendor.priceMultiplier,
+        image: product.image,
+        editMode: false,
+        isSelected: false,
+        showPrice: true
     }));
 
     const [selectedProducts, setSelectedProducts] = useState<Map<number, ProductListItemProps> | null>(null);
 
     const [contextMenuProps, setContextMenuProps] = useState<ContextMenuProps>({
         onClose: () => {
-            setContextMenuProps({...contextMenuProps, isOpen: false});
+            setContextMenuProps({ ...contextMenuProps, isOpen: false });
         },
         isOpen: false,
         x: 0,
@@ -60,14 +61,14 @@ export default function PageVendorProducts({
                 label: "Delete",
                 onClick: () => {
                     console.log("Delete");
-                    setContextMenuProps({...contextMenuProps, isOpen: false});
+                    setContextMenuProps({ ...contextMenuProps, isOpen: false });
                 }
             },
             {
                 label: "Edit",
                 onClick: () => {
                     console.log("Edit");
-                    setContextMenuProps({...contextMenuProps, isOpen: false});
+                    setContextMenuProps({ ...contextMenuProps, isOpen: false });
                 }
             }
         ]
@@ -79,7 +80,7 @@ export default function PageVendorProducts({
 
     const onLongPress = (event: React.MouseEvent, productId: number) => {
         event.preventDefault();
-        setContextMenuProps({...contextMenuProps, isOpen: true, x: event.clientX, y: event.clientY});
+        setContextMenuProps({ ...contextMenuProps, isOpen: true, x: event.clientX, y: event.clientY });
     };
 
     const handleClose = () => {
@@ -130,7 +131,7 @@ export default function PageVendorProducts({
     return (
         <>
             <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot} snapPoints={[1000, 600, 300, 100]}
-                   initialSnap={1}>
+                initialSnap={1}>
                 <Sheet.Container>
                     <Sheet.Header
                         className="bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle rounded-t-md">
@@ -145,8 +146,8 @@ export default function PageVendorProducts({
                                 {isEditMode ?
                                     <TopBar
                                         leftComponent={<ButtonBase className="text-md font-semibold"
-                                                                   onClick={exitEditMode}><p
-                                            className="m-0 p-0">Cancel</p></ButtonBase>}
+                                            onClick={exitEditMode}><p
+                                                className="m-0 p-0">Cancel</p></ButtonBase>}
                                         centerComponent={<h1
                                             className="line-clamp-1 m-0 p-0 text-md font-normal text-center">{selectedProducts ? (selectedProducts.size + " Selected") : ""}</h1>}
                                         rightComponent={
@@ -154,11 +155,11 @@ export default function PageVendorProducts({
                                                 {
                                                     selectedProducts && selectedProducts.size === products.length ?
                                                         <div className="w-8 h-16 flex items-center justify-center"
-                                                             onClick={
-                                                                 () => {
-                                                                     setSelectedProducts(new Map());
-                                                                 }
-                                                             }>
+                                                            onClick={
+                                                                () => {
+                                                                    setSelectedProducts(new Map());
+                                                                }
+                                                            }>
                                                             <div
                                                                 className="rounded-full text-green-500 h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
                                                                 <svg
@@ -169,8 +170,8 @@ export default function PageVendorProducts({
                                                                     xmlns="http://www.w3.org/2000/svg"
                                                                 >
                                                                     <path strokeLinecap="round" strokeLinejoin="round"
-                                                                          strokeWidth="3"
-                                                                          d="M5 13l4 4L19 7"/>
+                                                                        strokeWidth="3"
+                                                                        d="M5 13l4 4L19 7" />
                                                                 </svg>
                                                             </div>
                                                         </div>
@@ -192,17 +193,17 @@ export default function PageVendorProducts({
                                                 {selectedProducts && selectedProducts.size > 0 &&
                                                     <>
                                                         <SwitchButton selectedMarket={selectedMarket}
-                                                                      selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
-                                                                      setFilteredVendors={setFilteredVendors}
-                                                                      theme={theme} closeAfter={closeAfter}/>
+                                                        selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
+                                                        setFilteredVendors={setFilteredVendors}
+                                                        theme={theme} closeAfter={closeAfter} />
                                                         <SignalErrorButton selectedMarket={selectedMarket}
-                                                                           selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
-                                                                           setFilteredVendors={setFilteredVendors}
-                                                                           theme={theme} closeAfter={closeAfter}/>
+                                                        selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
+                                                        setFilteredVendors={setFilteredVendors}
+                                                        theme={theme} closeAfter={closeAfter} />
                                                         <DeleteButton selectedMarket={selectedMarket}
-                                                                      selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
-                                                                      setFilteredVendors={setFilteredVendors}
-                                                                      theme={theme} closeAfter={closeAfter}/>
+                                                        selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
+                                                        setFilteredVendors={setFilteredVendors}
+                                                        theme={theme} closeAfter={closeAfter} />
                                                     </>}
 
                                             </>
@@ -210,14 +211,15 @@ export default function PageVendorProducts({
                                     </TopBar>
                                     :
                                     <TopBar
-                                        centerComponent={<h1
-                                            className="line-clamp-1 m-0 p-0 text-2xl titleFont font-bold">{vendor.name}</h1>}
+                                        leftComponent={<h2
+                                            className="line-clamp-1 m-0 p-0 text-2xl font-bold">{vendor.name}</h2>}
                                         rightComponent={
-                                            <div className="flex flex-row">
-                                                <IconButton>
-                                                    <QrCodeScannerIcon className="text-black dark:text-white"/>
-                                                </IconButton>
-                                            </div>
+                                            <Button variant="outlined" color="bw">
+                                                <div className="flex flex-row items-center gap-4">
+                                                    <span>Confirm Purchase</span>
+                                                    <QrCodeScannerIcon className="text-black dark:text-white" />
+                                                </div>
+                                            </Button>
                                         }>
                                     </TopBar>
                                 }
@@ -225,13 +227,13 @@ export default function PageVendorProducts({
                                     className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle px-6 pt-[3.45em] flex flex-col gap-4">
                                     {/* Vendor's Categories */}
                                     <div className="w-full">
-                                        <VendorCategoryList categories={vendor.categories}/>
+                                        <VendorCategoryList categories={vendor.categories} />
                                     </div>
 
                                     <div className="w-full">
                                         <VendorBadges market={vendor.market} quality={vendor.quality_rating}
-                                                      cordiality={vendor.cordiality_rating}
-                                                      convenience={vendor.convenience_rating}/>
+                                            cordiality={vendor.cordiality_rating}
+                                            convenience={vendor.convenience_rating} />
                                     </div>
 
                                     <div className="w-full flex-1">
@@ -248,23 +250,23 @@ export default function PageVendorProducts({
                                             {products.map((product, index) => (
                                                 isEditMode ?
                                                     <ButtonBase key={product.id} component="div"
-                                                                onClick={() => {
-                                                                    addOrRemoveSelected(index);
-                                                                }}
+                                                        onClick={() => {
+                                                            addOrRemoveSelected(index);
+                                                        }}
                                                     >
                                                         <ProductListItem key={index} {...product} editMode={true}
-                                                                         isSelected={
-                                                                             selectedProducts ? selectedProducts.has(product.id) : false
-                                                                         }/>
+                                                            isSelected={
+                                                                selectedProducts ? selectedProducts.has(product.id) : false
+                                                            } />
                                                     </ButtonBase>
                                                     :
                                                     <ButtonBase key={product.id} component="div"
-                                                                onContextMenu={(e) => {
-                                                                    //onLongPress(e, index);
-                                                                    openEditMode(e, product.id);
-                                                                }}
+                                                        onContextMenu={(e) => {
+                                                            //onLongPress(e, index);
+                                                            openEditMode(e, product.id);
+                                                        }}
                                                     >
-                                                        <ProductListItem key={index} {...product} editMode={false}/>
+                                                        <ProductListItem key={index} {...product} editMode={false} />
                                                     </ButtonBase>
                                             ))}
                                         </div>
@@ -276,7 +278,7 @@ export default function PageVendorProducts({
                 </Sheet.Container>
                 {
                     activeTab != "map" ?
-                        <Sheet.Backdrop onTap={() => handleClose()} style={{backgroundColor: "transparent"}}/> : <></>
+                        <Sheet.Backdrop onTap={() => handleClose()} style={{ backgroundColor: "transparent" }} /> : <></>
                 }
             </Sheet>
         </>
