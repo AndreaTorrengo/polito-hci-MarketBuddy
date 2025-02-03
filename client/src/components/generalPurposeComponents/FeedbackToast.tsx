@@ -6,6 +6,7 @@ interface FeedbackToastProps {
     children: ReactNode;
     variant?: string;
     className?: string;
+    onClick?: () => void;
 }
 
 const FeedbackToast: React.FC<FeedbackToastProps> = ({ show, variant, children, className, ...props }) => {
@@ -27,12 +28,15 @@ const FeedbackToast: React.FC<FeedbackToastProps> = ({ show, variant, children, 
     }
 
     return (
-        <div
-            className={`fixed bottom-28 left-1/2 -translate-x-1/2 animated py-2 px-3 rounded-md z-0 w-3/4 ${show ? 'opacity-100' : 'opacity-0 -z-50'} ${color} ${className}`}
+        // left-1/2 -translate-x-1/2
+        <button
+            className={`fixed top-24 right-4 animated py-2 px-3 rounded-md flex max-w-72 z-[100] gap-2 ${show ? 'opacity-100' : 'opacity-0 -z-50'} ${color} ${className}`}
+            onClick={props.onClick}
             {...props}
         >
             {children}
-        </div>
+            <button className='opacity-80'>⨯</button>
+        </button>
     );
 
 };

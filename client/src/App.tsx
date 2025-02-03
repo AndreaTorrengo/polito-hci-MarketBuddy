@@ -245,9 +245,11 @@ export default function App() {
     setToastContent(content);
     setToastVariant(variant);
     setShowToast(true);
-    setTimeout(() => {
-      setShowToast(false);
-    }, 2500);
+    if (variant === 'success') {
+      setTimeout(() => {
+        setShowToast(false);
+      }, 2500);
+    }
   }, []);
   /****/
 
@@ -274,7 +276,7 @@ export default function App() {
       {showPopup &&
         <ConfirmPopup text={popupText} cancelButtonText={cancelButtonText} confirmButtonText={confirmButtonText} onConfirmCallback={confirmationCallback} closePopup={() => { setShowPopup(false); }} />
       }
-      <FeedbackToast show={showToast} variant={toastVariant}>{toastContent}</FeedbackToast>
+      <FeedbackToast show={showToast} variant={toastVariant} onClick={() => setShowToast(false)}>{toastContent}</FeedbackToast>
     </div>
   );
 }
