@@ -13,7 +13,6 @@ import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import { TextInput } from "@tremor/react";
 import SearchIcon from "@mui/icons-material/Search";
 import AddProductsButton from "../PageVendorProducts/AddProductsButton.tsx";
-import { useNavigate } from "react-router-dom";
 import PageAddProducts from "../PageAddProducts/PageAddProducts.tsx";
 
 interface TabsHeroProps {
@@ -22,8 +21,6 @@ interface TabsHeroProps {
     filteredVendors: Vendor[];
     selectedMarket: Market;
     setSelectedMarket: (selectedMarket: Market) => void;
-    missingProducts: string[];
-    updateVendorsAndProducts: () => void;
     productsList: { [key: string]: string[] };
     setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
@@ -41,8 +38,6 @@ export default function TabsHero({
     filteredVendors,
     selectedMarket,
     setSelectedMarket,
-    missingProducts,
-    updateVendorsAndProducts,
     productsList,
     setProductsList,
     setFilteredVendors,
@@ -52,7 +47,7 @@ export default function TabsHero({
     setSelectedReasons,
     productsWithoutAlternatives,
     setProductsWithoutAlternatives
-}: TabsHeroProps): JSX.Element {
+}: Readonly<TabsHeroProps>): JSX.Element {
     const [selectedProducts, setSelectedProducts] = useState<Map<number, number[]> | null>(null);
     const [filteredProductsVendors, setFilteredProductsVendors] = useState<Vendor[]>(filteredVendors); //vendors with filtered products
     const [isEditMode, setIsEditMode] = useState(false);
@@ -64,7 +59,7 @@ export default function TabsHero({
     const totalProducts = filteredVendors.reduce((acc, vendor) => acc + vendor.products.length, 0);
 
     const [activeTab, setActiveTab] = useState(() => {
-        return localStorage.getItem('activeTab') || 'list';
+        return localStorage.getItem('activeTab') ?? 'list';
     });
 
     const handleChange = (
@@ -186,9 +181,9 @@ export default function TabsHero({
 
     return (
         <>
-            {addProductId != null &&
+            {addProductId != null ?
                 <PageAddProducts isFeedbackDialogOpen={isFeedbackDialogOpen} setIsFeedbackDialogOpen={setIsFeedbackDialogOpen} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket}
-                    actualVends={filteredVendors} allVends={vendors} theme={theme} setAddProductId={setAddProductId} addProductId={addProductId} />}
+                    actualVends={filteredVendors} allVends={vendors} theme={theme} setAddProductId={setAddProductId} addProductId={addProductId} /> :
             <div className="flex flex-col h-full min-h-0 px-6 py-4">
                 {
                     isEditMode ?
@@ -334,21 +329,46 @@ export default function TabsHero({
                 <div className="flex-1 overflow-y-auto">
                     {activeTab === 'map' && (
                         <div className="flex" style={{ width: '100%', height: '100%' }}>
-                            <PageMap theme={theme} vendors={vendors} filteredVendors={filteredVendors}
-                                selectedMarket={selectedMarket} filteredProductsVendors={filteredProductsVendors} setFilteredVendors={setFilteredVendors} />
+                                <PageMap
+                                    theme={theme}
+                                    filteredVendors={filteredVendors}
+                                    selectedMarket={selectedMarket}
+                                    setFilteredVendors={setFilteredVendors}
+                                    isFeedbackDialogOpen={isFeedbackDialogOpen}
+                                    setIsFeedbackDialogOpen={setIsFeedbackDialogOpen}
+                                    setAddProductId={setAddProductId}
+                                    selectedReasons={selectedReasons}
+                                    setSelectedReasons={setSelectedReasons}
+                                    productsWithoutAlternatives={productsWithoutAlternatives}
+                                    setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                                />
                         </div>
                     )}
                     {activeTab === 'list' &&
-                        <PageShoppingList selectedProducts={selectedProducts} vendors={vendors} productsList={productsList}
-                            setProductsList={setProductsList} theme={theme} selectedMarket={selectedMarket}
-                            missingProducts={missingProducts}
-                            updateVendorsAndProducts={updateVendorsAndProducts} openEditMode={openEditMode}
-                            addOrRemoveSelected={addOrRemoveSelected} isEditMode={isEditMode}
+                            <PageShoppingList
+                                selectedProducts={selectedProducts}
+                                productsList={productsList}
+                                setProductsList={setProductsList}
+                                theme={theme}
+                                selectedMarket={selectedMarket}
+                                openEditMode={openEditMode}
+                                addOrRemoveSelected={addOrRemoveSelected}
+                                isEditMode={isEditMode}
                             selectedOrRemoveAllProductsFromVendor={selectedOrRemoveAllProductsFromVendor}
                             filteredProductsVendors={filteredProductsVendors}
                             setFilteredVendors={setFilteredVendors}
+                            isFeedbackDialogOpen={isFeedbackDialogOpen}
+                            setIsFeedbackDialogOpen={setIsFeedbackDialogOpen}
+                            setAddProductId={setAddProductId}
+                            selectedReasons={selectedReasons}
+                            setSelectedReasons={setSelectedReasons}
+                            productsWithoutAlternatives={productsWithoutAlternatives}
+                            setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                         />}
                 </div>
             </div>
-            );
+            }
+        </>
+    );
+
 }

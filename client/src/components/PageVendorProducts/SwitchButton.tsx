@@ -11,16 +11,11 @@ interface SwitchButtonProps {
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     theme: string,
-    closeAfter: () => void;
-    isFeedbackDialogOpen: string | null;
-    setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
     setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
-    productsWithoutAlternatives: Product[];
 }
 
-const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter,setIsFeedbackDialogOpen,productsWithoutAlternatives,setProductsWithoutAlternatives }) => {
+const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, setProductsWithoutAlternatives }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [productsWithoutAlternatives, setProductsWithoutAlternatives] = useState<Product[]>([]);
     const [productsSwitching, setProductsSwitching] = useState<Product[]>([]);
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const vendorsKey = `vendors_${selectedMarket.name}`;
@@ -112,7 +107,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                     </svg>
                 </div>
             </SmallIconButton>
-            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
                 <DialogPanel>
                     <h1 className="confirm-text" style={{ fontWeight: 'bold', fontSize: '1rem' }}>Confirm Switch</h1>
                     <p className="message-text" style={{ marginTop: '10px' }}>For the following products we will find other sellers in this marketplace that match your preferences:</p>

@@ -1,11 +1,13 @@
-import { useNavigate } from "react-router-dom";
 import { Button } from "../generalPurposeComponents/Button";
 
-export default function AddProductsButton() {
-    const navigate = useNavigate();
+interface AddProductsButtonProps {
+    onClick: () => void;
+}
+
+export default function AddProductsButton({ onClick }: Readonly<AddProductsButtonProps>) {
 
     return (
-        <Button className="h-fit m-auto py-2" variant="outlined" color="primary" onClick={() => navigate("/addProducts")} >
+        <Button className="h-fit m-auto py-2" variant="outlined" color="primary" onClick={onClick} >
             <div className="flex items-center justify-center gap-2 whitespace-nowrap" >
                 <p className="text-xs uppercase">Add Product/s</p>
                 <i>

@@ -7,16 +7,11 @@ import PageProfile from "./components/PageProfile/PageProfile";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
 import PageLeaderboard from "./components/PageLeaderboard/PageLeaderboard";
 import PropTypes from "prop-types";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import API from "./API";
 import { Vendor, Product, Market } from "./models";
 import ConfirmPopup from "./components/ConfirmationPopup";
 import TabsHero from "./components/TabSelector/TabSelector";
-import PageAddProducts from "./components/PageAddProducts/PageAddProducts.tsx";
-import FeedbackDeleteDialog from "./components/FeedbackDialogs/FeedbackDeleteDialog.tsx";
-import FeedbackSwitchDialog from "./components/FeedbackDialogs/FeedbackSwitchDialog.tsx";
-import FeedbackReportDialog from "./components/FeedbackDialogs/FeedbackReportDialog.tsx";
-import FeedbackAddDialog from "./components/FeedbackDialogs/FeedbackAddDialog.tsx";
 import { getUserdata, saveUserData } from "./components/PageProfile/UserData";
 import FeedbackToast from "./components/generalPurposeComponents/FeedbackToast.tsx";
 import globalContext from "./Context";
@@ -219,13 +214,13 @@ export default function App() {
   /****/
 
   /* Confirmation Popup */
-  const [popupText, setPopupText] = useState("Are you sure?");
+  const [popupText, setPopupText] = useState<string | ReactNode>("Are you sure?");
   const [cancelButtonText, setCancelButtonText] = useState("Cancel");
   const [confirmButtonText, setConfirmButtonText] = useState("Confirm");
   const [confirmationCallback, setConfirmationCallback] = useState<() => void>(() => { });
   const [showPopup, setShowPopup] = useState(false);
 
-  const askConfirmation = useCallback((onConfirm: () => void, text = "Are you sure?", cancelButtonText = "Cancel", confirmButtonText = "Confirm") => {
+  const askConfirmation = useCallback((onConfirm: () => void, text: string | ReactNode = "Are you sure?", cancelButtonText = "Cancel", confirmButtonText = "Confirm") => {
     setPopupText(text);
     setCancelButtonText(cancelButtonText);
     setConfirmButtonText(confirmButtonText);
@@ -262,30 +257,6 @@ export default function App() {
   // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-PageNotFound, 5-Leaderboard
   return (
     <div id='approot' className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
-
-
-      <FeedbackDeleteDialog
-        isOpen={isFeedbackDialogOpen === 'delete'}
-        onClose={() => { setIsFeedbackDialogOpen(null)}}
-        theme={theme}
-      />
-      <FeedbackSwitchDialog
-        isOpen={isFeedbackDialogOpen === 'switch'}
-        onClose={() => { setIsFeedbackDialogOpen(null) }}
-        theme={theme}
-        productsWithoutAlternatives={productsWithoutAlternatives}
-      />
-      <FeedbackReportDialog
-        isOpen={isFeedbackDialogOpen === 'report'}
-        onClose={() => { setIsFeedbackDialogOpen(null), setSelectedReasons([]) }}
-        theme={theme}
-        selectedReasons={selectedReasons}
-      />
-       <FeedbackAddDialog
-        isOpen={isFeedbackDialogOpen === 'add'}
-        onClose={() => { setIsFeedbackDialogOpen(null)}}
-        theme={theme}
-      />
       <globalContext.Provider value={contextValue}>
       <Routes>
         <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>

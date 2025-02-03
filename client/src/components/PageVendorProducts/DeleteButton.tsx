@@ -5,6 +5,7 @@ import { Button } from '../generalPurposeComponents/Button';
 import React, { useContext, useState } from 'react';
 import './Dialogs.css';
 import globalContext from "../../Context";
+import { ProductListItemProps } from "./ProductListItem";
 
 
 interface DeleteButtonProps {
@@ -13,10 +14,8 @@ interface DeleteButtonProps {
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     theme: string,
     closeAfter: () => void;
-    isFeedbackDialogOpen: string | null;
-    setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
 }
-const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter, isFeedbackDialogOpen, setIsFeedbackDialogOpen }) => {
+const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const [productsSwitching, setProductsSwitching] = useState<Product[]>([]);
@@ -60,7 +59,6 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
         });
 
         setIsDialogOpen(false);
-        setIsFeedbackDialogOpen('delete');
         setFilteredVendors(filteredVendors);
         localStorage.setItem(filteredVendorsKey, JSON.stringify(filteredVendors));
         setIsDialogOpen(false);
@@ -75,7 +73,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
                     <svg fill="#db1f1f" width="2.5em" height="2.5em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5.755,20.283,4,8H20L18.245,20.283A2,2,0,0,1,16.265,22H7.735A2,2,0,0,1,5.755,20.283ZM21,4H16V3a1,1,0,0,0-1-1H9A1,1,0,0,0,8,3V4H3A1,1,0,0,0,3,6H21a1,1,0,0,0,0-2Z" /></svg>
                 </div>
             </SmallIconButton>
-            <Dialog className={theme === 'dark' ? 'dark z-40' : 'z-40'} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
                 <DialogPanel>
                     <h1 className="confirm-text" style={{ fontWeight: 'bold', fontSize: '1rem' }}>Confirm Delete</h1>
                     <p className="message-text" style={{ marginTop: '10px' }}>The following products will be deleted from your shopping list:</p>

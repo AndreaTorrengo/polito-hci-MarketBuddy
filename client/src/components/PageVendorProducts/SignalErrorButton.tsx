@@ -5,19 +5,16 @@ import { Button } from '../generalPurposeComponents/Button';
 import React, { useContext, useState } from 'react';
 import './Dialogs.css';
 import globalContext from "../../Context";
+import { ProductListItemProps } from "./ProductListItem";
 
 interface SignalErrorButtonProps {
-    selectedProducts: Map<number, number[]>;
+    selectedProducts: Map<number, ProductListItemProps>;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     theme: string,
-    closeAfter: () => void;
-    selectedReasons: string[];
-    setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
-    isFeedbackDialogOpen: string | null;
     setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
 }
-const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter, selectedReasons, setSelectedReasons, isFeedbackDialogOpen, setIsFeedbackDialogOpen }) => {
+const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, setIsFeedbackDialogOpen }) => {
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -26,9 +23,9 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
     const missingProductsKey = `missingProducts_${selectedMarket.name}`;
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const vendorsKey = `vendors_${selectedMarket.name}`;
-    const vendors: Vendor[] = JSON.parse(localStorage.getItem(vendorsKey) || '[]');
-    const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '[]');
-    const missingProduct: string[] = JSON.parse(localStorage.getItem(missingProductsKey) || '[]');
+    const vendors: Vendor[] = JSON.parse(localStorage.getItem(vendorsKey) ?? '[]');
+    const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) ?? '[]');
+    const missingProduct: string[] = JSON.parse(localStorage.getItem(missingProductsKey) ?? '[]');
 
     const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
 
@@ -93,7 +90,7 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
                                 // Add the product to the filtered vendor's product list if another vendor sells it
                                 vendors.forEach(v => {
                                     if (v.id !== vendorId && v.products.some(p => p.id === productId)) {
-                                        let filteredVendor = filteredVendors.find(fv => fv.id === v.id);
+                                        const filteredVendor = filteredVendors.find(fv => fv.id === v.id);
                                         if (filteredVendor) {
                                             filteredVendor.products.push(product);
                                         } else {
@@ -118,7 +115,6 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
         setIsDialogOpen(false);
         showToastMessage && showToastMessage(message, 'success');
         setIsFeedbackDialogOpen('report');
-        closeAfter();
     };
     return (
         <>
@@ -129,14 +125,14 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
                     </svg>
                 </div>
             </SmallIconButton>
-            <Dialog className={theme === 'dark' ? 'dark z-40' : 'z-40'} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
                 <DialogPanel>
                     <h1 className="confirm-text" style={{ fontWeight: 'bold', fontSize: '1rem' }}>Confirm Report</h1>
                     <p className="message-text" style={{ marginTop: '10px' }}>Choose why you decided to report these products:</p>
                     <div>
                         <div className="products-text">
                             {productsSwitching.map((product, index) => (
-                                <span key={index} style={{ fontWeight: 'bold' }}>
+                                <span key={product.id} style={{ fontWeight: 'bold' }}>
                                     {product.name}{index < productsSwitching.length - 1 ? ', ' : ''}
                                 </span>
                             ))}

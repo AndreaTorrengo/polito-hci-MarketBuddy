@@ -4,10 +4,9 @@ import { DarkModeCustomSwitch } from './darkModeSwitch';
 import API from '../../API';
 import { Dispatch, SetStateAction, useContext } from 'react';
 import { UserData } from './UserData';
-import { Card, TextInput, Title } from '@tremor/react';
 import { ICONS } from "./Icons";
 import IconSelector from './IconSelector';
-import { Card, TextInput, Title } from '@tremor/react';
+import { Card, TextInput } from '@tremor/react';
 import { Button } from '../generalPurposeComponents/Button';
 import globalContext from '../../Context';
 

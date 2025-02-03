@@ -13,7 +13,7 @@ interface FeedbackSwitchDialogProps {
 const FeedbackSwitchDialog: React.FC<FeedbackSwitchDialogProps> = ({ isOpen, onClose, theme, productsWithoutAlternatives }) => {
     return (
         <>
-            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isOpen} onClose={onClose}>
+            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isOpen} onClose={onClose}>
                 <DialogPanel>
                     <button
                         style={{ position: 'absolute', top: '0px', right: '10px', background: 'transparent', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}

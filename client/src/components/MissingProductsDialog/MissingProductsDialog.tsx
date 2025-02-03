@@ -1,5 +1,4 @@
 import { Dialog, DialogPanel } from '@tremor/react';
-// import { Button } from '@tremor/react';
 import { Button } from '../generalPurposeComponents/Button';
 import WarningIcon from '@mui/icons-material/Warning';
 import { Vendor, Product, Market } from '../../models';
@@ -46,16 +45,16 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
             const generateSpecificAlternatives = () => {
                 const newSpecificAlternatives: { [key: string]: Product[] } = {};
                 missingProducts.forEach((product) => {
-                    let alternatives: any[] = [];
+                    let alternatives: Product[] = [];
                     if (product === 'Pears' && selectedMarket.name === 'Crocetta Market') {
                         alternatives = [
-                            { id: 1, name: 'Kiwi', price: 1.5, points: null, image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg" },
+                            { id: 1, name: 'Kiwi', price: 1.5, points: undefined, image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg" },
                             { id: 2, name: "Apples", price: 1.0, points: 15, image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg" }
                         ];
                     } else if (product === "Pears") {
                         alternatives = [{ id: 3, name: "Apples", price: 1.0, points: 15, image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg" }];
                     } else if (product === "Bream") {
-                        alternatives = [{ id: 10, name: "Cod", price: 9.5, points: null, image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg" }];
+                        alternatives = [{ id: 10, name: "Cod", price: 9.5, points: undefined, image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg" }];
                     } else {
                         alternatives = [];
                     }
@@ -118,7 +117,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
             setCurrentIndex(0);
         }
 
-        showToastMessage && showToastMessage('Alternatives added successfully!', 'success');
+        showToastMessage && showToastMessage(confirmationMessage, 'success');
     };
 
     const handleClose = () => {
@@ -174,7 +173,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                     </div>
                 </Button>
             )}
-            <Dialog open={isOpen} static={true} onClose={handleClose} className={`max-h-screen overflow-y-auto ${theme === 'dark' ? 'dark' : ''}`}>
+            <Dialog open={isOpen} static={true} onClose={handleClose} className={`max-h-screen overflow-y-auto z-40 ${theme === 'dark' ? 'dark' : ''}`}>
                 <DialogPanel {...handlers} className="dialog-panel max-h-screen overflow-y-auto">
                     {missingProducts.length > 0 ? (
                         <>
@@ -232,9 +231,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                             </Button>
                                         ) : (
                                             <Button
-                                                    variant="contained" onClick={() => handleConfirm(missingProducts[currentIndex], [])}
-                                                onClick={() => { handleConfirm(missingProducts[currentIndex], []), setConfirmationMessage('no option') }}
-                                                style={{ color: '#fff', }}
+                                                    variant="contained" onClick={() => { handleConfirm(missingProducts[currentIndex], []); setConfirmationMessage('no option') }}
                                             >
                                                 Got it
                                             </Button>
@@ -266,13 +263,6 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                         </div>
                     )}
                 </DialogPanel>
-                {showConfirmation && confirmationMessage !== 'no option' && (
-                    <div className="fixed inset-x-0 top-0 flex items-center justify-center z-50 mt-60">
-                        <div className="bg-green-500 p-4 text-white rounded-lg shadow-lg">
-                            {confirmationMessage}
-                        </div>
-                    </div>
-                )}
             </Dialog>
         </>
     );

@@ -1,12 +1,13 @@
 "use client";
-import {useEffect, useState} from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { ButtonBase } from "@mui/material";
 import { Button } from "../generalPurposeComponents/Button.tsx";
-import {Product, Vendor} from "../../models.ts";
-import ProductListItem, {ProductListItemProps} from "../PageVendorProducts/ProductListItem.tsx";
+import { Market, Product, Vendor } from "../../models.ts";
+import ProductListItem, { ProductListItemProps } from "../PageVendorProducts/ProductListItem.tsx";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import API from "../../API.ts";
 import ConfirmAddAlert from "../generalPurposeComponents/ConfirmAddAlert.tsx";
+import globalContext from "../../Context.tsx";
 
 interface PageAddProductsParams {
     allVends: Vendor[];
@@ -22,9 +23,7 @@ interface PageAddProductsParams {
 
 export default function PageAddProducts({ actualVends, allVends, theme, selectedMarket, setFilteredVendors, addProductId, setAddProductId, isFeedbackDialogOpen, setIsFeedbackDialogOpen }: PageAddProductsParams) {
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
-    const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '[]');
-
-    const [isAddAlertOpen, setIsAddAlertOpen] = useState(false);
+    const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) ?? '[]');
 
     const actualVendorsProducts: Vendor[] = useMemo(() => addProductId != -1 ? actualVends.filter(vendor => vendor.id === addProductId) : actualVends, [addProductId, actualVends]);
     const allVendors: Vendor[] = useMemo(() => addProductId != -1 ? allVends.filter(vendor => vendor.id === addProductId) : allVends, [addProductId, allVends]);
@@ -42,6 +41,9 @@ export default function PageAddProducts({ actualVends, allVends, theme, selected
     const [allProducts, setAllProducts] = useState<ProductListItemProps[]>([]);
 
     const [selectedProducts, setSelectedProducts] = useState<Map<number, ProductListItemProps>>(new Map());
+
+    const askConfirmation = useContext(globalContext)?.askConfirmation;
+    const showToastMessage = useContext(globalContext)?.showToastMessage;
 
     useEffect(
         () => {
@@ -87,7 +89,6 @@ export default function PageAddProducts({ actualVends, allVends, theme, selected
     }
 
     function handleAdd() {
-
         selectedProducts.forEach((product, productId) => {
             let productAdded = false;
             allVends.forEach(vendor => {
@@ -111,75 +112,82 @@ export default function PageAddProducts({ actualVends, allVends, theme, selected
         localStorage.setItem(filteredVendorsKey, JSON.stringify(filteredVendors));
         setAddProductId(null);
 
+        showToastMessage && showToastMessage("Selected products have been succesfully added to your shopping list", "success");
+    }
 
+    function confirmAddAlert() {
+        askConfirmation && askConfirmation(
+            handleAdd,
+            <>
+                <span className="text-lg">The following products will be added to your shopping list:</span>
+                <span className="font-medium text-lg">{Array.from(selectedProducts.values()).map(product => product.name).join(', ')}</span>
+            </>,
+            'Cancel',
+            'Confirm'
+        );
     }
 
     return (
-        <div className="absolute z-[10000000] w-full h-full">
+        <div className="w-full h-full">
             {/* TopBar */}
-            <ConfirmAddAlert isFeedbackDialogOpen={isFeedbackDialogOpen} setIsFeedbackDialogOpen={setIsFeedbackDialogOpen} theme={theme} setIsOpen={setIsAddAlertOpen} isOpen={isAddAlertOpen} products={selectedProducts}
-                handleAdd={handleAdd}></ConfirmAddAlert>
-            <TopBar
-                leftComponent={selectedProducts &&
-                    <ButtonBase className="text-md font-semibold" onClick={() => {
-                        setAddProductId(null);
-                    }}><p
-                        className="m-0 p-0">Cancel</p></ButtonBase>}
-                centerComponent={allProducts && allProducts.length > 0 && <h1
-                    className="line-clamp-1 m-0 p-0 text-md font-normal text-center">{selectedProducts ? (selectedProducts.size + " Selected") : ""}</h1>}
-                rightComponent={allProducts && allProducts.length > 0 &&
-                    <div className="flex flex-row gap-2 items-center">
-                        {
-                            selectedProducts && selectedProducts.size === allProducts.length ?
-                                <div className="w-8 h-16 flex items-center justify-center" onClick={
-                                    () => {
-                                        setSelectedProducts(new Map());
-                                    }
-                                }>
-                                    <div
-                                        className="rounded-full text-green-500 h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
-                                        <svg
-                                            className="h-6 w-6 text-black dark:text-white translate-y-[-0.3em] translate-x-[-0.1em] transition-all duration-300"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3"
-                                                d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </div>
-                                </div>
-                                :
-                                <div
-                                    className="w-8 h-16 flex items-center justify-center animate-fade transition-all duration-300"
-                                    onClick={
+            {/* <ConfirmAddAlert theme={theme} setIsOpen={setIsAddAlertOpen} isOpen={isAddAlertOpen} products={selectedProducts} handleAdd={handleAdd} /> */}
+            <div className="px-8">
+                <TopBar
+                    leftComponent={selectedProducts &&
+                        <ButtonBase className="text-md font-semibold" onClick={() => {
+                            setAddProductId(null);
+                        }}><p
+                            className="m-0 p-0">Cancel</p></ButtonBase>}
+                    centerComponent={allProducts && allProducts.length > 0 && <h1
+                        className="line-clamp-1 m-0 p-0 text-md font-normal text-center">{selectedProducts ? (selectedProducts.size + " Selected") : ""}</h1>}
+                    rightComponent={allProducts && allProducts.length > 0 &&
+                        <div className="flex flex-row gap-2 items-center">
+                            {
+                                selectedProducts && selectedProducts.size === allProducts.length ?
+                                    <div className="w-8 h-16 flex items-center justify-center" onClick={
                                         () => {
-                                            setSelectedProducts(new Map(allProducts.map(p => [p.id, p])));
+                                            setSelectedProducts(new Map());
                                         }
                                     }>
-                                    <div
-                                        className="rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
+                                        <div
+                                            className="rounded-full text-green-500 h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
+                                            <svg
+                                                className="h-6 w-6 text-black dark:text-white translate-y-[-0.3em] translate-x-[-0.1em] transition-all duration-300"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3"
+                                                    d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        </div>
                                     </div>
-                                </div>
+                                    :
+                                    <div
+                                        className="w-8 h-16 flex items-center justify-center animate-fade transition-all duration-300"
+                                        onClick={
+                                            () => {
+                                                setSelectedProducts(new Map(allProducts.map(p => [p.id, p])));
+                                            }
+                                        }>
+                                        <div
+                                            className="rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
+                                        </div>
+                                    </div>
 
-                        }
+                            }
 
-                        {selectedProducts && selectedProducts.size > 0 &&
-                            <>
-                            </>}
-
-                        {selectedProducts && selectedProducts.size > 0 &&
-                            <Button variant="outlined" onClick={() => { setIsAddAlertOpen(true) }}>
-                                <div className="flex flex-row items-center justify-center">
+                            {selectedProducts && selectedProducts.size > 0 &&
+                                <Button variant="outlined" onClick={confirmAddAlert}>
                                     Add
-                                </div>
-                            </Button>
-                        }
+                                </Button>
+                            }
 
-                    </div>
-                }>
-            </TopBar>
+                        </div>
+                    }>
+                </TopBar>
+            </div>
 
             <div
                 className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle px-6 pt-[3.45em] flex flex-col gap-4">
