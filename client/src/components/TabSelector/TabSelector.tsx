@@ -173,10 +173,6 @@ export default function TabsHero({
 
     return (
         <div className="flex flex-col h-full min-h-0 px-6 py-4">
-            <div className='flex justify-between mb-4'>
-                <h1 className="page-title mr-auto">Shopping</h1>
-                <MarketSelectorSheet className="!p-0" selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />
-            </div>
             {
                 isEditMode ?
                     <TopBar
@@ -234,20 +230,21 @@ export default function TabsHero({
                     </TopBar>
                     :
                     <>
-
-                        <div className="flex flex-row items-center justify-between">
-                            <div className="m-auto">
-                                <TextInput
-                                    placeholder="Search Products"
-                                    id="search"
-                                    name="search"
-                                    type="search"
-                                    className="py-1 ps-4 rounded-full"
-                                    icon={SearchIcon}
-                                    onChange={(e) => setSearchInput(e.target.value)}
-                                    value={searchInput}
-                                />
-                            </div>
+                        <div className='flex justify-between mb-4'>
+                            <h1 className="page-title mr-auto">Shopping</h1>
+                            <MarketSelectorSheet className="!p-0" selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />
+                        </div>
+                        <div className='flex flex-row gap-6'>
+                            <TextInput
+                                placeholder="Search Products"
+                                id="search"
+                                name="search"
+                                type="search"
+                                className="py-1 ps-3 rounded-full"
+                                icon={SearchIcon}
+                                onChange={(e) => setSearchInput(e.target.value)}
+                                value={searchInput}
+                            />
                             <AddProductsButton />
                         </div>
                         <div style={{
