@@ -15,8 +15,6 @@ const iconsMap: { [key: string]: JSX.Element } = {
   'profile_picture': <img src={ICONS.find(i => i.id == 2)?.path} alt="planet" className='object-scale-down max-h-full m-auto' />,
 }
 
-
-
 export function RewardCard({ reward, confirmRewardRedemption = () => { } }: Readonly<{ reward: Reward, confirmRewardRedemption?: (reward: Reward) => void }>) {
 
   return (

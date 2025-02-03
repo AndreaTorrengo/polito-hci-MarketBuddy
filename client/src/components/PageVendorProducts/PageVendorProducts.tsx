@@ -22,8 +22,6 @@ interface PageVendorProductsParams {
     theme: string;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
-    isFeedbackDialogOpen: string | null;
-    setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
     setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
     selectedReasons: string[];
     setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
@@ -38,8 +36,6 @@ export default function PageVendorProducts({
     isOpen,
     setIsOpen,
     vendor,
-    isFeedbackDialogOpen,
-    setIsFeedbackDialogOpen,
     setAddProductId,
     setProductsWithoutAlternatives,
 }: Readonly<PageVendorProductsParams>) {
@@ -132,7 +128,7 @@ export default function PageVendorProducts({
     }
 
     return (
-        <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot} detent="content-height" snapPoints={[1.0, 0.7, 0.5, 0.2]} className="z-0">
+        <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot} detent="content-height" snapPoints={[1.0, 0.7, 0.5, 0.2]} className="!z-0">
             <Sheet.Container>
                 <Sheet.Header
                     className="dark:bg-dark-tremor-background">
@@ -194,7 +190,8 @@ export default function PageVendorProducts({
                                             <>
                                                 <SwitchButton selectedMarket={selectedMarket}
                                                     selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
-                                                    setFilteredVendors={setFilteredVendors}
+                                                setFilteredVendors={setFilteredVendors}
+                                                setSelectedProducts={setSelectedProducts}
                                                 setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                                 theme={theme}
                                             />
@@ -202,15 +199,14 @@ export default function PageVendorProducts({
                                                 selectedMarket={selectedMarket}
                                                 selectedProducts={selectedProducts}
                                                 setFilteredVendors={setFilteredVendors}
-                                                setIsFeedbackDialogOpen={setIsFeedbackDialogOpen}
+                                                setSelectedProducts={setSelectedProducts}
                                                 theme={theme}
                                             />
                                                 <DeleteButton selectedMarket={selectedMarket}
-                                                selectedProducts={selectedProducts}
+                                                selectedProducts={selectedProducts} s
                                                 setFilteredVendors={setFilteredVendors}
                                                 theme={theme}
-                                                isFeedbackDialogOpen={isFeedbackDialogOpen}
-                                                setIsFeedbackDialogOpen={setIsFeedbackDialogOpen} />
+                                            />
                                             </>}
 
                                     </>
@@ -252,7 +248,7 @@ export default function PageVendorProducts({
                                     <AddProductsButton onClick={() => setAddProductId(vendor.id)} />
                                 </div>
                                 {/* Product list */}
-                                <div key={vendor.id} className="w-full flex flex-col gap-3 mt-4 pb-[4rem]">
+                                <div key={vendor.id} className="w-full flex flex-col gap-3 mt-4">
                                     {products.map((product, index) => (
                                         isEditMode ?
                                             <ButtonBase key={product.id} component="div"

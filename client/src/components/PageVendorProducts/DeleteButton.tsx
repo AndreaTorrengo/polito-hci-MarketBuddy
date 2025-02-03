@@ -22,10 +22,10 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '[]');
 
-    const showToastMessage = useContext(globalContext)?.showToastMessage;
+    const { showToastMessage, askConfirmation } = useContext(globalContext) || {};
 
     const handleClick = () => {
-        setIsDialogOpen(true);
+        // setIsDialogOpen(true);
 
         const products = Array.from(selectedProducts.values()).flatMap(productIds => {
             return productIds.map((productId: number) => {
@@ -34,6 +34,13 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
             });
         });
         setProductsSwitching(products.filter((product): product is Product => product !== null && product !== undefined));
+        askConfirmation && askConfirmation(handleConfirm,
+            <div className="flex flex-col">
+                <span className="text-lg font-medium">Confirm Delete</span>
+                <span className="text-lg mb-2">The following products will be deleted from your shopping list:</span>
+                <span className="text-lg font-bold">{products.map((product) => product?.name).join(', ')}</span>
+            </div>
+        );
     };
 
 

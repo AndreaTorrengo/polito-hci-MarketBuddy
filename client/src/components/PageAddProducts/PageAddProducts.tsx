@@ -17,11 +17,9 @@ interface PageAddProductsParams {
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
     addProductId: number | null;
-    isFeedbackDialogOpen: string | null;
-    setIsFeedbackDialogOpen: (value: string | null) => void;
 }
 
-export default function PageAddProducts({ actualVends, allVends, theme, selectedMarket, setFilteredVendors, addProductId, setAddProductId, isFeedbackDialogOpen, setIsFeedbackDialogOpen }: PageAddProductsParams) {
+export default function PageAddProducts({ actualVends, allVends, theme, selectedMarket, setFilteredVendors, addProductId, setAddProductId }: PageAddProductsParams) {
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) ?? '[]');
 

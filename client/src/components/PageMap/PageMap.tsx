@@ -49,8 +49,6 @@ interface PageMapProps {
     theme: string;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
-    isFeedbackDialogOpen: string | null;
-    setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
     setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
     selectedReasons: string[];
     setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
@@ -63,8 +61,6 @@ const PageMap: React.FC<PageMapProps> = ({
     theme,
     selectedMarket,
     setFilteredVendors,
-    isFeedbackDialogOpen,
-    setIsFeedbackDialogOpen,
     setAddProductId,
     selectedReasons,
     setSelectedReasons,
@@ -256,7 +252,7 @@ const PageMap: React.FC<PageMapProps> = ({
                     <PageVendorProducts
                         productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                         selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
-                        isFeedbackDialogOpen={isFeedbackDialogOpen} setIsFeedbackDialogOpen={setIsFeedbackDialogOpen} isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId}></PageVendorProducts>
+                        isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId}></PageVendorProducts>
                 )
             )}
             {/* Market selector

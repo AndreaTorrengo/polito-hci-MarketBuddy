@@ -5,16 +5,18 @@ import { Button } from '../generalPurposeComponents/Button';
 import React, { useContext, useState } from 'react';
 import './Dialogs.css';
 import globalContext from "../../Context";
+import { ProductListItemProps } from "./ProductListItem";
 
 interface SwitchButtonProps {
     selectedProducts: Map<number, number[]>;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
+    setSelectedProducts: React.Dispatch<React.SetStateAction<Map<number, ProductListItemProps> | null>>;
     theme: string,
     setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
 }
 
-const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, setProductsWithoutAlternatives }) => {
+const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, setProductsWithoutAlternatives, setSelectedProducts }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [productsSwitching, setProductsSwitching] = useState<Product[]>([]);
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
@@ -22,10 +24,10 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) ?? '[]');
     const vendors: Vendor[] = JSON.parse(localStorage.getItem(vendorsKey) ?? '[]');
 
-    const showToastMessage = useContext(globalContext)?.showToastMessage;
+    const { showToastMessage, askConfirmation } = useContext(globalContext) || {};
 
     const handleClick = () => {
-        setIsDialogOpen(true);
+        // setIsDialogOpen(true);
 
         const products = Array.from(selectedProducts.values()).flatMap(productIds => {
             return productIds.map((productId: number) => {
@@ -34,6 +36,14 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
             });
         });
         setProductsSwitching(products.filter((product): product is Product => product !== null && product !== undefined));
+        askConfirmation && askConfirmation(handleConfirm,
+            <>
+                {/* The following products will be switched to other sellers */}
+                <span className="text-lg font-medium">Confirm Switch</span>
+                <span className="text-lg mb-2">For the following products we will find other sellers in this marketplace that match your preferences:</span>
+                <span className="text-lg font-bold">{products.map((product) => product?.name).join(', ')}</span>
+            </>
+        );
     };
 
     const handleConfirm = () => {
@@ -95,6 +105,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
         setFilteredVendors(filteredVendors);
         localStorage.setItem(filteredVendorsKey, JSON.stringify(filteredVendors));
         setIsDialogOpen(false);
+        setSelectedProducts(null);
         showToastMessage?.(message, variant);
     };
 

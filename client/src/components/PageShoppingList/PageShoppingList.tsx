@@ -15,8 +15,6 @@ interface PageShoppingListProps {
     readonly selectedOrRemoveAllProductsFromVendor: (vendorId: number, remove: boolean) => void;
     readonly filteredProductsVendors: Vendor[];
     readonly setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
-    isFeedbackDialogOpen: string | null;
-    setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
     setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
     selectedReasons: string[];
     setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
@@ -36,8 +34,6 @@ export default function PageShoppingList({
     selectedOrRemoveAllProductsFromVendor,
     filteredProductsVendors,
     setFilteredVendors,
-    isFeedbackDialogOpen,
-    setIsFeedbackDialogOpen,
     setAddProductId,
     selectedReasons,
     setSelectedReasons,
@@ -66,8 +62,6 @@ export default function PageShoppingList({
                             <PageVendorProducts
                                 productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                 selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
-                                isFeedbackDialogOpen={isFeedbackDialogOpen}
-                                setIsFeedbackDialogOpen={setIsFeedbackDialogOpen}
                                 vendor={vendor} isOpen={isVendorPageOpen}
                                 setIsOpen={(value: boolean) => setIsVendorPageOpen(value)}
                                     theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} />}

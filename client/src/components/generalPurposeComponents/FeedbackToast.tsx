@@ -35,7 +35,7 @@ const FeedbackToast: React.FC<FeedbackToastProps> = ({ show, variant, children, 
             {...props}
         >
             {children}
-            <button className='opacity-80'>⨯</button>
+            <span className='opacity-80 cursor-pointer'>⨯</span>
         </button>
     );
 
