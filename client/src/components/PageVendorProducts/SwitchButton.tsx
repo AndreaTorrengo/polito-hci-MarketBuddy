@@ -3,7 +3,7 @@ import { Market, Vendor, Product } from "../../models";
 import { Dialog, DialogPanel } from '@tremor/react';
 import { Button } from '../generalPurposeComponents/Button';
 import React, { useContext, useState } from 'react';
-import './SwitchButton.css';
+import './Dialogs.css';
 import globalContext from "../../Context";
 
 interface SwitchButtonProps {
@@ -12,13 +12,16 @@ interface SwitchButtonProps {
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     theme: string,
     closeAfter: () => void;
+    isFeedbackDialogOpen: string | null;
+    setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
+    setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
+    productsWithoutAlternatives: Product[];
 }
 
-const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter }) => {
+const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter,setIsFeedbackDialogOpen,productsWithoutAlternatives,setProductsWithoutAlternatives }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [productsWithoutAlternatives, setProductsWithoutAlternatives] = useState<Product[]>([]);
     const [productsSwitching, setProductsSwitching] = useState<Product[]>([]);
-
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const vendorsKey = `vendors_${selectedMarket.name}`;
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) ?? '[]');
@@ -57,6 +60,18 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                             filteredVendors.push(newVendor);
                         }
                         alternativeFound = true;
+
+                        // Remove the product from the previous vendor
+                        const previousVendor = filteredVendors.find(v => v.id === vendorId);
+                        if (previousVendor) {
+                            previousVendor.products = previousVendor.products.filter(p => p.id !== product.id);
+                            // If the previous vendor has no more products, remove the vendor
+                            if (previousVendor.products.length === 0) {
+                                const updatedFilteredVendors = filteredVendors.filter(v => v.id !== vendorId);
+                                filteredVendors.length = 0;
+                                filteredVendors.push(...updatedFilteredVendors);
+                            }
+                        }
                     }
                 });
 
@@ -111,7 +126,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                         </div>
                     </div>
 
-                    <div className="flex justify-center gap-10 mt-20">
+                    <div className="flex justify-right gap-2.5 mt-5">
                         <Button variant='outlined' color='primary' onClick={() => setIsDialogOpen(false)}>Cancel</Button>
                         <Button variant='contained' color='primary' onClick={handleConfirm}>Confirm</Button>
                     </div>

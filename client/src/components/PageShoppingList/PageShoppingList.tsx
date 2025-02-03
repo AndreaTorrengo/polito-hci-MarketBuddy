@@ -1,9 +1,8 @@
 import MissingProductsDialog from "../MissingProductsDialog/MissingProductsDialog";
-import { Market, Vendor } from "../../models";
+import { Market, Vendor, Product } from "../../models";
 import PageVendorProducts from "../PageVendorProducts/PageVendorProducts";
 import { useState } from "react";
 import VendorGroup from "./VendorGroup";
-
 interface PageShoppingListProps {
     readonly theme: string;
     readonly productsList: { [key: string]: string[] };
@@ -16,46 +15,69 @@ interface PageShoppingListProps {
     readonly selectedOrRemoveAllProductsFromVendor: (vendorId: number, remove: boolean) => void;
     readonly filteredProductsVendors: Vendor[];
     readonly setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
+    isFeedbackDialogOpen: string | null;
+    setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
+    setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
+    selectedReasons: string[];
+    setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
+    setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
+    productsWithoutAlternatives: Product[];
 }
 
 export default function PageShoppingList({
+    missingProducts,
     theme,
     selectedMarket,
     productsList,
     setProductsList,
+    updateVendorsAndProducts,
+    vendors,
     openEditMode,
     addOrRemoveSelected,
     isEditMode,
     selectedProducts,
     selectedOrRemoveAllProductsFromVendor,
     filteredProductsVendors,
-    setFilteredVendors
+    setFilteredVendors,
+    isFeedbackDialogOpen,
+    setIsFeedbackDialogOpen,
+    setAddProductId,
+    selectedReasons,
+    setSelectedReasons,
+    productsWithoutAlternatives,
+    setProductsWithoutAlternatives,
+
 }: PageShoppingListProps) {
     const [isVendorPageOpen, setIsVendorPageOpen] = useState(false);
     const [selectedVendor, setSelectedVendor] = useState<number>(-1);
 
     return (
-        <div id="ShoppingListPage" className="flex flex-col gap-2">
+        <>
+            <div id="ShoppingListPage" className="flex flex-col gap-2">
+                {!isEditMode &&
+                    <MissingProductsDialog
+                        theme={theme}
+                        productsList={productsList}
+                        setProductsList={setProductsList}
+                        selectedMarket={selectedMarket}
+                        setFilteredVendors={setFilteredVendors}
+                    />
+                }
+                {isEditMode && <div className="h-[3rem]" />}
 
-            {!isEditMode &&
-                <MissingProductsDialog
-                    theme={theme}
-                    productsList={productsList}
-                    setProductsList={setProductsList}
-                    selectedMarket={selectedMarket}
-                    setFilteredVendors={setFilteredVendors}
-                />
-            }
-            {isEditMode && <div className="h-[3rem]" />}
-
-            {
-                filteredProductsVendors.map((vendor) => (
-                    vendor.products.length > 0 &&
-                    <div key={vendor.id}>
-                        {selectedVendor === vendor.id &&
-                            <PageVendorProducts vendor={vendor} isOpen={isVendorPageOpen}
-                                setIsOpen={(value: boolean) => setIsVendorPageOpen(value)}
-                                theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket}></PageVendorProducts>}
+                {
+                    filteredProductsVendors.map((vendor) => (
+                        vendor.products.length > 0 &&
+                        <div key={vendor.id}>
+                            {selectedVendor === vendor.id &&
+                                <PageVendorProducts
+                                    productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                                    selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
+                                    isFeedbackDialogOpen={isFeedbackDialogOpen}
+                                    setIsFeedbackDialogOpen={setIsFeedbackDialogOpen}
+                                    vendor={vendor} isOpen={isVendorPageOpen}
+                                    setIsOpen={(value: boolean) => setIsVendorPageOpen(value)}
+                                    theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId}></PageVendorProducts>}
 
                             <VendorGroup id={vendor.id}
                                 openEditMode={openEditMode}
@@ -75,7 +97,7 @@ export default function PageShoppingList({
                                     (product) => ({
                                         id: product.id,
                                         name: product.name,
-                                        price: product.price * vendor.priceMultiplier,
+                                        price: parseFloat((product.price * vendor.priceMultiplier).toFixed(2)),
                                         points: product.points,
                                         image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg",
                                         showPrice: true,
@@ -89,6 +111,10 @@ export default function PageShoppingList({
                     </div>
                 ))
             }
+                            <div className={"h-[1rem]"} />
+                        </div>
+                    ))
+                }
 
         </div>
     );

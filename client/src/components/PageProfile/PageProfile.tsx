@@ -5,6 +5,9 @@ import API from '../../API';
 import { Dispatch, SetStateAction, useContext } from 'react';
 import { UserData } from './UserData';
 import { Card, TextInput, Title } from '@tremor/react';
+import { ICONS } from "./Icons";
+import IconSelector from './IconSelector';
+import { Card, TextInput, Title } from '@tremor/react';
 import { Button } from '../generalPurposeComponents/Button';
 import globalContext from '../../Context';
 
@@ -72,8 +75,19 @@ export default function PageProfile({ theme, toggleTheme, userdata, setUserdata 
             </div>
           </div>
 
-        </div>
-      </Card>
+            <div className='flex flex-col w-full'>
+              <div className='flex flex-row mb-2'>
+                <label className="min-w-32">Profile icon:</label>
+              </div>
+              {/* <div className="flex items-center space-x-2 text-yellow-500">
+                <span className="font-semibold"><EmojiEmotionsIcon /></span>
+                <span className="font-semibold">{userdata.coins}</span>
+              </div> */}
+              <IconSelector icons={ICONS} userdata={userdata} setUserdata={setUserdata} />
+            </div>
+
+          </div>
+        </Card>
 
       <div className="flex flex-col items-start border-red-500 dark:border-red-600 border-2 my-4 p-2 rounded-lg">
         <h2 className='text-red-500 dark:text-red-600'>DEBUG</h2>

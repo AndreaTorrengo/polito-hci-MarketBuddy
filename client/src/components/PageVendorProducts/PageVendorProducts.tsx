@@ -1,20 +1,21 @@
 "use client";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import VendorCategoryList from "./VendorCategoryList.tsx";
-import React, { useState } from "react";
+import React, {  useEffect, useMemo, useState  } from "react";
 import AddProductsButton from "./AddProductsButton.tsx";
-import ProductListItem, { ProductListItemProps } from "./ProductListItem.tsx";
+import ProductListItem, {  ProductListItemProps  } from "./ProductListItem.tsx";
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
-import { Sheet } from 'react-modal-sheet';
+import {  Sheet  } from 'react-modal-sheet';
 import VendorBadges from "./VendorBadges.tsx";
-import { ButtonBase, IconButton } from "@mui/material";
-import ContextMenu, { ContextMenuProps } from "../generalPurposeComponents/ContextMenu.tsx";
+import {  ButtonBase, IconButton  } from "@mui/material";
+import ContextMenu, {  ContextMenuProps  } from "../generalPurposeComponents/ContextMenu.tsx";
 import SwitchButton from "./SwitchButton.tsx";
 import DeleteButton from "./DeleteButton.tsx";
 import SignalErrorButton from "./SignalErrorButton.tsx";
 import { Market, Vendor } from "../../models.ts";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../generalPurposeComponents/Button.tsx";
+import { Market, Vendor, Product } from "../../models.ts";
 
 interface PageVendorProductsParams {
     isOpen: boolean;
@@ -23,6 +24,13 @@ interface PageVendorProductsParams {
     theme: string;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
+    isFeedbackDialogOpen: string | null;
+    setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
+    setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
+    selectedReasons: string[];
+    setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
+    setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
+    productsWithoutAlternatives: Product[];
 }
 
 export default function PageVendorProducts({
@@ -31,27 +39,39 @@ export default function PageVendorProducts({
     theme,
     isOpen,
     setIsOpen,
-    vendor
+    vendor,
+    isFeedbackDialogOpen,
+    setIsFeedbackDialogOpen,
+    setAddProductId,
+    selectedReasons,
+    setSelectedReasons,
+    productsWithoutAlternatives,
+    setProductsWithoutAlternatives,
 }: PageVendorProductsParams) {
     const approot = document.getElementById("approot")!;
 
     const [isEditMode, setIsEditMode] = useState(false);
 
-    const products = vendor.products.map((product) => ({
+    const products = useMemo(() => vendor.products.map((product) => ({
         id: product.id,
         name: product.name,
-        price: product.price * vendor.priceMultiplier,
+        price: parseFloat((product.price * vendor.priceMultiplier).toFixed(2)),
         image: product.image,
         editMode: false,
         isSelected: false,
         showPrice: true
-    }));
+    })), [vendor.products, vendor.priceMultiplier]);
 
     const [selectedProducts, setSelectedProducts] = useState<Map<number, ProductListItemProps> | null>(null);
 
+    useEffect(() => {
+        closeAfter();
+    }, [vendor.id]);
+
+
     const [contextMenuProps, setContextMenuProps] = useState<ContextMenuProps>({
         onClose: () => {
-            setContextMenuProps({ ...contextMenuProps, isOpen: false });
+            setContextMenuProps({  ...contextMenuProps, isOpen: false  });
         },
         isOpen: false,
         x: 0,
@@ -61,7 +81,7 @@ export default function PageVendorProducts({
                 label: "Delete",
                 onClick: () => {
                     console.log("Delete");
-                    setContextMenuProps({ ...contextMenuProps, isOpen: false });
+                    setContextMenuProps({  ...contextMenuProps, isOpen: false  });
                 }
             },
             {
@@ -75,8 +95,6 @@ export default function PageVendorProducts({
     });
 
     const activeTab = localStorage.getItem('activeTab') || 'list';
-
-    const navigate = useNavigate();
 
     const onLongPress = (event: React.MouseEvent, productId: number) => {
         event.preventDefault();
@@ -126,6 +144,7 @@ export default function PageVendorProducts({
     function closeAfter() {
         setIsEditMode(false);
         setSelectedProducts(null);
+        console.log(closeAfter);
     }
 
     return (
@@ -214,7 +233,7 @@ export default function PageVendorProducts({
                                     <Button variant="outlined" color="bw">
                                         <div className="flex flex-row items-center gap-4">
                                             <span>Confirm Purchase</span>
-                                            <QrCodeScannerIcon className="text-black dark:text-white" />
+                                            <QrCodeScannerIcon className="text-black dark:text-white"  />
                                         </div>
                                     </Button>
                                 }>
@@ -226,7 +245,7 @@ export default function PageVendorProducts({
                             className="w-full h-full px-1 mt-4 flex flex-col gap-4">
                             {/* Vendor's Categories */}
                             <div className="w-full">
-                                <VendorCategoryList categories={vendor.categories} />
+                                <VendorCategoryList categories={vendor.categories}  />
                             </div>
 
                             <div className="w-full">
@@ -235,39 +254,37 @@ export default function PageVendorProducts({
                                     convenience={vendor.convenience_rating} />
                             </div>
 
-                            <div className="w-full flex-1">
-                                {/* Product list top bar */}
-                                <div className="w-full flex flex-row justify-between items-center">
-                                    <p className="m-0 p-0">Your planned purchases</p>
-                                    <div onClick={() => {
-                                        navigate("/addProducts/" + vendor.id);
-                                    }
-                                    }><AddProductsButton></AddProductsButton></div>
-                                </div>
-                                {/* Product list */}
-                                <div key={vendor.id} className="w-full flex flex-col gap-3 mt-4">
-                                    {products.map((product, index) => (
-                                        isEditMode ?
-                                            <ButtonBase key={product.id} component="div"
-                                                onClick={() => {
-                                                    addOrRemoveSelected(index);
-                                                }}
-                                            >
-                                                <ProductListItem key={index} {...product} editMode={true}
-                                                    isSelected={
-                                                        selectedProducts ? selectedProducts.has(product.id) : false
-                                                    } />
-                                            </ButtonBase>
-                                            :
-                                            <ButtonBase key={product.id} component="div"
-                                                onContextMenu={(e) => {
-                                                    //onLongPress(e, index);
-                                                    openEditMode(e, product.id);
-                                                }}
-                                            >
-                                                <ProductListItem key={index} {...product} editMode={false} />
-                                            </ButtonBase>
-                                    ))}
+                                    <div className="w-full flex-1">
+                                        {/* Product list top bar */}
+                                        <div className="w-full flex flex-row justify-between items-center">
+                                            <p className="m-0 p-0">Your planned purchases</p>
+                                    <AddProductsButton onClick={() => setAddProductId(vendor.id)}/>
+                                        </div>
+                                        {/* Product list */}
+                                        <div key={vendor} className="w-full flex flex-col gap-3 mt-4 pb-[4rem]">
+                                            {products.map((product, index) => (
+                                                isEditMode ?
+                                                    <ButtonBase key={product.id} component="div"
+                                                                onClick={() => {
+                                                                    addOrRemoveSelected(index);
+                                                                }}
+                                                    >
+                                                        <ProductListItem key={index} {...product} editMode={true}
+                                                                         isSelected={
+                                                                             selectedProducts ? selectedProducts.has(product.id) : false
+                                                                         }/>
+                                                    </ButtonBase>
+                                                    :
+                                                    <ButtonBase key={product.id} component="div"
+                                                                onContextMenu={(e) => {
+                                                                    //onLongPress(e, index);
+                                                                    openEditMode(e, product.id);
+                                                                }}
+                                                    >
+                                                        <ProductListItem key={index} {...product} editMode={false}/>
+                                                    </ButtonBase>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

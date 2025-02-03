@@ -11,6 +11,7 @@ export default function ConfirmPopup({ text, cancelButtonText, confirmButtonText
                     <Button color='primary' variant='contained' onClick={() => { closePopup(); onConfirmCallback(); }}>{confirmButtonText}</Button>
                 </div>
             </div>
+            </div>
         </>
     );
 }

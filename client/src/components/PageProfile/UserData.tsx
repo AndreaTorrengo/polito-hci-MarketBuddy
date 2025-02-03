@@ -1,16 +1,19 @@
 /* This module provide a class model for UserData and 
  * a few function for reading and writing on localstorage
  */
+import { ICONS } from "./Icons";
 
 export class UserData {
     username: string;
     coins: number;
     experience: number;
+    iconId: number;
 
-    constructor(username: string = 'user', coins: number = 1000, experience: number = 1200) {
+    constructor(username: string = 'user', coins: number = 1000, experience: number = 1200, iconId: number = 1) {
         this.username = username;
         this.coins = coins;
         this.experience = experience;
+        this.iconId = iconId;
     }
     // Use this function to get a clone of this instance and use it to update the react state
     clone(): UserData {
@@ -29,6 +32,23 @@ export class UserData {
         if (increment < 0 && increment > this.experience)
             this.experience = 0;
         else this.experience += increment;
+    }
+    // Use this function to get the icon path from the iconId
+    /*getIconPath(): string {
+        let iconObj = ICONS.filter(i => i.id == this.iconId)[0];
+        if(!iconObj) {
+            console.warn(`Could not find any profile icon with id ${this.iconId}`);
+            iconObj = ICONS[0];
+        }
+        return iconObj.path;
+    }*/
+    public static getIconPath(iconId: number) {
+        let iconObj = ICONS.filter(i => i.id == iconId)[0];
+        if(!iconObj) {
+            console.warn(`Could not find any profile icon with id ${iconId}`);
+            iconObj = ICONS[0];
+        }
+        return iconObj.path;
     }
 }
 

@@ -1,13 +1,16 @@
-import { Dialog, DialogPanel } from '@tremor/react';
+import { Button, Dialog, DialogPanel } from '@tremor/react';
 import React, { useContext } from 'react';
 import globalContext from '../../Context';
+import { ProductListItemProps } from '../PageVendorProducts/ProductListItem';
 
 interface ConfirmAddAlertProps {
     theme: string;
     isOpen: boolean;
     setIsOpen: (value: boolean) => void;
-    handleAdd: () => Promise<void>;
-    numberOfProducts: number;
+    handleAdd: () => void;
+    products: Map<number, ProductListItemProps>;
+    isFeedbackDialogOpen: string | null;
+    setIsFeedbackDialogOpen: (value: string | null) => void;
 }
 
 const ConfirmAddAlert: React.FC<ConfirmAddAlertProps> = ({
@@ -15,41 +18,48 @@ const ConfirmAddAlert: React.FC<ConfirmAddAlertProps> = ({
     isOpen,
     setIsOpen,
     handleAdd,
-    numberOfProducts,
+    products,
+    isFeedbackDialogOpen,
+    setIsFeedbackDialogOpen
 }) => {
     const showToastMessage = useContext(globalContext)?.showToastMessage;
 
     return (
-        <Dialog open={isOpen} static={true} onClose={() => { setIsOpen(false) }} className={`max-h-screen overflow-y-auto ${theme === 'dark' ? 'dark' : ''} z-40`}>
-                <DialogPanel className="dialog-panel max-h-screen overflow-y-auto">
-                    <div className="flex flex-col gap-4">
-                        <h1 className="text-2xl font-bold text-black dark:text-white">Add Product/s</h1>
-                        <p className="dark:text-[#aaaaaa] text-[#444444]">{"Are you sure you want to add "+ numberOfProducts + " product/s to your Shopping List?"}</p>
-                        <div className="flex justify-end gap-4">
-                            <button
-                                className="bg-tremor-brand text-white px-4 py-2 rounded-lg"
-                                onClick={async () => {
-                                    await handleAdd();
-                                    setIsOpen(false);
-                                    showToastMessage && showToastMessage('Products added successfully!', 'success');
-                                }}
-                            >
-                                Confirm
-                            </button>
-                            <button
-                                className="bg-gray-500 text-white px-4 py-2 rounded-lg"
-                                onClick={() => {
-                                    setIsOpen(false);
-                                }}
-                            >
-                                Cancel
-                            </button>
+        <>
+            <Dialog className={theme === 'dark' ? 'dark z-40' : 'z-40'} open={isOpen} onClose={() => { setIsOpen(false) }}>
+                <DialogPanel>
+                    <h1 className="confirm-text" style={{ fontWeight: 'bold', fontSize: '1rem' }}>Confirm Add</h1>
+                    <p className="message-text" style={{ marginTop: '10px' }}>The following products will be added to your shopping list:</p>
+                    <div>
+                        <div className="products-text">
+                            <span style={{ fontWeight: 'bold' }}>{Array.from(products.values()).map(product => product.name).join(', ')}</span>
+
                         </div>
                     </div>
 
-
+                    <div className="flex justify-right gap-2.5 mt-5">
+                        <button
+                            className="bg-tremor-brand text-white px-4 py-2 rounded-lg"
+                            onClick={async () => {
+                                await handleAdd();
+                                setIsOpen(false);
+                                showToastMessage && showToastMessage('Products added successfully!', 'success');
+                            }}
+                        >
+                            Confirm
+                        </button>
+                        <button
+                            className="bg-gray-500 text-white px-4 py-2 rounded-lg"
+                            onClick={() => {
+                                setIsOpen(false);
+                            }}
+                        >
+                            Cancel
+                        </button>
+                    </div>
                 </DialogPanel>
-        </Dialog>
+            </Dialog >
+        </>
     );
 };
 
