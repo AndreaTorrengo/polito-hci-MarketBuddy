@@ -1,6 +1,32 @@
-[ 
-  { "id": 2, "name": "Crocetta Market", "position": [45.058317, 7.663699], "address": "Via Crocetta, 10123 Torino", "distance": 1.6 },
-  { "id": 3, "name": "Porta Palazzo Market", "position": [45.076796, 7.683614], "address": "Piazza della Repubblica, 10122 Torino", "distance": 2.5 },
-  { "id": 10, "name": "Piazza Benefica Market", "position": [45.073424, 7.662439], "address": "Via Principi d'Acaja, 10125 Torino", "distance": 9.5 },
-  { "id": 11, "name": "Santa Rita Market", "position": [45.044531, 7.647119], "address": "Corso Svizzera, 10125 Torino", "distance": 10.2 }
+[
+  {
+    "id": 2,
+    "name": "Crocetta Market",
+    "position": [
+      45.058317,
+      7.663699
+    ],
+    "address": "Via Crocetta, 10123 Torino",
+    "distance": 1.6
+  },
+  {
+    "id": 3,
+    "name": "Porta Palazzo Market",
+    "position": [
+      45.076796,
+      7.683614
+    ],
+    "address": "Piazza della Repubblica, 10122 Torino",
+    "distance": 2.5
+  },
+  {
+    "id": 11,
+    "name": "Santa Rita Market",
+    "position": [
+      45.044531,
+      7.647119
+    ],
+    "address": "Corso Sebastopoli, 10125 Torino",
+    "distance": 10.2
+  }
 ]
