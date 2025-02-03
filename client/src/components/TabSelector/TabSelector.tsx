@@ -290,7 +290,7 @@ export default function TabsHero({
                     </>
             }
 
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto mt-4">
                 {activeTab === 'map' && (
                     <div className="flex w-full h-full">
                         <PageMap theme={theme} vendors={vendors} filteredVendors={filteredVendors}

@@ -32,7 +32,7 @@ export default function VendorGroup({
                                         selectedOrRemoveAllProductsFromVendor
                                     }: VendorGroupProps) {
     return (
-        <div className="px-4">
+        <>
             <div className="flex flex-row gap-2 pb-2 items-center justify-between" onClick={() => {
                 setSelectedVendor();
                 setVendorPageOpened(true)
@@ -124,6 +124,6 @@ export default function VendorGroup({
                     </ButtonBase>
                 ))}
             </div>
-        </div>
+        </>
     );
 }
