@@ -13,11 +13,16 @@ import { Vendor, Product, Market } from "./models";
 import ConfirmPopup from "./components/ConfirmationPopup";
 import TabsHero from "./components/TabSelector/TabSelector";
 import PageAddProducts from "./components/PageAddProducts/PageAddProducts.tsx";
+import FeedbackDeleteDialog from "./components/FeedbackDialogs/FeedbackDeleteDialog.tsx";
+import FeedbackSwitchDialog from "./components/FeedbackDialogs/FeedbackSwitchDialog.tsx";
+import FeedbackReportDialog from "./components/FeedbackDialogs/FeedbackReportDialog.tsx";
+import FeedbackAddDialog from "./components/FeedbackDialogs/FeedbackAddDialog.tsx";
 import { getUserdata, saveUserData } from "./components/PageProfile/UserData";
 
 
+
 export default function App() {
-  const paths = ["/", "/quests", "/rewards", "/profile", "*", "/leaderboard", "/addProducts", "/addProducts/:id"];
+  const paths = ["/", "/quests", "/rewards", "/profile", "*", "/leaderboard"];
   const [theme, setTheme] = useState<'light' | 'dark'>(localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
   const [selectedMarket, setSelectedMarket] = useState<Market>({
     id: 1,
@@ -90,7 +95,7 @@ export default function App() {
         console.error('Failed to fetch vendors:', error);
       }
     };
-
+    console.log(vendors);
     fetchVendors();
   }, [selectedMarket]);
 
@@ -139,29 +144,21 @@ export default function App() {
     const filtered: Vendor[] = [];
     if (productsListState[selectedMarket.name]) {
       const requiredProducts = new Set(productsListState[selectedMarket.name]);
-
-      const foundProducts = new Set<Product>();
-
+      const foundProducts = new Set<string>(); // Use Set<string> to track found product names
       for (const vendor of sortedVendors) {
         const filteredProducts = vendor.products.filter((product: Product) =>
-          productsListState[selectedMarket.name].includes(product.name),
+          productsListState[selectedMarket.name].includes(product.name) && !foundProducts.has(product.name),
         );
-
-
-
-
-
         if (filteredProducts.length > 0) {
           const newVendor = {
             ...vendor,
             products: filteredProducts
           };
           filtered.push(newVendor);
-          filteredProducts.forEach((product: Product) => foundProducts.add(product));
+          filteredProducts.forEach((product: Product) => foundProducts.add(product.name)); // Track found product names
         }
-
         const allRequiredProductsFound = Array.from(requiredProducts as Set<string>).every((product: string) =>
-          Array.from(foundProducts).some((fp: Product) => fp.name === product)
+          foundProducts.has(product)
         );
 
         if (allRequiredProductsFound) {
@@ -171,10 +168,8 @@ export default function App() {
 
       // Check for missing products
       const missing: string[] = Array.from(requiredProducts as Set<string>).filter(product =>
-        !Array.from(foundProducts).some((fp: Product) => fp.name === product)
+        !foundProducts.has(product)
       );
-
-  
       setFilteredVendors(filtered);
 
       localStorage.setItem(filteredVendorsKey, JSON.stringify(filtered));
@@ -190,7 +185,7 @@ export default function App() {
   }, [vendors]);
 
 
-  
+
   const [popupText, setPopupText] = useState("Are you sure?");
   const [cancelButtonText, setCancelButtonText] = useState("Cancel");
   const [confirmButtonText, setConfirmButtonText] = useState("Confirm");
@@ -233,20 +228,53 @@ export default function App() {
     setShowPopup(true);
   };
 
+  //feedback dialogs states
+  const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState<string | null>(null);
+  const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
+  const [productsWithoutAlternatives, setProductsWithoutAlternatives] = useState<Product[]>([]);
   // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-PageNotFound, 5-Leaderboard
   return (
     <div id='approot' className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
+      <FeedbackDeleteDialog
+        isOpen={isFeedbackDialogOpen === 'delete'}
+        onClose={() => { setIsFeedbackDialogOpen(null)}}
+        theme={theme}
+      />
+      <FeedbackSwitchDialog
+        isOpen={isFeedbackDialogOpen === 'switch'}
+        onClose={() => { setIsFeedbackDialogOpen(null) }}
+        theme={theme}
+        productsWithoutAlternatives={productsWithoutAlternatives}
+      />
+      <FeedbackReportDialog
+        isOpen={isFeedbackDialogOpen === 'report'}
+        onClose={() => { setIsFeedbackDialogOpen(null), setSelectedReasons([]) }}
+        theme={theme}
+        selectedReasons={selectedReasons}
+      />
+       <FeedbackAddDialog
+        isOpen={isFeedbackDialogOpen === 'add'}
+        onClose={() => { setIsFeedbackDialogOpen(null)}}
+        theme={theme}
+      />
       <Routes>
-        <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims}/>}>
-          <Route index path={`${paths[0]}`} element={<TabsHero theme={theme} vendors={vendors} filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setSelectedMarket={selectMarket} missingProducts={missingProducts} updateVendorsAndProducts={updateVendorsAndProducts} productsList={productsList} setProductsList={setProductsList} />} />
+        <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
+          <Route index path={`${paths[0]}`} element={<TabsHero 
+          productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+          selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons} 
+          isFeedbackDialogOpen={isFeedbackDialogOpen} setIsFeedbackDialogOpen={setIsFeedbackDialogOpen} 
+          theme={theme} vendors={vendors} 
+          filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors} 
+          selectedMarket={selectedMarket} setSelectedMarket={selectMarket} 
+          missingProducts={missingProducts} 
+          updateVendorsAndProducts={updateVendorsAndProducts} 
+          productsList={productsList} setProductsList={setProductsList} />} />  
           <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} leaderboardPath={`${paths[5]}`} userdata={userdata} setUserdata={setUserdata} />} />
           <Route path={`${paths[2]}`} element={<PageReward askConfirmation={askConfirmation} userdata={userdata} setUserdata={setUserdata}/>} />
           <Route path={`${paths[2]}/history`} element={<PageRewardHistory />} />
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} askConfirmation={askConfirmation} userdata={userdata} setUserdata={setUserdata}/>} />
           <Route path={`${paths[4]}`} element={<PageNotFound />} />
           <Route path={`${paths[5]}`} element={<PageLeaderboard userdata={userdata} setUserdata={setUserdata} />} />
-          <Route path={`${paths[6]}`} element={<PageAddProducts actualVends={filteredVendors} allVends={vendors} theme={theme}/>} />
-          <Route path={`${paths[7]}`} element={<PageAddProducts actualVends={filteredVendors} allVends={vendors} theme={theme}/>} />
         </Route>
       </Routes>
       {showPopup &&

@@ -116,7 +116,7 @@ export default function VendorGroup({
             </div>
             <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {products.map((product) => (
-                    <ButtonBase key={product.id} component="div"
+                    <ButtonBase key={product.id} component="div" 
                                 onContextMenu={(e) => {
                                     openEditMode(e, vendor.id, product.id);
                                 }}

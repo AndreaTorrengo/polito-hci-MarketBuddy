@@ -1,67 +1,71 @@
 "use client";
-import {useEffect, useState} from "react";
-import {Button, ButtonBase} from "@mui/material";
-import {Product, Vendor} from "../../models.ts";
-import ProductListItem, {ProductListItemProps} from "../PageVendorProducts/ProductListItem.tsx";
+import { useEffect, useMemo, useState } from "react";
+import { Button, ButtonBase } from "@mui/material";
+import { Product, Vendor, Market } from "../../models.ts";
+import ProductListItem, { ProductListItemProps } from "../PageVendorProducts/ProductListItem.tsx";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import API from "../../API.ts";
-import {useNavigate, useParams} from "react-router-dom";
 import ConfirmAddAlert from "../generalPurposeComponents/ConfirmAddAlert.tsx";
 
 interface PageAddProductsParams {
     allVends: Vendor[];
     actualVends: Vendor[];
     theme: string;
+    selectedMarket: Market;
+    setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
+    setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
+    addProductId: number | null;
+    isFeedbackDialogOpen: string | null;
+    setIsFeedbackDialogOpen: (value: string | null) => void;
 }
 
-export default function PageAddProducts({actualVends, allVends, theme}: PageAddProductsParams) {
-    const {id} = useParams()
+export default function PageAddProducts({ actualVends, allVends, theme, selectedMarket, setFilteredVendors, addProductId, setAddProductId, isFeedbackDialogOpen, setIsFeedbackDialogOpen }: PageAddProductsParams) {
+    const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
+    const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '[]');
 
     const [isAddAlertOpen, setIsAddAlertOpen] = useState(false);
 
-    const actualVendorsProducts: Vendor[] = id != null ? actualVends.filter(vendor => vendor.id === Number(id)) : actualVends;
-    const allVendors: Vendor[] = id != null ? allVends.filter(vendor => vendor.id === Number(id)) : allVends;
+    const actualVendorsProducts: Vendor[] = useMemo(() => addProductId != -1 ? actualVends.filter(vendor => vendor.id === addProductId) : actualVends, [addProductId, actualVends]);
+    const allVendors: Vendor[] = useMemo(() => addProductId != -1 ? allVends.filter(vendor => vendor.id === addProductId) : allVends, [addProductId, allVends]);
 
-    const productsAlreadyAdded: Product[] = Array.from(new Set(actualVendorsProducts.flatMap(
+    const productsAlreadyAdded: Product[] = useMemo(() => Array.from(new Set(actualVendorsProducts.flatMap(
         (vendor: Vendor) => vendor.products
     ).map(product => product.id)))
-        .map(id => actualVendorsProducts.flatMap(vendor => vendor.products).find(product => product.id === id)!);
+        .map(id => actualVendorsProducts.flatMap(vendor => vendor.products).find(product => product.id === id)!), [actualVendorsProducts]);
 
-    const availableProducts: Product[] = Array.from(new Set(allVendors.flatMap(
+    const availableProducts: Product[] = useMemo(() => Array.from(new Set(allVendors.flatMap(
         (vendor: Vendor) => vendor.products
     ).map(product => product.id)))
-        .map(id => allVendors.flatMap(vendor => vendor.products).find(product => product.id === id)!);
+        .map(id => allVendors.flatMap(vendor => vendor.products).find(product => product.id === id)!), [allVendors]);
 
     const [allProducts, setAllProducts] = useState<ProductListItemProps[]>([]);
 
     const [selectedProducts, setSelectedProducts] = useState<Map<number, ProductListItemProps>>(new Map());
-
-    const navigate = useNavigate();
 
     useEffect(
         () => {
             const fetchProducts = async () => {
                 try {
                     const products: Product[] = await API.getAllProducts();
+                    console.log(products)
                     setAllProducts(products.map(product => ({
-                            id: product.id,
-                            name: product.name,
-                            price: product.price,
-                            image: product.image,
-                            isSelected: false,
-                            editMode: true,
-                            showPrice: false
-                        }))
-                            .filter(product => !productsAlreadyAdded.some(item => item.id === product.id))
-                            .filter(product => availableProducts.some(item => item.id === product.id))
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        image: product.image,
+                        isSelected: false,
+                        editMode: true,
+                        showPrice: false
+                    }))
+                        .filter(product => !productsAlreadyAdded.some(item => item.id === product.id))
+                        .filter(product => availableProducts.some(item => item.id === product.id))
                     );
                 } catch (error) {
                     console.error(error);
                 }
             }
-
             fetchProducts();
-        }, []
+        }, [availableProducts, productsAlreadyAdded]
     )
 
     function addOrRemoveSelected(index: number) {
@@ -81,30 +85,43 @@ export default function PageAddProducts({actualVends, allVends, theme}: PageAddP
         setSelectedProducts(new Map(selectedProducts));
     }
 
-    async function handleAdd() {
-        if (!selectedProducts) {
-            throw new Error("Selected products is null");
-        }
-        try {
-            //await API.addProductsToShoppingList(Array.from(selectedProducts.values()));
+    function handleAdd() {
 
-            setTimeout(() => {
-                navigate(-1);
-            }, 1000);
-        } catch (error) {
-            console.error(error)
-        }
+        selectedProducts.forEach((product, productId) => {
+            let productAdded = false;
+            allVends.forEach(vendor => {
+                if (productAdded) return;
+                const product = vendor.products.find(product => product.id === productId);
+                if (product) {
+                    const existingVendor = filteredVendors.find(v => v.id === vendor.id);
+                    if (existingVendor) {
+                        existingVendor.products.push(product);
+                    } else {
+                        const newVendor = { ...vendor, products: [product] };
+                        filteredVendors.push(newVendor);
+                    }
+                    productAdded = true;
+                }
+            });
+        });
+
+         
+        setFilteredVendors(filteredVendors);
+        localStorage.setItem(filteredVendorsKey, JSON.stringify(filteredVendors));
+        setAddProductId(null);
+
+
     }
 
     return (
-        <div className="h-full">
+        <div className="absolute z-[10000000] w-full h-full">
             {/* TopBar */}
-            <ConfirmAddAlert theme={theme} setIsOpen={setIsAddAlertOpen} isOpen={isAddAlertOpen} numberOfProducts={selectedProducts.size}
-                             handleAdd={handleAdd}></ConfirmAddAlert>
+            <ConfirmAddAlert isFeedbackDialogOpen={isFeedbackDialogOpen} setIsFeedbackDialogOpen={setIsFeedbackDialogOpen} theme={theme} setIsOpen={setIsAddAlertOpen} isOpen={isAddAlertOpen} products={selectedProducts}
+                handleAdd={handleAdd}></ConfirmAddAlert>
             <TopBar
                 leftComponent={selectedProducts &&
                     <ButtonBase className="text-md font-semibold" onClick={() => {
-                        navigate(-1)
+                        setAddProductId(null);
                     }}><p
                         className="m-0 p-0">Cancel</p></ButtonBase>}
                 centerComponent={allProducts && allProducts.length > 0 && <h1
@@ -128,7 +145,7 @@ export default function PageAddProducts({actualVends, allVends, theme}: PageAddP
                                             xmlns="http://www.w3.org/2000/svg"
                                         >
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3"
-                                                  d="M5 13l4 4L19 7"/>
+                                                d="M5 13l4 4L19 7" />
                                         </svg>
                                     </div>
                                 </div>
@@ -152,7 +169,7 @@ export default function PageAddProducts({actualVends, allVends, theme}: PageAddP
                             </>}
 
                         {selectedProducts && selectedProducts.size > 0 &&
-                            <Button variant="outlined" onClick={() => {setIsAddAlertOpen(true)}}>
+                            <Button variant="outlined" onClick={() => { setIsAddAlertOpen(true) }}>
                                 <div className="flex flex-row items-center justify-center">
                                     Add
                                 </div>
@@ -192,33 +209,33 @@ export default function PageAddProducts({actualVends, allVends, theme}: PageAddP
                                         null
                                         :
                                         <ButtonBase key={product.id} component="div"
-                                                    onClick={() => {
-                                                        addOrRemoveSelected(index);
-                                                    }}
+                                            onClick={() => {
+                                                addOrRemoveSelected(index);
+                                            }}
                                         >
                                             <ProductListItem key={index} {...product} showPrice={false} editMode={true}
-                                                             isSelected={
-                                                                 selectedProducts ? selectedProducts.has(product.id) : false
-                                                             }/>
+                                                isSelected={
+                                                    selectedProducts ? selectedProducts.has(product.id) : false
+                                                } />
                                         </ButtonBase>
                                 )))
                                 :
                                 <div className="flex flex-col h-80 items-center justify-center gap-4">
                                     {
-                                        id != null ?
+                                        addProductId != -1 ?
                                             <p className="m-0 p-0 text-xl text-center">No more products available
-                                                for <br/> {
+                                                for <br /> {
                                                     actualVendorsProducts ? (actualVendorsProducts.length >= 1 ? actualVendorsProducts[0].name : "this vendor") : ""
                                                 }</p>
                                             :
                                             <p className="m-0 p-0 text-xl text-center">No more products available
-                                                in <br/> {
+                                                in <br /> {
                                                     actualVendorsProducts ? (actualVendorsProducts.length >= 1 ? actualVendorsProducts[0].market : "your market") : ""
                                                 }</p>
 
                                     }
                                     <Button variant={"contained"} onClick={() => {
-                                        navigate(-1)
+                                        setAddProductId(null);
                                     }}>
                                         Go Back
                                     </Button>

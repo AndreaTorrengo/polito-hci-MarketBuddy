@@ -2,7 +2,7 @@ import SmallIconButton from "../generalPurposeComponents/SmallIconButton";
 import { Market, Vendor, Product } from "../../models";
 import { Button, Dialog, DialogPanel } from '@tremor/react';
 import React, { useState } from 'react';
-import './SignalErrorButton.css';
+import './Dialogs.css';
 
 interface SignalErrorButtonProps {
     selectedProducts: Map<number, number[]>;
@@ -10,11 +10,14 @@ interface SignalErrorButtonProps {
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     theme: string,
     closeAfter: () => void;
+    selectedReasons: string[];
+    setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
+    isFeedbackDialogOpen: string | null;
+    setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
 }
-const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter }) => {
+const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter, selectedReasons, setSelectedReasons, isFeedbackDialogOpen, setIsFeedbackDialogOpen }) => {
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
 
     const [productsSwitching, setProductsSwitching] = useState<Product[]>([]);
 
@@ -24,8 +27,6 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
     const vendors: Vendor[] = JSON.parse(localStorage.getItem(vendorsKey) || '[]');
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '[]');
     const missingProduct: string[] = JSON.parse(localStorage.getItem(missingProductsKey) || '[]');
-
-    const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
 
     const handleReasonSelect = (reason: string) => {
         if (reason === 'reason1') {
@@ -107,7 +108,8 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
         localStorage.setItem(filteredVendorsKey, JSON.stringify(filteredVendors));
         localStorage.setItem(missingProductsKey, JSON.stringify(missingProduct));
         setIsDialogOpen(false);
-        setIsFeedbackDialogOpen(true);
+        setIsFeedbackDialogOpen('report');
+        closeAfter();
     };
     return (
         <>
@@ -133,57 +135,53 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
                     </div>
 
                     <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
-                        <Button
-                            className="button"
-                            style={{ backgroundColor: selectedReasons.includes('reason1') ? '#4E80EE' : '#DDDDDD', color: selectedReasons.includes('reason1') ? '#FFFFFF' : '#000000', padding: '8px 12px', fontSize: '0.875rem', width: '200px' }}
-                            onClick={() => handleReasonSelect('reason1')}
-                        >
-                            Missing product/s
-                        </Button>
-                        <Button
-                            className="button"
-                            style={{ backgroundColor: selectedReasons.includes('reason2') ? '#4E80EE' : '#DDDDDD', color: selectedReasons.includes('reason2') ? '#FFFFFF' : '#000000', padding: '8px 12px', fontSize: '0.875rem', width: '200px' }}
-                            onClick={() => handleReasonSelect('reason2')}
-                        >
-                            Poor quality
-                        </Button>
-                        <Button
-                            className="button"
-                            style={{ backgroundColor: selectedReasons.includes('reason3') ? '#4E80EE' : '#DDDDDD', color: selectedReasons.includes('reason3') ? '#FFFFFF' : '#000000', padding: '8px 12px', fontSize: '0.875rem', width: '200px' }}
-                            onClick={() => handleReasonSelect('reason3')}
-                        >
-                            Price too high
-                        </Button>
-                        <Button
-                            className="button"
-                            style={{ backgroundColor: selectedReasons.includes('reason4') ? '#4E80EE' : '#DDDDDD', color: selectedReasons.includes('reason4') ? '#FFFFFF' : '#000000', padding: '8px 12px', fontSize: '0.875rem', width: '200px' }}
-                            onClick={() => handleReasonSelect('reason4')}
-                        >
-                            Improperly stored
-                        </Button>
+                        {[
+                            { id: 'reason1', label: 'Missing product/s' },
+                            { id: 'reason2', label: 'Poor quality' },
+                            { id: 'reason3', label: 'Price too high' },
+                            { id: 'reason4', label: 'Improperly stored' }
+                        ].map(reason => (
+                            <Button
+                                key={reason.id}
+                                className="button"
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between', // Cambia justifyContent a space-between
+                                    backgroundColor: 'transparent',
+                                    border: '2px solid ' + (selectedReasons.includes(reason.id) ? (theme === 'dark' ? '#FFFFFF' : '#000000') : (theme === 'dark' ? '#bfbfbf' : '#666666')),
+                                    color: selectedReasons.includes(reason.id) ? (theme === 'dark' ? '#FFFFFF' : '#000000') : (theme === 'dark' ? '#bfbfbf' : '#666666'),
+                                    padding: '8px 12px',
+                                    fontSize: '0.875rem',
+                                    width: '200px',
+                                    transition: 'all 0.2s ease-in-out'
+                                }}
+                                onClick={() => handleReasonSelect(reason.id)}
+                            >
+                                <input
+                                    type="checkbox"
+                                    className="checkbox"
+                                    checked={selectedReasons.includes(reason.id)}
+                                    onChange={() => handleReasonSelect(reason.id)}
+                                    style={{
+                                        marginRight: '10px',
+                                        backgroundColor: selectedReasons.includes(reason.id) ? (theme === 'dark' ? '#000000' : '#000000') : (theme === 'dark' ? '#000000' : '#FFFFFF'),
+                                        border: '1px solid ' + (selectedReasons.includes(reason.id) ? (theme === 'dark' ? '#FFFFFF' : '#000000') : (theme === 'dark' ? '#bfbfbf' : '#666666')),
+                                    }}
+                                />
+                                <span style={{ flexGrow: 1, textAlign: 'center' }}>{reason.label}</span> {/* Aggiungi uno span per il testo */}
+                            </Button>
+                        ))}
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '20px' }}>
-                        <Button className="button" onClick={handleConfirm}>Confirm</Button>
-                        <Button className="button" style={{ backgroundColor: '#DD524C', borderColor: "#DD524C" }} onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+
+                    <div style={{ display: 'flex', justifyContent: 'right', gap: '10px', marginTop: '20px' }}>
+                        <Button className="button-cancel" style={{ backgroundColor: 'transparent', borderColor: theme === 'dark' ? 'white' : 'black', color: theme === 'dark' ? 'white' : 'black', borderWidth: '1px' }} onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                        <Button className="button" onClick={handleConfirm} disabled={selectedReasons.length === 0}>Confirm</Button>
                     </div>
                 </DialogPanel>
-            </Dialog>
-            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isFeedbackDialogOpen} onClose={() => {setIsFeedbackDialogOpen(false); closeAfter();}}>
-                <DialogPanel>
-                    {selectedReasons.includes('reason1') ? (
-                        <>
-                            <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: '#32CD32' }}>Success</h1>
-                            <p className="message-text" style={{ marginTop: '10px' }}>Report sent successfully. If one of the missing products was part of your shopping list the alert will show you alternatives.</p>
-                        </>
-                    ) : (
-                        <>
-                            <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: '#32CD32' }}>Success</h1>
-                            <p className="message-text" style={{ marginTop: '10px' }}>Report sent successfully. We're sorry you're experiencing these issues :(</p>
-                        </>
-                    )}
-                </DialogPanel>
-            </Dialog>
+            </Dialog >
+
         </>
     );
 }

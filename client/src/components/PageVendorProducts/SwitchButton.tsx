@@ -2,7 +2,7 @@ import SmallIconButton from "../generalPurposeComponents/SmallIconButton";
 import { Market, Vendor, Product } from "../../models";
 import { Button, Dialog, DialogPanel } from '@tremor/react';
 import React, { useState } from 'react';
-import './SwitchButton.css';
+import './Dialogs.css';
 
 interface SwitchButtonProps {
     selectedProducts: Map<number, number[]>;
@@ -10,14 +10,15 @@ interface SwitchButtonProps {
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     theme: string,
     closeAfter: () => void;
+    isFeedbackDialogOpen: string | null;
+    setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
+    setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
+    productsWithoutAlternatives: Product[];
 }
 
-const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter }) => {
+const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter,setIsFeedbackDialogOpen,productsWithoutAlternatives,setProductsWithoutAlternatives }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
-    const [productsWithoutAlternatives, setProductsWithoutAlternatives] = useState<Product[]>([]);
     const [productsSwitching, setProductsSwitching] = useState<Product[]>([]);
-
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const vendorsKey = `vendors_${selectedMarket.name}`;
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '[]');
@@ -54,6 +55,18 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                             filteredVendors.push(newVendor);
                         }
                         alternativeFound = true;
+
+                        // Remove the product from the previous vendor
+                        const previousVendor = filteredVendors.find(v => v.id === vendorId);
+                        if (previousVendor) {
+                            previousVendor.products = previousVendor.products.filter(p => p.id !== product.id);
+                            // If the previous vendor has no more products, remove the vendor
+                            if (previousVendor.products.length === 0) {
+                                const updatedFilteredVendors = filteredVendors.filter(v => v.id !== vendorId);
+                                filteredVendors.length = 0;
+                                filteredVendors.push(...updatedFilteredVendors);
+                            }
+                        }
                     }
                 });
 
@@ -70,7 +83,8 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
         setFilteredVendors(filteredVendors);
         localStorage.setItem(filteredVendorsKey, JSON.stringify(filteredVendors));
         setIsDialogOpen(false);
-        setIsFeedbackDialogOpen(true);
+        setIsFeedbackDialogOpen('switch');
+        closeAfter();
     };
 
     return (
@@ -96,32 +110,10 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                         </div>
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'right', gap: '10px', marginTop: '20px' }}>
+                        <Button className="button-cancel" style={{ backgroundColor: 'transparent', borderColor: theme === 'dark' ? 'white' : 'black', color: theme === 'dark' ? 'white' : 'black', borderWidth: '1px' }} onClick={() => setIsDialogOpen(false)}>Cancel</Button>
                         <Button className="button" onClick={handleConfirm}>Confirm</Button>
-                        <Button className="button" style={{ backgroundColor: '#DD524C', borderColor: "#DD524C" }} onClick={() => setIsDialogOpen(false)}>Cancel</Button>
                     </div>
-                </DialogPanel>
-            </Dialog>
-            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isFeedbackDialogOpen} onClose={() => {setIsFeedbackDialogOpen(false); closeAfter();}}>
-                <DialogPanel>
-                    {productsWithoutAlternatives.length === 0 ? (
-                        <>
-                            <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: '#32CD32' }}>Success</h1>
-                            <p className="message-text" style={{ marginTop: '10px' }}>All products have been successfully assigned to other sellers.</p>
-                        </>
-                    ) : (
-                        <>
-                            <h1 style={{ fontWeight: 'bold', fontSize: '1rem', color: 'red' }}>Failed to Assign</h1>
-                            <p className="message-text" style={{ marginTop: '10px' }}>The following products could not be assigned to other sellers:</p>
-                            <div>
-                                {productsWithoutAlternatives.map((product, index) => (
-                                    <span className="products-text" key={index} style={{ fontWeight: 'bold' }}>
-                                        {product.name}{index < productsWithoutAlternatives.length - 1 ? ', ' : ''}
-                                    </span>
-                                ))}
-                            </div>
-                        </>
-                    )}
                 </DialogPanel>
             </Dialog>
         </>
