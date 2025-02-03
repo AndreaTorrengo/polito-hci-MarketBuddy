@@ -27,9 +27,10 @@ function modifyMarketDistances(markets: Market[], selectedMarket: Market) {
   });
 }
 
-export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket }: Readonly<{
+export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket, className }: Readonly<{
   selectedMarket: Market;
   setSelectedMarket: (market: Market) => void;
+  className?: string;
 }>) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
@@ -52,9 +53,9 @@ export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket 
 
   return (
     <>
-      <Button variant="text" color="bw" className="flex items-center align-middle my-2 font-bold me-auto" onClick={() => setIsOpen(true)}>
+      <Button variant="text" color="bw" className={`flex items-center align-middle font-bold ms-auto ${className}`} onClick={() => setIsOpen(true)}>
         <LocationOnOutlinedIcon />
-        <span className="ml-2">{selectedMarket.name}</span>
+        <span className="">{selectedMarket.name}</span>
         <ExpandMoreIcon />
       </Button>
       <Sheet isOpen={isOpen} onClose={() => setIsOpen(false)} detent='content-height' mountPoint={approot} >
@@ -112,8 +113,8 @@ interface MarketCardProps {
 
 function MarketCard({ market, selectedMarket, selectMarket }: Readonly<MarketCardProps>) {
   return (
-    <Button className="flex justify-start w-full animated active:bg-tremor-background-subtle dark:active:bg-dark-tremor-background-subtle" onClick={() => selectMarket(market)}>
-      <div className="flex flex-row items-center text-tremor-content-strong dark:text-dark-tremor-content-emphasis w-full">
+    <Button className="flex justify-start w-full" onClick={() => selectMarket(market)}>
+      <div className="flex flex-row items-center w-full">
         <div className="flex flex-col">
           {(market.name === selectedMarket.name) ? <NearMeOutlinedIcon className="me-2" fontSize="large" /> :
             <StorefrontOutlinedIcon className="me-2" fontSize="large" />}
