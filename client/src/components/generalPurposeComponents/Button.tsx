@@ -13,7 +13,12 @@ export const Button = ({ variant, size, children, className, ...props }: LargeBu
     let active_bg_color;
     let active_dark_bg_color;
 
+    if (!variant) {
+        props.color = props.color ?? 'bw';
+    }
+
     switch (props.color) {
+        case undefined:
         case 'primary':
             bg_color = 'blue-500';
             fg_color = 'white';
@@ -55,7 +60,6 @@ export const Button = ({ variant, size, children, className, ...props }: LargeBu
             dark_fg_color = 'white';
             active_dark_bg_color = 'yellow-800';
             break;
-        case undefined:
         case 'bw':
             bg_color = 'black';
             fg_color = 'white';
