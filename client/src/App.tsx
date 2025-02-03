@@ -7,7 +7,7 @@ import PageProfile from "./components/PageProfile/PageProfile";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
 import PageLeaderboard from "./components/PageLeaderboard/PageLeaderboard";
 import PropTypes from "prop-types";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import API from "./API";
 import { Vendor, Product, Market } from "./models";
 import ConfirmPopup from "./components/ConfirmationPopup";
@@ -36,7 +36,6 @@ export default function App() {
   });
   const [questPendingClaims, setQuestPendingClaims] = useState(0);
   const [activeTab, setActiveTab] = useState(paths.indexOf(window.location.pathname));
-  //const userdata = useRef(getUserdata());
   const [userdata, setUserdata] = useState(getUserdata());
   // Update localstorage each time userdata state changes
   useEffect(() => saveUserData(userdata), [userdata]);
@@ -271,7 +270,7 @@ export default function App() {
           updateVendorsAndProducts={updateVendorsAndProducts} 
           productsList={productsList} setProductsList={setProductsList} />} />  
           <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} leaderboardPath={`${paths[5]}`} userdata={userdata} setUserdata={setUserdata} />} />
-          <Route path={`${paths[2]}`} element={<PageReward askConfirmation={askConfirmation} />} />
+          <Route path={`${paths[2]}`} element={<PageReward askConfirmation={askConfirmation} userdata={userdata} setUserdata={setUserdata}/>} />
           <Route path={`${paths[2]}/history`} element={<PageRewardHistory />} />
           <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} askConfirmation={askConfirmation} userdata={userdata} setUserdata={setUserdata}/>} />
           <Route path={`${paths[4]}`} element={<PageNotFound />} />
@@ -291,6 +290,7 @@ function Layout(props: Readonly<{ paths: string[], activeTab: number, questPendi
       <div className="flex-grow overflow-y-auto flex-1">
         <Outlet />
       </div>
+      {/* <StatPopup coins={props.userdata.coins} exp={props.userdata.experience} /> */}
       <Navbar paths={props.paths} activeTab={props.activeTab} setActiveTab={props.setActiveTab} questPendingClaims={props.questPendingClaims} />
     </div>
   );
@@ -299,5 +299,5 @@ Layout.propTypes = {
   paths: PropTypes.array,
   activeTab: PropTypes.number,
   questPendingClaims: PropTypes.number,
-  setActiveTab: PropTypes.func.isRequired
+  setActiveTab: PropTypes.func.isRequired,
 }

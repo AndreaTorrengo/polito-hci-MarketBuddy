@@ -62,3 +62,9 @@ export const resetDB = async (req: Request, res: Response) => {
     res.status(500).json({ error: (error as Error).message });
   }
 };
+
+export const backupDB = () => {
+  const dbPath = path.resolve(__dirname, 'db/marketbuddy.db');
+  const backupPath = path.resolve(__dirname, 'db/marketbuddy.db.bak');
+  fs.copyFile(dbPath, backupPath);
+}

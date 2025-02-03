@@ -4,7 +4,9 @@ import { DarkModeCustomSwitch } from './darkModeSwitch';
 import API from '../../API';
 import { Dispatch, SetStateAction } from 'react';
 import { UserData } from './UserData';
-import { Card, TextInput, Title, Text } from '@tremor/react';
+import { Card, TextInput, Title } from '@tremor/react';
+import { ICONS } from "./Icons";
+import IconSelector from './IconSelector';
 
 interface PageProfileProps {
   theme: 'light' | 'dark';
@@ -28,7 +30,7 @@ export default function PageProfile({ theme, toggleTheme, askConfirmation, userd
     <>
       <div className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle p-6">
         <Title className="text-center text-4xl mb-6">Profile</Title>
-        
+
         <Card className="flex flex-col p-4">
           <div className="grid gap-3 text-tremor-content dark:text-dark-tremor-content">
 
@@ -40,7 +42,7 @@ export default function PageProfile({ theme, toggleTheme, askConfirmation, userd
 
             <div className="flex items-center">
               <label className="min-w-32">Username:</label>
-              <TextInput placeholder="Enter your username" value={userdata.username} disabled/>
+              <TextInput placeholder="Enter your username" value={userdata.username} disabled />
             </div>
 
             <div className="flex items-center">
@@ -57,6 +59,17 @@ export default function PageProfile({ theme, toggleTheme, askConfirmation, userd
                 <span className="font-semibold"><EmojiEmotionsIcon /></span>
                 <span className="font-semibold">{userdata.coins}</span>
               </div>
+            </div>
+
+            <div className='flex flex-col w-full'>
+              <div className='flex flex-row mb-2'>
+                <label className="min-w-32">Profile icon:</label>
+              </div>
+              {/* <div className="flex items-center space-x-2 text-yellow-500">
+                <span className="font-semibold"><EmojiEmotionsIcon /></span>
+                <span className="font-semibold">{userdata.coins}</span>
+              </div> */}
+              <IconSelector icons={ICONS} userdata={userdata} setUserdata={setUserdata} />
             </div>
 
           </div>
