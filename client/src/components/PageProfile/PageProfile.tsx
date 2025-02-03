@@ -40,9 +40,8 @@ export default function PageProfile({ theme, toggleTheme, userdata, setUserdata 
   }
 
   return (
-    <div className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle p-6">
-      <Title className="text-center text-4xl mb-6">Profile</Title>
-
+    <div className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle px-6 py-4">
+      <h1 className="page-title mb-4">Profile</h1>
       <Card className="flex flex-col p-4">
         <div className="grid gap-3 text-tremor-content dark:text-dark-tremor-content">
 

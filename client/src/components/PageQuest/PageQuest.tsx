@@ -84,8 +84,8 @@ export default function PageQuest(props: any) {
   return (
     <>
       <StatPopup coins={props.userdata.coins} exp={props.userdata.experience} />
-      <div className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle p-6">
-        <Title className="text-center text-4xl mb-6">Quests</Title>
+      <div className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle px-6 py-4">
+        <h1 className="page-title mb-4">Quests</h1>
         <div className="flex flex-col gap-4 relative">
           {quests.map((quest: any) =>
             <div id={`${quest.id}`} key={quest.id}

@@ -6,7 +6,6 @@ import { LocalOfferOutlined } from '@mui/icons-material';
 import planet from "../../assets/planet03.png";
 import RestoreOutlinedIcon from '@mui/icons-material/RestoreOutlined';
 import { useNavigate } from 'react-router-dom';
-import { Title } from '@tremor/react';
 import globalContext from '../../Context';
 
 const iconsMap: { [key: string]: JSX.Element } = {
@@ -65,10 +64,10 @@ export default function PageReward({ askConfirmation }: Readonly<{ askConfirmati
   }
 
   return (
-    <div className='w-full h-full p-6'>
-      <div className='flex justify-between mb-6'>
-        <Title className="text-4xl align-middle">Rewards</Title>
-        <div className='flex align-middle'>
+    <div className='w-full h-full px-6 py-4'>
+      <div className='flex justify-between mb-4'>
+        <h1 className="page-title">Rewards</h1>
+        <div className='flex'>
           <button onClick={() => navigate('history')}>
           <RestoreOutlinedIcon />
         </button>
