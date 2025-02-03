@@ -123,7 +123,7 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
                     </svg>
                 </div>
             </SmallIconButton>
-            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+            <Dialog className={theme === 'dark' ? 'dark z-40' : 'z-40'} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
                 <DialogPanel>
                     <h1 className="confirm-text" style={{ fontWeight: 'bold', fontSize: '1rem' }}>Confirm Report</h1>
                     <p className="message-text" style={{ marginTop: '10px' }}>Choose why you decided to report these products:</p>

@@ -60,7 +60,7 @@ export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket,
       </Button>
       <Sheet isOpen={isOpen} onClose={() => setIsOpen(false)} detent='content-height' mountPoint={approot} >
         <Sheet.Container>
-          <Sheet.Header className="dark:bg-dark-tremor-background dark:text-dark-tremor-content-emphasis" />
+          <Sheet.Header className="dark:bg-dark-tremor-background" />
           <Sheet.Content className="dark:bg-dark-tremor-background">
             <h1 className="font-bold text-3xl text-center">Choose The Market</h1>
             <div className="mx-20 mt-2 mb-4">

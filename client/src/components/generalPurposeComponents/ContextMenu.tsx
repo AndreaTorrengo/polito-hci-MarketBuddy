@@ -76,7 +76,7 @@ export default function ContextMenu({ isOpen, x, y, items, onClose }: ContextMen
     return (
         <motion.div
             ref={menuRef}
-            className="z-[3000] absolute"
+            className="z-30 absolute"
             style={{top: `${position.y - 50}px`, left: `${position.x}px`}}
             initial={{opacity: 0, scale: 0.95}}
             animate={{opacity: 1, scale: 1}}
