@@ -86,7 +86,7 @@ export default function PageShoppingList({
                                         name: product.name,
                                         price: parseFloat((product.price * vendor.priceMultiplier).toFixed(2)),
                                         points: product.points,
-                                        image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg",
+                                        image: product.image,
                                         showPrice: true,
                                     }
                                     ))}

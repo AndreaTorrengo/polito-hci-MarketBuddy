@@ -48,6 +48,7 @@ export default function PageVendorProducts({
         name: product.name,
         price: parseFloat((product.price * vendor.priceMultiplier).toFixed(2)),
         image: product.image,
+        points: product.points,
         editMode: false,
         isSelected: false,
         showPrice: true
@@ -203,7 +204,7 @@ export default function PageVendorProducts({
                                                 theme={theme}
                                             />
                                                 <DeleteButton selectedMarket={selectedMarket}
-                                                selectedProducts={selectedProducts} s
+                                                selectedProducts={selectedProducts}
                                                 setFilteredVendors={setFilteredVendors}
                                                 theme={theme}
                                             />
