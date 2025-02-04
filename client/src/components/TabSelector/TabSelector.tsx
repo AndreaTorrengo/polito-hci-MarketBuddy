@@ -338,7 +338,8 @@ export default function TabsHero({
                             <PageShoppingList
                                 selectedProducts={selectedProducts}
                                 productsList={productsList}
-                                setProductsList={setProductsList}
+                            setProductsList={setProductsList}
+                            filteredVendors={filteredVendors}
                                 theme={theme}
                             closeAfter={closeAfter}
                                 selectedMarket={selectedMarket}

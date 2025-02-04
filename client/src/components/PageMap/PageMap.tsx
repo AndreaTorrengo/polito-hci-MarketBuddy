@@ -255,7 +255,7 @@ const PageMap: React.FC<PageMapProps> = ({
                         productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                         closeAfter={closeAfter}
                         selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
-                        isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId}></PageVendorProducts>
+                        isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} filteredVendors={filteredVendors} />
                 )
             )}
             {/* Market selector

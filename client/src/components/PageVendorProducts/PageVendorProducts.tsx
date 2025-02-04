@@ -32,6 +32,7 @@ interface PageVendorProductsParams {
     productsList: { [key: string]: string[] };
     setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
     closeAfter: () => void;
+    filteredVendors: Vendor[];
 }
 
 export default function PageVendorProducts({
@@ -43,6 +44,7 @@ export default function PageVendorProducts({
     vendor,
     setAddProductId,
     setProductsWithoutAlternatives,
+    filteredVendors,
     productsList,
     setProductsList,
     closeAfter
@@ -143,11 +145,7 @@ export default function PageVendorProducts({
     function confirmSale() {
         setIsQrCodeDialogOpen(false);
         setIsOpen(false);
-        const updatedProductList = { ...productsList };
-        for (const key in updatedProductList) {
-            updatedProductList[key] = updatedProductList[key].filter(p => !products.map(p => p.name).includes(p));
-        }
-        setProductsList(updatedProductList);
+        setFilteredVendors(filteredVendors.filter(v => v.id !== vendor.id));
         showToastMessage && showToastMessage("Sale confirmed!", "success");
     }
 

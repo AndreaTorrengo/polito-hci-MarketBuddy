@@ -15,6 +15,7 @@ interface PageShoppingListProps {
     readonly selectedOrRemoveAllProductsFromVendor: (vendorId: number, remove: boolean) => void;
     readonly filteredProductsVendors: Vendor[];
     readonly setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
+    readonly filteredVendors: Vendor[];
     setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
     selectedReasons: string[];
     setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
@@ -40,6 +41,7 @@ export default function PageShoppingList({
     setSelectedReasons,
     productsWithoutAlternatives,
     closeAfter,
+    filteredVendors,
     setProductsWithoutAlternatives,
 }: Readonly<PageShoppingListProps>) {
     const [isVendorPageOpen, setIsVendorPageOpen] = useState(false);
@@ -68,7 +70,7 @@ export default function PageShoppingList({
                                 vendor={vendor} isOpen={isVendorPageOpen}
                                 closeAfter={closeAfter}
                                 setIsOpen={(value: boolean) => setIsVendorPageOpen(value)}
-                                    theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} productsList={productsList} setProductsList={setProductsList} />}
+                                    theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} productsList={productsList} setProductsList={setProductsList} filteredVendors={filteredVendors} />}
 
                             <VendorGroup id={vendor.id}
                                 openEditMode={openEditMode}
