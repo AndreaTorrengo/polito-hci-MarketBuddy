@@ -20,6 +20,7 @@ interface PageShoppingListProps {
     setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
     setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
     productsWithoutAlternatives: Product[];
+    closeAfter: () => void;
 }
 
 export default function PageShoppingList({
@@ -38,10 +39,12 @@ export default function PageShoppingList({
     selectedReasons,
     setSelectedReasons,
     productsWithoutAlternatives,
+    closeAfter,
     setProductsWithoutAlternatives,
 }: Readonly<PageShoppingListProps>) {
     const [isVendorPageOpen, setIsVendorPageOpen] = useState(false);
     const [selectedVendor, setSelectedVendor] = useState<number>(-1);
+
 
     return (
         <div id="ShoppingListPage" className="flex flex-col gap-2">
@@ -63,8 +66,9 @@ export default function PageShoppingList({
                                 productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                 selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
                                 vendor={vendor} isOpen={isVendorPageOpen}
+                                closeAfter={closeAfter}
                                 setIsOpen={(value: boolean) => setIsVendorPageOpen(value)}
-                                    theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} />}
+                                    theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} productsList={productsList} setProductsList={setProductsList} />}
 
                             <VendorGroup id={vendor.id}
                                 openEditMode={openEditMode}
