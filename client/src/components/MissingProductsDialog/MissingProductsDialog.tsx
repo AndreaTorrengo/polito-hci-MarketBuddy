@@ -109,7 +109,6 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
             }
         });
 
-
         localStorage.setItem(filteredVendorsKey, JSON.stringify(updatedFilteredVendor));
         setFilteredVendors(updatedFilteredVendor);
 
@@ -134,11 +133,13 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
             if (!updatedAlternatives[missingProductId]) {
                 updatedAlternatives[missingProductId] = [];
             }
+
             if (updatedAlternatives[missingProductId].includes(alternative)) {
                 updatedAlternatives[missingProductId] = updatedAlternatives[missingProductId].filter(item => item !== alternative);
             } else {
                 updatedAlternatives[missingProductId].push(alternative);
             }
+
             return updatedAlternatives;
         });
     };
@@ -192,22 +193,22 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                     <div className={`flex justify-center grid gap-4 ${randomAlternatives[missingProducts[currentIndex]]?.length === 1 ? 'grid-cols-1' : randomAlternatives[missingProducts[currentIndex]]?.length === 2 ? 'grid-cols-2' : randomAlternatives[missingProducts[currentIndex]]?.length === 3 ? 'grid-cols-3' : 'grid-cols-4'}`}>
                                         {Array.isArray(randomAlternatives[missingProducts[currentIndex]]) && randomAlternatives[missingProducts[currentIndex]].length > 0 ? (
                                             randomAlternatives[missingProducts[currentIndex]].map((alternative, altIndex) => (
-                                                <>
-                                                    <div key={altIndex} onClick={() => handleSelectAlternative(missingProducts[currentIndex], alternative)} style={{ width: '120px', height: '120px' }}>
+                                                <div key={alternative.id}>
+                                                    <button onClick={() => handleSelectAlternative(missingProducts[currentIndex], alternative)} style={{ width: '120px', height: '120px' }}>
                                                         <ProductItem
                                                             key={alternative.id}
                                                             {...alternative}
                                                             isSelected={selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) || false}
                                                             isEditMode={true}
                                                         />
-                                                    </div>
+                                                    </button>
                                                     {missingProducts.length > 1 && (<div
                                                         style={{ position: 'absolute', top: '10px', right: '10px', background: 'transparent', border: 'none', fontSize: '1rem', color: theme === 'dark' ? '#EEEEEE' : '#333333', pointerEvents: 'none' }}
                                                     >
                                                         {currentIndex + 1}/{missingProducts.length}
                                                     </div>
                                                     )}
-                                                </>
+                                                </div>
                                             ))
                                         ) : (
                                             <>

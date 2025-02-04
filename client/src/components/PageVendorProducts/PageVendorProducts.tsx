@@ -95,8 +95,6 @@ export default function PageVendorProducts({
         ]
     });
 
-    const activeTab = localStorage.getItem('activeTab') ?? 'list';
-
     const handleClose = () => {
         setIsOpen(false);
         setIsEditMode(false);
@@ -157,8 +155,7 @@ export default function PageVendorProducts({
 
     return (
         <>
-            <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot} detent={origin === 'list' ? "content-height" : "full-height"} initialSnap={origin === "map" ? 2 : undefined} snapPoints={[1.0, 0.6, 0.43, 0.39, 0.24]} className="!z-0" onSnap={(snapIndex) => { snapIndex == 2 ? setShowUpArrow(true) : setShowUpArrow(false) }
-            }>
+            <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot} detent={origin === 'list' ? "content-height" : "full-height"} initialSnap={origin === "map" ? 2 : undefined} snapPoints={[1.0, 0.6, 0.43, 0.39, 0.24]} onSnap={(snapIndex) => { snapIndex == 2 ? setShowUpArrow(true) : setShowUpArrow(false) }}>
                 <Sheet.Container>
                     <Sheet.Header
                         className="dark:bg-dark-tremor-background">
@@ -259,70 +256,67 @@ export default function PageVendorProducts({
                                 </TopBar>
                             }
                         </div>
-                        <Sheet.Scroller draggableAt="top" className="px-5 pb-14"> {
-                            <div
-                                className="w-full h-full px-1 mt-4 flex flex-col gap-4">
-                                {/* Vendor's Categories */}
-                                <div className="w-full">
-                                    <VendorCategoryList categories={vendor.categories} />
-                                </div>
+                        <Sheet.Scroller className="px-6 pb-14 mt-4 flex flex-col gap-4">
+                            {/* Vendor's Categories */}
+                            <div className="w-full">
+                                <VendorCategoryList categories={vendor.categories} />
+                            </div>
 
-                                <div className="w-full">
-                                    <VendorBadges market={vendor.market} quality={vendor.quality_rating}
-                                        cordiality={vendor.cordiality_rating}
-                                        convenience={vendor.convenience_rating} />
-                                    <div className={`relative bottom-5 text-right w-full flex opacity-0 justify-end ${showUpArrow ? "animate-pulse opacity-10" : ""} transition-opacity duration-1000`}>
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="m5 9 7-7 7 7" />
-                                            <path d="M12 16V2" />
-                                            <circle cx="12" cy="21" r="1" />
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div className="w-full flex-1">
-                                    {/* Product list top bar */}
-                                    <div className="w-full flex flex-row justify-between items-center">
-                                        <p className="m-0 p-0">Your planned purchases</p>
-                                        <AddProductsButton onClick={() => setAddProductId(vendor.id)} />
-                                    </div>
-                                    {/* Product list */}
-                                    <div key={vendor.id} className="w-full flex flex-col gap-3 mt-4">
-                                        {products.map((product, index) => (
-                                            isEditMode ?
-                                                <ButtonBase key={product.id} component="div"
-                                                    onClick={() => {
-                                                        addOrRemoveSelected(index);
-                                                    }}
-                                                >
-                                                    <ProductListItem key={product.id} {...product} editMode={true}
-                                                        isSelected={
-                                                            selectedProducts ? selectedProducts.has(product.id) : false
-                                                        } />
-                                                </ButtonBase>
-                                                :
-                                                <ButtonBase key={product.id} component="div"
-                                                    onContextMenu={(e) => {
-                                                        //onLongPress(e, index);
-                                                        openEditMode(e, product.id);
-                                                    }}
-                                                >
-                                                    <ProductListItem key={product.id} {...product} editMode={false} />
-                                                </ButtonBase>
-                                        ))}
-                                    </div>
+                            <VendorBadges market={vendor.market} quality={vendor.quality_rating}
+                                cordiality={vendor.cordiality_rating}
+                                convenience={vendor.convenience_rating} />
+                            <div className="w-full">
+                                <div className={`relative bottom-5 text-right w-full flex justify-end ${showUpArrow ? "opacity-10 animate-pulse" : "opacity-0"} transition-opacity duration-1000`}>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="m5 9 7-7 7 7" />
+                                        <path d="M12 16V2" />
+                                        <circle cx="12" cy="21" r="1" />
+                                    </svg>
                                 </div>
                             </div>
-                        } </Sheet.Scroller>
+                            <div className="w-full flex-1">
+                                {/* Product list top bar */}
+                                <div className="w-full flex flex-row justify-between items-center">
+                                    <p className="m-0 p-0">Your planned purchases</p>
+                                    <AddProductsButton onClick={() => setAddProductId(vendor.id)} />
+                                </div>
+                                {/* Product list */}
+                                <div key={vendor.id} className="w-full flex flex-col gap-3 mt-4">
+                                    {products.map((product, index) => (
+                                        isEditMode ?
+                                            <ButtonBase key={product.id} component="div"
+                                                onClick={() => {
+                                                    addOrRemoveSelected(index);
+                                                }}
+                                            >
+                                                <ProductListItem key={product.id} {...product} editMode={true}
+                                                    isSelected={
+                                                        selectedProducts ? selectedProducts.has(product.id) : false
+                                                    } />
+                                            </ButtonBase>
+                                            :
+                                            <ButtonBase key={product.id} component="div"
+                                                onContextMenu={(e) => {
+                                                    //onLongPress(e, index);
+                                                    openEditMode(e, product.id);
+                                                }}
+                                            >
+                                                <ProductListItem key={product.id} {...product} editMode={false} />
+                                            </ButtonBase>
+                                    ))}
+                                </div>
+                            </div>
+                        </Sheet.Scroller>
                     </Sheet.Content>
                 </Sheet.Container>
                 {
-                    activeTab != "map" ?
+                    origin != "map" ?
                         <Sheet.Backdrop onTap={() => handleClose()} style={{ backgroundColor: "transparent" }} /> : <></>
                 }
             </Sheet >
-            <Dialog open={isQrCodeDialogOpen} onClose={() => { setIsQrCodeDialogOpen(false); setIsOpen(true) }} onClick={confirmSale}>
+            <Dialog open={isQrCodeDialogOpen} onClose={() => { setIsQrCodeDialogOpen(false); setIsOpen(true) }} onClick={() => setIsQrCodeDialogOpen(false)}>
                 {/* <DialogTitle>QR Code</DialogTitle> */}
-                <DialogContent className={`flex flex-col items-center justify-between gap-4 font-medium text-xl text-center ${theme === "dark" ? "bg-dark-tremor-background text-white" : "bg-tremor-background text-black"}`}>
+                <DialogContent className={`flex flex-col items-center justify-between gap-4 font-medium text-xl text-center ${theme === "dark" ? "bg-dark-tremor-background text-white" : "bg-tremor-background text-black"}`} onClick={confirmSale}>
                     <QRCodeSVG bgColor={theme === "dark" ? "oklch(0.21 0.034 264.665)" : "white"} fgColor={theme === "dark" ? "white" : "black"} value={products.map(p => p.name).join(', ')} size={256} marginSize={4} level="Q" />
                     <p>Show this to the vendor to confirm the purchase!</p>
                 </DialogContent>
