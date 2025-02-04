@@ -29,7 +29,6 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
     const [currentIndex, setCurrentIndex] = useState(0);
     const [selectedAlternatives, setSelectedAlternatives] = useState<{ [key: string]: Product[] }>({});
     const [randomAlternatives, setRandomAlternatives] = useState<{ [key: string]: Product[] }>({});
-    const [confirmationMessage, setConfirmationMessage] = useState('Product added to shopping list!');
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const vendorsKey = `vendors_${selectedMarket.name}`;
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '{}');
@@ -119,7 +118,9 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
             setCurrentIndex(0);
         }
 
-        showToastMessage && showToastMessage(confirmationMessage, 'success');
+        if (selectedAlternatives.length !== 0) {
+            showToastMessage && showToastMessage('Product added to shopping list!', 'success');
+        }
     };
 
     const handleClose = () => {
@@ -211,7 +212,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                         ) : (
                                             <>
                                                 <div className="col-span-full text-center" style={{ width: '260px', height: '138px' }}>
-                                                <div className="text-center" style={{ width: '260px', height: '80px',marginTop:'2rem' }}>Sorry, but there don't seem to be any alternatives for this product at the market.</div>
+                                                        <div className="text-center" style={{ width: '260px', height: '80px', marginTop: '2rem' }}>Sorry, but there don't seem to be any alternatives for this product at the market.</div>
                                                 </div>
                                                 {missingProducts.length > 1 && (<div
                                                     style={{ position: 'absolute', top: '10px', right: '10px', background: 'transparent', border: 'none', fontSize: '1rem', color: theme === 'dark' ? '#EEEEEE' : '#333333', pointerEvents: 'none' }}
@@ -227,31 +228,28 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                 {missingProducts.length > 1 && (<button onClick={handlePrevious} className="p-2 absolute left-3 top-1/2 transform -translate-y-1/2">
                                     <ArrowBackIcon />
                                 </button>)}
-                                <div className="flex justify-center mt-4">
+                                <div className="flex mt-4 justify-end">
                                     {Array.isArray(randomAlternatives[missingProducts[currentIndex]]) && randomAlternatives[missingProducts[currentIndex]].length > 0 ? (
-                                        <>
-                                            <div className="flex justify-center mt-4 space-x-4">
-                                                <Button
-                                                    onClick={() => { handleConfirm(missingProducts[currentIndex], []), setConfirmationMessage('no option') }}
-                                                    className="flex-1"
-                                                    style={{ color: '#fff', }}
-                                                >
-                                                    No Alternatives
-                                                </Button>
-                                                <Button
-                                                    onClick={() => { handleConfirm(missingProducts[currentIndex], selectedAlternatives[missingProducts[currentIndex]] || []), setConfirmationMessage('Product added to shopping list!') }}
-                                                    disabled={!selectedAlternatives[missingProducts[currentIndex]] || selectedAlternatives[missingProducts[currentIndex]].length === 0}
-                                                    className="flex-1"
-                                                    style={{ color: '#fff', }}
-                                                >
-                                                    Add to Shopping List
-                                                </Button>
-                                            </div>
-
-                                        </>
+                                        <div className="flex mt-4 space-x-3">
+                                            <Button
+                                                onClick={() => { handleConfirm(missingProducts[currentIndex], []) }}
+                                                color='primary'
+                                                variant='outlined'
+                                            >
+                                                Do Nothing
+                                            </Button>
+                                            <Button
+                                                onClick={() => { handleConfirm(missingProducts[currentIndex], selectedAlternatives[missingProducts[currentIndex]] || []) }}
+                                                disabled={!selectedAlternatives[missingProducts[currentIndex]] || selectedAlternatives[missingProducts[currentIndex]].length === 0}
+                                                variant='contained'
+                                                color='primary'
+                                            >
+                                                Add To List
+                                            </Button>
+                                        </div>
                                     ) : (
                                         <Button
-                                            onClick={() => { handleConfirm(missingProducts[currentIndex], []), setConfirmationMessage('no option') }}
+                                                onClick={() => { handleConfirm(missingProducts[currentIndex], []) }}
                                             style={{ color: '#fff', }}
                                         >
                                             Got it
@@ -282,13 +280,13 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                     )}
                 </DialogPanel>
 
-                {showConfirmation && confirmationMessage !== 'no option' && (
+                {/* {confirmationMessage !== 'no option' && (
                     <div className="fixed inset-x-0 top-0 flex items-center justify-center z-50 mt-60">
                         <div className="bg-green-500 p-4 text-white rounded-lg shadow-lg">
                             {confirmationMessage}
                         </div>
                     </div>
-                )}
+                )} */}
             </Dialog>
             )}
         </>
