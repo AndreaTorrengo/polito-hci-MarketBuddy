@@ -4,6 +4,7 @@ import PageVendorProducts from "../PageVendorProducts/PageVendorProducts";
 import { useState } from "react";
 import VendorGroup from "./VendorGroup";
 import { UserData } from "../PageProfile/UserData";
+import StatPopup from "../generalPurposeComponents/StatPopup";
 interface PageShoppingListProps {
     readonly theme: string;
     readonly productsList: { [key: string]: string[] };
@@ -54,6 +55,7 @@ export default function PageShoppingList({
 
 
     return (
+        <>
         <div id="ShoppingListPage" className="flex flex-col gap-2">
             {!isEditMode &&
                 <MissingProductsDialog
@@ -110,5 +112,7 @@ export default function PageShoppingList({
                 )
                 )}
         </div>
+        <StatPopup coins={userdata.coins} exp={userdata.experience} popup={true} />
+        </>
     );
 }

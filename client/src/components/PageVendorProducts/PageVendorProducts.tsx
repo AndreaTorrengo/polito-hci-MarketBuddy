@@ -17,7 +17,6 @@ import { Market, Vendor, Product } from "../../models.ts";
 import { QRCodeSVG } from "qrcode.react";
 import globalContext from "../../Context.tsx";
 import { UserData } from "../PageProfile/UserData.tsx";
-import StatPopup from "../generalPurposeComponents/StatPopup.tsx";
 
 interface PageVendorProductsParams {
     isOpen: boolean;
@@ -154,19 +153,26 @@ export default function PageVendorProducts({
         setIsOpen(false);
         setFilteredVendors(filteredVendors.filter(v => v.id !== vendor.id));
         showToastMessage && showToastMessage("Sale confirmed!", "success");
-        
+
         // Update stats
-        setUserdata((userdata: UserData) => {
-            const udCopy = Object.assign(new UserData(), userdata);
-            udCopy.incrCoins(10);
-            return udCopy;
-        });
+        if (products != null) {
+            setUserdata((userdata: UserData) => {
+                const udCopy = Object.assign(new UserData(), userdata);
+                const coinsFromProducts = Array.from(products.values()).reduce((acc, product) => {
+                    if(product.points == undefined)
+                        return acc;
+                    return acc + product.points;
+                }, 0);
+                //console.log("Coins from selected products: ", coinsFromProducts);
+                udCopy.incrCoins(coinsFromProducts);
+                return udCopy;
+            });
+        }
     }
 
 
     return (
         <>
-            <StatPopup coins={userdata.coins} exp={userdata.experience} popup={true}/>
             <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot} detent="content-height" snapPoints={[1.0, 0.7, 0.5, 0.2]} className="!z-0">
                 <Sheet.Container>
                     <Sheet.Header
@@ -229,22 +235,22 @@ export default function PageVendorProducts({
                                                 <>
                                                     <SwitchButton selectedMarket={selectedMarket}
                                                         selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
-                                                    closeAfter={exitEditMode}
+                                                        closeAfter={exitEditMode}
                                                         setFilteredVendors={setFilteredVendors}
                                                         setSelectedProducts={setSelectedProducts}
                                                         setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                                         theme={theme}
                                                     />
                                                     <SignalErrorButton
-                                                    closeAfter={exitEditMode}
+                                                        closeAfter={exitEditMode}
                                                         selectedMarket={selectedMarket}
-                                                    selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
+                                                        selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
                                                         setFilteredVendors={setFilteredVendors}
-                                                    setSelectedProducts={setSelectedProducts}
+                                                        setSelectedProducts={setSelectedProducts}
                                                     />
-                                                <DeleteButton closeAfter={exitEditMode}
-                                                    selectedMarket={selectedMarket}
-                                                    selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
+                                                    <DeleteButton closeAfter={exitEditMode}
+                                                        selectedMarket={selectedMarket}
+                                                        selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
                                                         setFilteredVendors={setFilteredVendors}
                                                         theme={theme}
                                                     />
