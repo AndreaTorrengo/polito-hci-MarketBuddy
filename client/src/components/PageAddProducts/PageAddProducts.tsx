@@ -67,7 +67,7 @@ export default function PageAddProducts({ actualVends, allVends, theme, selected
                 }
             }
             fetchProducts();
-        }, []
+        }, [availableProducts, productsAlreadyAdded]
     )
 
     function addOrRemoveSelected(index: number) {
