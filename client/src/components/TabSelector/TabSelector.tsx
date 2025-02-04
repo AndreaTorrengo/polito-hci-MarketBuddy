@@ -240,8 +240,8 @@ export default function TabsHero({
                                                 setSelectedReasons={setSelectedReasons}
                                                 selectedMarket={selectedMarket}
                                                 selectedProducts={selectedProducts}
-                                                setFilteredVendors={setFilteredVendors} theme={theme}
-                                                closeAfter={closeAfter} />
+                                                closeAfter={closeAfter}
+                                                setFilteredVendors={setFilteredVendors} theme={theme} />
                                                 <DeleteButton
                                                     selectedMarket={selectedMarket}
                                                     selectedProducts={selectedProducts}
@@ -322,6 +322,7 @@ export default function TabsHero({
                             <div className="flex" style={{ width: '100%', height: '100%' }}>
                                 <PageMap
                                     theme={theme}
+                                    closeAfter={closeAfter}
                                     filteredVendors={filteredVendors}
                                     selectedMarket={selectedMarket}
                                     setFilteredVendors={setFilteredVendors}
@@ -337,8 +338,10 @@ export default function TabsHero({
                             <PageShoppingList
                                 selectedProducts={selectedProducts}
                                 productsList={productsList}
-                                setProductsList={setProductsList}
+                            setProductsList={setProductsList}
+                            filteredVendors={filteredVendors}
                                 theme={theme}
+                            closeAfter={closeAfter}
                                 selectedMarket={selectedMarket}
                                 openEditMode={openEditMode}
                                 addOrRemoveSelected={addOrRemoveSelected}

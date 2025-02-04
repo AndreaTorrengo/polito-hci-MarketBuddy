@@ -29,6 +29,10 @@ interface PageVendorProductsParams {
     setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
     setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
     productsWithoutAlternatives: Product[];
+    productsList: { [key: string]: string[] };
+    setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
+    closeAfter: () => void;
+    filteredVendors: Vendor[];
 }
 
 export default function PageVendorProducts({
@@ -40,6 +44,10 @@ export default function PageVendorProducts({
     vendor,
     setAddProductId,
     setProductsWithoutAlternatives,
+    filteredVendors,
+    productsList,
+    setProductsList,
+    closeAfter
 }: Readonly<PageVendorProductsParams>) {
     const approot = document.getElementById("approot")!;
 
@@ -137,8 +145,11 @@ export default function PageVendorProducts({
 
     function confirmSale() {
         setIsQrCodeDialogOpen(false);
+        setIsOpen(false);
+        setFilteredVendors(filteredVendors.filter(v => v.id !== vendor.id));
         showToastMessage && showToastMessage("Sale confirmed!", "success");
     }
+
 
     return (
         <>
@@ -204,19 +215,22 @@ export default function PageVendorProducts({
                                                 <>
                                                     <SwitchButton selectedMarket={selectedMarket}
                                                         selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
+                                                    closeAfter={exitEditMode}
                                                         setFilteredVendors={setFilteredVendors}
                                                         setSelectedProducts={setSelectedProducts}
                                                         setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                                         theme={theme}
                                                     />
                                                     <SignalErrorButton
+                                                    closeAfter={exitEditMode}
                                                         selectedMarket={selectedMarket}
-                                                        selectedProducts={selectedProducts}
+                                                    selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
                                                         setFilteredVendors={setFilteredVendors}
                                                     setSelectedProducts={setSelectedProducts}
                                                     />
-                                                    <DeleteButton selectedMarket={selectedMarket}
-                                                        selectedProducts={selectedProducts} s
+                                                <DeleteButton closeAfter={exitEditMode}
+                                                    selectedMarket={selectedMarket}
+                                                    selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
                                                         setFilteredVendors={setFilteredVendors}
                                                         theme={theme}
                                                     />
