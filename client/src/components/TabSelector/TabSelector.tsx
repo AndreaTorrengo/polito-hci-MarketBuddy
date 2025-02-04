@@ -14,6 +14,7 @@ import { TextInput } from "@tremor/react";
 import SearchIcon from "@mui/icons-material/Search";
 import AddProductsButton from "../PageVendorProducts/AddProductsButton.tsx";
 import PageAddProducts from "../PageAddProducts/PageAddProducts.tsx";
+import { UserData } from '../PageProfile/UserData.tsx';
 
 interface TabsHeroProps {
     theme: string;
@@ -28,6 +29,8 @@ interface TabsHeroProps {
     setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
     setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
     productsWithoutAlternatives: Product[];
+    userdata: UserData;
+    setUserdata: React.Dispatch<React.SetStateAction<UserData>>;
 }
 
 export default function TabsHero({
@@ -42,7 +45,9 @@ export default function TabsHero({
     selectedReasons,
     setSelectedReasons,
     productsWithoutAlternatives,
-    setProductsWithoutAlternatives
+    setProductsWithoutAlternatives,
+    userdata,
+    setUserdata,
 }: Readonly<TabsHeroProps>): JSX.Element {
     const [selectedProducts, setSelectedProducts] = useState<Map<number, number[]> | null>(null);
     const [filteredProductsVendors, setFilteredProductsVendors] = useState<Vendor[]>(filteredVendors); //vendors with filtered products
@@ -351,6 +356,8 @@ export default function TabsHero({
                                 setSelectedReasons={setSelectedReasons}
                                 productsWithoutAlternatives={productsWithoutAlternatives}
                                 setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                                userdata={userdata} 
+                                setUserdata={setUserdata}
                             />}
                     </div>
                 </div>

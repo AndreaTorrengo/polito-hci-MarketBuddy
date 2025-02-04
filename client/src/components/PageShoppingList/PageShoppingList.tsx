@@ -3,6 +3,7 @@ import { Market, Vendor, Product } from "../../models";
 import PageVendorProducts from "../PageVendorProducts/PageVendorProducts";
 import { useState } from "react";
 import VendorGroup from "./VendorGroup";
+import { UserData } from "../PageProfile/UserData";
 interface PageShoppingListProps {
     readonly theme: string;
     readonly productsList: { [key: string]: string[] };
@@ -20,6 +21,8 @@ interface PageShoppingListProps {
     setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
     setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
     productsWithoutAlternatives: Product[];
+    userdata: UserData;
+    setUserdata: React.Dispatch<React.SetStateAction<UserData>>;
 }
 
 export default function PageShoppingList({
@@ -39,6 +42,8 @@ export default function PageShoppingList({
     setSelectedReasons,
     productsWithoutAlternatives,
     setProductsWithoutAlternatives,
+    userdata,
+    setUserdata,
 }: Readonly<PageShoppingListProps>) {
     const [isVendorPageOpen, setIsVendorPageOpen] = useState(false);
     const [selectedVendor, setSelectedVendor] = useState<number>(-1);
@@ -64,7 +69,8 @@ export default function PageShoppingList({
                                 selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
                                 vendor={vendor} isOpen={isVendorPageOpen}
                                 setIsOpen={(value: boolean) => setIsVendorPageOpen(value)}
-                                    theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} />}
+                                    theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} 
+                                    userdata={userdata} setUserdata={setUserdata}/>}
 
                             <VendorGroup id={vendor.id}
                                 openEditMode={openEditMode}

@@ -16,6 +16,8 @@ import { Button } from "../generalPurposeComponents/Button.tsx";
 import { Market, Vendor, Product } from "../../models.ts";
 import { QRCodeSVG } from "qrcode.react";
 import globalContext from "../../Context.tsx";
+import { UserData } from "../PageProfile/UserData.tsx";
+import StatPopup from "../generalPurposeComponents/StatPopup.tsx";
 
 interface PageVendorProductsParams {
     isOpen: boolean;
@@ -29,6 +31,8 @@ interface PageVendorProductsParams {
     setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
     setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
     productsWithoutAlternatives: Product[];
+    userdata: UserData;
+    setUserdata: React.Dispatch<React.SetStateAction<UserData>>;
 }
 
 export default function PageVendorProducts({
@@ -40,6 +44,8 @@ export default function PageVendorProducts({
     vendor,
     setAddProductId,
     setProductsWithoutAlternatives,
+    userdata,
+    setUserdata,
 }: Readonly<PageVendorProductsParams>) {
     const approot = document.getElementById("approot")!;
 
@@ -137,10 +143,18 @@ export default function PageVendorProducts({
     function confirmSale() {
         setIsQrCodeDialogOpen(false);
         showToastMessage && showToastMessage("Sale confirmed!", "success");
+        
+        // Update stats
+        setUserdata((userdata: UserData) => {
+            const udCopy = Object.assign(new UserData(), userdata);
+            udCopy.incrCoins(10);
+            return udCopy;
+        });
     }
 
     return (
         <>
+            <StatPopup coins={userdata.coins} exp={userdata.experience} popup={true}/>
             <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot} detent="content-height" snapPoints={[1.0, 0.7, 0.5, 0.2]} className="!z-0">
                 <Sheet.Container>
                     <Sheet.Header

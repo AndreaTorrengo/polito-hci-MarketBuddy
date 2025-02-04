@@ -49,10 +49,10 @@ export default function PageLeaderboard({userdata, setUserdata}: Readonly<PageLe
       <div className="flex flex-row w-full">
         <TopBar
           leftComponent={<BackButton />}
-          centerComponent={<Title className="text-left text-4xl">Leaderboard</Title>}
+          centerComponent={<h1 className="page-title mr-6">Leaderboard</h1>}
         />
       </div>
-      <div className="flex flex-col mt-16 overflow-hidden bg-tremor-content-inverted dark:bg-dark-tremor-content-inverted p-4 shadow-md rounded-lg">
+      <div className="flex flex-col mt-4 overflow-hidden bg-tremor-content-inverted dark:bg-dark-tremor-content-inverted p-4 shadow-md rounded-lg">
         {/* Tab Navigation */}
         <div className="flex justify-center space-x-0 mb-4 rounded-md bg-tremor-border dark:bg-dark-tremor-border">
           <button
