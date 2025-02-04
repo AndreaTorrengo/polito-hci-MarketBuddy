@@ -319,7 +319,7 @@ export default function TabsHero({
 
                     <div className="flex-1 overflow-y-auto">
                         {activeTab === 'map' && (
-                            <div className="flex" style={{ width: '100%', height: '100%' }}>
+                            <div className="fixed inset-x-0 h-full">
                                 <PageMap
                                     theme={theme}
                                     closeAfter={closeAfter}

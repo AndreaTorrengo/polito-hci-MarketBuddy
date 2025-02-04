@@ -199,8 +199,7 @@ const PageMap: React.FC<PageMapProps> = ({
 
 
     return (
-        <div className='w-full h-full z-0'>
-
+        <div className='w-full h-full'>
             <MapContainer
                 className='w-full h-full'
                 center={center}
