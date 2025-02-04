@@ -4,10 +4,9 @@ import { Button } from '../generalPurposeComponents/Button';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import './Dialogs.css';
 import globalContext from "../../Context";
-import { ProductListItemProps } from "./ProductListItem";
 
 interface SignalErrorButtonProps {
-    selectedProducts: Map<number, ProductListItemProps>;
+    selectedProducts: Map<number, number[]>;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     closeAfter: () => void;
@@ -26,7 +25,9 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
 
     const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
 
-    const { showToastMessage, askConfirmation, setPopupText } = useContext(globalContext) || {};
+    const { showToastMessage, askConfirmation, setPopupText, setConfirmationCallback } = useContext(globalContext) || {};
+
+    // console.log(selectedProducts);
 
     const handleClick = () => {
         const products = Array.from(selectedProducts.values()).flatMap(productIds => {
@@ -37,7 +38,7 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
         });
         setProductsSwitching(products.filter((product): product is Product => product !== null && product !== undefined));
 
-        askConfirmation && askConfirmation(handleConfirm, <DialogContent products={products} selectedReasons={selectedReasons} handleReasonSelect={handleReasonSelect} />);
+        askConfirmation && askConfirmation(handleConfirm, <DialogContent products={products.filter((product): product is Product => product !== null && product !== undefined)} selectedReasons={selectedReasons} handleReasonSelect={handleReasonSelect} />);
     };
 
     const handleConfirm = useCallback(() => {
@@ -94,10 +95,10 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
         setFilteredVendors(filteredVendors);
         localStorage.setItem(filteredVendorsKey, JSON.stringify(filteredVendors));
         localStorage.setItem(missingProductsKey, JSON.stringify(missingProduct));
-        setSelectedReasons([]);
+        // setSelectedReasons([]);
         closeAfter();
         showToastMessage && showToastMessage(message, 'success');
-    }, [filteredVendors, filteredVendorsKey, missingProduct, missingProductsKey, selectedProducts, selectedReasons, setFilteredVendors, showToastMessage, vendors]);
+    }, [selectedReasons]);
 
     const handleReasonSelect = useCallback((reason: string) => {
         if (reason === 'reason1') {
@@ -109,11 +110,18 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
             setSelectedReasons([reason]);
         else
             setSelectedReasons(oldReasons => oldReasons.includes(reason) ? oldReasons.filter(r => r !== reason) : [...oldReasons, reason]);
+
+        // console.log(reason);
+        // console.log(selectedReasons);
     }, [selectedReasons]);
 
     useEffect(() => {
+        setConfirmationCallback && setConfirmationCallback(() => { return handleConfirm });
+    }, [handleConfirm]);
+
+    useEffect(() => {
         setPopupText && setPopupText(<DialogContent products={productsSwitching} selectedReasons={selectedReasons} handleReasonSelect={handleReasonSelect} />);
-    }, [productsSwitching, selectedReasons, setPopupText]);
+    }, [selectedReasons]);
 
     return (
         <SmallIconButton onClick={() => { handleClick() }} >

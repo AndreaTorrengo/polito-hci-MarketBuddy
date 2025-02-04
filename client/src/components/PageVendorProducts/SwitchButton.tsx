@@ -8,7 +8,7 @@ import globalContext from "../../Context";
 import { ProductListItemProps } from "./ProductListItem";
 
 interface SwitchButtonProps {
-    selectedProducts: Map<number, number[]>;
+    selectedProducts: Map<number, ProductListItemProps[] | number[]>;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     closeAfter: () => void;
@@ -30,7 +30,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
         // setIsDialogOpen(true);
 
         const products = Array.from(selectedProducts.values()).flatMap(productIds => {
-            return productIds.map((productId: number) => {
+            return (productIds as number[]).map((productId: number) => {
                 const vendor = vendors.find(vendor => vendor.products.some(product => product.id === productId));
                 return vendor ? vendor.products.find(product => product.id === productId) : null;
             });
@@ -51,7 +51,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
         const productsWithoutAlternatives: Product[] = [];
 
         selectedProducts.forEach((products, vendorId) => {
-            products.forEach((productId: number) => {
+            (products as number[]).forEach((productId: number) => {
                 let alternativeFound = false;
 
                 vendors.forEach(vendor => {
@@ -124,7 +124,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                     <div>
                         <div className="products-text">
                             {productsSwitching.map((product, index) => (
-                                <span key={index} style={{ fontWeight: 'bold' }}>
+                                <span key={product.id} style={{ fontWeight: 'bold' }}>
                                     {product.name}{index < productsSwitching.length - 1 ? ', ' : ''}
                                 </span>
                             ))}

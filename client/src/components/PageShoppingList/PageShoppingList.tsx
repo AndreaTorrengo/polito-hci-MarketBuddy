@@ -47,7 +47,6 @@ export default function PageShoppingList({
     const [isVendorPageOpen, setIsVendorPageOpen] = useState(false);
     const [selectedVendor, setSelectedVendor] = useState<number>(-1);
 
-
     return (
         <div id="ShoppingListPage" className="flex flex-col gap-2">
             {!isEditMode &&

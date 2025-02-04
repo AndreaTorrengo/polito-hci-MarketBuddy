@@ -31,11 +31,11 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
     const [randomAlternatives, setRandomAlternatives] = useState<{ [key: string]: Product[] }>({});
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const vendorsKey = `vendors_${selectedMarket.name}`;
-    const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '{}');
-    const vendors: Vendor[] = JSON.parse(localStorage.getItem(vendorsKey) || '{}');
+    const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) ?? '{}');
+    const vendors: Vendor[] = JSON.parse(localStorage.getItem(vendorsKey) ?? '{}');
 
     const missingProductsKey = `missingProducts_${selectedMarket.name}`;
-    const missingProducts: string[] = JSON.parse(localStorage.getItem(missingProductsKey) || '[]');
+    const missingProducts: string[] = JSON.parse(localStorage.getItem(missingProductsKey) ?? '[]');
 
     const previousMarketRef = useRef(selectedMarket);
 
@@ -129,20 +129,19 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
     };
 
     const handleSelectAlternative = (missingProductId: string, alternative: Product) => {
-        setSelectedAlternatives(prevSelectedAlternatives => {
-            const updatedAlternatives = { ...prevSelectedAlternatives };
-            if (!updatedAlternatives[missingProductId]) {
-                updatedAlternatives[missingProductId] = [];
-            }
+        const updatedAlternatives = { ...selectedAlternatives };
 
-            if (updatedAlternatives[missingProductId].includes(alternative)) {
-                updatedAlternatives[missingProductId] = updatedAlternatives[missingProductId].filter(item => item !== alternative);
-            } else {
-                updatedAlternatives[missingProductId].push(alternative);
-            }
+        if (!updatedAlternatives[missingProductId]) {
+            updatedAlternatives[missingProductId] = [];
+        }
 
-            return updatedAlternatives;
-        });
+        if (updatedAlternatives[missingProductId].includes(alternative)) {
+            updatedAlternatives[missingProductId] = updatedAlternatives[missingProductId].filter(item => item !== alternative);
+        } else {
+            updatedAlternatives[missingProductId].push(alternative);
+        }
+
+        setSelectedAlternatives(updatedAlternatives);
     };
 
     const handleNext = () => {
@@ -191,7 +190,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                 <span>{"Select alternative/s for "}<strong className="alternative">{missingProducts[currentIndex]}</strong></span>
                                 <div className="flex justify-center mt-4">
 
-                                    <div className={`flex justify-center grid gap-4 ${randomAlternatives[missingProducts[currentIndex]]?.length === 1 ? 'grid-cols-1' : randomAlternatives[missingProducts[currentIndex]]?.length === 2 ? 'grid-cols-2' : randomAlternatives[missingProducts[currentIndex]]?.length === 3 ? 'grid-cols-3' : 'grid-cols-4'}`}>
+                                    <div className={`flex justify-center gap-4 grid-cols-${randomAlternatives[missingProducts[currentIndex]]?.length >= 4 ? '4' : randomAlternatives[missingProducts[currentIndex]]?.length}`}>
                                         {Array.isArray(randomAlternatives[missingProducts[currentIndex]]) && randomAlternatives[missingProducts[currentIndex]].length > 0 ? (
                                             randomAlternatives[missingProducts[currentIndex]].map((alternative, altIndex) => (
                                                 <div key={alternative.id}>
@@ -252,7 +251,6 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                     ) : (
                                         <Button
                                                 onClick={() => { handleConfirm(missingProducts[currentIndex], []) }}
-                                            style={{ color: '#fff', }}
                                         >
                                             Got it
                                         </Button>

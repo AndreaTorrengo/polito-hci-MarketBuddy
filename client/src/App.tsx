@@ -251,8 +251,8 @@ export default function App() {
   /****/
 
   const contextValue = useMemo(() => ({
-    askConfirmation, showToastMessage, setPopupText
-  }), [askConfirmation, showToastMessage, setPopupText]);
+    askConfirmation, showToastMessage, setPopupText, setConfirmationCallback
+  }), [askConfirmation, showToastMessage, setPopupText, setConfirmationCallback]);
 
   //feedback dialogs states
   const [selectedReasons, setSelectedReasons] = useState<string[]>([]);

@@ -228,26 +228,24 @@ export default function TabsHero({
                                         }
 
                                         {selectedProducts && selectedProducts.size > 0 &&
-                                            <>
+                                            <div className='flex'>
                                                 <SwitchButton
-                                                    productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
-                                                selectedMarket={selectedMarket}
-                                                selectedProducts={selectedProducts}
-                                                setFilteredVendors={setFilteredVendors} theme={theme}
-                                                closeAfter={closeAfter} />
-                                            <SignalErrorButton
-                                                selectedReasons={selectedReasons}
-                                                setSelectedReasons={setSelectedReasons}
-                                                selectedMarket={selectedMarket}
-                                                selectedProducts={selectedProducts}
-                                                closeAfter={closeAfter}
-                                                setFilteredVendors={setFilteredVendors} theme={theme} />
+                                                    setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                                                    selectedMarket={selectedMarket}
+                                                    selectedProducts={selectedProducts}
+                                                    setFilteredVendors={setFilteredVendors} theme={theme}
+                                                    closeAfter={closeAfter} />
+                                                <SignalErrorButton
+                                                    selectedMarket={selectedMarket}
+                                                    selectedProducts={selectedProducts}
+                                                    closeAfter={closeAfter}
+                                                    setFilteredVendors={setFilteredVendors} />
                                                 <DeleteButton
                                                     selectedMarket={selectedMarket}
                                                     selectedProducts={selectedProducts}
                                                     setFilteredVendors={setFilteredVendors} theme={theme}
                                                     closeAfter={closeAfter} />
-                                            </>}
+                                            </div>}
 
                                     </>
                                 }>
