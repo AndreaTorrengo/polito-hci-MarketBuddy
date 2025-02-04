@@ -16,6 +16,7 @@ import { Button } from "../generalPurposeComponents/Button.tsx";
 import { Market, Vendor, Product } from "../../models.ts";
 import { QRCodeSVG } from "qrcode.react";
 import globalContext from "../../Context.tsx";
+import { ClassNames } from "@emotion/react";
 
 interface PageVendorProductsParams {
     isOpen: boolean;
@@ -155,7 +156,7 @@ export default function PageVendorProducts({
 
     return (
         <>
-            <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot} detent={origin === 'list' ? "content-height" : "full-height"} initialSnap={origin === "map" ? 2 : undefined} snapPoints={[1.0, 0.6, 0.43, 0.39, 0.24]} onSnap={(snapIndex) => { snapIndex == 2 ? setShowUpArrow(true) : setShowUpArrow(false) }}>
+            <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot} detent={origin === 'list' ? "content-height" : "full-height"} initialSnap={origin === "map" ? 2 : undefined} snapPoints={[1.0, 0.6, 0.43, 0.39, 0.24]} onSnap={(snapIndex) => { snapIndex == 2 ? setShowUpArrow(true) : setShowUpArrow(false) }} className="!z-0">
                 <Sheet.Container>
                     <Sheet.Header
                         className="dark:bg-dark-tremor-background">
@@ -214,29 +215,29 @@ export default function PageVendorProducts({
                                             }
 
                                             {selectedProducts && selectedProducts.size > 0 &&
-                                                <>
-                                                    <SwitchButton selectedMarket={selectedMarket}
+                                                <div className="flex">
+                                                    <SwitchButton
+                                                        selectedMarket={selectedMarket}
                                                         selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
-                                                    closeAfter={exitEditMode}
+                                                        closeAfter={exitEditMode}
                                                         setFilteredVendors={setFilteredVendors}
-                                                        setSelectedProducts={setSelectedProducts}
                                                         setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                                         theme={theme}
                                                     />
                                                     <SignalErrorButton
-                                                    closeAfter={exitEditMode}
+                                                        closeAfter={exitEditMode}
                                                         selectedMarket={selectedMarket}
-                                                    selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
+                                                        selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
                                                         setFilteredVendors={setFilteredVendors}
-                                                    setSelectedProducts={setSelectedProducts}
                                                     />
-                                                <DeleteButton closeAfter={exitEditMode}
-                                                    selectedMarket={selectedMarket}
-                                                    selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
+                                                    <DeleteButton
+                                                        closeAfter={exitEditMode}
+                                                        selectedMarket={selectedMarket}
+                                                        selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
                                                         setFilteredVendors={setFilteredVendors}
                                                         theme={theme}
                                                     />
-                                                </>}
+                                                </div>}
 
                                         </>
                                     }>

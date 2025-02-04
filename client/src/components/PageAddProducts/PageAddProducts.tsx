@@ -48,7 +48,7 @@ export default function PageAddProducts({ actualVends, allVends, theme, selected
             const fetchProducts = async () => {
                 try {
                     const products: Product[] = await API.getAllProducts();
-                    console.log(products)
+                    // console.log(products)
                     setAllProducts(products.map(product => ({
                         id: product.id,
                         name: product.name,
