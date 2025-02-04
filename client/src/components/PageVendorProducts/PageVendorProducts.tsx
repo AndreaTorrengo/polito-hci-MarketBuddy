@@ -1,11 +1,11 @@
 "use client";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import VendorCategoryList from "./VendorCategoryList.tsx";
-import React, { useContext, useMemo, useState } from "react";
+import React, { useContext, useMemo, useState, useRef } from "react";
 import AddProductsButton from "./AddProductsButton.tsx";
 import ProductListItem, { ProductListItemProps } from "./ProductListItem.tsx";
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
-import { Sheet } from 'react-modal-sheet';
+import { Sheet, SheetRef } from 'react-modal-sheet';
 import VendorBadges from "./VendorBadges.tsx";
 import { ButtonBase, Dialog, DialogContent } from "@mui/material";
 import ContextMenu, { ContextMenuProps } from "../generalPurposeComponents/ContextMenu.tsx";
@@ -33,6 +33,7 @@ interface PageVendorProductsParams {
     setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
     closeAfter: () => void;
     filteredVendors: Vendor[];
+    origin: "map" | "list";
 }
 
 export default function PageVendorProducts({
@@ -47,9 +48,11 @@ export default function PageVendorProducts({
     filteredVendors,
     productsList,
     setProductsList,
-    closeAfter
+    closeAfter,
+    origin,
 }: Readonly<PageVendorProductsParams>) {
     const approot = document.getElementById("approot")!;
+    const ref = useRef<SheetRef>(null);
 
     const [isEditMode, setIsEditMode] = useState(false);
 
@@ -153,12 +156,12 @@ export default function PageVendorProducts({
 
     return (
         <>
-            <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot} detent="content-height" snapPoints={[1.0, 0.7, 0.5, 0.2]} className="!z-0">
+            <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot} detent={origin === 'list' ? "content-height" : "full-height"} initialSnap={origin === "map" ? 2 : undefined} snapPoints={[1.0, 0.5, 0.43, 0.24]} className="!z-0">
                 <Sheet.Container>
                     <Sheet.Header
                         className="dark:bg-dark-tremor-background">
                     </Sheet.Header>
-                    <Sheet.Content className="dark:bg-dark-tremor-background">
+                    <Sheet.Content className="dark:bg-dark-tremor-background pb-10">
                         {/* ContextMenu */}
                         <div className="px-5">
                             <ContextMenu {...contextMenuProps} />

@@ -97,7 +97,7 @@ const PageMap: React.FC<PageMapProps> = ({
             click(e) {
                 setSelectedMarker([e.latlng.lat, e.latlng.lng]);
                 setSelectedVendor(undefined);
-                setMapCenter(selectedMarket.position as [number, number]);
+                setMapCenter(markerPosition);
 
             },
         });
@@ -253,6 +253,7 @@ const PageMap: React.FC<PageMapProps> = ({
                     <PageVendorProducts
                         productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                         closeAfter={closeAfter}
+                        origin="map"
                         selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
                         isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} filteredVendors={filteredVendors} />
                 )

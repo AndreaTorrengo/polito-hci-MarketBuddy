@@ -65,6 +65,7 @@ export default function PageShoppingList({
                     <div key={vendor.id}>
                         {selectedVendor === vendor.id &&
                             <PageVendorProducts
+                                origin="list"
                                 productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                 selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
                                 vendor={vendor} isOpen={isVendorPageOpen}
