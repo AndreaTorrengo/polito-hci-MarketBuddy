@@ -34,9 +34,9 @@ export default function PageRewardHistory() {
                 <Title className="text-3xl align-middle">Redeemed Rewards</Title>
             </div>
             <div className='flex content-center justify-between'>
-                <ul className='flex flex-col gap-4 items-center'>
+                <ul className='flex flex-col gap-4 w-full'>
                     {rewards.map((reward: Reward) => (
-                        <li key={reward.id} className='w-full align-middle'>
+                        <li key={reward.id} className=''>
                             <RewardCard reward={reward} />
                         </li>
                     ))}
