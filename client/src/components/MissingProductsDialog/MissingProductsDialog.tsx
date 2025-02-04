@@ -98,6 +98,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                 if (product) {
                     const existingVendor = updatedFilteredVendor.find(v => v.name === vendor.name);
                     if (existingVendor) {
+                        if(existingVendor.products.some((p: Product) => p.id === product.id)) return;
                         existingVendor.products.push(product);
                     } else {
                         updatedFilteredVendor.push({
