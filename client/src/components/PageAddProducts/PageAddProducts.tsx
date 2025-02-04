@@ -23,7 +23,7 @@ export default function PageAddProducts({ actualVends, allVends, theme, selected
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) ?? '[]');
 
-    const actualVendorsProducts: Vendor[] = useMemo(() => addProductId != -1 ? actualVends.filter(vendor => vendor.id === addProductId) : actualVends, [addProductId, actualVends]);
+    const actualVendorsProducts: Vendor[] = useMemo(() => actualVends, [actualVends]);
     const allVendors: Vendor[] = useMemo(() => addProductId != -1 ? allVends.filter(vendor => vendor.id === addProductId) : allVends, [addProductId, allVends]);
 
     const productsAlreadyAdded: Product[] = useMemo(() => Array.from(new Set(actualVendorsProducts.flatMap(
@@ -54,6 +54,7 @@ export default function PageAddProducts({ actualVends, allVends, theme, selected
                         name: product.name,
                         price: product.price,
                         image: product.image,
+                        points: product.points,
                         isSelected: false,
                         editMode: true,
                         showPrice: false
@@ -129,7 +130,7 @@ export default function PageAddProducts({ actualVends, allVends, theme, selected
         <div className="w-full h-full">
             {/* TopBar */}
             {/* <ConfirmAddAlert theme={theme} setIsOpen={setIsAddAlertOpen} isOpen={isAddAlertOpen} products={selectedProducts} handleAdd={handleAdd} /> */}
-            <div className="px-8">
+            <div className="px-8 w-full fixed z-[500] dark:bg-dark-tremor-background bg-tremor-background">
                 <TopBar
                     leftComponent={selectedProducts &&
                         <ButtonBase className="text-md font-semibold" onClick={() => {
@@ -188,7 +189,7 @@ export default function PageAddProducts({ actualVends, allVends, theme, selected
             </div>
 
             <div
-                className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle px-6 pt-[3.45em] flex flex-col gap-4">
+                className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle px-6 pt-[4em] flex flex-col gap-4 overflow-y-auto">
 
                 <div className="w-full flex-1">
                     {/* Product list top bar */}
@@ -232,7 +233,7 @@ export default function PageAddProducts({ actualVends, allVends, theme, selected
                                         addProductId != -1 ?
                                             <p className="m-0 p-0 text-xl text-center">No more products available
                                                 for <br /> {
-                                                    actualVendorsProducts ? (actualVendorsProducts.length >= 1 ? actualVendorsProducts[0].name : "this vendor") : ""
+                                                    actualVendorsProducts ? (actualVendorsProducts.length >= 1 ? actualVendorsProducts.find(vendor => vendor.id === addProductId)?.name : "this vendor") : ""
                                                 }</p>
                                             :
                                             <p className="m-0 p-0 text-xl text-center">No more products available

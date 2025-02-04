@@ -58,6 +58,7 @@ export default function PageVendorProducts({
         name: product.name,
         price: parseFloat((product.price * vendor.priceMultiplier).toFixed(2)),
         image: product.image,
+        points: product.points,
         editMode: false,
         isSelected: false,
         showPrice: true

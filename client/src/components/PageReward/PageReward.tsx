@@ -37,6 +37,7 @@ export function RewardCard({ reward, confirmRewardRedemption = () => { } }: Read
 
 type AskConfirmation = (callback: () => void, message: string) => void;
 
+
 export default function PageReward({ askConfirmation, userdata, setUserdata }: Readonly<{ askConfirmation: AskConfirmation, userdata: UserData, setUserdata: Dispatch<SetStateAction<UserData>> }>) {
   const [rewards, setRewards] = useState<Reward[]>([]);
   const navigate = useNavigate();
@@ -89,9 +90,9 @@ export default function PageReward({ askConfirmation, userdata, setUserdata }: R
         </div>
       </div>
       <div className='flex content-center justify-between'>
-        <ul className='flex flex-col gap-4 items-center'>
+        <ul className='flex flex-col gap-4 w-full'>
           {rewards.map((reward: Reward) => (
-            <li key={reward.id} className='w-full align-middle'>
+            <li key={reward.id} className=''>
               <RewardCard reward={reward} confirmRewardRedemption={confirmRewardRedemption} />
             </li>
           ))}

@@ -193,7 +193,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                         {Array.isArray(randomAlternatives[missingProducts[currentIndex]]) && randomAlternatives[missingProducts[currentIndex]].length > 0 ? (
                                             randomAlternatives[missingProducts[currentIndex]].map((alternative, altIndex) => (
                                                 <>
-                                                    <div onClick={() => handleSelectAlternative(missingProducts[currentIndex], alternative)} style={{ width: '120px', height: '120px' }}>
+                                                    <div key={altIndex} onClick={() => handleSelectAlternative(missingProducts[currentIndex], alternative)} style={{ width: '120px', height: '120px' }}>
                                                         <ProductItem
                                                             key={alternative.id}
                                                             {...alternative}
