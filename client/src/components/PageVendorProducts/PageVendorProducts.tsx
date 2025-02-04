@@ -1,11 +1,11 @@
 "use client";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import VendorCategoryList from "./VendorCategoryList.tsx";
-import React, { useContext, useMemo, useState, useRef } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import AddProductsButton from "./AddProductsButton.tsx";
 import ProductListItem, { ProductListItemProps } from "./ProductListItem.tsx";
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
-import { Sheet, SheetRef } from 'react-modal-sheet';
+import { Sheet } from 'react-modal-sheet';
 import VendorBadges from "./VendorBadges.tsx";
 import { ButtonBase, Dialog, DialogContent } from "@mui/material";
 import ContextMenu, { ContextMenuProps } from "../generalPurposeComponents/ContextMenu.tsx";
@@ -52,7 +52,6 @@ export default function PageVendorProducts({
     origin,
 }: Readonly<PageVendorProductsParams>) {
     const approot = document.getElementById("approot")!;
-    const ref = useRef<SheetRef>(null);
 
     const [isEditMode, setIsEditMode] = useState(false);
 
@@ -153,10 +152,13 @@ export default function PageVendorProducts({
         showToastMessage && showToastMessage("Sale confirmed!", "success");
     }
 
+    const [showUpArrow, setShowUpArrow] = useState(false);
+
 
     return (
         <>
-            <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot} detent={origin === 'list' ? "content-height" : "full-height"} initialSnap={origin === "map" ? 2 : undefined} snapPoints={[1.0, 0.5, 0.43, 0.24]} className="!z-0">
+            <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot} detent={origin === 'list' ? "content-height" : "full-height"} initialSnap={origin === "map" ? 2 : undefined} snapPoints={[1.0, 0.6, 0.43, 0.39, 0.24]} className="!z-0" onSnap={(snapIndex) => { snapIndex == 2 ? setShowUpArrow(true) : setShowUpArrow(false) }
+            }>
                 <Sheet.Container>
                     <Sheet.Header
                         className="dark:bg-dark-tremor-background">
@@ -269,8 +271,14 @@ export default function PageVendorProducts({
                                     <VendorBadges market={vendor.market} quality={vendor.quality_rating}
                                         cordiality={vendor.cordiality_rating}
                                         convenience={vendor.convenience_rating} />
+                                    <div className={`relative bottom-5 text-right w-full flex opacity-0 justify-end ${showUpArrow ? "animate-pulse opacity-10" : ""} transition-opacity duration-1000`}>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="m5 9 7-7 7 7" />
+                                            <path d="M12 16V2" />
+                                            <circle cx="12" cy="21" r="1" />
+                                        </svg>
+                                    </div>
                                 </div>
-
                                 <div className="w-full flex-1">
                                     {/* Product list top bar */}
                                     <div className="w-full flex flex-row justify-between items-center">
