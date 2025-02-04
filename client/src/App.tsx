@@ -48,7 +48,8 @@ export default function App() {
       "Chicken Breast",
       "Milk",
       "Salmon",
-      "Bream"
+      "Bream",
+      "Shrimps",
     ],
     "Santa Rita Market": [
       "Lettuce",
@@ -57,7 +58,8 @@ export default function App() {
       "Chicken Breast",
       "Milk",
       "Salmon",
-      "Bream"
+      "Bream",
+      "Shrimps",
     ],
     "Crocetta Market": [
       "Lettuce",
@@ -66,7 +68,8 @@ export default function App() {
       "Chicken Breast",
       "Milk",
       "Salmon",
-      "Bream"
+      "Bream",
+      "Shrimps",
     ],
   });
 
