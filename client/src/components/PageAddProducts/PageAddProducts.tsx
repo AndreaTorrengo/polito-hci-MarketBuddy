@@ -23,7 +23,7 @@ export default function PageAddProducts({ actualVends, allVends, theme, selected
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) ?? '[]');
 
-    const actualVendorsProducts: Vendor[] = useMemo(() => addProductId != -1 ? actualVends.filter(vendor => vendor.id === addProductId) : actualVends, [addProductId, actualVends]);
+    const actualVendorsProducts: Vendor[] = useMemo(() => actualVends, [actualVends]);
     const allVendors: Vendor[] = useMemo(() => addProductId != -1 ? allVends.filter(vendor => vendor.id === addProductId) : allVends, [addProductId, allVends]);
 
     const productsAlreadyAdded: Product[] = useMemo(() => Array.from(new Set(actualVendorsProducts.flatMap(
@@ -233,7 +233,7 @@ export default function PageAddProducts({ actualVends, allVends, theme, selected
                                         addProductId != -1 ?
                                             <p className="m-0 p-0 text-xl text-center">No more products available
                                                 for <br /> {
-                                                    actualVendorsProducts ? (actualVendorsProducts.length >= 1 ? actualVendorsProducts[0].name : "this vendor") : ""
+                                                    actualVendorsProducts ? (actualVendorsProducts.length >= 1 ? actualVendorsProducts.find(vendor => vendor.id === addProductId)?.name : "this vendor") : ""
                                                 }</p>
                                             :
                                             <p className="m-0 p-0 text-xl text-center">No more products available
