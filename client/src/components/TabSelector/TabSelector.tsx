@@ -13,7 +13,6 @@ import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import { TextInput } from "@tremor/react";
 import SearchIcon from "@mui/icons-material/Search";
 import AddProductsButton from "../PageVendorProducts/AddProductsButton.tsx";
-import { useNavigate } from "react-router-dom";
 import PageAddProducts from "../PageAddProducts/PageAddProducts.tsx";
 
 interface TabsHeroProps {
@@ -22,13 +21,9 @@ interface TabsHeroProps {
     filteredVendors: Vendor[];
     selectedMarket: Market;
     setSelectedMarket: (selectedMarket: Market) => void;
-    missingProducts: string[];
-    updateVendorsAndProducts: () => void;
     productsList: { [key: string]: string[] };
     setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
-    isFeedbackDialogOpen: string | null;
-    setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
     selectedReasons: string[];
     setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
     setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
@@ -41,18 +36,14 @@ export default function TabsHero({
     filteredVendors,
     selectedMarket,
     setSelectedMarket,
-    missingProducts,
-    updateVendorsAndProducts,
     productsList,
     setProductsList,
     setFilteredVendors,
-    isFeedbackDialogOpen,
-    setIsFeedbackDialogOpen,
     selectedReasons,
     setSelectedReasons,
     productsWithoutAlternatives,
     setProductsWithoutAlternatives
-}: TabsHeroProps): JSX.Element {
+}: Readonly<TabsHeroProps>): JSX.Element {
     const [selectedProducts, setSelectedProducts] = useState<Map<number, number[]> | null>(null);
     const [filteredProductsVendors, setFilteredProductsVendors] = useState<Vendor[]>(filteredVendors); //vendors with filtered products
     const [isEditMode, setIsEditMode] = useState(false);
@@ -64,7 +55,7 @@ export default function TabsHero({
     const totalProducts = filteredVendors.reduce((acc, vendor) => acc + vendor.products.length, 0);
 
     const [activeTab, setActiveTab] = useState(() => {
-        return localStorage.getItem('activeTab') || 'list';
+        return localStorage.getItem('activeTab') ?? 'list';
     });
 
     const handleChange = (
@@ -186,181 +177,185 @@ export default function TabsHero({
 
     return (
         <>
-            {addProductId != null &&
-                <PageAddProducts isFeedbackDialogOpen={isFeedbackDialogOpen} setIsFeedbackDialogOpen={setIsFeedbackDialogOpen} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket}
-                    actualVends={filteredVendors} allVends={vendors} theme={theme} setAddProductId={setAddProductId} addProductId={addProductId} />}
-            <div className="flex flex-col h-full min-h-0">
-                {
-                    isEditMode ?
-                        <TopBar
-                            leftComponent={<ButtonBase className="text-md font-semibold" onClick={exitEditMode}><p
-                                className="m-0 p-0">Cancel</p></ButtonBase>}
-                            centerComponent={<h1
-                                className="line-clamp-1 m-0 p-0 text-md font-normal text-center">{selectedProducts ? (countSelectedProducts() + " Selected") : ""}</h1>}
-                            rightComponent={
-                                <>
-                                    {
-                                        selectedProducts && countSelectedProducts() === totalProducts ?
-                                            <div className="w-8 h-16 flex items-center justify-center" onClick={
-                                                () => {
-                                                    setSelectedProducts(new Map());
-                                                }
-                                            }>
-                                                <div
-                                                    className="rounded-full text-green-500 h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
-                                                    <svg
-                                                        className="h-6 w-6 text-black dark:text-white translate-y-[-0.3em] translate-x-[-0.1em] transition-all duration-300"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        viewBox="0 0 24 24"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                    >
-                                                        <path strokeLinecap="round" strokeLinejoin="round"
-                                                            strokeWidth="3"
-                                                            d="M5 13l4 4L19 7" />
-                                                    </svg>
-                                                </div>
-                                            </div>
-                                            :
-                                            <div
-                                                className="w-8 h-16 flex items-center justify-center animate-fade transition-all duration-300"
-                                                onClick={
+            {addProductId != null ?
+                <PageAddProducts setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket}
+                    actualVends={filteredVendors} allVends={vendors} theme={theme} setAddProductId={setAddProductId} addProductId={addProductId} /> :
+                <div className="flex flex-col h-full min-h-0 px-6 py-4">
+                    {
+                        isEditMode ?
+                            <TopBar
+                                leftComponent={<ButtonBase className="text-md font-semibold" onClick={exitEditMode}><p
+                                    className="m-0 p-0">Cancel</p></ButtonBase>}
+                                centerComponent={<h1
+                                    className="line-clamp-1 m-0 p-0 text-md font-normal text-center">{selectedProducts ? (countSelectedProducts() + " Selected") : ""}</h1>}
+                                rightComponent={
+                                    <>
+                                        {
+                                            selectedProducts && countSelectedProducts() === totalProducts ?
+                                                <div className="w-8 h-16 flex items-center justify-center" onClick={
                                                     () => {
-                                                        selectAllProducts();
+                                                        setSelectedProducts(new Map());
                                                     }
                                                 }>
-                                                <div
-                                                    className="rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
+                                                    <div
+                                                        className="rounded-full text-green-500 h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
+                                                        <svg
+                                                            className="h-6 w-6 text-black dark:text-white translate-y-[-0.3em] translate-x-[-0.1em] transition-all duration-300"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            viewBox="0 0 24 24"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                        >
+                                                            <path strokeLinecap="round" strokeLinejoin="round"
+                                                                strokeWidth="3"
+                                                                d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                                :
+                                                <div
+                                                    className="w-8 h-16 flex items-center justify-center animate-fade transition-all duration-300"
+                                                    onClick={
+                                                        () => {
+                                                            selectAllProducts();
+                                                        }
+                                                    }>
+                                                    <div
+                                                        className="rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
+                                                    </div>
+                                                </div>
 
-                                    }
+                                        }
 
-                                    {selectedProducts && selectedProducts.size > 0 &&
-                                        <>
-                                            <SwitchButton
-                                                productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
-                                                isFeedbackDialogOpen={isFeedbackDialogOpen}
-                                                setIsFeedbackDialogOpen={setIsFeedbackDialogOpen}
+                                        {selectedProducts && selectedProducts.size > 0 &&
+                                            <>
+                                                <SwitchButton
+                                                    productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                                 selectedMarket={selectedMarket}
                                                 selectedProducts={selectedProducts}
                                                 setFilteredVendors={setFilteredVendors} theme={theme}
                                                 closeAfter={closeAfter} />
                                             <SignalErrorButton
-                                                isFeedbackDialogOpen={isFeedbackDialogOpen}
-                                                setIsFeedbackDialogOpen={setIsFeedbackDialogOpen}
                                                 selectedReasons={selectedReasons}
                                                 setSelectedReasons={setSelectedReasons}
                                                 selectedMarket={selectedMarket}
                                                 selectedProducts={selectedProducts}
                                                 setFilteredVendors={setFilteredVendors} theme={theme}
                                                 closeAfter={closeAfter} />
-                                            <DeleteButton isFeedbackDialogOpen={isFeedbackDialogOpen}
-                                                setIsFeedbackDialogOpen={setIsFeedbackDialogOpen}
-                                                selectedMarket={selectedMarket}
-                                                selectedProducts={selectedProducts}
-                                                setFilteredVendors={setFilteredVendors} theme={theme}
-                                                closeAfter={closeAfter} />
-                                        </>}
+                                                <DeleteButton
+                                                    selectedMarket={selectedMarket}
+                                                    selectedProducts={selectedProducts}
+                                                    setFilteredVendors={setFilteredVendors} theme={theme}
+                                                    closeAfter={closeAfter} />
+                                            </>}
 
-                                </>
-                            }>
-                        </TopBar>
-                        :
-                        <>
-                            <MarketSelectorSheet selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />
-                            <div className="px-4 flex flex-row items-center gap-2 justify-between">
-                                <div className="flex-1">
+                                    </>
+                                }>
+                            </TopBar>
+                            :
+                            <>
+                                <div className='flex justify-between mb-4'>
+                                    <h1 className="page-title mr-auto">Shopping</h1>
+                                    <MarketSelectorSheet className="!p-0" selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />
+                                </div>
+                                <div className='flex flex-row gap-6'>
                                     <TextInput
                                         placeholder="Search Products"
                                         id="search"
                                         name="search"
                                         type="search"
-                                        className="py-1 ps-4 rounded-full"
+                                        className="py-1 ps-3 rounded-full"
                                         icon={SearchIcon}
                                         onChange={(e) => setSearchInput(e.target.value)}
                                         value={searchInput}
                                     />
+                                    <AddProductsButton onClick={() => {
+                                        setAddProductId(-1)
+                                    }
+                                    } />
                                 </div>
-                                <div onClick={() => {
-                                    setAddProductId(-1)
-                                }
-                                }><AddProductsButton></AddProductsButton></div>
-                            </div>
-                            <div style={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                marginBottom: '0.5rem',
-                                marginTop: '0.5rem'
-                            }}>
-                                <ToggleButtonGroup
-                                    color="primary"
-                                    value={activeTab}
-                                    exclusive
-                                    onChange={handleChange}
-                                    aria-label="Tabs"
-                                    style={{ width: '100%', marginLeft: '1rem', marginRight: '1rem' }}
-                                >
-                                    <ToggleButton
-                                        value="list"
-                                        style={{
-                                            width: '50%',
-                                            height: '2.2rem',
-                                            fontSize: '1rem',
-                                            backgroundColor: activeTab === 'list' ? '#527EBF' : (theme === 'dark' ? '#333' : '#f0f0f0'),
-                                            color: activeTab === 'list' ? 'white' : '#527EBF'
-                                        }}
+                                <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    marginBottom: '0.5rem',
+                                    marginTop: '0.5rem'
+                                }}>
+                                    <ToggleButtonGroup
+                                        color="primary"
+                                        value={activeTab}
+                                        exclusive
+                                        onChange={handleChange}
+                                        aria-label="Tabs"
+                                        style={{ width: '100%', marginLeft: '1rem', marginRight: '1rem' }}
                                     >
-                                        List
-                                    </ToggleButton>
-                                    <ToggleButton
-                                        value="map"
-                                        style={{
-                                            width: '50%',
-                                            height: '2.2rem',
-                                            fontSize: '1rem',
-                                            backgroundColor: activeTab === 'map' ? '#527EBF' : (theme === 'dark' ? '#333' : '#f0f0f0'),
-                                            color: activeTab === 'map' ? 'white' : '#527EBF'
-                                        }}
-                                    >
-                                        Map
-                                    </ToggleButton>
-                                </ToggleButtonGroup>
-                            </div>
-                        </>
-                }
+                                        <ToggleButton
+                                            value="list"
+                                            style={{
+                                                width: '50%',
+                                                height: '2.2rem',
+                                                fontSize: '1rem',
+                                                backgroundColor: activeTab === 'list' ? '#527EBF' : (theme === 'dark' ? '#333' : '#f0f0f0'),
+                                                color: activeTab === 'list' ? 'white' : '#527EBF'
+                                            }}
+                                        >
+                                            List
+                                        </ToggleButton>
+                                        <ToggleButton
+                                            value="map"
+                                            style={{
+                                                width: '50%',
+                                                height: '2.2rem',
+                                                fontSize: '1rem',
+                                                backgroundColor: activeTab === 'map' ? '#527EBF' : (theme === 'dark' ? '#333' : '#f0f0f0'),
+                                                color: activeTab === 'map' ? 'white' : '#527EBF'
+                                            }}
+                                        >
+                                            Map
+                                        </ToggleButton>
+                                    </ToggleButtonGroup>
+                                </div>
+                            </>
+                    }
 
-                <div className="flex-1 overflow-y-auto">
-                    {activeTab === 'map' && (
-                        <div className="flex" style={{ width: '100%', height: '100%' }}>
-                            <PageMap
-                                productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
-                                selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
-                                isFeedbackDialogOpen={isFeedbackDialogOpen}
-                                setIsFeedbackDialogOpen={setIsFeedbackDialogOpen} theme={theme} vendors={vendors}
-                                filteredVendors={filteredVendors}
-                                selectedMarket={selectedMarket} filteredProductsVendors={filteredProductsVendors}
-                                setFilteredVendors={setFilteredVendors} setAddProductId={setAddProductId} />
-                        </div>
-                    )}
-                    {activeTab === 'list' &&
-                        <PageShoppingList
-                            productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
-                            selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
-                            isFeedbackDialogOpen={isFeedbackDialogOpen}
-                            setIsFeedbackDialogOpen={setIsFeedbackDialogOpen}
-                            selectedProducts={selectedProducts} vendors={vendors} productsList={productsList}
-                            setProductsList={setProductsList} theme={theme} selectedMarket={selectedMarket}
-                            missingProducts={missingProducts}
-                            updateVendorsAndProducts={updateVendorsAndProducts} openEditMode={openEditMode}
-                            addOrRemoveSelected={addOrRemoveSelected} isEditMode={isEditMode}
+                    <div className="flex-1 overflow-y-auto">
+                        {activeTab === 'map' && (
+                            <div className="flex" style={{ width: '100%', height: '100%' }}>
+                                <PageMap
+                                    theme={theme}
+                                    filteredVendors={filteredVendors}
+                                    selectedMarket={selectedMarket}
+                                    setFilteredVendors={setFilteredVendors}
+                                    setAddProductId={setAddProductId}
+                                    selectedReasons={selectedReasons}
+                                    setSelectedReasons={setSelectedReasons}
+                                    productsWithoutAlternatives={productsWithoutAlternatives}
+                                    setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                                />
+                            </div>
+                        )}
+                        {activeTab === 'list' &&
+                            <PageShoppingList
+                                selectedProducts={selectedProducts}
+                                productsList={productsList}
+                                setProductsList={setProductsList}
+                                theme={theme}
+                                selectedMarket={selectedMarket}
+                                openEditMode={openEditMode}
+                                addOrRemoveSelected={addOrRemoveSelected}
+                                isEditMode={isEditMode}
                             selectedOrRemoveAllProductsFromVendor={selectedOrRemoveAllProductsFromVendor}
                             filteredProductsVendors={filteredProductsVendors}
                             setFilteredVendors={setFilteredVendors}
-                            setAddProductId={setAddProductId}
-                        />}
+                                setAddProductId={setAddProductId}
+                                selectedReasons={selectedReasons}
+                                setSelectedReasons={setSelectedReasons}
+                                productsWithoutAlternatives={productsWithoutAlternatives}
+                                setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                            />}
+                    </div>
                 </div>
-            </div>
+            }
         </>
     );
+
 }

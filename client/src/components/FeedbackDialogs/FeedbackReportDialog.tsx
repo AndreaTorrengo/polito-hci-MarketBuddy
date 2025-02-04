@@ -12,7 +12,7 @@ interface FeedbackReportDialogProps {
 const FeedbackReportDialog: React.FC<FeedbackReportDialogProps> = ({ isOpen, onClose, theme, selectedReasons }) => {
     return (
         <>
-            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isOpen} onClose={() => { onClose }}>
+            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isOpen} onClose={() => { onClose }}>
                 <DialogPanel>
                     <button
                         style={{ position: 'absolute', top: '0px', right: '10px', background: 'transparent', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}

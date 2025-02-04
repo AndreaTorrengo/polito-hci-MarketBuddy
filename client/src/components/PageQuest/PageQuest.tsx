@@ -2,7 +2,6 @@ import { ProgressBar, Card, Title, Text } from "@tremor/react";
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import HexagonIcon from '@mui/icons-material/Hexagon';
-import { Button } from "@mui/material";
 import StatPopup from "../generalPurposeComponents/StatPopup";
 import { quest_array, getNewQuestId, getAndSaveNewQuestId, getCurrentQuests, saveCurrentQuests } from './Quests';
 import { UserData } from "../PageProfile/UserData";
@@ -10,6 +9,7 @@ import { UserData } from "../PageProfile/UserData";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "../generalPurposeComponents/Button";
 
 // Helper function to parse the progress string
 const parseProgress = (progress: any) => {
@@ -80,8 +80,8 @@ export default function PageQuest(props: any) {
   return (
     <>
       <StatPopup coins={props.userdata.coins} exp={props.userdata.experience} popup={true}/>
-      <div className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle p-6">
-        <Title className="text-center text-4xl mb-6">Quests</Title>
+      <div className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle px-6 py-4">
+        <h1 className="page-title mb-4">Quests</h1>
         <div className="flex flex-col gap-4 relative">
           {quests.map((quest: any) =>
             <div id={`${quest.id}`} key={quest.id}
@@ -129,13 +129,13 @@ export default function PageQuest(props: any) {
           <Button
             variant="contained"
             color="primary"
-            className="flex items-center justify-start gap-2"
+            className="flex items-center gap-2"
             onClick={() => {
               navigate(props.leaderboardPath);
             }}
           >
             <LeaderboardIcon fontSize="medium" />
-            <span className="text-base font-semibold">Leaderboard</span>
+            <span className="font-semibold">Leaderboard</span>
           </Button>
         </div>
       </div>

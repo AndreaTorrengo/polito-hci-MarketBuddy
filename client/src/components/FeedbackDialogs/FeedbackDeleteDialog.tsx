@@ -12,7 +12,7 @@ interface FeedbackDeleteDialogProps {
 const FeedbackDeleteDialog: React.FC<FeedbackDeleteDialogProps> = ({ isOpen, onClose, theme }) => {
     return (
         <>
-            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isOpen} onClose={onClose}>
+            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isOpen} onClose={onClose}>
                 <DialogPanel>
 
                     <button

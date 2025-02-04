@@ -45,14 +45,10 @@ const OnFlyMarker: React.FC<{ center: [number, number], isMarketCenter: boolean 
 
 
 interface PageMapProps {
-    vendors: Vendor[];
     filteredVendors: Vendor[];
     theme: string;
     selectedMarket: Market;
-    filteredProductsVendors: Vendor[];
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
-    isFeedbackDialogOpen: string | null;
-    setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
     setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
     selectedReasons: string[];
     setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
@@ -62,13 +58,9 @@ interface PageMapProps {
 
 const PageMap: React.FC<PageMapProps> = ({
     filteredVendors,
-    vendors,
     theme,
     selectedMarket,
-    filteredProductsVendors,
     setFilteredVendors,
-    isFeedbackDialogOpen,
-    setIsFeedbackDialogOpen,
     setAddProductId,
     selectedReasons,
     setSelectedReasons,
@@ -176,9 +168,9 @@ const PageMap: React.FC<PageMapProps> = ({
 
         const iconSvg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
-    
+
       <path fill="${backgroundColor}" stroke="${borderColor}" stroke-width="1" d="M12 2C8.13 2 5 5.13 5 9c0 3.06 2.22 5.63 5.13 6.48L12 22l1.87-6.52C16.78 14.63 19 12.06 19 9c0-3.87-3.13-7-7-7z"/>
-  
+
       <circle cx="12" cy="9" r="2.5" fill="${backgroundColorCircle}" stroke-width="2"/>
     </svg>
   `;
@@ -205,13 +197,13 @@ const PageMap: React.FC<PageMapProps> = ({
 
 
     return (
-        <div style={{ height: '100%', width: '100%', position: 'relative' }}>
+        <div className='w-full h-full z-0'>
 
             <MapContainer
+                className='w-full h-full'
                 center={center}
                 zoom={17}
                 maxZoom={18}
-                style={{ height: '100%', width: '100%' }}
             >
                 <MapClickHandler />
                 <TileLayer className={theme === "dark" ? "dark-mode-filter" : ""} url={tileLayerUrl}
@@ -260,7 +252,7 @@ const PageMap: React.FC<PageMapProps> = ({
                     <PageVendorProducts
                         productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                         selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
-                        isFeedbackDialogOpen={isFeedbackDialogOpen} setIsFeedbackDialogOpen={setIsFeedbackDialogOpen} isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId}></PageVendorProducts>
+                        isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId}></PageVendorProducts>
                 )
             )}
             {/* Market selector

@@ -136,6 +136,7 @@ const resetDB = async () => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
+        return true;
     } catch (error) {
         throw error;
     }

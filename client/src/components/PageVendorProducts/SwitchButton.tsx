@@ -1,31 +1,33 @@
 import SmallIconButton from "../generalPurposeComponents/SmallIconButton";
 import { Market, Vendor, Product } from "../../models";
-import { Button, Dialog, DialogPanel } from '@tremor/react';
-import React, { useState } from 'react';
+import { Dialog, DialogPanel } from '@tremor/react';
+import { Button } from '../generalPurposeComponents/Button';
+import React, { useContext, useState } from 'react';
 import './Dialogs.css';
+import globalContext from "../../Context";
+import { ProductListItemProps } from "./ProductListItem";
 
 interface SwitchButtonProps {
     selectedProducts: Map<number, number[]>;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
+    setSelectedProducts: React.Dispatch<React.SetStateAction<Map<number, ProductListItemProps> | null>>;
     theme: string,
-    closeAfter: () => void;
-    isFeedbackDialogOpen: string | null;
-    setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
     setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
-    productsWithoutAlternatives: Product[];
 }
 
-const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter,setIsFeedbackDialogOpen,productsWithoutAlternatives,setProductsWithoutAlternatives }) => {
+const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, setProductsWithoutAlternatives, setSelectedProducts }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [productsSwitching, setProductsSwitching] = useState<Product[]>([]);
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const vendorsKey = `vendors_${selectedMarket.name}`;
-    const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '[]');
-    const vendors: Vendor[] = JSON.parse(localStorage.getItem(vendorsKey) || '[]');
+    const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) ?? '[]');
+    const vendors: Vendor[] = JSON.parse(localStorage.getItem(vendorsKey) ?? '[]');
+
+    const { showToastMessage, askConfirmation } = useContext(globalContext) || {};
 
     const handleClick = () => {
-        setIsDialogOpen(true);
+        // setIsDialogOpen(true);
 
         const products = Array.from(selectedProducts.values()).flatMap(productIds => {
             return productIds.map((productId: number) => {
@@ -34,6 +36,14 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
             });
         });
         setProductsSwitching(products.filter((product): product is Product => product !== null && product !== undefined));
+        askConfirmation && askConfirmation(handleConfirm,
+            <>
+                {/* The following products will be switched to other sellers */}
+                <span className="text-lg font-medium">Confirm Switch</span>
+                <span className="text-lg mb-2">For the following products we will find other sellers in this marketplace that match your preferences:</span>
+                <span className="text-lg font-bold">{products.map((product) => product?.name).join(', ')}</span>
+            </>
+        );
     };
 
     const handleConfirm = () => {
@@ -79,12 +89,24 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
             });
         });
 
+        let message = 'All products have been successfully assigned to other sellers.';
+        let variant = 'success';
+        if (productsWithoutAlternatives.length !== 0) {
+            message = 'The following products could not be assigned to other sellers: ';
+            productsWithoutAlternatives.forEach(product => {
+                message += product.name + ', ';
+            });
+            message = message.slice(0, -2);
+            variant = 'warning';
+        }
+
+
         setProductsWithoutAlternatives(productsWithoutAlternatives);
         setFilteredVendors(filteredVendors);
         localStorage.setItem(filteredVendorsKey, JSON.stringify(filteredVendors));
         setIsDialogOpen(false);
-        setIsFeedbackDialogOpen('switch');
-        closeAfter();
+        setSelectedProducts(null);
+        showToastMessage?.(message, variant);
     };
 
     return (
@@ -96,7 +118,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                     </svg>
                 </div>
             </SmallIconButton>
-            <Dialog className={theme === 'dark' ? 'dark z-[10000000]' : 'z-[10000000]'} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
                 <DialogPanel>
                     <h1 className="confirm-text" style={{ fontWeight: 'bold', fontSize: '1rem' }}>Confirm Switch</h1>
                     <p className="message-text" style={{ marginTop: '10px' }}>For the following products we will find other sellers in this marketplace that match your preferences:</p>
@@ -110,9 +132,9 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                         </div>
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'right', gap: '10px', marginTop: '20px' }}>
-                        <Button className="button-cancel" style={{ backgroundColor: 'transparent', borderColor: theme === 'dark' ? 'white' : 'black', color: theme === 'dark' ? 'white' : 'black', borderWidth: '1px' }} onClick={() => setIsDialogOpen(false)}>Cancel</Button>
-                        <Button className="button" onClick={handleConfirm}>Confirm</Button>
+                    <div className="flex justify-right gap-2.5 mt-5">
+                        <Button variant='outlined' color='primary' onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                        <Button variant='contained' color='primary' onClick={handleConfirm}>Confirm</Button>
                     </div>
                 </DialogPanel>
             </Dialog>

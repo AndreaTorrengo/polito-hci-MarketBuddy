@@ -8,9 +8,6 @@ interface PageShoppingListProps {
     readonly productsList: { [key: string]: string[] };
     readonly setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
     readonly selectedMarket: Market;
-    readonly missingProducts: string[];
-    readonly updateVendorsAndProducts: () => void;
-    readonly vendors: Vendor[];
     readonly openEditMode: (event: React.MouseEvent, vendorId: number, productId: number) => void;
     readonly addOrRemoveSelected: (vendorId: number, productId: number) => void;
     readonly isEditMode: boolean;
@@ -18,8 +15,6 @@ interface PageShoppingListProps {
     readonly selectedOrRemoveAllProductsFromVendor: (vendorId: number, remove: boolean) => void;
     readonly filteredProductsVendors: Vendor[];
     readonly setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
-    isFeedbackDialogOpen: string | null;
-    setIsFeedbackDialogOpen: React.Dispatch<React.SetStateAction<string | null>>;
     setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
     selectedReasons: string[];
     setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
@@ -28,13 +23,10 @@ interface PageShoppingListProps {
 }
 
 export default function PageShoppingList({
-    missingProducts,
     theme,
     selectedMarket,
     productsList,
     setProductsList,
-    updateVendorsAndProducts,
-    vendors,
     openEditMode,
     addOrRemoveSelected,
     isEditMode,
@@ -42,44 +34,37 @@ export default function PageShoppingList({
     selectedOrRemoveAllProductsFromVendor,
     filteredProductsVendors,
     setFilteredVendors,
-    isFeedbackDialogOpen,
-    setIsFeedbackDialogOpen,
     setAddProductId,
     selectedReasons,
     setSelectedReasons,
     productsWithoutAlternatives,
     setProductsWithoutAlternatives,
-
-}: PageShoppingListProps) {
+}: Readonly<PageShoppingListProps>) {
     const [isVendorPageOpen, setIsVendorPageOpen] = useState(false);
     const [selectedVendor, setSelectedVendor] = useState<number>(-1);
 
     return (
-        <>
-            <div id="ShoppingListPage" className="flex flex-col gap-2">
-                {!isEditMode &&
-                    <MissingProductsDialog
-                        theme={theme}
-                        productsList={productsList}
-                        setProductsList={setProductsList}
-                        selectedMarket={selectedMarket}
-                        setFilteredVendors={setFilteredVendors}
-                    />
-                }
-                {isEditMode && <div className="h-[3rem]" />}
-
-                {
-                    filteredProductsVendors.map((vendor) => (
-                        <div key={vendor.id}>
-                            {selectedVendor === vendor.id &&
-                                <PageVendorProducts
-                                    productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
-                                    selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
-                                    isFeedbackDialogOpen={isFeedbackDialogOpen}
-                                    setIsFeedbackDialogOpen={setIsFeedbackDialogOpen}
-                                    vendor={vendor} isOpen={isVendorPageOpen}
-                                    setIsOpen={(value: boolean) => setIsVendorPageOpen(value)}
-                                    theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId}></PageVendorProducts>}
+        <div id="ShoppingListPage" className="flex flex-col gap-2">
+            {!isEditMode &&
+                <MissingProductsDialog
+                    theme={theme}
+                    productsList={productsList}
+                    setProductsList={setProductsList}
+                    selectedMarket={selectedMarket}
+                    setFilteredVendors={setFilteredVendors}
+                />
+            }
+            {
+                filteredProductsVendors.map((vendor) => (
+                    vendor.products.length > 0 &&
+                    <div key={vendor.id}>
+                        {selectedVendor === vendor.id &&
+                            <PageVendorProducts
+                                productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                                selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
+                                vendor={vendor} isOpen={isVendorPageOpen}
+                                setIsOpen={(value: boolean) => setIsVendorPageOpen(value)}
+                                    theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} />}
 
                             <VendorGroup id={vendor.id}
                                 openEditMode={openEditMode}
@@ -109,12 +94,9 @@ export default function PageShoppingList({
                                 isEditMode={isEditMode}
                                 selectedOrRemoveAllProductsFromVendor={selectedOrRemoveAllProductsFromVendor}
                             />
-                            <div className={"h-[1rem]"} />
-                        </div>
-                    ))
-                }
-
-            </div>
-        </>
+                    </div>
+                )
+                )}
+        </div>
     );
 }

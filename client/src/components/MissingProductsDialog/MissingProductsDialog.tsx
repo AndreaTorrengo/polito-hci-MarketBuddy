@@ -1,9 +1,11 @@
-import { Button, Dialog, DialogPanel } from '@tremor/react';
+import { Dialog, DialogPanel } from '@tremor/react';
+import { Button } from '../generalPurposeComponents/Button';
 import WarningIcon from '@mui/icons-material/Warning';
 import { Vendor, Product, Market } from '../../models';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import './MissingProductsDialog.css';
+import globalContext from '../../Context';
 import ProductItem from '../PageShoppingList/ProductItem';
 
 interface MissingProductsDialogProps {
@@ -23,7 +25,6 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [showConfirmation, setShowConfirmation] = useState(false);
     const [selectedAlternatives, setSelectedAlternatives] = useState<{ [key: string]: Product[] }>({});
     const [randomAlternatives, setRandomAlternatives] = useState<{ [key: string]: Product[] }>({});
     const [confirmationMessage, setConfirmationMessage] = useState('Product added to shopping list!');
@@ -37,21 +38,23 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
 
     const previousMarketRef = useRef(selectedMarket);
 
+    const showToastMessage = useContext(globalContext)?.showToastMessage;
+
     useEffect(() => {
         if (missingProducts.length > 0) {
             const generateSpecificAlternatives = () => {
                 const newSpecificAlternatives: { [key: string]: Product[] } = {};
                 missingProducts.forEach((product) => {
-                    let alternatives: any[] = [];
+                    let alternatives: Product[] = [];
                     if (product === 'Pears' && selectedMarket.name === 'Crocetta Market') {
                         alternatives = [
-                            { id: 1, name: 'Kiwi', price: 1.5, points: null, image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg" },
+                            { id: 1, name: 'Kiwi', price: 1.5, points: undefined, image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg" },
                             { id: 2, name: "Apples", price: 1.0, points: 15, image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg" }
                         ];
                     } else if (product === "Pears") {
                         alternatives = [{ id: 3, name: "Apples", price: 1.0, points: 15, image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg" }];
                     } else if (product === "Bream") {
-                        alternatives = [{ id: 10, name: "Cod", price: 9.5, points: null, image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg" }];
+                        alternatives = [{ id: 10, name: "Cod", price: 9.5, points: undefined, image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg" }];
                     } else {
                         alternatives = [];
                     }
@@ -114,10 +117,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
             setCurrentIndex(0);
         }
 
-        setShowConfirmation(true);
-        setTimeout(() => {
-            setShowConfirmation(false);
-        }, 900);
+        showToastMessage && showToastMessage(confirmationMessage, 'success');
     };
 
     const handleClose = () => {
@@ -161,19 +161,19 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
     return (
         <>
             {missingProducts.length > 0 && (
-                <div>
-                    <Button
-                        className="mx-auto block alert-button"
-                        onClick={() => setIsOpen(true)}
-                    >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                            <WarningIcon style={{ color: '#e34138' }} />
-                            <span>Some products require your attention!</span>
-                        </div>
-                    </Button>
-                </div>
+                <Button
+                    className="mx-auto my-1 py-2 px-5 bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle"
+                    color='danger'
+                    // variant='contained'
+                    onClick={() => setIsOpen(true)}
+                >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <WarningIcon style={{ color: '#e34138' }} />
+                        <span>Some products require your attention!</span>
+                    </div>
+                </Button>
             )}
-            <Dialog open={isOpen} static={true} onClose={handleClose} className={`max-h-screen overflow-y-auto ${theme === 'dark' ? 'dark' : ''}`}>
+            <Dialog open={isOpen} static={true} onClose={handleClose} className={`max-h-screen overflow-y-auto z-40 ${theme === 'dark' ? 'dark' : ''}`}>
                 <DialogPanel {...handlers} className="dialog-panel max-h-screen overflow-y-auto">
                     {missingProducts.length > 0 ? (
                         <>
@@ -193,7 +193,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                                                 {...alternative}
                                                                 isSelected={selectedAlternatives[missingProducts[currentIndex]]?.includes(alternative) || false}
                                                                 isEditMode={true}
-                                                                
+
                                                             />
 
                                                         </div>
@@ -225,14 +225,13 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                             <Button
                                                 onClick={() => { handleConfirm(missingProducts[currentIndex], selectedAlternatives[missingProducts[currentIndex]] || []), setConfirmationMessage('Product added to shopping list!') }}
                                                 disabled={!selectedAlternatives[missingProducts[currentIndex]] || selectedAlternatives[missingProducts[currentIndex]].length === 0}
-                                                style={{ color: '#fff', }}
+                                                variant='contained'
                                             >
                                                 Add to Shopping List
                                             </Button>
                                         ) : (
                                             <Button
-                                                onClick={() => { handleConfirm(missingProducts[currentIndex], []), setConfirmationMessage('no option') }}
-                                                style={{ color: '#fff', }}
+                                                    variant="contained" onClick={() => { handleConfirm(missingProducts[currentIndex], []); setConfirmationMessage('no option') }}
                                             >
                                                 Got it
                                             </Button>
@@ -264,13 +263,6 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                         </div>
                     )}
                 </DialogPanel>
-                {showConfirmation && confirmationMessage !== 'no option' && (
-                    <div className="fixed inset-x-0 top-0 flex items-center justify-center z-50 mt-60">
-                        <div className="bg-green-500 p-4 text-white rounded-lg shadow-lg">
-                            {confirmationMessage}
-                        </div>
-                    </div>
-                )}
             </Dialog>
         </>
     );

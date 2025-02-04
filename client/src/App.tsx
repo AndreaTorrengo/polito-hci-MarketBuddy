@@ -7,19 +7,14 @@ import PageProfile from "./components/PageProfile/PageProfile";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
 import PageLeaderboard from "./components/PageLeaderboard/PageLeaderboard";
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import API from "./API";
 import { Vendor, Product, Market } from "./models";
 import ConfirmPopup from "./components/ConfirmationPopup";
 import TabsHero from "./components/TabSelector/TabSelector";
-import PageAddProducts from "./components/PageAddProducts/PageAddProducts.tsx";
-import FeedbackDeleteDialog from "./components/FeedbackDialogs/FeedbackDeleteDialog.tsx";
-import FeedbackSwitchDialog from "./components/FeedbackDialogs/FeedbackSwitchDialog.tsx";
-import FeedbackReportDialog from "./components/FeedbackDialogs/FeedbackReportDialog.tsx";
-import FeedbackAddDialog from "./components/FeedbackDialogs/FeedbackAddDialog.tsx";
 import { getUserdata, saveUserData } from "./components/PageProfile/UserData";
-
-
+import FeedbackToast from "./components/generalPurposeComponents/FeedbackToast.tsx";
+import globalContext from "./Context";
 
 export default function App() {
   const paths = ["/", "/quests", "/rewards", "/profile", "*", "/leaderboard"];
@@ -149,6 +144,7 @@ export default function App() {
         const filteredProducts = vendor.products.filter((product: Product) =>
           productsListState[selectedMarket.name].includes(product.name) && !foundProducts.has(product.name),
         );
+
         if (filteredProducts.length > 0) {
           const newVendor = {
             ...vendor,
@@ -170,6 +166,8 @@ export default function App() {
       const missing: string[] = Array.from(requiredProducts as Set<string>).filter(product =>
         !foundProducts.has(product)
       );
+
+
       setFilteredVendors(filtered);
 
       localStorage.setItem(filteredVendorsKey, JSON.stringify(filtered));
@@ -186,12 +184,12 @@ export default function App() {
 
 
 
-  const [popupText, setPopupText] = useState("Are you sure?");
-  const [cancelButtonText, setCancelButtonText] = useState("Cancel");
-  const [confirmButtonText, setConfirmButtonText] = useState("Confirm");
-  const [confirmationCallback, setConfirmationCallback] = useState<() => void>(() => { });
-  const [showPopup, setShowPopup] = useState(false);
+  const selectMarket = (market: Market) => {
+    localStorage.market = market;
+    setSelectedMarket(market);
+  }
 
+  /* Theme */
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     if (!localStorage.theme) {
       if (theme === 'light') {
@@ -203,11 +201,6 @@ export default function App() {
     }
   });
 
-  const selectMarket = (market: Market) => {
-    localStorage.market = market;
-    setSelectedMarket(market);
-  }
-
   const toggleTheme = () => {
     if (theme === 'dark') {
       setTheme('light');
@@ -218,75 +211,82 @@ export default function App() {
       localStorage.theme = 'dark';
     }
   };
+  /****/
 
-  const askConfirmation = (onConfirm: () => void, text = "Are you sure?", cancelButtonText = "Cancel", confirmButtonText = "Confirm") => {
+  /* Confirmation Popup */
+  const [popupText, setPopupText] = useState<string | ReactNode>("Are you sure?");
+  const [cancelButtonText, setCancelButtonText] = useState("Cancel");
+  const [confirmButtonText, setConfirmButtonText] = useState("Confirm");
+  const [confirmationCallback, setConfirmationCallback] = useState<() => void>(() => { });
+  const [showPopup, setShowPopup] = useState(false);
+
+  const askConfirmation = useCallback((onConfirm: () => void, text: string | ReactNode = "Are you sure?", cancelButtonText = "Cancel", confirmButtonText = "Confirm") => {
     setPopupText(text);
     setCancelButtonText(cancelButtonText);
     setConfirmButtonText(confirmButtonText);
     setConfirmationCallback(() => { return onConfirm });
-    // console.log(confirmationCallback)
     setShowPopup(true);
-  };
+  }, []);
+  /****/
+
+
+  /* Feedback Toast */
+  const [showToast, setShowToast] = useState(false);
+  const [toastContent, setToastContent] = useState<React.ReactNode | string>("");
+  const [toastVariant, setToastVariant] = useState<string>("info");
+
+  const showToastMessage = useCallback((content: React.ReactNode | string, variant: string = 'info') => {
+    setToastContent(content);
+    setToastVariant(variant);
+    setShowToast(true);
+    if (variant === 'success') {
+      setTimeout(() => {
+        setShowToast(false);
+      }, 2500);
+    }
+  }, []);
+  /****/
+
+  const contextValue = useMemo(() => ({
+    askConfirmation, showToastMessage, setPopupText
+  }), [askConfirmation, showToastMessage, setPopupText]);
 
   //feedback dialogs states
-  const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState<string | null>(null);
   const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
   const [productsWithoutAlternatives, setProductsWithoutAlternatives] = useState<Product[]>([]);
   // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-PageNotFound, 5-Leaderboard
   return (
     <div id='approot' className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
-      <FeedbackDeleteDialog
-        isOpen={isFeedbackDialogOpen === 'delete'}
-        onClose={() => { setIsFeedbackDialogOpen(null)}}
-        theme={theme}
-      />
-      <FeedbackSwitchDialog
-        isOpen={isFeedbackDialogOpen === 'switch'}
-        onClose={() => { setIsFeedbackDialogOpen(null) }}
-        theme={theme}
-        productsWithoutAlternatives={productsWithoutAlternatives}
-      />
-      <FeedbackReportDialog
-        isOpen={isFeedbackDialogOpen === 'report'}
-        onClose={() => { setIsFeedbackDialogOpen(null), setSelectedReasons([]) }}
-        theme={theme}
-        selectedReasons={selectedReasons}
-      />
-       <FeedbackAddDialog
-        isOpen={isFeedbackDialogOpen === 'add'}
-        onClose={() => { setIsFeedbackDialogOpen(null)}}
-        theme={theme}
-      />
-      <Routes>
-        <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
-          <Route index path={`${paths[0]}`} element={<TabsHero 
-          productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
-          selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons} 
-          isFeedbackDialogOpen={isFeedbackDialogOpen} setIsFeedbackDialogOpen={setIsFeedbackDialogOpen} 
-          theme={theme} vendors={vendors} 
-          filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors} 
-          selectedMarket={selectedMarket} setSelectedMarket={selectMarket} 
-          missingProducts={missingProducts} 
-          updateVendorsAndProducts={updateVendorsAndProducts} 
-          productsList={productsList} setProductsList={setProductsList} />} />  
-          <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} leaderboardPath={`${paths[5]}`} userdata={userdata} setUserdata={setUserdata} />} />
-          <Route path={`${paths[2]}`} element={<PageReward askConfirmation={askConfirmation} userdata={userdata} setUserdata={setUserdata}/>} />
-          <Route path={`${paths[2]}/history`} element={<PageRewardHistory />} />
-          <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} askConfirmation={askConfirmation} userdata={userdata} setUserdata={setUserdata}/>} />
-          <Route path={`${paths[4]}`} element={<PageNotFound />} />
-          <Route path={`${paths[5]}`} element={<PageLeaderboard userdata={userdata} setUserdata={setUserdata} />} />
-        </Route>
-      </Routes>
+      <globalContext.Provider value={contextValue}>
+        <Routes>
+          <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
+            <Route index path={`${paths[0]}`} element={<TabsHero
+              productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+              selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
+              theme={theme} vendors={vendors}
+              filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors}
+              selectedMarket={selectedMarket} setSelectedMarket={selectMarket}
+              productsList={productsList} setProductsList={setProductsList} />} />
+            <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} leaderboardPath={`${paths[5]}`} userdata={userdata} setUserdata={setUserdata} />} />
+            <Route path={`${paths[2]}`} element={<PageReward askConfirmation={askConfirmation} userdata={userdata} setUserdata={setUserdata} />} />
+            <Route path={`${paths[2]}/history`} element={<PageRewardHistory />} />
+            <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} askConfirmation={askConfirmation} userdata={userdata} setUserdata={setUserdata} />} />
+            <Route path={`${paths[4]}`} element={<PageNotFound />} />
+            <Route path={`${paths[5]}`} element={<PageLeaderboard userdata={userdata} setUserdata={setUserdata} />} />
+          </Route>
+        </Routes>
+      </globalContext.Provider>
       {showPopup &&
         <ConfirmPopup text={popupText} cancelButtonText={cancelButtonText} confirmButtonText={confirmButtonText} onConfirmCallback={confirmationCallback} closePopup={() => { setShowPopup(false); }} />
       }
+      <FeedbackToast show={showToast} variant={toastVariant} onClick={() => setShowToast(false)}>{toastContent}</FeedbackToast>
     </div>
   );
 }
 
 function Layout(props: Readonly<{ paths: string[], activeTab: number, questPendingClaims: number, setActiveTab: (tab: number) => void }>) {
   return (
-    <div className="flex flex-col h-screen bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle">
+    <div className="flex flex-col h-screen bg-tremor-background dark:bg-dark-tremor-background">
       <div className="flex-grow overflow-y-auto flex-1">
         <Outlet />
       </div>

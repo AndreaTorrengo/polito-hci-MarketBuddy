@@ -9,6 +9,7 @@ import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 import NearMeOutlinedIcon from '@mui/icons-material/NearMeOutlined';
 import { Market } from "../../models";
 import TorinoMarkets from "../../markets.json";
+import { Button } from "../generalPurposeComponents/Button";
 
 
 
@@ -26,9 +27,10 @@ function modifyMarketDistances(markets: Market[], selectedMarket: Market) {
   });
 }
 
-export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket }: Readonly<{
+export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket, className }: Readonly<{
   selectedMarket: Market;
   setSelectedMarket: (market: Market) => void;
+  className?: string;
 }>) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
@@ -42,7 +44,7 @@ export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket 
     // The rest is by distance
     modifiedMarkets.sort((a, b) => {
       if (a.name === selectedMarket.name) return -1;
-      if (b.name=== selectedMarket.name) return 1;
+      if (b.name === selectedMarket.name) return 1;
       return a.distance - b.distance;
     });
     setMarkets(modifiedMarkets);
@@ -51,14 +53,14 @@ export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket 
 
   return (
     <>
-      <button className="font-bold py-2 px-4 inline-flex items-center dark:text-dark-tremor-content-strong animated dark:active:text-dark-tremor-content-emphasis active:scale-subtle" onClick={() => setIsOpen(true)}>
+      <Button variant="text" color="bw" className={`flex items-center align-middle font-bold ms-auto ${className}`} onClick={() => setIsOpen(true)}>
         <LocationOnOutlinedIcon />
-        <span className="ml-2">{selectedMarket.name}</span>
+        <span className="">{selectedMarket.name}</span>
         <ExpandMoreIcon />
-      </button>
+      </Button>
       <Sheet isOpen={isOpen} onClose={() => setIsOpen(false)} detent='content-height' mountPoint={approot} >
         <Sheet.Container>
-          <Sheet.Header className="dark:bg-dark-tremor-background dark:text-dark-tremor-content-emphasis" />
+          <Sheet.Header className="dark:bg-dark-tremor-background" />
           <Sheet.Content className="dark:bg-dark-tremor-background">
             <h1 className="font-bold text-3xl text-center">Choose The Market</h1>
             <div className="mx-20 mt-2 mb-4">
@@ -90,10 +92,10 @@ function SearchBar({ searchInput, setSearchInput }: Readonly<{ searchInput: stri
 
 function MarketsList({ selectMarket, searchInput, selectedMarket, markets }: Readonly<{ selectMarket: (market: Market) => void, searchInput: string, selectedMarket: Market, markets: Market[] }>) {
   return (
-    <List className="w-auto mx-8 my-2 py-2">
+    <List className="w-auto mx-4 my-2 py-2">
       {markets.map((market) => (
         (searchInput === "" || market.name.toLowerCase().includes(searchInput.toLowerCase())) &&
-        <ListItem key={market.id} className="p-2 animated active:scale-subtle active:bg-tremor-background-subtle dark:active:bg-dark-tremor-background-subtle">
+        <ListItem key={market.id} className="flex items-center m-auto">
             <MarketCard market={market} selectedMarket={selectedMarket} selectMarket={selectMarket} />
         </ListItem>
       ))}
@@ -111,22 +113,22 @@ interface MarketCardProps {
 
 function MarketCard({ market, selectedMarket, selectMarket }: Readonly<MarketCardProps>) {
   return (
-    <button className="justify-start w-full " onClick={() => selectMarket(market)}>
-      <div className="flex flex-row items-center text-tremor-content-strong dark:text-dark-tremor-content-emphasis w-full">
+    <Button className="flex justify-start w-full" onClick={() => selectMarket(market)}>
+      <div className="flex flex-row items-center w-full">
         <div className="flex flex-col">
           {(market.name === selectedMarket.name) ? <NearMeOutlinedIcon className="me-2" fontSize="large" /> :
             <StorefrontOutlinedIcon className="me-2" fontSize="large" />}
         </div>
-        <div className="flex flex-col grow">
-          <div className="flex flex-row grow">
-            <h3 className="text-lg font-bold text-left w-full grow">{market.name}</h3>
+        <div className="flex flex-col w-full">
+          <div className="flex flex-row">
+            <h3 className="text-lg font-bold text-left">{market.name}</h3>
           </div>
-          <div className="flex flex-row justify-between text-gray-500">
-            <p className="flex truncate whitespace-nowrap">{market.address}</p>
-            <p className="ms-4 text-right max-w-fit min-w-fit">{market.distance} km</p>
+          <div className="flex flex-row text-gray-500 font-light min-w-0 max-w-full">
+            <span className="min-w-0 truncate overflow-hidden whitespace-nowrap text-left">{market.address}</span>
+            <span className="ps-3 ms-auto text-right max-w-fit min-w-fit">{market.distance} km</span>
           </div>
         </div>
       </div>
-    </button>
+    </Button>
   );
 }
