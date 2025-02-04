@@ -7,10 +7,6 @@ import './pagemap.css';
 import tinycolor from 'tinycolor2';
 import PageVendorProducts from "../PageVendorProducts/PageVendorProducts.tsx";
 
-const getRandomOffset = (): [number, number] => {
-    const randomValue = () => Math.random() * 0.0008 - 0.0004;
-    return [randomValue(), randomValue()];
-};
 
 // Helper component to update map center dynamically
 const UpdateMapCenter: React.FC<{ center: [number, number] }> = ({ center }) => {
@@ -69,10 +65,9 @@ const PageMap: React.FC<PageMapProps> = ({
     productsWithoutAlternatives,
     setProductsWithoutAlternatives,
 }) => {
-    const offset: [number, number] = getRandomOffset();
     const [markerPosition, setMarkerPosition] = useState<[number, number]>([
-        selectedMarket.position[0] + offset[0],
-        selectedMarket.position[1] + offset[1],
+        selectedMarket.position[0],
+        selectedMarket.position[1],
     ]);
     const [center, setMapCenter] = useState<[number, number]>(selectedMarket.position as [number, number]);
     const [selectedMarker, setSelectedMarker] = useState<[number, number] | null>(null);
@@ -106,7 +101,7 @@ const PageMap: React.FC<PageMapProps> = ({
 
     //inizialize user marker position
     useEffect(() => {
-        setMarkerPosition([selectedMarket.position[0] + offset[0], selectedMarket.position[1] + offset[1]]);
+        setMarkerPosition([selectedMarket.position[0], selectedMarket.position[1]]);
     }, [selectedMarket]);
 
 
