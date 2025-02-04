@@ -7,12 +7,13 @@ import ProductListItem, { ProductListItemProps } from "./ProductListItem.tsx";
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import { Sheet } from 'react-modal-sheet';
 import VendorBadges from "./VendorBadges.tsx";
-import { ButtonBase, IconButton } from "@mui/material";
+import { ButtonBase, IconButton, Dialog, DialogContent, DialogTitle } from "@mui/material";
 import ContextMenu, { ContextMenuProps } from "../generalPurposeComponents/ContextMenu.tsx";
 import SwitchButton from "./SwitchButton.tsx";
 import DeleteButton from "./DeleteButton.tsx";
 import SignalErrorButton from "./SignalErrorButton.tsx";
 import { Market, Vendor, Product } from "../../models.ts";
+import { QRCodeSVG } from "qrcode.react";
 
 interface PageVendorProductsParams {
     isOpen: boolean;
@@ -44,7 +45,7 @@ export default function PageVendorProducts({
     setSelectedReasons,
     productsWithoutAlternatives,
     setProductsWithoutAlternatives,
-}: PageVendorProductsParams) {
+}: Readonly<PageVendorProductsParams>) {
     const approot = document.getElementById("approot")!;
 
     const [isEditMode, setIsEditMode] = useState(false);
@@ -65,6 +66,7 @@ export default function PageVendorProducts({
     useEffect(() => {
         closeAfter();
     }, [vendor.id]);
+
 
 
     const [contextMenuProps, setContextMenuProps] = useState<ContextMenuProps>({
@@ -92,12 +94,7 @@ export default function PageVendorProducts({
         ]
     });
 
-    const activeTab = localStorage.getItem('activeTab') || 'list';
-
-    const onLongPress = (event: React.MouseEvent, productId: number) => {
-        event.preventDefault();
-        setContextMenuProps({ ...contextMenuProps, isOpen: true, x: event.clientX, y: event.clientY });
-    };
+    const activeTab = localStorage.getItem('activeTab') ?? 'list';
 
     const handleClose = () => {
         setIsOpen(false);
@@ -143,6 +140,20 @@ export default function PageVendorProducts({
         setIsEditMode(false);
         setSelectedProducts(null);
         console.log(closeAfter);
+    }
+
+
+    const [isQrCodeDialogOpen, setIsQrCodeDialogOpen] = useState(false);
+
+    function openQrCodeDialog() {
+        handleClose();
+        setIsQrCodeDialogOpen(true);
+    }
+
+    function confirmSale() {
+        setIsQrCodeDialogOpen(false);
+        console.log("Sale confirmed");
+        // TODO: Show toast message with the context in the other PR
     }
 
     return (
@@ -241,7 +252,7 @@ export default function PageVendorProducts({
                                             className="line-clamp-1 m-0 p-0 text-2xl titleFont font-bold">{vendor.name}</h1>}
                                         rightComponent={
                                             <div className="flex flex-row">
-                                                <IconButton>
+                                                <IconButton onClick={openQrCodeDialog}>
                                                     <QrCodeScannerIcon className="text-black dark:text-white" />
                                                 </IconButton>
                                             </div>
@@ -287,7 +298,6 @@ export default function PageVendorProducts({
                                                     :
                                                     <ButtonBase key={product.id} component="div"
                                                         onContextMenu={(e) => {
-                                                            //onLongPress(e, index);
                                                             openEditMode(e, product.id);
                                                         }}
                                                     >
@@ -306,6 +316,13 @@ export default function PageVendorProducts({
                         <Sheet.Backdrop onTap={() => handleClose()} style={{ backgroundColor: "transparent" }} /> : <></>
                 }
             </Sheet>
+            <Dialog open={isQrCodeDialogOpen} onClose={() => { setIsQrCodeDialogOpen(false); setIsOpen(true) }} onClick={confirmSale}>
+                {/* <DialogTitle>QR Code</DialogTitle> */}
+                <DialogContent className={`flex flex-col items-center justify-between gap-4 font-medium text-xl text-center ${theme === "dark" ? "bg-dark-tremor-background text-white" : "bg-tremor-background text-black"}`}>
+                    <QRCodeSVG bgColor={theme === "dark" ? "oklch(0.21 0.034 264.665)" : "white"} fgColor={theme === "dark" ? "white" : "black"} value={products.map(p => p.name).join(', ')} size={256} marginSize={4} level="Q" />
+                    <p>Show this to the vendor to confirm the purchase!</p>
+                </DialogContent>
+            </Dialog>
         </>
     );
 }
