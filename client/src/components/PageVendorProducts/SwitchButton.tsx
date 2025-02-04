@@ -11,12 +11,12 @@ interface SwitchButtonProps {
     selectedProducts: Map<number, number[]>;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
-    setSelectedProducts: React.Dispatch<React.SetStateAction<Map<number, ProductListItemProps> | null>>;
+    closeAfter: () => void;
     theme: string,
     setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
 }
 
-const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, setProductsWithoutAlternatives, setSelectedProducts }) => {
+const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, setProductsWithoutAlternatives, closeAfter }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [productsSwitching, setProductsSwitching] = useState<Product[]>([]);
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
@@ -104,8 +104,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
         setProductsWithoutAlternatives(productsWithoutAlternatives);
         setFilteredVendors(filteredVendors);
         localStorage.setItem(filteredVendorsKey, JSON.stringify(filteredVendors));
-        setIsDialogOpen(false);
-        setSelectedProducts(null);
+        closeAfter();
         showToastMessage?.(message, variant);
     };
 

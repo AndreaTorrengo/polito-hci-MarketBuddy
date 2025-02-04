@@ -10,10 +10,10 @@ interface SignalErrorButtonProps {
     selectedProducts: Map<number, ProductListItemProps>;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
-    setSelectedProducts: React.Dispatch<React.SetStateAction<Map<number, ProductListItemProps> | null>>;
+    closeAfter: () => void;
 }
 
-const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, setSelectedProducts }) => {
+const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, closeAfter }) => {
 
     const [productsSwitching, setProductsSwitching] = useState<Product[]>([]);
 
@@ -94,10 +94,10 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
         setFilteredVendors(filteredVendors);
         localStorage.setItem(filteredVendorsKey, JSON.stringify(filteredVendors));
         localStorage.setItem(missingProductsKey, JSON.stringify(missingProduct));
-        setSelectedProducts(null);
         setSelectedReasons([]);
+        closeAfter();
         showToastMessage && showToastMessage(message, 'success');
-    }, [filteredVendors, filteredVendorsKey, missingProduct, missingProductsKey, selectedProducts, selectedReasons, setFilteredVendors, setSelectedProducts, showToastMessage, vendors]);
+    }, [filteredVendors, filteredVendorsKey, missingProduct, missingProductsKey, selectedProducts, selectedReasons, setFilteredVendors, showToastMessage, vendors]);
 
     const handleReasonSelect = useCallback((reason: string) => {
         if (reason === 'reason1') {

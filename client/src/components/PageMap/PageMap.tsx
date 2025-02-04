@@ -54,12 +54,14 @@ interface PageMapProps {
     setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
     setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
     productsWithoutAlternatives: Product[];
+    closeAfter: () => void;
 }
 
 const PageMap: React.FC<PageMapProps> = ({
     filteredVendors,
     theme,
     selectedMarket,
+    closeAfter,
     setFilteredVendors,
     setAddProductId,
     selectedReasons,
@@ -251,8 +253,9 @@ const PageMap: React.FC<PageMapProps> = ({
                 selectedVendor && (
                     <PageVendorProducts
                         productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                        closeAfter={closeAfter}
                         selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
-                        isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId}></PageVendorProducts>
+                        isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} filteredVendors={filteredVendors} />
                 )
             )}
             {/* Market selector

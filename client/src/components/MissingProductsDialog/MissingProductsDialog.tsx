@@ -186,7 +186,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                         <div className={`flex justify-center grid gap-4 ${randomAlternatives[missingProducts[currentIndex]]?.length === 1 ? 'grid-cols-1' : randomAlternatives[missingProducts[currentIndex]]?.length === 2 ? 'grid-cols-2' : randomAlternatives[missingProducts[currentIndex]]?.length === 3 ? 'grid-cols-3' : 'grid-cols-4'}`}>
                                             {Array.isArray(randomAlternatives[missingProducts[currentIndex]]) && randomAlternatives[missingProducts[currentIndex]].length > 0 ? (
                                                 randomAlternatives[missingProducts[currentIndex]].map((alternative, altIndex) => (
-                                                    <>
+                                                    <div key={altIndex}>
                                                         <div onClick={() => handleSelectAlternative(missingProducts[currentIndex], alternative) } style={{ width: '120px', height: '120px' }}>
                                                             <ProductItem
                                                                 key={alternative.id}
@@ -204,7 +204,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                                             {currentIndex + 1}/{missingProducts.length}
                                                         </div>
 
-                                                    </>
+                                                    </div>
 
                                                 ))
                                             ) : (

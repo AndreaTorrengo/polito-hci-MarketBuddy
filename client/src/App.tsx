@@ -180,7 +180,7 @@ export default function App() {
 
   useEffect(() => {
     updateVendorsAndProducts();
-  }, [vendors]);
+  }, [vendors, productsList]);
 
 
 
