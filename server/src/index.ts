@@ -2,6 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import routes from './routes';
+import { backupDB } from './controllers';
+
+backupDB();
 
 const app = express();
 const port = 3001;
@@ -21,4 +24,7 @@ app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
 
+
 export default app;
+
+

@@ -1,19 +1,21 @@
 "use client";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import VendorCategoryList from "./VendorCategoryList.tsx";
-import React, {useState} from "react";
+import React, { useContext, useMemo, useState } from "react";
 import AddProductsButton from "./AddProductsButton.tsx";
-import ProductListItem, {ProductListItemProps} from "./ProductListItem.tsx";
+import ProductListItem, { ProductListItemProps } from "./ProductListItem.tsx";
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
-import {Sheet} from 'react-modal-sheet';
+import { Sheet } from 'react-modal-sheet';
 import VendorBadges from "./VendorBadges.tsx";
-import {ButtonBase, IconButton} from "@mui/material";
-import ContextMenu, {ContextMenuProps} from "../generalPurposeComponents/ContextMenu.tsx";
+import { ButtonBase, Dialog, DialogContent } from "@mui/material";
+import ContextMenu, { ContextMenuProps } from "../generalPurposeComponents/ContextMenu.tsx";
 import SwitchButton from "./SwitchButton.tsx";
 import DeleteButton from "./DeleteButton.tsx";
 import SignalErrorButton from "./SignalErrorButton.tsx";
-import {Market, Vendor} from "../../models.ts";
-import {useNavigate} from "react-router-dom";
+import { Button } from "../generalPurposeComponents/Button.tsx";
+import { Market, Vendor, Product } from "../../models.ts";
+import { QRCodeSVG } from "qrcode.react";
+import globalContext from "../../Context.tsx";
 
 interface PageVendorProductsParams {
     isOpen: boolean;
@@ -22,35 +24,44 @@ interface PageVendorProductsParams {
     theme: string;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
+    setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
+    selectedReasons: string[];
+    setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
+    setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
+    productsWithoutAlternatives: Product[];
 }
 
 export default function PageVendorProducts({
-                                               selectedMarket,
-                                               setFilteredVendors,
-                                               theme,
-                                               isOpen,
-                                               setIsOpen,
-                                               vendor
-                                           }: PageVendorProductsParams) {
+    selectedMarket,
+    setFilteredVendors,
+    theme,
+    isOpen,
+    setIsOpen,
+    vendor,
+    setAddProductId,
+    setProductsWithoutAlternatives,
+}: Readonly<PageVendorProductsParams>) {
     const approot = document.getElementById("approot")!;
 
     const [isEditMode, setIsEditMode] = useState(false);
 
-    const products = vendor.products.map((product) => ({
-                id: product.id,
-                name: product.name,
-                price: product.price * vendor.priceMultiplier,
-                image: product.image,
-                editMode: false,
-                isSelected: false,
-                showPrice: true
-    }));
+    const products = useMemo(() => vendor.products.map((product) => ({
+        id: product.id,
+        name: product.name,
+        price: parseFloat((product.price * vendor.priceMultiplier).toFixed(2)),
+        image: product.image,
+        editMode: false,
+        isSelected: false,
+        showPrice: true
+    })), [vendor.products, vendor.priceMultiplier]);
 
     const [selectedProducts, setSelectedProducts] = useState<Map<number, ProductListItemProps> | null>(null);
 
+    const { showToastMessage } = useContext(globalContext) || {};
+
     const [contextMenuProps, setContextMenuProps] = useState<ContextMenuProps>({
         onClose: () => {
-            setContextMenuProps({...contextMenuProps, isOpen: false});
+            setContextMenuProps({ ...contextMenuProps, isOpen: false });
         },
         isOpen: false,
         x: 0,
@@ -60,27 +71,20 @@ export default function PageVendorProducts({
                 label: "Delete",
                 onClick: () => {
                     console.log("Delete");
-                    setContextMenuProps({...contextMenuProps, isOpen: false});
+                    setContextMenuProps({ ...contextMenuProps, isOpen: false });
                 }
             },
             {
                 label: "Edit",
                 onClick: () => {
                     console.log("Edit");
-                    setContextMenuProps({...contextMenuProps, isOpen: false});
+                    setContextMenuProps({ ...contextMenuProps, isOpen: false });
                 }
             }
         ]
     });
 
-    const activeTab = localStorage.getItem('activeTab') || 'list';
-
-    const navigate = useNavigate();
-
-    const onLongPress = (event: React.MouseEvent, productId: number) => {
-        event.preventDefault();
-        setContextMenuProps({...contextMenuProps, isOpen: true, x: event.clientX, y: event.clientY});
-    };
+    const activeTab = localStorage.getItem('activeTab') ?? 'list';
 
     const handleClose = () => {
         setIsOpen(false);
@@ -122,152 +126,163 @@ export default function PageVendorProducts({
         setSelectedProducts(new Map(selectedProducts));
     }
 
-    function closeAfter() {
-        setIsEditMode(false);
-        setSelectedProducts(null);
+
+    const [isQrCodeDialogOpen, setIsQrCodeDialogOpen] = useState(false);
+
+    function openQrCodeDialog() {
+        handleClose();
+        setIsQrCodeDialogOpen(true);
+    }
+
+    function confirmSale() {
+        setIsQrCodeDialogOpen(false);
+        showToastMessage && showToastMessage("Sale confirmed!", "success");
     }
 
     return (
         <>
-            <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot} snapPoints={[1000, 600, 300, 100]}
-                   initialSnap={1}>
+            <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot} detent="content-height" snapPoints={[1.0, 0.7, 0.5, 0.2]} className="!z-0">
                 <Sheet.Container>
                     <Sheet.Header
-                        className="bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle rounded-t-md">
+                        className="dark:bg-dark-tremor-background">
                     </Sheet.Header>
-                    <Sheet.Content>
-                        <Sheet.Scroller> {
-                            <div className="h-full">
-                                {/* ContextMenu */}
-                                <ContextMenu {...contextMenuProps} />
+                    <Sheet.Content className="dark:bg-dark-tremor-background">
+                        {/* ContextMenu */}
+                        <div className="px-5">
+                            <ContextMenu {...contextMenuProps} />
 
-                                {/* TopBar */}
-                                {isEditMode ?
-                                    <TopBar
-                                        leftComponent={<ButtonBase className="text-md font-semibold"
-                                                                   onClick={exitEditMode}><p
+                            {/* TopBar */}
+                            {isEditMode ?
+                                <TopBar
+                                    leftComponent={<ButtonBase className="text-md font-semibold"
+                                        onClick={exitEditMode}><p
                                             className="m-0 p-0">Cancel</p></ButtonBase>}
-                                        centerComponent={<h1
-                                            className="line-clamp-1 m-0 p-0 text-md font-normal text-center">{selectedProducts ? (selectedProducts.size + " Selected") : ""}</h1>}
-                                        rightComponent={
-                                            <>
-                                                {
-                                                    selectedProducts && selectedProducts.size === products.length ?
-                                                        <div className="w-8 h-16 flex items-center justify-center"
-                                                             onClick={
-                                                                 () => {
-                                                                     setSelectedProducts(new Map());
-                                                                 }
-                                                             }>
-                                                            <div
-                                                                className="rounded-full text-green-500 h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
-                                                                <svg
-                                                                    className="h-6 w-6 text-black dark:text-white translate-y-[-0.3em] translate-x-[-0.1em] transition-all duration-300"
-                                                                    fill="none"
-                                                                    stroke="currentColor"
-                                                                    viewBox="0 0 24 24"
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                >
-                                                                    <path strokeLinecap="round" strokeLinejoin="round"
-                                                                          strokeWidth="3"
-                                                                          d="M5 13l4 4L19 7"/>
-                                                                </svg>
-                                                            </div>
-                                                        </div>
-                                                        :
+                                    centerComponent={<h1
+                                        className="line-clamp-1 m-0 p-0 text-md font-normal text-center">{selectedProducts ? (selectedProducts.size + " Selected") : ""}</h1>}
+                                    rightComponent={
+                                        <>
+                                            {
+                                                selectedProducts && selectedProducts.size === products.length ?
+                                                    <div className="w-8 h-16 flex items-center justify-center"
+                                                        onClick={
+                                                            () => {
+                                                                setSelectedProducts(new Map());
+                                                            }
+                                                        }>
                                                         <div
-                                                            className="w-8 h-16 flex items-center justify-center animate-fade transition-all duration-300"
-                                                            onClick={
-                                                                () => {
-                                                                    setSelectedProducts(new Map(products.map(p => [p.id, p])));
-                                                                }
-                                                            }>
-                                                            <div
-                                                                className="rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
-                                                            </div>
+                                                            className="rounded-full text-green-500 h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
+                                                            <svg
+                                                                className="h-6 w-6 text-black dark:text-white translate-y-[-0.3em] translate-x-[-0.1em] transition-all duration-300"
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                viewBox="0 0 24 24"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                            >
+                                                                <path strokeLinecap="round" strokeLinejoin="round"
+                                                                    strokeWidth="3"
+                                                                    d="M5 13l4 4L19 7" />
+                                                            </svg>
                                                         </div>
-
-                                                }
-
-                                                {selectedProducts && selectedProducts.size > 0 &&
-                                                    <>
-                                                        <SwitchButton selectedMarket={selectedMarket}
-                                                                      selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
-                                                                      setFilteredVendors={setFilteredVendors}
-                                                                      theme={theme} closeAfter={closeAfter}/>
-                                                        <SignalErrorButton selectedMarket={selectedMarket}
-                                                                           selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
-                                                                           setFilteredVendors={setFilteredVendors}
-                                                                           theme={theme} closeAfter={closeAfter}/>
-                                                        <DeleteButton selectedMarket={selectedMarket}
-                                                                      selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
-                                                                      setFilteredVendors={setFilteredVendors}
-                                                                      theme={theme} closeAfter={closeAfter}/>
-                                                    </>}
-
-                                            </>
-                                        }>
-                                    </TopBar>
-                                    :
-                                    <TopBar
-                                        centerComponent={<h1
-                                            className="line-clamp-1 m-0 p-0 text-2xl titleFont font-bold">{vendor.name}</h1>}
-                                        rightComponent={
-                                            <div className="flex flex-row">
-                                                <IconButton>
-                                                    <QrCodeScannerIcon className="text-black dark:text-white"/>
-                                                </IconButton>
-                                            </div>
-                                        }>
-                                    </TopBar>
-                                }
-                                <div
-                                    className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle px-6 pt-[3.45em] flex flex-col gap-4">
-                                    {/* Vendor's Categories */}
-                                    <div className="w-full">
-                                        <VendorCategoryList categories={vendor.categories}/>
-                                    </div>
-
-                                    <div className="w-full">
-                                        <VendorBadges market={vendor.market} quality={vendor.quality_rating}
-                                                      cordiality={vendor.cordiality_rating}
-                                                      convenience={vendor.convenience_rating}/>
-                                    </div>
-
-                                    <div className="w-full flex-1">
-                                        {/* Product list top bar */}
-                                        <div className="w-full flex flex-row justify-between items-center">
-                                            <p className="m-0 p-0">Your planned purchases</p>
-                                            <div onClick={() => {
-                                                navigate("/addProducts/" + vendor.id);
-                                            }
-                                            }><AddProductsButton></AddProductsButton></div>
-                                        </div>
-                                        {/* Product list */}
-                                        <div key={vendor} className="w-full flex flex-col gap-3 mt-4 pb-[4rem]">
-                                            {products.map((product, index) => (
-                                                isEditMode ?
-                                                    <ButtonBase key={product.id} component="div"
-                                                                onClick={() => {
-                                                                    addOrRemoveSelected(index);
-                                                                }}
-                                                    >
-                                                        <ProductListItem key={index} {...product} editMode={true}
-                                                                         isSelected={
-                                                                             selectedProducts ? selectedProducts.has(product.id) : false
-                                                                         }/>
-                                                    </ButtonBase>
+                                                    </div>
                                                     :
-                                                    <ButtonBase key={product.id} component="div"
-                                                                onContextMenu={(e) => {
-                                                                    //onLongPress(e, index);
-                                                                    openEditMode(e, product.id);
-                                                                }}
-                                                    >
-                                                        <ProductListItem key={index} {...product} editMode={false}/>
-                                                    </ButtonBase>
-                                            ))}
-                                        </div>
+                                                    <div
+                                                        className="w-8 h-16 flex items-center justify-center animate-fade transition-all duration-300"
+                                                        onClick={
+                                                            () => {
+                                                                setSelectedProducts(new Map(products.map(p => [p.id, p])));
+                                                            }
+                                                        }>
+                                                        <div
+                                                            className="rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
+                                                        </div>
+                                                    </div>
+
+                                            }
+
+                                            {selectedProducts && selectedProducts.size > 0 &&
+                                                <>
+                                                    <SwitchButton selectedMarket={selectedMarket}
+                                                        selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
+                                                        setFilteredVendors={setFilteredVendors}
+                                                        setSelectedProducts={setSelectedProducts}
+                                                        setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                                                        theme={theme}
+                                                    />
+                                                    <SignalErrorButton
+                                                        selectedMarket={selectedMarket}
+                                                        selectedProducts={selectedProducts}
+                                                        setFilteredVendors={setFilteredVendors}
+                                                    setSelectedProducts={setSelectedProducts}
+                                                    />
+                                                    <DeleteButton selectedMarket={selectedMarket}
+                                                        selectedProducts={selectedProducts} s
+                                                        setFilteredVendors={setFilteredVendors}
+                                                        theme={theme}
+                                                    />
+                                                </>}
+
+                                        </>
+                                    }>
+                                </TopBar>
+                                :
+                                <TopBar
+                                    leftComponent={<h2
+                                        className="line-clamp-1 m-0 p-0 text-2xl font-bold">{vendor.name}</h2>}
+                                    rightComponent={
+                                        <Button variant="outlined" color="bw" onClick={openQrCodeDialog}>
+                                            <div className="flex flex-row items-center gap-4">
+                                                <span>Confirm Purchase</span>
+                                                <QrCodeScannerIcon className="text-black dark:text-white" />
+                                            </div>
+                                        </Button>
+                                    }>
+                                </TopBar>
+                            }
+                        </div>
+                        <Sheet.Scroller draggableAt="top" className="px-5 pb-14"> {
+                            <div
+                                className="w-full h-full px-1 mt-4 flex flex-col gap-4">
+                                {/* Vendor's Categories */}
+                                <div className="w-full">
+                                    <VendorCategoryList categories={vendor.categories} />
+                                </div>
+
+                                <div className="w-full">
+                                    <VendorBadges market={vendor.market} quality={vendor.quality_rating}
+                                        cordiality={vendor.cordiality_rating}
+                                        convenience={vendor.convenience_rating} />
+                                </div>
+
+                                <div className="w-full flex-1">
+                                    {/* Product list top bar */}
+                                    <div className="w-full flex flex-row justify-between items-center">
+                                        <p className="m-0 p-0">Your planned purchases</p>
+                                        <AddProductsButton onClick={() => setAddProductId(vendor.id)} />
+                                    </div>
+                                    {/* Product list */}
+                                    <div key={vendor.id} className="w-full flex flex-col gap-3 mt-4">
+                                        {products.map((product, index) => (
+                                            isEditMode ?
+                                                <ButtonBase key={product.id} component="div"
+                                                    onClick={() => {
+                                                        addOrRemoveSelected(index);
+                                                    }}
+                                                >
+                                                    <ProductListItem key={product.id} {...product} editMode={true}
+                                                        isSelected={
+                                                            selectedProducts ? selectedProducts.has(product.id) : false
+                                                        } />
+                                                </ButtonBase>
+                                                :
+                                                <ButtonBase key={product.id} component="div"
+                                                    onContextMenu={(e) => {
+                                                        //onLongPress(e, index);
+                                                        openEditMode(e, product.id);
+                                                    }}
+                                                >
+                                                    <ProductListItem key={product.id} {...product} editMode={false} />
+                                                </ButtonBase>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
@@ -276,9 +291,16 @@ export default function PageVendorProducts({
                 </Sheet.Container>
                 {
                     activeTab != "map" ?
-                        <Sheet.Backdrop onTap={() => handleClose()} style={{backgroundColor: "transparent"}}/> : <></>
+                        <Sheet.Backdrop onTap={() => handleClose()} style={{ backgroundColor: "transparent" }} /> : <></>
                 }
-            </Sheet>
+            </Sheet >
+            <Dialog open={isQrCodeDialogOpen} onClose={() => { setIsQrCodeDialogOpen(false); setIsOpen(true) }} onClick={confirmSale}>
+                {/* <DialogTitle>QR Code</DialogTitle> */}
+                <DialogContent className={`flex flex-col items-center justify-between gap-4 font-medium text-xl text-center ${theme === "dark" ? "bg-dark-tremor-background text-white" : "bg-tremor-background text-black"}`}>
+                    <QRCodeSVG bgColor={theme === "dark" ? "oklch(0.21 0.034 264.665)" : "white"} fgColor={theme === "dark" ? "white" : "black"} value={products.map(p => p.name).join(', ')} size={256} marginSize={4} level="Q" />
+                    <p>Show this to the vendor to confirm the purchase!</p>
+                </DialogContent>
+            </Dialog>
         </>
     );
 }

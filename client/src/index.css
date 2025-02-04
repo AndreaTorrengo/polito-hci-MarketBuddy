@@ -10,13 +10,23 @@
 }*/
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
+
 .titleFont {
-    font-family: 'Schibsted Grotesk', sans-serif;
+  font-family: 'Schibsted Grotesk', sans-serif;
 }
 
 .animated {
   transition: all 0.2s ease-in-out;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 550;
+  text-transform: capitalize;
+  font-stretch: normal;
+  font-family: 'Quicksand', sans-serif;
+  font-optical-sizing: auto;
 }

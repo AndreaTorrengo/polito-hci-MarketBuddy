@@ -30,7 +30,7 @@ class Product {
     id: number;
     name: string;
     price: number;
-    points: number;
+    points?: number;
     image: string;
 
     constructor(id: number, name: string, price: number, points: number, image: string) {

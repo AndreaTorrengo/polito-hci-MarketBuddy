@@ -7,16 +7,17 @@ import PageProfile from "./components/PageProfile/PageProfile";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
 import PageLeaderboard from "./components/PageLeaderboard/PageLeaderboard";
 import PropTypes from "prop-types";
-import { useCallback, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import API from "./API";
 import { Vendor, Product, Market } from "./models";
 import ConfirmPopup from "./components/ConfirmationPopup";
 import TabsHero from "./components/TabSelector/TabSelector";
-import PageAddProducts from "./components/PageAddProducts/PageAddProducts.tsx";
-
+import { getUserdata, saveUserData } from "./components/PageProfile/UserData";
+import FeedbackToast from "./components/generalPurposeComponents/FeedbackToast.tsx";
+import globalContext from "./Context";
 
 export default function App() {
-  const paths = ["/", "/quests", "/rewards", "/profile", "*", "/leaderboard", "/addProducts", "/addProducts/:id"];
+  const paths = ["/", "/quests", "/rewards", "/profile", "*", "/leaderboard"];
   const [theme, setTheme] = useState<'light' | 'dark'>(localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
   const [selectedMarket, setSelectedMarket] = useState<Market>({
     id: 1,
@@ -30,6 +31,9 @@ export default function App() {
   });
   const [questPendingClaims, setQuestPendingClaims] = useState(0);
   const [activeTab, setActiveTab] = useState(paths.indexOf(window.location.pathname));
+  const [userdata, setUserdata] = useState(getUserdata());
+  // Update localstorage each time userdata state changes
+  useEffect(() => saveUserData(userdata), [userdata]);
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [filteredVendors, setFilteredVendors] = useState<Vendor[]>([]);
   const [missingProducts, setMissingProducts] = useState<string[]>([]);
@@ -86,7 +90,7 @@ export default function App() {
         console.error('Failed to fetch vendors:', error);
       }
     };
-
+    console.log(vendors);
     fetchVendors();
   }, [selectedMarket]);
 
@@ -135,17 +139,11 @@ export default function App() {
     const filtered: Vendor[] = [];
     if (productsListState[selectedMarket.name]) {
       const requiredProducts = new Set(productsListState[selectedMarket.name]);
-
-      const foundProducts = new Set<Product>();
-
+      const foundProducts = new Set<string>(); // Use Set<string> to track found product names
       for (const vendor of sortedVendors) {
         const filteredProducts = vendor.products.filter((product: Product) =>
-          productsListState[selectedMarket.name].includes(product.name),
+          productsListState[selectedMarket.name].includes(product.name) && !foundProducts.has(product.name),
         );
-
-
-
-
 
         if (filteredProducts.length > 0) {
           const newVendor = {
@@ -153,11 +151,10 @@ export default function App() {
             products: filteredProducts
           };
           filtered.push(newVendor);
-          filteredProducts.forEach((product: Product) => foundProducts.add(product));
+          filteredProducts.forEach((product: Product) => foundProducts.add(product.name)); // Track found product names
         }
-
         const allRequiredProductsFound = Array.from(requiredProducts as Set<string>).every((product: string) =>
-          Array.from(foundProducts).some((fp: Product) => fp.name === product)
+          foundProducts.has(product)
         );
 
         if (allRequiredProductsFound) {
@@ -167,10 +164,10 @@ export default function App() {
 
       // Check for missing products
       const missing: string[] = Array.from(requiredProducts as Set<string>).filter(product =>
-        !Array.from(foundProducts).some((fp: Product) => fp.name === product)
+        !foundProducts.has(product)
       );
 
-  
+
       setFilteredVendors(filtered);
 
       localStorage.setItem(filteredVendorsKey, JSON.stringify(filtered));
@@ -186,13 +183,13 @@ export default function App() {
   }, [vendors]);
 
 
-  
-  const [popupText, setPopupText] = useState("Are you sure?");
-  const [cancelButtonText, setCancelButtonText] = useState("Cancel");
-  const [confirmButtonText, setConfirmButtonText] = useState("Confirm");
-  const [confirmationCallback, setConfirmationCallback] = useState<() => void>(() => { });
-  const [showPopup, setShowPopup] = useState(false);
 
+  const selectMarket = (market: Market) => {
+    localStorage.market = market;
+    setSelectedMarket(market);
+  }
+
+  /* Theme */
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     if (!localStorage.theme) {
       if (theme === 'light') {
@@ -204,11 +201,6 @@ export default function App() {
     }
   });
 
-  const selectMarket = (market: Market) => {
-    localStorage.market = market;
-    setSelectedMarket(market);
-  }
-
   const toggleTheme = () => {
     if (theme === 'dark') {
       setTheme('light');
@@ -219,45 +211,86 @@ export default function App() {
       localStorage.theme = 'dark';
     }
   };
+  /****/
 
-  const askConfirmation = (onConfirm: () => void, text = "Are you sure?", cancelButtonText = "Cancel", confirmButtonText = "Confirm") => {
+  /* Confirmation Popup */
+  const [popupText, setPopupText] = useState<string | ReactNode>("Are you sure?");
+  const [cancelButtonText, setCancelButtonText] = useState("Cancel");
+  const [confirmButtonText, setConfirmButtonText] = useState("Confirm");
+  const [confirmationCallback, setConfirmationCallback] = useState<() => void>(() => { });
+  const [showPopup, setShowPopup] = useState(false);
+
+  const askConfirmation = useCallback((onConfirm: () => void, text: string | ReactNode = "Are you sure?", cancelButtonText = "Cancel", confirmButtonText = "Confirm") => {
     setPopupText(text);
     setCancelButtonText(cancelButtonText);
     setConfirmButtonText(confirmButtonText);
     setConfirmationCallback(() => { return onConfirm });
-    // console.log(confirmationCallback)
     setShowPopup(true);
-  };
+  }, []);
+  /****/
 
+
+  /* Feedback Toast */
+  const [showToast, setShowToast] = useState(false);
+  const [toastContent, setToastContent] = useState<React.ReactNode | string>("");
+  const [toastVariant, setToastVariant] = useState<string>("info");
+
+  const showToastMessage = useCallback((content: React.ReactNode | string, variant: string = 'info') => {
+    setToastContent(content);
+    setToastVariant(variant);
+    setShowToast(true);
+    if (variant === 'success') {
+      setTimeout(() => {
+        setShowToast(false);
+      }, 2500);
+    }
+  }, []);
+  /****/
+
+  const contextValue = useMemo(() => ({
+    askConfirmation, showToastMessage, setPopupText
+  }), [askConfirmation, showToastMessage, setPopupText]);
+
+  //feedback dialogs states
+  const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
+  const [productsWithoutAlternatives, setProductsWithoutAlternatives] = useState<Product[]>([]);
   // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-PageNotFound, 5-Leaderboard
   return (
     <div id='approot' className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
-      <Routes>
-        <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
-          <Route index path={`${paths[0]}`} element={<TabsHero theme={theme} vendors={vendors} filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setSelectedMarket={selectMarket} missingProducts={missingProducts} updateVendorsAndProducts={updateVendorsAndProducts} productsList={productsList} setProductsList={setProductsList} />} />
-          <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} leaderboardPath={`${paths[5]}`} />} />
-          <Route path={`${paths[2]}`} element={<PageReward askConfirmation={askConfirmation} />} />
-          <Route path={`${paths[2]}/history`} element={<PageRewardHistory />} />
-          <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} askConfirmation={askConfirmation} />} />
-          <Route path={`${paths[4]}`} element={<PageNotFound />} />
-          <Route path={`${paths[5]}`} element={<PageLeaderboard />} />
-          <Route path={`${paths[6]}`} element={<PageAddProducts actualVends={filteredVendors} allVends={vendors} theme={theme}/>} />
-          <Route path={`${paths[7]}`} element={<PageAddProducts actualVends={filteredVendors} allVends={vendors} theme={theme}/>} />
-        </Route>
-      </Routes>
+      <globalContext.Provider value={contextValue}>
+        <Routes>
+          <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
+            <Route index path={`${paths[0]}`} element={<TabsHero
+              productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+              selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
+              theme={theme} vendors={vendors}
+              filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors}
+              selectedMarket={selectedMarket} setSelectedMarket={selectMarket}
+              productsList={productsList} setProductsList={setProductsList} />} />
+            <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} leaderboardPath={`${paths[5]}`} userdata={userdata} setUserdata={setUserdata} />} />
+            <Route path={`${paths[2]}`} element={<PageReward askConfirmation={askConfirmation} userdata={userdata} setUserdata={setUserdata} />} />
+            <Route path={`${paths[2]}/history`} element={<PageRewardHistory />} />
+            <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} askConfirmation={askConfirmation} userdata={userdata} setUserdata={setUserdata} />} />
+            <Route path={`${paths[4]}`} element={<PageNotFound />} />
+            <Route path={`${paths[5]}`} element={<PageLeaderboard userdata={userdata} setUserdata={setUserdata} />} />
+          </Route>
+        </Routes>
+      </globalContext.Provider>
       {showPopup &&
         <ConfirmPopup text={popupText} cancelButtonText={cancelButtonText} confirmButtonText={confirmButtonText} onConfirmCallback={confirmationCallback} closePopup={() => { setShowPopup(false); }} />
       }
+      <FeedbackToast show={showToast} variant={toastVariant} onClick={() => setShowToast(false)}>{toastContent}</FeedbackToast>
     </div>
   );
 }
 
 function Layout(props: Readonly<{ paths: string[], activeTab: number, questPendingClaims: number, setActiveTab: (tab: number) => void }>) {
   return (
-    <div className="flex flex-col h-screen bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle">
+    <div className="flex flex-col h-screen bg-tremor-background dark:bg-dark-tremor-background">
       <div className="flex-grow overflow-y-auto flex-1">
         <Outlet />
       </div>
+      {/* <StatPopup coins={props.userdata.coins} exp={props.userdata.experience} /> */}
       <Navbar paths={props.paths} activeTab={props.activeTab} setActiveTab={props.setActiveTab} questPendingClaims={props.questPendingClaims} />
     </div>
   );
@@ -266,5 +299,5 @@ Layout.propTypes = {
   paths: PropTypes.array,
   activeTab: PropTypes.number,
   questPendingClaims: PropTypes.number,
-  setActiveTab: PropTypes.func.isRequired
+  setActiveTab: PropTypes.func.isRequired,
 }

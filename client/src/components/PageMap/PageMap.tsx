@@ -1,8 +1,8 @@
-import {useState, useEffect} from 'react';
-import {MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap, Tooltip} from 'react-leaflet';
+import { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap, Tooltip, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import {Vendor, Market, Product} from '../../models';
+import { Vendor, Market, Product } from '../../models';
 import './pagemap.css';
 import tinycolor from 'tinycolor2';
 import PageVendorProducts from "../PageVendorProducts/PageVendorProducts.tsx";
@@ -13,7 +13,7 @@ const getRandomOffset = (): [number, number] => {
 };
 
 // Helper component to update map center dynamically
-const UpdateMapCenter: React.FC<{ center: [number, number] }> = ({center}) => {
+const UpdateMapCenter: React.FC<{ center: [number, number] }> = ({ center }) => {
     const map = useMap();
     useEffect(() => {
         map.setView(center);
@@ -21,13 +21,13 @@ const UpdateMapCenter: React.FC<{ center: [number, number] }> = ({center}) => {
     return null;
 };
 
-const OnFlyMarker: React.FC<{ center: [number, number], isMarketCenter: boolean }> = ({center, isMarketCenter}) => {
+const OnFlyMarker: React.FC<{ center: [number, number], isMarketCenter: boolean }> = ({ center, isMarketCenter }) => {
     const map = useMap();
 
     useEffect(() => {
         let offsetLatLng = center;
         if (!isMarketCenter) {
-            const offset =+ 230; // Adjust this value to set the fixed point on the screen (negative value to move higher)
+            const offset = + 230; // Adjust this value to set the fixed point on the screen (negative value to move higher)
             const latLngPoint = map.latLngToContainerPoint(center);
             const offsetPoint = L.point(latLngPoint.x, latLngPoint.y + offset);
             const latLng = map.containerPointToLatLng(offsetPoint);
@@ -45,50 +45,61 @@ const OnFlyMarker: React.FC<{ center: [number, number], isMarketCenter: boolean 
 
 
 interface PageMapProps {
-    vendors: Vendor[];
     filteredVendors: Vendor[];
     theme: string;
     selectedMarket: Market;
-    filteredProductsVendors: Vendor[];
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
+    setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
+    selectedReasons: string[];
+    setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
+    setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
+    productsWithoutAlternatives: Product[];
 }
 
 const PageMap: React.FC<PageMapProps> = ({
-                                             filteredVendors,
-                                             vendors,
-                                             theme,
-                                             selectedMarket,
-                                             filteredProductsVendors,
-                                             setFilteredVendors
-                                         }) => {
+    filteredVendors,
+    theme,
+    selectedMarket,
+    setFilteredVendors,
+    setAddProductId,
+    selectedReasons,
+    setSelectedReasons,
+    productsWithoutAlternatives,
+    setProductsWithoutAlternatives,
+}) => {
     const offset: [number, number] = getRandomOffset();
     const [markerPosition, setMarkerPosition] = useState<[number, number]>([
         selectedMarket.position[0] + offset[0],
         selectedMarket.position[1] + offset[1],
     ]);
     const [center, setMapCenter] = useState<[number, number]>(selectedMarket.position as [number, number]);
-    const [marketCenter, setMarketCenter] = useState<[number, number]>(selectedMarket.position as [number, number]);
     const [selectedMarker, setSelectedMarker] = useState<[number, number] | null>(null);
-    const [showAllVendors, setShowAllVendors] = useState(false);
-    const [showedVendors, setShowedVendors] = useState<Vendor[]>();
+    const [selectedVendor, setSelectedVendor] = useState<Vendor>();
 
     const [isOpen, setIsOpen] = useState(false);
 
-    const toggleButton = () => {
-        setShowAllVendors(prevShowAllVendors => {
-            const newShowAllVendors = !prevShowAllVendors;
-            if (newShowAllVendors) {
-                setShowedVendors(vendors);
-            } else {
-                setShowedVendors(filteredProductsVendors);
-            }
-            return newShowAllVendors;
-        });
-    };
+    useEffect(() => {
+        const vendorInFilteredVendors = selectedVendor ? filteredVendors.find(vendor => vendor.id === selectedVendor.id) : undefined;
+        setSelectedVendor(vendorInFilteredVendors);
+        setSelectedMarker(vendorInFilteredVendors ? vendorInFilteredVendors.position as [number, number] : null);
+    }, [filteredVendors]);
+
 
     const handleMarkerClick = (position: [number, number]) => {
         setSelectedMarker(position);
         setMapCenter(position);
+    };
+
+    const MapClickHandler = () => {
+        useMapEvents({
+            click(e) {
+                setSelectedMarker([e.latlng.lat, e.latlng.lng]);
+                setSelectedVendor(undefined);
+                setMapCenter(selectedMarket.position as [number, number]);
+
+            },
+        });
+        return null;
     };
 
     //inizialize user marker position
@@ -96,22 +107,14 @@ const PageMap: React.FC<PageMapProps> = ({
         setMarkerPosition([selectedMarket.position[0] + offset[0], selectedMarket.position[1] + offset[1]]);
     }, [selectedMarket]);
 
+
     useEffect(() => {
-        if (showAllVendors) {
-            setShowedVendors(vendors);
-        } else {
-            setShowedVendors(filteredProductsVendors)
+        if (!isOpen) {
+            // Cambia il centro della mappa quando isOpen diventa false
+            setMapCenter(selectedMarket.position as [number, number]);
+            setSelectedMarker(selectedMarket.position as [number, number]);
         }
-    }, [vendors, filteredProductsVendors]);
-
-
-  useEffect(() => {
-    if (!isOpen) {
-      // Cambia il centro della mappa quando isOpen diventa false
-      setMapCenter(selectedMarket.position as [number, number]); // Esempio: centro su New York
-      setSelectedMarker(selectedMarket.position as [number, number]);
-    }
-  }, [isOpen]);
+    }, [isOpen]);
 
     // Handle movable marker movement
     useEffect(() => {
@@ -165,9 +168,9 @@ const PageMap: React.FC<PageMapProps> = ({
 
         const iconSvg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
-    
+
       <path fill="${backgroundColor}" stroke="${borderColor}" stroke-width="1" d="M12 2C8.13 2 5 5.13 5 9c0 3.06 2.22 5.63 5.13 6.48L12 22l1.87-6.52C16.78 14.63 19 12.06 19 9c0-3.87-3.13-7-7-7z"/>
-  
+
       <circle cx="12" cy="9" r="2.5" fill="${backgroundColorCircle}" stroke-width="2"/>
     </svg>
   `;
@@ -194,23 +197,24 @@ const PageMap: React.FC<PageMapProps> = ({
 
 
     return (
-        <div style={{height: '100%', width: '100%', position: 'relative'}}>
+        <div className='w-full h-full z-0'>
 
             <MapContainer
+                className='w-full h-full'
                 center={center}
                 zoom={17}
                 maxZoom={18}
-                style={{height: '100%', width: '100%'}}
             >
+                <MapClickHandler />
                 <TileLayer className={theme === "dark" ? "dark-mode-filter" : ""} url={tileLayerUrl}
-                           attribution={tileLayerAttribution}/>
+                    attribution={tileLayerAttribution} />
                 {/* Update map center dynamically */}
                 <OnFlyMarker center={center}
-                             isMarketCenter={center[0] === selectedMarket.position[0] && center[1] === selectedMarket.position[1]}
+                    isMarketCenter={center[0] === selectedMarket.position[0] && center[1] === selectedMarket.position[1]}
                 />
-                <UpdateMapCenter center={selectedMarket.position as [number, number]}/>
+                <UpdateMapCenter center={selectedMarket.position as [number, number]} />
                 {/* Vendors position */}
-                {showedVendors?.filter(vendor => vendor.products.length > 0).map((vendor, idx) => {
+                {filteredVendors?.map((vendor, idx) => {
                     const position: [number, number] = vendor.position as [number, number];
                     const isFiltered = filteredVendors.some(filteredVendor => filteredVendor.id === vendor.id);
                     const icon = selectedMarker === position
@@ -218,33 +222,39 @@ const PageMap: React.FC<PageMapProps> = ({
                         : (isFiltered ? filteredIcon : unselectedIcon);
                     return (
                         <Marker key={idx} position={position}
-                                icon={icon}
-                                eventHandlers={{
-                                    click: () => {
-                                        handleMarkerClick(position);
-                                        if (!isOpen) {
-                                            setIsOpen(true);
-                                        }
-                                    },
-                                }}>
-                            {selectedMarker === position && (
-                                <PageVendorProducts isOpen={isOpen} setIsOpen={setIsOpen} vendor={
-                                    filteredVendors.find(v => v.id === vendor.id) as Vendor
-                                } theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket}></PageVendorProducts>
-                            )}
+                            icon={icon}
+                            eventHandlers={{
+                                click: () => {
+                                    handleMarkerClick(position);
+                                    setSelectedVendor(vendor);
+                                    if (!isOpen) {
+                                        setIsOpen(true);
+                                    }
+                                },
+                            }}>
+
                             <Tooltip direction="top" offset={[115, 10]} opacity={1} permanent
-                                     key={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}
-                                     className={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}>
+                                key={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}
+                                className={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}>
                                 <span>{vendor.name}</span>
                             </Tooltip>
                         </Marker>
                     );
                 })}
+
                 {/* User current position */}
                 <CircleMarker center={markerPosition} radius={10} color="white" fillColor="blue" fillOpacity={1}>
                     <Popup>This is you!</Popup>
                 </CircleMarker>
             </MapContainer>
+            {selectedMarker && (
+                selectedVendor && (
+                    <PageVendorProducts
+                        productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                        selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
+                        isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId}></PageVendorProducts>
+                )
+            )}
             {/* Market selector
 
       <FormControlLabel

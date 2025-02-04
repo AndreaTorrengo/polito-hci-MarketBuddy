@@ -1,12 +1,14 @@
-import { Dialog, DialogPanel } from '@tremor/react';
-import React, { useState } from 'react';
+import { Button, Dialog, DialogPanel } from '@tremor/react';
+import React, { useContext } from 'react';
+import globalContext from '../../Context';
+import { ProductListItemProps } from '../PageVendorProducts/ProductListItem';
 
 interface ConfirmAddAlertProps {
     theme: string;
     isOpen: boolean;
     setIsOpen: (value: boolean) => void;
-    handleAdd: () => Promise<void>;
-    numberOfProducts: number;
+    handleAdd: () => void;
+    products: Map<number, ProductListItemProps>;
 }
 
 const ConfirmAddAlert: React.FC<ConfirmAddAlertProps> = ({
@@ -14,56 +16,44 @@ const ConfirmAddAlert: React.FC<ConfirmAddAlertProps> = ({
     isOpen,
     setIsOpen,
     handleAdd,
-    numberOfProducts,
+    products,
 }) => {
-    const [showConfirmation, setShowConfirmation] = useState(false);
+    const showToastMessage = useContext(globalContext)?.showToastMessage;
 
     return (
-        <>
-            <Dialog open={isOpen} static={true} onClose={() => {setIsOpen(false)}} className={`max-h-screen overflow-y-auto ${theme === 'dark' ? 'dark' : ''} z-[5000]`}>
-                <DialogPanel className="dialog-panel max-h-screen overflow-y-auto">
-                    <div className="flex flex-col gap-4">
-                        <h1 className="text-2xl font-bold text-black dark:text-white">Add Product/s</h1>
-                        <p className="dark:text-[#aaaaaa] text-[#444444]">{"Are you sure you want to add "+ numberOfProducts + " product/s to your Shopping List?"}</p>
-                        <div className="flex justify-end gap-4">
-                            <button
-                                className="bg-tremor-brand text-white px-4 py-2 rounded-lg"
-                                onClick={async () => {
-                                    await handleAdd();
-                                    setShowConfirmation(true);
-                                    setIsOpen(false);
-                                    setTimeout(
-                                        () => {
-                                            setShowConfirmation(false);
-                                        },
-                                        3000
-                                    )
-                                }}
-                            >
-                                Confirm
-                            </button>
-                            <button
-                                className="bg-gray-500 text-white px-4 py-2 rounded-lg"
-                                onClick={() => {
-                                    setIsOpen(false);
-                                }}
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
+        <Dialog className={theme === 'dark' ? 'dark' : ''} open={isOpen} onClose={() => { setIsOpen(false) }}>
+            <DialogPanel>
+                <h1 className="confirm-text" style={{ fontWeight: 'bold', fontSize: '1rem' }}>Confirm Add</h1>
+                <p className="message-text" style={{ marginTop: '10px' }}>The following products will be added to your shopping list:</p>
+                <div>
+                    <div className="products-text">
+                        <span style={{ fontWeight: 'bold' }}>{Array.from(products.values()).map(product => product.name).join(', ')}</span>
 
-
-                </DialogPanel>
-            </Dialog>
-            {showConfirmation && (
-                <div className="fixed inset-x-0 bottom-0 flex items-center justify-center z-[50000000] mb-40">
-                    <div className="bg-green-500 p-4 text-white rounded-lg shadow-lg">
-                        Products added successfully!
                     </div>
                 </div>
-            )}
-        </>
+
+                <div className="flex justify-right gap-2.5 mt-5">
+                    <button
+                        className="bg-tremor-brand text-white px-4 py-2 rounded-lg"
+                        onClick={async () => {
+                            handleAdd();
+                            setIsOpen(false);
+                            showToastMessage && showToastMessage('Products added successfully!', 'success');
+                        }}
+                    >
+                        Confirm
+                    </button>
+                    <button
+                        className="bg-gray-500 text-white px-4 py-2 rounded-lg"
+                        onClick={() => {
+                            setIsOpen(false);
+                        }}
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </DialogPanel>
+        </Dialog >
     );
 };
 
