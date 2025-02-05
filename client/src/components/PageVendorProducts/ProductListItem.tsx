@@ -1,4 +1,4 @@
-import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
+import { Coins } from "lucide-react";
 
 export interface ProductListItemProps {
     id: number;
@@ -49,15 +49,16 @@ export default function ProductListItem({
                 )
             }
             <div
-                className="flex flex-row items-center gap-2 w-full p-2.5 rounded-lg bg-white dark:bg-dark-tremor-background drop-shadow-lg overflow-hidden transition-all duration-300">
+                className="flex flex-row bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle items-center gap-2 w-full p-2.5 rounded-lg drop-shadow-lg overflow-hidden transition-all duration-300">
                 <div className="w-16 h-16 transition-all duration-300">
                     <img src={image} alt={name + " image"} className="h-full rounded-md aspect-square object-cover"/>
                     <div
-                        className="absolute top-0 right-0 bg-tremor-background dark:bg-dark-tremor-background px-1.5 py-1 rounded-tl-sm rounded-ee-md">
+                        className="absolute top-0 right-0 px-1.5 py-1 rounded-tl-sm rounded-ee-md">
                         {points &&
                             <div className="flex flex-row gap-1 items-center">
-                                <p className="m-0 p-0 text-black dark:text-white">{points}</p>
-                                <EmojiEmotionsIcon fontSize="small" className="text-yellow-500"></EmojiEmotionsIcon>
+                                <p className="m-0 p-0">{points}</p>
+                                <Coins size={20} color="var(--buddy-coins)" />
+                                {/* <EmojiEmotionsIcon ></EmojiEmotionsIcon> */}
                             </div>
                         }
                     </div>
@@ -69,7 +70,7 @@ export default function ProductListItem({
                     <div className="flex flex-col gap-1 items-start">
                         {showPrice &&
                             <div className="transition-all duration-300">
-                                <p className="p-0 m-0 line-clamp-1 font-bold">{price}<span
+                                <p className="p-0 m-0 line-clamp-1 font-semibold">{price}<span
                                     className="font-normal">{" €/kg"}</span></p>
                             </div>
                         }

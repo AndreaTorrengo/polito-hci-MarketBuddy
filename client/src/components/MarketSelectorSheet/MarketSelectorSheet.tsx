@@ -2,11 +2,7 @@
 import { List, ListItem, TextInput } from "@tremor/react";
 import { Sheet } from "react-modal-sheet";
 import { useEffect, useState } from "react";
-import SearchIcon from "@mui/icons-material/Search";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
-import NearMeOutlinedIcon from '@mui/icons-material/NearMeOutlined';
+import { Search, ChevronDown, MapPin, Store, Navigation } from 'lucide-react'
 import { Market } from "../../models";
 import TorinoMarkets from "../../markets.json";
 import { Button } from "../generalPurposeComponents/Button";
@@ -54,9 +50,9 @@ export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket,
   return (
     <>
       <Button variant="text" color="bw" className={`flex items-center align-middle font-bold ms-auto ${className}`} onClick={() => setIsOpen(true)}>
-        <LocationOnOutlinedIcon />
+        <MapPin />
         <span className="">{selectedMarket.name}</span>
-        <ExpandMoreIcon />
+        <ChevronDown />
       </Button>
       <Sheet isOpen={isOpen} onClose={() => setIsOpen(false)} detent='content-height' mountPoint={approot} >
         <Sheet.Container>
@@ -84,7 +80,7 @@ function SearchBar({ searchInput, setSearchInput }: Readonly<{ searchInput: stri
     name="search"
     type="search"
     className="py-1 ps-4 rounded-full"
-    icon={SearchIcon}
+    icon={Search}
     onChange={(e) => setSearchInput(e.target.value)}
     value={searchInput}
   />;
@@ -116,8 +112,8 @@ function MarketCard({ market, selectedMarket, selectMarket }: Readonly<MarketCar
     <Button className="flex justify-start w-full" onClick={() => selectMarket(market)}>
       <div className="flex flex-row items-center w-full">
         <div className="flex flex-col">
-          {(market.name === selectedMarket.name) ? <NearMeOutlinedIcon className="me-2" fontSize="large" /> :
-            <StorefrontOutlinedIcon className="me-2" fontSize="large" />}
+          {(market.name === selectedMarket.name) ? <Navigation className="me-3" size={32} /> :
+            <Store className="me-3" size={32} />}
         </div>
         <div className="flex flex-col w-full">
           <div className="flex flex-row">

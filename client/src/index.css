@@ -4,6 +4,14 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --quality: #4b72a6;
+  --cordiality: #e3c144;
+  --convenience: #52a36a;
+  --buddy-coins: GoldenRod;
+  --experience: #8b5cf6; /* Tailwind color violet.500 */
+}
+
 /*#root {
   height: 100vh;
   overflow: auto;
@@ -11,10 +19,6 @@
 
 * {
   box-sizing: border-box;
-}
-
-
-.titleFont {
   font-family: 'Schibsted Grotesk', sans-serif;
 }
 
@@ -27,6 +31,5 @@
   font-weight: 550;
   text-transform: capitalize;
   font-stretch: normal;
-  font-family: 'Quicksand', sans-serif;
   font-optical-sizing: auto;
 }

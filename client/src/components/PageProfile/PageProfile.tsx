@@ -1,5 +1,4 @@
-import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
-import HexagonIcon from '@mui/icons-material/Hexagon';
+import { Hexagon, Coins } from 'lucide-react'
 import { DarkModeCustomSwitch } from './darkModeSwitch';
 import API from '../../API';
 import { Dispatch, SetStateAction, useContext } from 'react';
@@ -60,16 +59,16 @@ export default function PageProfile({ theme, toggleTheme, userdata, setUserdata 
 
           <div className="flex items-center">
             <label htmlFor="experience" className="min-w-32">Experience:</label>
-            <div id="experience" className="flex items-center space-x-2 text-violet-600">
-              <span className="font-semibold"><HexagonIcon /></span>
+            <div id="experience" className="flex items-center space-x-2 text-[var(--experience)]">
+              <Hexagon />
               <span className="font-semibold">{userdata.experience}</span>
             </div>
           </div>
 
           <div className="flex items-center">
             <label htmlFor="buddy-coins" className="min-w-32">Buddy coins:</label>
-            <div id="buddy-coins" className="flex items-center space-x-2 text-yellow-500">
-              <span className="font-semibold"><EmojiEmotionsIcon /></span>
+            <div id="buddy-coins" className="flex items-center space-x-2 text-[var(--buddy-coins)]">
+              <Coins />
               <span className="font-semibold">{userdata.coins}</span>
             </div>
           </div>

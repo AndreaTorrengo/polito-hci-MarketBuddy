@@ -1,17 +1,15 @@
 import { useContext, Dispatch, SetStateAction, useEffect, useState } from 'react';
 import API from '../../API';
 import { Reward } from '../../models';
-import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
-import { LocalOfferOutlined } from '@mui/icons-material';
-import RestoreOutlinedIcon from '@mui/icons-material/RestoreOutlined';
 import { useNavigate } from 'react-router-dom';
 import globalContext from '../../Context';
 import StatPopup from '../generalPurposeComponents/StatPopup';
 import { UserData } from '../PageProfile/UserData';
 import { ICONS, IconLocker } from '../PageProfile/Icons';
+import { Tag, History, Coins } from 'lucide-react';
 
 const iconsMap: { [key: string]: JSX.Element } = {
-  'coupon': <LocalOfferOutlined className='object-scale-down max-h-full m-auto' />,
+  'coupon': <Tag className='object-scale-down max-h-full m-auto' />,
   'profile_picture': <img src={ICONS.find(i => i.id == 2)?.path} alt="planet" className='object-scale-down max-h-full m-auto' />,
 }
 
@@ -29,7 +27,7 @@ export function RewardCard({ reward, confirmRewardRedemption = () => { } }: Read
       </div>
       <div className='flex items-center ms-8'>
         <p>{reward.cost}</p>
-        <EmojiEmotionsIcon className='ms-2 text-yellow-500' />
+        <Coins color='var(--buddy-coins)' className='ms-2' />
       </div>
     </button>
   );
@@ -81,11 +79,11 @@ export default function PageReward({ userdata, setUserdata }: Readonly<{ userdat
     <div className='w-full h-full px-6 py-4'>
       <div className='flex justify-between mb-4'>
         <h1 className="page-title">Rewards</h1>
-        <StatPopup coins={userdata.coins} exp={userdata.experience} popup={false}/>
+        <StatPopup coins={userdata.coins} exp={userdata.experience} popup={false} />
         <div className='flex'>
           <button onClick={() => navigate('history')}>
-          <RestoreOutlinedIcon />
-        </button>
+            <History />
+          </button>
         </div>
       </div>
       <div className='flex content-center justify-between'>

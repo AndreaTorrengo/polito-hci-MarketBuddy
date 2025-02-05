@@ -4,7 +4,6 @@ import VendorCategoryList from "./VendorCategoryList.tsx";
 import React, { useContext, useMemo, useState } from "react";
 import AddProductsButton from "./AddProductsButton.tsx";
 import ProductListItem, { ProductListItemProps } from "./ProductListItem.tsx";
-import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import { Sheet } from 'react-modal-sheet';
 import VendorBadges from "./VendorBadges.tsx";
 import { ButtonBase, Dialog, DialogContent } from "@mui/material";
@@ -16,6 +15,7 @@ import { Button } from "../generalPurposeComponents/Button.tsx";
 import { Market, Vendor, Product } from "../../models.ts";
 import { QRCodeSVG } from "qrcode.react";
 import globalContext from "../../Context.tsx";
+import { ScanQrCode } from "lucide-react";
 
 interface PageVendorProductsParams {
     isOpen: boolean;
@@ -247,7 +247,7 @@ export default function PageVendorProducts({
                                         <Button variant="outlined" color="bw" onClick={openQrCodeDialog}>
                                             <div className="flex flex-row items-center gap-4">
                                                 <span>Confirm Purchase</span>
-                                                <QrCodeScannerIcon className="text-black dark:text-white" />
+                                                <ScanQrCode />
                                             </div>
                                         </Button>
                                     }>

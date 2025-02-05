@@ -11,7 +11,7 @@ import SignalErrorButton from "../PageVendorProducts/SignalErrorButton.tsx";
 import DeleteButton from "../PageVendorProducts/DeleteButton.tsx";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import { TextInput } from "@tremor/react";
-import SearchIcon from "@mui/icons-material/Search";
+import { Search } from "lucide-react";
 import AddProductsButton from "../PageVendorProducts/AddProductsButton.tsx";
 import PageAddProducts from "../PageAddProducts/PageAddProducts.tsx";
 
@@ -266,7 +266,7 @@ export default function TabsHero({
                                         name="search"
                                         type="search"
                                         className="py-1 ps-3 rounded-full"
-                                        icon={SearchIcon}
+                                        icon={Search}
                                         onChange={(e) => setSearchInput(e.target.value)}
                                         value={searchInput}
                                     />

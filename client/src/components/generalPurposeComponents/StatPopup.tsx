@@ -1,12 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Card } from "@tremor/react";
-//import { ArrowUpRight, ArrowDownRight } from "lucide-react";
-import {
-  ArrowUpward,
-  ArrowDownward
-} from "@mui/icons-material";
-import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
-import HexagonIcon from '@mui/icons-material/Hexagon';
+import { ArrowUp, ArrowDown, Hexagon, Coins } from "lucide-react";
 import PropTypes from "prop-types";
 
 type Props = {
@@ -80,22 +74,22 @@ export default function StatPopup({ coins, exp, popup }: Props) {
         >
           <Card className="p-4 bg-white shadow-lg border rounded-xl flex flex-col space-y-2 transition-opacity duration-1000">
             <div className="flex items-center space-x-2 text-lg font-semibold">
-              <span className="text-violet-600"><HexagonIcon /></span>
+              <Hexagon color="var(--experience)" />
               <span
-                className={`flex items-center transition-all duration-300 ${exp >= prevExp ? "text-violet-600" : "text-red-600"
+                className={`flex items-center transition-all duration-300 ${exp >= prevExp ? "text-[var(--experience)]" : "text-red-600"
                   }`}
               >
-                {exp >= prevExp ? <ArrowUpward /> : <ArrowDownward />}
+                {exp >= prevExp ? <ArrowUp /> : <ArrowDown />}
                 {displayExp}
               </span>
             </div>
             <div className="flex items-center space-x-2 text-lg font-semibold">
-              <span className="text-yellow-500"><EmojiEmotionsIcon /></span>
+              <Coins color="var(--buddy-coins)" />
               <span
-                className={`flex items-center transition-all duration-300 ${coins >= prevCoins ? "text-yellow-500" : "text-red-600"
+                className={`flex items-center transition-all duration-300 ${coins >= prevCoins ? "text-[var(--buddy-coins)]" : "text-red-600"
                   }`}
               >
-                {coins >= prevCoins ? <ArrowUpward /> : <ArrowDownward />}
+                {coins >= prevCoins ? <ArrowUp /> : <ArrowDown />}
                 {displayCoins}
               </span>
             </div>
@@ -105,12 +99,12 @@ export default function StatPopup({ coins, exp, popup }: Props) {
         <div className="">
           <Card className="p-4 bg-white shadow-lg border rounded-xl flex flex-col space-y-2">
             <div className="flex items-center space-x-2 text-lg font-semibold">
-              <span className="text-yellow-500"><EmojiEmotionsIcon /></span>
+              <Coins color="var(--buddy-coins)" />
               <span
-                className={`flex items-center transition-all duration-300 ${coins >= prevCoins ? "text-yellow-500" : "text-red-600"
+                className={`flex items-center transition-all duration-300 ${coins >= prevCoins ? "text-[var(--buddy-coins)]" : "text-red-600"
                   }`}
               >
-                {showPopup ? <ArrowDownward /> : <span></span>}
+                {showPopup ? <ArrowDown /> : <span></span>}
                 {displayCoins}
               </span>
             </div>

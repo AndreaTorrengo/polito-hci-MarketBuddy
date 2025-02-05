@@ -1,10 +1,6 @@
 
 // Icons
-import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-
+import { CircleUserRound, Trophy, ShoppingBag, ClipboardList } from 'lucide-react'
 
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -13,22 +9,23 @@ export default function Navbar(props: any) {
   const navigate = useNavigate();
 
   const tabs = [
-    { id: 0, label: "Shopping", icon: <ShoppingBagIcon /> },
+    { id: 0, label: "Shopping", icon: <ShoppingBag size={28} /> },
     { id: 1, label: "Quests", icon: props.questPendingClaims != 0 ?
       <div className="inline-block relative">
-        <AssignmentIcon className="relative" />
-        <span className="flex absolute h-3 w-3 top-2 right-0 -mt-1 -mr-1">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
+        <ClipboardList size={28} />
+        <span className="flex absolute h-3 w-3 top-2 right-0 -mt-2 -mr-1">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-tremor-brand-subtle opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-tremor-brand"></span>
         </span>
       </div> :
-      <AssignmentIcon /> },
-    { id: 2, label: "Rewards", icon: <EmojiEventsIcon /> },
-    { id: 3, label: "Profile", icon: <AccountCircleIcon /> },
+      <ClipboardList size={28} />
+    },
+    { id: 2, label: "Rewards", icon: <Trophy size={28} /> },
+    { id: 3, label: "Profile", icon: <CircleUserRound size={28} /> },
   ];
   return (<>
     {/*<nav className="fixed bottom-0 left-0 right-0 bg-tremor-content-inverted dark:bg-dark-tremor-content-inverted shadow-md">*/}
-    <nav className="pb-1 z-10 bg-tremor-background-muted dark:bg-dark-tremor-background-muted border-t-[1px] border-tremor-border dark:border-dark-tremor-border">
+    <nav className="pb-2 pt-2.5 z-10 bg-tremor-background-muted dark:bg-dark-tremor-background-muted border-t-[1px] border-tremor-border dark:border-dark-tremor-border">
       <ul className="flex justify-around">
         {tabs.map((tab) => (
           <li key={tab.id} className="flex flex-col flex-grow items-center">
@@ -38,15 +35,15 @@ export default function Navbar(props: any) {
                 props.setActiveTab(tabIndex);
                 navigate(`${props.paths[tabIndex]}`);
               }}
-              className={`w-full items-center py-1 px-4
+              className={`w-full items-center
               ${props.activeTab === tab.id
                   ? "text-tremor-brand dark:text-dark-tremor-brand"
                 : "text-tremor-content-emphasis dark:text-dark-tremor-content-emphasis"
                 } `}
             >
-              <div className="flex flex-col">
-              <span className="text-2xl">{tab.icon}</span>
-              <span className="text-sm">{tab.label}</span>
+              <div className="flex flex-col items-center">
+                {tab.icon}
+                <span className="text-sm">{tab.label}</span>
               </div>
             </button>
           </li>

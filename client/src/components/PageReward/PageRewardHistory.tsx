@@ -1,15 +1,11 @@
-import { useNavigate } from "react-router-dom";
-import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
 import { Reward } from "../../models";
 import API from "../../API";
 import { useEffect, useState } from "react";
 import { RewardCard } from './PageReward'
-import { Title } from "@tremor/react";
+import BackButton from "../generalPurposeComponents/BackButton";
 
 export default function PageRewardHistory() {
     const [rewards, setRewards] = useState([]);
-
-    const navigate = useNavigate();
 
     useEffect(() => {
         // Fetch rewards
@@ -27,9 +23,7 @@ export default function PageRewardHistory() {
         <div className='w-full h-full px-6 py-4'>
             <div className='flex justify-start gap-3 mb-4'>
                 <div className='flex align-middle'>
-                    <button onClick={() => navigate(-1)}>
-                        <ArrowBackOutlinedIcon />
-                    </button>
+                    <BackButton />
                 </div>
                 <h1 className="page-title">Redeemed Rewards</h1>
             </div>

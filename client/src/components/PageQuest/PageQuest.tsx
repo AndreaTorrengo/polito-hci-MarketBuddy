@@ -1,10 +1,8 @@
 import { ProgressBar, Card, Title, Text } from "@tremor/react";
-import LeaderboardIcon from '@mui/icons-material/Leaderboard';
-import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
-import HexagonIcon from '@mui/icons-material/Hexagon';
 import StatPopup from "../generalPurposeComponents/StatPopup";
 import { quest_array, getNewQuestId, getAndSaveNewQuestId, getCurrentQuests, saveCurrentQuests } from './Quests';
 import { UserData } from "../PageProfile/UserData";
+import { Coins, Crown, Hexagon } from 'lucide-react'
 
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
@@ -40,10 +38,10 @@ export default function PageQuest(props: any) {
     // if (qindex < 0) qindex = 0;
 
     // Saves on localstorage and get the new value of newQuestId
-    let newGeneratedId = getAndSaveNewQuestId(newQuestId);
+    const newGeneratedId = getAndSaveNewQuestId(newQuestId);
 
     setQuests((prevQuests: any) => {
-      let newQuests = [
+      const newQuests = [
         ...prevQuests.map((quest: any) => {
           if (quest.id !== questToClaim.id)
             return quest;
@@ -66,9 +64,9 @@ export default function PageQuest(props: any) {
     });
   };
   // Hard-coding for make a quest claimable
-  const requestClaim = (id: Number) => {
+  const requestClaim = (id: number) => {
     setQuests((prevQuests: any) => {
-      let newQuests = [...prevQuests.map((q: any) => {
+      const newQuests = [...prevQuests.map((q: any) => {
         const questTotalProgress = q.progress.split('/')[1];
         return q.id === id ? { ...q, 'progress': `${questTotalProgress}/${questTotalProgress}`, 'completed': true } : q;
       })];
@@ -96,11 +94,11 @@ export default function PageQuest(props: any) {
               <Card className="bg-tremor-background dark:bg-dark-tremor-background p-4 relative">
                 <div className="absolute top-2 right-2 flex space-x-2">
                   <div className="flex items-center space-x-1 text-violet-600">
-                    <HexagonIcon />
+                    <Hexagon />
                     <span className="font-semibold">{quest.exp}</span>
                   </div>
                   <div className="flex items-center space-x-1 text-yellow-500">
-                    <EmojiEmotionsIcon />
+                    <Coins />
                     <span className="font-semibold">{quest.coins}</span>
                   </div>
                 </div>
@@ -129,12 +127,12 @@ export default function PageQuest(props: any) {
           <Button
             variant="contained"
             color="primary"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 text-xl"
             onClick={() => {
               navigate(props.leaderboardPath);
             }}
           >
-            <LeaderboardIcon fontSize="medium" />
+            <Crown size={30} />
             <span className="font-semibold">Leaderboard</span>
           </Button>
         </div>

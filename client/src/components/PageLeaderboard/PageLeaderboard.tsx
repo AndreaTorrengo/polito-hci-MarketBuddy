@@ -1,18 +1,18 @@
 import { Title } from "@tremor/react";
 import { Dispatch, SetStateAction, useState } from "react";
-import HexagonIcon from '@mui/icons-material/Hexagon';
 import TopBar from "../generalPurposeComponents/TopBar";
 import BackButton from "../generalPurposeComponents/BackButton";
 import PropTypes from "prop-types";
 import { DEFAULT_ICON_PATH, ICONS } from "../PageProfile/Icons";
 import { UserData } from "../PageProfile/UserData";
+import { Hexagon } from "lucide-react";
 
 interface PageLeaderboardProps {
   userdata: UserData;
   setUserdata: Dispatch<SetStateAction<UserData>>;
 }
 
-export default function PageLeaderboard({userdata, setUserdata}: Readonly<PageLeaderboardProps>) {
+export default function PageLeaderboard({ userdata, setUserdata }: Readonly<PageLeaderboardProps>) {
   const [activeTab, setActiveTab] = useState("Global");
   const user_exp = userdata.experience;
   const username = userdata.username;
@@ -44,7 +44,7 @@ export default function PageLeaderboard({userdata, setUserdata}: Readonly<PageLe
     { icon: DEFAULT_ICON_PATH, name: "Player10", position: 10, xp: 16000 },
   ];
 
-  return <>
+  return (
     <div className="flex flex-col w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle p-6">
       <div className="flex flex-row w-full">
         <TopBar
@@ -86,7 +86,7 @@ export default function PageLeaderboard({userdata, setUserdata}: Readonly<PageLe
         </div>
       </div>
     </div>
-  </>;
+  );
 }
 
 function LeaderboardItem(props: any) {
@@ -109,7 +109,7 @@ function LeaderboardItem(props: any) {
         <span className="font-medium">{props.player.name}</span>
       </div>
       <div className="text-right">
-        <span className="font-semibold text-violet-600">{props.player.xp} <HexagonIcon /></span>
+        <span className="flex font-semibold gap-1 text-[var(--experience)]">{props.player.xp} <Hexagon /></span>
       </div>
     </li>);
 }

@@ -1,7 +1,5 @@
 import ProductItem, {ProductItemProps} from "./ProductItem";
-import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
-import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
-import SavingsIcon from "@mui/icons-material/Savings";
+import { PiggyBank, Award, Smile } from "lucide-react";
 import {ButtonBase} from "@mui/material";
 import {Vendor} from "../../models";
 import React from "react";
@@ -87,17 +85,17 @@ export default function VendorGroup({
                     <div className='flex flex-row items-center justify-around gap-2'>
                             <div className="w-1/3 flex flex-row items-center justify-center" onClick={() => {
                             }}>
-                                <WorkspacePremiumIcon sx={{color: "#4b72a6"}}/>
+                            <Award color="var(--quality)" />
                             <p className="m-0 p-0 ms-0.5 font-bold">{vendor.quality_rating}</p>
                             </div>
                             <div className="w-1/3 flex flex-row items-center justify-center" onClick={() => {
                             }}>
-                                <SentimentSatisfiedAltIcon sx={{color: "#e3c144"}}/>
+                            <Smile color="var(--cordiality)" />
                             <p className="m-0 p-0 ms-0.5 font-bold">{vendor.cordiality_rating}</p>
                             </div>
                             <div className="w-1/3 flex flex-row items-center justify-center" onClick={() => {
                             }}>
-                                <SavingsIcon sx={{color: "#52a36a"}}/>
+                            <PiggyBank color="var(--convenience)" />
                             <p className="m-0 p-0 ms-0.5 font-bold">{vendor.convenience_rating}</p>
                             </div>
                         </div>

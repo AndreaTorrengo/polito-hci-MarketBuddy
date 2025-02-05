@@ -1,14 +1,12 @@
 import { Dialog, DialogPanel } from '@tremor/react';
 import { Button } from '../generalPurposeComponents/Button';
-import WarningIcon from '@mui/icons-material/Warning';
 import { Vendor, Product, Market } from '../../models';
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import './MissingProductsDialog.css';
 import globalContext from '../../Context';
 import ProductItem from '../PageShoppingList/ProductItem';
-import ArrowBackIcon from '@mui/icons-material/ArrowBackIos';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForwardIos';
+import { ChevronLeft, ChevronRight, TriangleAlert } from 'lucide-react'
 
 interface MissingProductsDialogProps {
     theme: string;
@@ -172,7 +170,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                     onClick={() => setIsOpen(true)}
                 >
                     <div className='flex align-middle gap-2'>
-                        <WarningIcon style={{ color: '#e34138' }} />
+                        <TriangleAlert color="red" />
                         <span>Some products are missing at this market!</span>
                     </div>
                 </Button>
@@ -227,7 +225,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
 
                                 </div>
                                 {missingProducts.length > 1 && (<button onClick={handlePrevious} className="p-2 absolute left-3 top-1/2 transform -translate-y-1/2">
-                                    <ArrowBackIcon />
+                                    <ChevronLeft />
                                 </button>)}
                                 <div className="flex mt-4 justify-end">
                                     {Array.isArray(randomAlternatives[missingProducts[currentIndex]]) && randomAlternatives[missingProducts[currentIndex]].length > 0 ? (
@@ -256,7 +254,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                         </Button>
                                     )}
                                     {missingProducts.length > 1 && (<button onClick={handleNext} className="p-2 absolute right-0 top-1/2 transform -translate-y-1/2">
-                                        <ArrowForwardIcon />
+                                        <ChevronRight />
                                     </button>)}
                                 </div>
 

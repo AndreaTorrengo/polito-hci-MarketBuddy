@@ -1,7 +1,5 @@
-import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
-import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
-import SavingsIcon from '@mui/icons-material/Savings';
+
+import { PiggyBank, Award, Smile, MapPin } from 'lucide-react';
 
 interface VendorBadgesProps {
     market: string;
@@ -19,25 +17,22 @@ export default function VendorBadges({ market, quality, cordiality, convenience,
                 positionCallback && positionCallback();
                 changeTab && changeTab(e, "map");
             }}>
-                <LocationOnOutlinedIcon />
+                <MapPin />
                 <p className="m-0 p-0">{market}</p>
             </button>
             <div className='flex flex-row items-center justify-around'>
-                <div className="w-1/3 flex flex-col items-center justify-center" onClick={() => {
-                }}>
-                    <WorkspacePremiumIcon sx={{ color: "#4b72a6" }} />
+                <div className="w-1/3 flex flex-col items-center justify-center">
+                    <Award color="var(--quality)" />
                     <p className="m-0 px-1 text-sm font-light">Quality</p>
                     <p className="m-0 p-0 font-bold">{quality}</p>
                 </div>
-                <div className="w-1/3 flex flex-col items-center justify-center" onClick={() => {
-                }}>
-                    <SentimentSatisfiedAltIcon sx={{ color: "#e3c144" }} />
+                <div className="w-1/3 flex flex-col items-center justify-center" >
+                    <Smile color="var(--cordiality)" />
                     <p className="m-0 px-1 text-sm font-light">Cordiality</p>
                     <p className="m-0 p-0 font-bold">{cordiality}</p>
                 </div>
-                <div className="w-1/3 flex flex-col items-center justify-center" onClick={() => {
-                }}>
-                    <SavingsIcon sx={{ color: "#52a36a" }} />
+                <div className="w-1/3 flex flex-col items-center justify-center" >
+                    <PiggyBank color="var(--convenience)" />
                     <p className="m-0 px-1 text-sm font-light">Convenience</p>
                     <p className="m-0 p-0 font-bold">{convenience}</p>
                 </div>
