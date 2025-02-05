@@ -5,7 +5,7 @@ interface AddProductsButtonProps {
     onClick: () => void;
 }
 
-export default function AddProductsButton({ onClick }: Readonly<AddProductsButtonProps>) {
+export default function AddProductsButton({onClick}: Readonly<AddProductsButtonProps>) {
 
     return (
         <Button className="h-fit py-2" variant="outlined" color="primary" onClick={onClick} >
