@@ -9,7 +9,7 @@ export class UserData {
     experience: number;
     iconId: number;
 
-    constructor(username: string = 'user', coins: number = 1000, experience: number = 1200, iconId: number = 1) {
+    constructor(username: string = 'user', coins: number = 100, experience: number = 1200, iconId: number = 1) {
         this.username = username;
         this.coins = coins;
         this.experience = experience;
@@ -23,13 +23,13 @@ export class UserData {
     }
     // Use this function to increment or decrement coins
     incrCoins(increment: number): void {
-        if (increment < 0 && increment > this.coins)
+        if (increment < 0 && increment < -this.coins)
             this.coins = 0;
         else this.coins += increment;
     }
     // Use this function to increment or decrement experience
     incrExperience(increment: number): void {
-        if (increment < 0 && increment > this.experience)
+        if (increment < 0 && increment < -this.experience)
             this.experience = 0;
         else this.experience += increment;
     }

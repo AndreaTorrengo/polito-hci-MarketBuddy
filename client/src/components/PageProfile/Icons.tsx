@@ -1,4 +1,4 @@
-const BASE_PATH = '/src/assets';
+const BASE_PATH = '/src/assets/profile_pictures';
 
 export const DEFAULT_ICON_PATH = `${BASE_PATH}/default-user.png`;
 export const LOCKED_ICON_PATH = `${BASE_PATH}/locked-icon.png`;
