@@ -1,12 +1,11 @@
-import SmallIconButton from "../generalPurposeComponents/SmallIconButton";
 import { Market, Vendor, Product } from "../../models";
 import { Dialog, DialogPanel } from '@tremor/react';
 import { Button } from '../generalPurposeComponents/Button';
 import React, { useContext, useState } from 'react';
 import './Dialogs.css';
 import globalContext from "../../Context";
-import { ProductListItemProps } from "./ProductListItem";
-import { Trash, Trash2 } from "lucide-react";
+import {Trash2} from "lucide-react";
+import {ButtonBase} from "@mui/material";
 
 
 interface DeleteButtonProps {
@@ -15,8 +14,9 @@ interface DeleteButtonProps {
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     theme: string,
     closeAfter: () => void;
+    children?: React.ReactNode;
 }
-const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter }) => {
+const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter, children }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const [productsSwitching, setProductsSwitching] = useState<Product[]>([]);
@@ -76,9 +76,17 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
 
     return (
         <>
-            <Button onClick={handleClick}>
-                <Trash2 size={20} color='red' />
-            </Button>
+            <ButtonBase onClick={handleClick}>
+                {
+                    children ?
+                        <div className="flex flex-col items-center gap-1 w-24">
+                            <Trash2 size={20} color='red' />
+                            {children}
+                        </div>
+                        :
+                            <Trash2 size={20} color='red' />
+                }
+            </ButtonBase>
             <Dialog className={theme === 'dark' ? 'dark' : ''} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
                 <DialogPanel>
                     <h1 className="confirm-text" style={{ fontWeight: 'bold', fontSize: '1rem' }}>Confirm Delete</h1>

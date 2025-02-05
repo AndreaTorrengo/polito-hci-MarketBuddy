@@ -1,14 +1,14 @@
 "use client";
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import { ButtonBase } from "@mui/material";
-import { Button } from "../generalPurposeComponents/Button.tsx";
-import { Market, Product, Vendor } from "../../models.ts";
-import ProductListItem, { ProductListItemProps } from "../PageVendorProducts/ProductListItem.tsx";
+import React, {useContext, useEffect, useMemo, useState} from "react";
+import {ButtonBase} from "@mui/material";
+import {Button} from "../generalPurposeComponents/Button.tsx";
+import {Market, Product, Vendor} from "../../models.ts";
+import ProductListItem, {ProductListItemProps} from "../PageVendorProducts/ProductListItem.tsx";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import API from "../../API.ts";
 import globalContext from "../../Context.tsx";
-import { TextInput } from "@tremor/react";
-import { Search, MapPin, User, Circle, CircleCheckBig } from 'lucide-react';
+import {TextInput} from "@tremor/react";
+import {Search, MapPin, User, Circle, CircleCheckBig, Plus} from 'lucide-react';
 
 interface PageAddProductsParams {
     allVends: Vendor[];
@@ -21,14 +21,14 @@ interface PageAddProductsParams {
 }
 
 export default function PageAddProducts({
-    actualVends,
-    allVends,
-    theme,
-    selectedMarket,
-    setFilteredVendors,
-    addProductId,
-    setAddProductId
-}: PageAddProductsParams) {
+                                            actualVends,
+                                            allVends,
+                                            theme,
+                                            selectedMarket,
+                                            setFilteredVendors,
+                                            addProductId,
+                                            setAddProductId
+                                        }: PageAddProductsParams) {
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) ?? '[]');
 
@@ -65,17 +65,17 @@ export default function PageAddProducts({
                     const products: Product[] = await API.getAllProducts();
                     // console.log(products)
                     setAllProducts(products.map(product => ({
-                        id: product.id,
-                        name: product.name,
-                        price: product.price,
-                        image: product.image,
-                        points: product.points,
-                        isSelected: false,
-                        editMode: true,
-                        showPrice: false
-                    }))
-                        .filter(product => !productsAlreadyAdded.some(item => item.id === product.id))
-                        .filter(product => availableProducts.some(item => item.id === product.id))
+                            id: product.id,
+                            name: product.name,
+                            price: product.price,
+                            image: product.image,
+                            points: product.points,
+                            isSelected: false,
+                            editMode: true,
+                            showPrice: false
+                        }))
+                            .filter(product => !productsAlreadyAdded.some(item => item.id === product.id))
+                            .filter(product => availableProducts.some(item => item.id === product.id))
                     );
                 } catch (error) {
                     console.error(error);
@@ -118,7 +118,7 @@ export default function PageAddProducts({
                     if (existingVendor) {
                         existingVendor.products.push(product);
                     } else {
-                        const newVendor = { ...vendor, products: [product] };
+                        const newVendor = {...vendor, products: [product]};
                         filteredVendors.push(newVendor);
                     }
                     productAdded = true;
@@ -140,7 +140,8 @@ export default function PageAddProducts({
             <div className="flex flex-col">
                 <span className="text-lg font-medium">Confirm Add</span>
                 <span className="text-lg mb-2">The following products will be added to your shopping list:</span>
-                <span className="text-lg font-bold">{Array.from(selectedProducts.values()).map(product => product.name).join(', ')}</span>
+                <span
+                    className="text-lg font-bold">{Array.from(selectedProducts.values()).map(product => product.name).join(', ')}</span>
             </div>,
             'Cancel',
             'Confirm'
@@ -174,12 +175,7 @@ export default function PageAddProducts({
                     centerComponent={allProducts && allProducts.length > 0 && <h1
                         className="line-clamp-1 m-0 p-0 text-md font-normal text-center">{selectedProducts ? (selectedProducts.size + " Selected") : ""}</h1>}
                     rightComponent={allProducts && allProducts.length > 0 &&
-                        <div className="flex flex-row gap-2 items-center">
-                            {selectedProducts && selectedProducts.size > 0 &&
-                                <Button className="animate-fade duration-300" variant="outlined" onClick={confirmAddAlert}>
-                                    Add
-                                </Button>
-                            }
+                        <div className="flex flex-row items-center gap-3">
                             {
                                 selectedProducts && selectedProducts.size === allProducts.length ?
                                     <div className="w-8 h-16 flex items-center justify-center" onClick={
@@ -187,7 +183,7 @@ export default function PageAddProducts({
                                             setSelectedProducts(new Map());
                                         }
                                     }>
-                                        <CircleCheckBig size={20} />
+                                        <CircleCheckBig size={20}/>
                                     </div>
                                     :
                                     <div
@@ -197,9 +193,19 @@ export default function PageAddProducts({
                                                 setSelectedProducts(new Map(allProducts.map(p => [p.id, p])));
                                             }
                                         }>
-                                        <Circle size={20} color="gray" />
+                                        <Circle size={20} color="gray"/>
                                     </div>
 
+                            }
+                            {/* Add Button */}
+                            {selectedProducts && selectedProducts.size > 0 &&
+                                <ButtonBase className="animate-fade duration-300"
+                                            onClick={confirmAddAlert}>
+                                    <div className="flex flex-row items-center gap-1 border border-1 dark:border-white border-black rounded-md py-1 ps-1 pe-2">
+                                        <Plus size={25} />
+                                        <p className="p-0 m-0 text-md">Add</p>
+                                    </div>
+                                </ButtonBase>
                             }
                         </div>
                     }>
@@ -215,7 +221,7 @@ export default function PageAddProducts({
                         id="search"
                         name="search"
                         type="search"
-                    className="py-1 ps-3 rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle"
+                        className="py-1 ps-3 rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle"
                         icon={Search}
                         onChange={(e) => setSearchInput(e.target.value)}
                         value={searchInput}
@@ -232,109 +238,109 @@ export default function PageAddProducts({
                             </div>
                             {addProductId == -1 ?
                                 <div className="flex flex-row items-center">
-                                        <div className="flex flex-col">
-                                            <MapPin size={20} className="me-1" />
-                                        </div>
-                                        <div className="flex flex-col w-full">
-                                            <div className="flex flex-row">
+                                    <div className="flex flex-col">
+                                        <MapPin size={20} className="me-1"/>
+                                    </div>
+                                    <div className="flex flex-col w-full">
+                                        <div className="flex flex-row">
                                             <h3 className="text-sm font-bold text-left">{selectedMarket.name}</h3>
-                                            </div>
                                         </div>
                                     </div>
-                                    :
-                                    <div className="flex flex-row items-center">
-                                        <div className="flex flex-row">
-                                            <User size={20} className="me-1" />
-                                        </div>
-                                        <div className="flex flex-row">
+                                </div>
+                                :
+                                <div className="flex flex-row items-center">
+                                    <div className="flex flex-row">
+                                        <User size={20} className="me-1"/>
+                                    </div>
+                                    <div className="flex flex-row">
                                         <h3 className="text-sm font-bold text-left">
                                             {actualVendor ? actualVendor.name : "this vendor"}
-                                            </h3>
-                                        </div>
+                                        </h3>
                                     </div>
-                                }
+                                </div>
+                            }
                         </div>
                     }
                 </div>
-                    {/* Product list */}
+                {/* Product list */}
                 <div className="w-full h-full flex flex-col gap-3 mt-2 pb-32 overflow-auto px-2.5">
-                        {
-                            allProducts && allProducts.length > 0 ?
-                                filteredProducts && filteredProducts.length > 0 ?
-                                    (filteredProducts.map((product, index) => (
-                                        !availableProducts.some(item => item.id === product.id) ?
-                                            /*<ButtonBase key={product.id} component="div"
-                                                        onClick={() => {
-                                                            addOrRemoveSelected(index);
-                                                        }}
-                                            >
-                                                <NotAvailableItem key={index} {...product} editMode={true} showPrice={false} isSelected={
-                                                    selectedProducts ? selectedProducts.has(product.id) : false
-                                                }/>
-                                            </ButtonBase>*/
-                                            null
-                                            :
-                                            <ButtonBase key={product.id} component="div"
-                                                onClick={() => {
-                                                    addOrRemoveSelected(product.id);
-                                                }}
-                                            >
-                                                <ProductListItem key={index} {...product} showPrice={false}
-                                                    editMode={true}
-                                                    isSelected={
-                                                        selectedProducts ? selectedProducts.has(product.id) : false
-                                                    } />
-                                            </ButtonBase>
-                                    )))
-                                    :
-                                    (
-                                        addProductId == -1 ?
-                                            <div className="flex flex-col h-80 items-center justify-center gap-4">
-                                                <p className="m-0 p-0 text-xl text-center">Product/s not available
-                                                    in <br /> <span className="font-bold">{
-                                                        selectedMarket ? selectedMarket.name : "your market"
-                                                    }</span> <br /> Please, try another market!</p>
-                                                <Button variant="contained" onClick={() => {
-                                                    setAddProductId(null);
-                                                }}>
-                                                    Go Back
-                                                </Button>
-                                            </div>
-                                            :
-                                            <div className="flex flex-col h-80 items-center justify-center gap-4">
-                                                <p className="m-0 p-0 text-xl text-center">Product/s not available
-                                                    for <br /> <span className="font-bold">{
-                                                        actualVendor ? actualVendor.name : "this vendor"
-                                                    }</span> <br /> Please, try another vendor!</p>
-                                                <Button variant="contained" onClick={() => {
-                                                    setAddProductId(null);
-                                                }}>
-                                                    Go Back
-                                                </Button>
-                                            </div>
-
-                                    )
+                    {
+                        allProducts && allProducts.length > 0 ?
+                            filteredProducts && filteredProducts.length > 0 ?
+                                (filteredProducts.map((product, index) => (
+                                    !availableProducts.some(item => item.id === product.id) ?
+                                        /*<ButtonBase key={product.id} component="div"
+                                                    onClick={() => {
+                                                        addOrRemoveSelected(index);
+                                                    }}
+                                        >
+                                            <NotAvailableItem key={index} {...product} editMode={true} showPrice={false} isSelected={
+                                                selectedProducts ? selectedProducts.has(product.id) : false
+                                            }/>
+                                        </ButtonBase>*/
+                                        null
+                                        :
+                                        <ButtonBase key={product.id} component="div"
+                                                    onClick={() => {
+                                                        addOrRemoveSelected(product.id);
+                                                    }}
+                                        >
+                                            <ProductListItem key={index} {...product} showPrice={false}
+                                                             editMode={true}
+                                                             isSelected={
+                                                                 selectedProducts ? selectedProducts.has(product.id) : false
+                                                             }/>
+                                        </ButtonBase>
+                                )))
                                 :
-                                <div className="flex flex-col h-80 items-center justify-center gap-4">
-                                    {
-                                        addProductId != -1 ?
-                                            <p className="m-0 p-0 text-xl text-center">No more products available
-                                                for <br /> {
-                                                    actualVendorsProducts ? (actualVendorsProducts.length >= 1 ? actualVendorsProducts.find(vendor => vendor.id === addProductId)?.name : "this vendor") : ""
-                                                }</p>
-                                            :
-                                            <p className="m-0 p-0 text-xl text-center">No more products available
-                                                in <br /> {
+                                (
+                                    addProductId == -1 ?
+                                        <div className="flex flex-col h-80 items-center justify-center gap-4">
+                                            <p className="m-0 p-0 text-xl text-center">Product/s not available
+                                                in <br/> <span className="font-bold">{
                                                     selectedMarket ? selectedMarket.name : "your market"
-                                                }</p>
+                                                }</span> <br/> Please, try another market!</p>
+                                            <Button variant="contained" onClick={() => {
+                                                setAddProductId(null);
+                                            }}>
+                                                Go Back
+                                            </Button>
+                                        </div>
+                                        :
+                                        <div className="flex flex-col h-80 items-center justify-center gap-4">
+                                            <p className="m-0 p-0 text-xl text-center">Product/s not available
+                                                for <br/> <span className="font-bold">{
+                                                    actualVendor ? actualVendor.name : "this vendor"
+                                                }</span> <br/> Please, try another vendor!</p>
+                                            <Button variant="contained" onClick={() => {
+                                                setAddProductId(null);
+                                            }}>
+                                                Go Back
+                                            </Button>
+                                        </div>
 
-                                    }
-                                    <Button variant="contained" onClick={() => {
-                                        setAddProductId(null);
-                                    }}>
-                                        Go Back
-                                    </Button>
-                                </div>
+                                )
+                            :
+                            <div className="flex flex-col h-80 items-center justify-center gap-4">
+                                {
+                                    addProductId != -1 ?
+                                        <p className="m-0 p-0 text-xl text-center">No more products available
+                                            for <br/> {
+                                                actualVendorsProducts ? (actualVendorsProducts.length >= 1 ? actualVendorsProducts.find(vendor => vendor.id === addProductId)?.name : "this vendor") : ""
+                                            }</p>
+                                        :
+                                        <p className="m-0 p-0 text-xl text-center">No more products available
+                                            in <br/> {
+                                                selectedMarket ? selectedMarket.name : "your market"
+                                            }</p>
+
+                                }
+                                <Button variant="contained" onClick={() => {
+                                    setAddProductId(null);
+                                }}>
+                                    Go Back
+                                </Button>
+                            </div>
                     }
                 </div>
             </div>

@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import PageMap from '../PageMap/PageMap';
-import { Market, Vendor, Product } from '../../models';
+import {Market, Vendor, Product} from '../../models';
 import PageShoppingList from '../PageShoppingList/PageShoppingList';
 import MarketSelectorSheet from '../MarketSelectorSheet/MarketSelectorSheet';
-import { ButtonBase } from "@mui/material";
+import {ButtonBase} from "@mui/material";
 import SwitchButton from "../PageVendorProducts/SwitchButton.tsx";
 import SignalErrorButton from "../PageVendorProducts/SignalErrorButton.tsx";
 import DeleteButton from "../PageVendorProducts/DeleteButton.tsx";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
-import { TextInput } from "@tremor/react";
-import { Circle, CircleCheckBig, Search } from "lucide-react";
+import {TextInput} from "@tremor/react";
+import {Circle, CircleCheckBig, Search} from "lucide-react";
 import AddProductsButton from "../PageVendorProducts/AddProductsButton.tsx";
 import PageAddProducts from "../PageAddProducts/PageAddProducts.tsx";
-import { UserData } from '../PageProfile/UserData.tsx';
+import {UserData} from '../PageProfile/UserData.tsx';
 
 interface TabsHeroProps {
     theme: string;
@@ -32,21 +32,21 @@ interface TabsHeroProps {
 }
 
 export default function TabsHero({
-    theme,
-    vendors,
-    filteredVendors,
-    selectedMarket,
-    setSelectedMarket,
-    productsList,
-    setProductsList,
-    setFilteredVendors,
-    selectedReasons,
-    setSelectedReasons,
-    productsWithoutAlternatives,
-    setProductsWithoutAlternatives,
-    userdata,
-    setUserdata,
-}: Readonly<TabsHeroProps>): JSX.Element {
+                                     theme,
+                                     vendors,
+                                     filteredVendors,
+                                     selectedMarket,
+                                     setSelectedMarket,
+                                     productsList,
+                                     setProductsList,
+                                     setFilteredVendors,
+                                     selectedReasons,
+                                     setSelectedReasons,
+                                     productsWithoutAlternatives,
+                                     setProductsWithoutAlternatives,
+                                     userdata,
+                                     setUserdata,
+                                 }: Readonly<TabsHeroProps>): JSX.Element {
     const [selectedProducts, setSelectedProducts] = useState<Map<number, number[]> | null>(null);
     const [filteredProductsVendors, setFilteredProductsVendors] = useState<Vendor[]>(filteredVendors); //vendors with filtered products
     const [isEditMode, setIsEditMode] = useState(false);
@@ -192,65 +192,104 @@ export default function TabsHero({
         <>
             {addProductId != null ?
                 <PageAddProducts setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket}
-                    actualVends={filteredVendors} allVends={vendors} theme={theme} setAddProductId={setAddProductId} addProductId={addProductId} /> :
+                                 actualVends={filteredVendors} allVends={vendors} theme={theme}
+                                 setAddProductId={setAddProductId} addProductId={addProductId}/> :
                 <div className="flex flex-col h-full min-h-0 px-6 py-4">
                     {
                         isEditMode ?
-                            <TopBar
-                                leftComponent={<ButtonBase className="text-md font-semibold" onClick={exitEditMode}><p
-                                    className="m-0 p-0">Cancel</p></ButtonBase>}
-                                centerComponent={<h1
-                                    className="line-clamp-1 m-0 p-0 text-md font-normal text-center">{selectedProducts ? (countSelectedProducts() + " Selected") : ""}</h1>}
-                                rightComponent={
-                                    <div className='flex gap-3 items-center'>
-                                        {selectedProducts && selectedProducts.size > 0 &&
-                                            <>
+                            <>
+                                <TopBar
+                                    leftComponent={<ButtonBase className="text-md font-semibold" onClick={exitEditMode}>
+                                        <p
+                                            className="m-0 p-0">Cancel</p></ButtonBase>}
+                                    centerComponent={<h1
+                                        className="line-clamp-1 m-0 p-0 text-md font-normal text-center">{selectedProducts ? (countSelectedProducts() + " Selected") : ""}</h1>}
+                                    rightComponent={
+                                        <div className='flex gap-3 items-center'>
+                                            {selectedProducts && selectedProducts.size > 0 &&
+                                                <>
+                                                    {/*<SwitchButton
+                                                        setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                                                        selectedMarket={selectedMarket}
+                                                        selectedProducts={selectedProducts}
+                                                        setFilteredVendors={setFilteredVendors} theme={theme}
+                                                        closeAfter={closeAfter}/>
+                                                    <SignalErrorButton
+                                                        selectedMarket={selectedMarket}
+                                                        selectedProducts={selectedProducts}
+                                                        closeAfter={closeAfter}
+                                                        setFilteredVendors={setFilteredVendors}/>
+                                                    <DeleteButton
+                                                        selectedMarket={selectedMarket}
+                                                        selectedProducts={selectedProducts}
+                                                        setFilteredVendors={setFilteredVendors} theme={theme}
+                                                        closeAfter={closeAfter}/>*/}
+                                                </>}
+                                            {
+                                                selectedProducts && countSelectedProducts() === totalProducts ?
+                                                    <div className="flex items-center justify-center" onClick={
+                                                        () => {
+                                                            setSelectedProducts(new Map());
+                                                        }
+                                                    }>
+                                                        <CircleCheckBig size={20}/>
+                                                    </div>
+                                                    :
+                                                    <div
+                                                        className="flex items-center justify-center"
+                                                        onClick={
+                                                            () => {
+                                                                selectAllProducts();
+                                                            }
+                                                        }>
+                                                        <Circle size={20} color="gray"/>
+                                                    </div>
+
+                                            }
+
+                                        </div>
+                                    }/>
+                                {selectedProducts && selectedProducts.size > 0 &&
+                                <div
+                                    className="absolute w-full bottom-0 left-0 z-[11] pb-2 pt-2.5 dark:bg-dark-tremor-background-muted bg-tremor-background-muted border-t-[1px] border-tremor-border dark:border-dark-tremor-border">
+                                        <div className="flex flex-row items-center justify-evenly py-0.5">
+                                            <div className="flex flex-col items-center gap-1 w-24">
                                                 <SwitchButton
                                                     setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                                     selectedMarket={selectedMarket}
                                                     selectedProducts={selectedProducts}
                                                     setFilteredVendors={setFilteredVendors} theme={theme}
-                                                    closeAfter={closeAfter} />
+                                                    closeAfter={closeAfter}>
+                                                    <p className="p-0 m-0 text-sm">Switch vendor</p>
+                                                </SwitchButton>
+                                            </div>
+                                            <div className="flex flex-col items-center gap-1 w-24">
                                                 <SignalErrorButton
                                                     selectedMarket={selectedMarket}
                                                     selectedProducts={selectedProducts}
                                                     closeAfter={closeAfter}
-                                                    setFilteredVendors={setFilteredVendors} />
+                                                    setFilteredVendors={setFilteredVendors}>
+                                                    <p className="p-0 m-0 text-sm">Report issue</p>
+                                                </SignalErrorButton>
+                                            </div>
+                                            <div className="flex flex-col items-center gap-1 w-24">
                                                 <DeleteButton
                                                     selectedMarket={selectedMarket}
                                                     selectedProducts={selectedProducts}
                                                     setFilteredVendors={setFilteredVendors} theme={theme}
-                                                    closeAfter={closeAfter} />
-                                            </>}
-                                        {
-                                            selectedProducts && countSelectedProducts() === totalProducts ?
-                                                <div className="flex items-center justify-center" onClick={
-                                                    () => {
-                                                        setSelectedProducts(new Map());
-                                                    }
-                                                }>
-                                                    <CircleCheckBig size={20} />
-                                                </div>
-                                                :
-                                                <div
-                                                    className="flex items-center justify-center"
-                                                    onClick={
-                                                        () => {
-                                                            selectAllProducts();
-                                                        }
-                                                    }>
-                                                    <Circle size={20} color="gray" />
-                                                </div>
-
-                                        }
-
-                                    </div>
-                                } />
+                                                    closeAfter={closeAfter}>
+                                                    <p className="p-0 m-0 text-sm" style={{color: "red"}}>Delete</p>
+                                                </DeleteButton>
+                                            </div>
+                                        </div>
+                                </div> }
+                            </>
                             :
                             <>
                                 <div className='flex justify-between mb-4'>
                                     <h1 className="page-title mr-auto">Shopping</h1>
-                                    <MarketSelectorSheet className="!p-0" selectedMarket={selectedMarket} setSelectedMarket={setSelectedMarket} />
+                                    <MarketSelectorSheet className="!p-0" selectedMarket={selectedMarket}
+                                                         setSelectedMarket={setSelectedMarket}/>
                                 </div>
                                 <div className='flex flex-row gap-6'>
                                     <TextInput
@@ -266,11 +305,12 @@ export default function TabsHero({
                                     <AddProductsButton onClick={() => {
                                         setAddProductId(-1)
                                     }
-                                    } />
+                                    }/>
                                 </div>
-                                <button onClick={() => changeTab()} className="flex w-full place-self-center justify-center my-2 rounded-lg bg-tremor-border dark:bg-dark-tremor-border">
+                                <button onClick={() => changeTab()}
+                                        className="flex w-full place-self-center justify-center my-2 rounded-lg bg-tremor-border dark:bg-dark-tremor-border">
                                     <button disabled={activeTab === "list"}
-                                        className='w-1/4 px-4 py-2 rounded-md z-[1] font-semibold uppercase bg-transparent translate-x-1/2'
+                                            className='w-1/4 px-4 py-2 rounded-md z-[1] font-semibold uppercase bg-transparent translate-x-1/2'
                                     >
                                         List
                                     </button>
@@ -280,11 +320,11 @@ export default function TabsHero({
                                         className={`w-1/2 py-2 rounded-md font-semibold uppercase bg-tremor-brand transition-transform duration-300 text-white ${activeTab === "list"
                                             ? "-translate-x-1/2"
                                             : "translate-x-1/2"
-                                            }`}
+                                        }`}
                                     >
                                     </button>
                                     <button disabled={activeTab === "map"}
-                                        className='w-1/4 px-4 py-2 rounded-md z-[1] font-semibold uppercase bg-transparent -translate-x-1/2'
+                                            className='w-1/4 px-4 py-2 rounded-md z-[1] font-semibold uppercase bg-transparent -translate-x-1/2'
                                     >
                                         Map
                                     </button>
@@ -373,24 +413,24 @@ export default function TabsHero({
                             <PageShoppingList
                                 selectedProducts={selectedProducts}
                                 productsList={productsList}
-                            setProductsList={setProductsList}
-                            filteredVendors={filteredVendors}
+                                setProductsList={setProductsList}
+                                filteredVendors={filteredVendors}
                                 theme={theme}
-                            closeAfter={closeAfter}
+                                closeAfter={closeAfter}
                                 selectedMarket={selectedMarket}
                                 openEditMode={openEditMode}
                                 addOrRemoveSelected={addOrRemoveSelected}
                                 isEditMode={isEditMode}
-                            selectedOrRemoveAllProductsFromVendor={selectedOrRemoveAllProductsFromVendor}
-                            filteredProductsVendors={filteredProductsVendors}
-                            setFilteredVendors={setFilteredVendors}
+                                selectedOrRemoveAllProductsFromVendor={selectedOrRemoveAllProductsFromVendor}
+                                filteredProductsVendors={filteredProductsVendors}
+                                setFilteredVendors={setFilteredVendors}
                                 setAddProductId={setAddProductId}
                                 selectedReasons={selectedReasons}
                                 setSelectedReasons={setSelectedReasons}
                                 productsWithoutAlternatives={productsWithoutAlternatives}
-                            setProductsWithoutAlternatives={setProductsWithoutAlternatives}
-                            changeTab={changeTab}
-                            setInitialSelectedMapVendor={setInitialSelectedMapVendor}
+                                setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                                changeTab={changeTab}
+                                setInitialSelectedMapVendor={setInitialSelectedMapVendor}
                                 userdata={userdata}
                                 setUserdata={setUserdata}
                             />}

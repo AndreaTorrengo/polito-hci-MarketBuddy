@@ -3,16 +3,18 @@ import { Button } from '../generalPurposeComponents/Button';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import './Dialogs.css';
 import globalContext from "../../Context";
-import { MessageSquareWarning } from "lucide-react";
+import {MessageSquareWarning} from "lucide-react";
+import {ButtonBase} from "@mui/material";
 
 interface SignalErrorButtonProps {
     selectedProducts: Map<number, number[]>;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     closeAfter: () => void;
+    children?: React.ReactNode;
 }
 
-const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, closeAfter }) => {
+const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, closeAfter, children }) => {
 
     const [productsSwitching, setProductsSwitching] = useState<Product[]>([]);
 
@@ -124,9 +126,17 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
     }, [selectedReasons]);
 
     return (
-        <Button onClick={() => { handleClick() }} >
-            <MessageSquareWarning size={20} />
-        </Button>
+                <ButtonBase onClick={() => { handleClick() }} >
+                    {
+                        children ?
+                            <div className="flex flex-col items-center gap-1 w-24">
+                                <MessageSquareWarning size={20} />
+                                {children}
+                            </div>
+                            :
+                            <MessageSquareWarning size={20} />
+                    }
+                </ButtonBase>
     );
 }
 

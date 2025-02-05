@@ -1,12 +1,12 @@
-import SmallIconButton from "../generalPurposeComponents/SmallIconButton";
-import { Market, Vendor, Product } from "../../models";
-import { Dialog, DialogPanel } from '@tremor/react';
-import { Button } from '../generalPurposeComponents/Button';
-import React, { useContext, useState } from 'react';
+import {Market, Vendor, Product} from "../../models";
+import {Dialog, DialogPanel} from '@tremor/react';
+import {Button} from '../generalPurposeComponents/Button';
+import React, {useContext, useState} from 'react';
 import './Dialogs.css';
 import globalContext from "../../Context";
-import { ProductListItemProps } from "./ProductListItem";
-import { ArrowLeftRight, Replace, ReplaceAll } from "lucide-react";
+import {ProductListItemProps} from "./ProductListItem";
+import {ArrowLeftRight} from "lucide-react";
+import {ButtonBase} from "@mui/material";
 
 interface SwitchButtonProps {
     selectedProducts: Map<number, ProductListItemProps[] | number[]>;
@@ -15,9 +15,18 @@ interface SwitchButtonProps {
     closeAfter: () => void;
     theme: string,
     setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
+    children?: React.ReactNode;
 }
 
-const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, setProductsWithoutAlternatives, closeAfter }) => {
+const SwitchButton: React.FC<SwitchButtonProps> = ({
+                                                       selectedProducts,
+                                                       selectedMarket,
+                                                       setFilteredVendors,
+                                                       theme,
+                                                       setProductsWithoutAlternatives,
+                                                       closeAfter,
+                                                       children
+                                                   }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [productsSwitching, setProductsSwitching] = useState<Product[]>([]);
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
@@ -25,7 +34,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) ?? '[]');
     const vendors: Vendor[] = JSON.parse(localStorage.getItem(vendorsKey) ?? '[]');
 
-    const { showToastMessage, askConfirmation } = useContext(globalContext) || {};
+    const {showToastMessage, askConfirmation} = useContext(globalContext) || {};
 
     const handleClick = () => {
         // setIsDialogOpen(true);
@@ -62,7 +71,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                         if (existingVendor) {
                             existingVendor.products.push(product);
                         } else {
-                            const newVendor = { ...vendor, products: [product] };
+                            const newVendor = {...vendor, products: [product]};
                             filteredVendors.push(newVendor);
                         }
                         alternativeFound = true;
@@ -111,17 +120,26 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
 
     return (
         <>
-            <Button onClick={handleClick}>
-                <ArrowLeftRight size={20} />
-            </Button>
-            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+            <ButtonBase onClick={handleClick}>
+                {children ?
+                    <div className="flex flex-col items-center gap-1 w-24">
+                        <ArrowLeftRight size={20}/>
+                        {children}
+                    </div>
+                    :
+                    <ArrowLeftRight size={20}/>
+                }
+            </ButtonBase>
+            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isDialogOpen}
+                    onClose={() => setIsDialogOpen(false)}>
                 <DialogPanel>
-                    <h1 className="confirm-text" style={{ fontWeight: 'bold', fontSize: '1rem' }}>Confirm Switch</h1>
-                    <p className="message-text" style={{ marginTop: '10px' }}>We will find other sellers in this marketplace that match your preferences for the following products:</p>
+                    <h1 className="confirm-text" style={{fontWeight: 'bold', fontSize: '1rem'}}>Confirm Switch</h1>
+                    <p className="message-text" style={{marginTop: '10px'}}>We will find other sellers in this
+                        marketplace that match your preferences for the following products:</p>
                     <div>
                         <div className="products-text">
                             {productsSwitching.map((product, index) => (
-                                <span key={product.id} style={{ fontWeight: 'bold' }}>
+                                <span key={product.id} style={{fontWeight: 'bold'}}>
                                     {product.name}{index < productsSwitching.length - 1 ? ', ' : ''}
                                 </span>
                             ))}
@@ -129,7 +147,8 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
                     </div>
 
                     <div className="flex justify-right gap-2.5 mt-5">
-                        <Button variant='outlined' color='primary' onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                        <Button variant='outlined' color='primary'
+                                onClick={() => setIsDialogOpen(false)}>Cancel</Button>
                         <Button variant='contained' color='primary' onClick={handleConfirm}>Confirm</Button>
                     </div>
                 </DialogPanel>
