@@ -316,6 +316,8 @@ export default function PageVendorProducts({
             <Dialog open={isQrCodeDialogOpen} onClose={() => { setIsQrCodeDialogOpen(false); setIsOpen(true) }} onClick={() => setIsQrCodeDialogOpen(false)}>
                 {/* <DialogTitle>QR Code</DialogTitle> */}
                 <DialogContent className={`flex flex-col items-center justify-between gap-4 font-medium text-xl text-center ${theme === "dark" ? "bg-dark-tremor-background text-white" : "bg-tremor-background text-black"}`} onClick={confirmSale}>
+                    <span>You are buying the following products:</span>
+                    <span className="font-bold">{products.map(p => p.name).join(', ')}</span>
                     <QRCodeSVG bgColor={theme === "dark" ? "oklch(0.21 0.034 264.665)" : "white"} fgColor={theme === "dark" ? "white" : "black"} value={products.map(p => p.name).join(', ')} size={256} marginSize={4} level="Q" />
                     <p>Show this to the vendor to confirm the purchase!</p>
                 </DialogContent>
