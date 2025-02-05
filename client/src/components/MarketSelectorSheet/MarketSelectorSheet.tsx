@@ -79,7 +79,7 @@ function SearchBar({ searchInput, setSearchInput }: Readonly<{ searchInput: stri
     id="search"
     name="search"
     type="search"
-    className="py-1 ps-4 rounded-full"
+    className="py-1 ps-4 rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle"
     icon={Search}
     onChange={(e) => setSearchInput(e.target.value)}
     value={searchInput}

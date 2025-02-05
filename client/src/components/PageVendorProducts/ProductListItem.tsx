@@ -53,9 +53,9 @@ export default function ProductListItem({
                 <div className="w-16 h-16 transition-all duration-300">
                     <img src={image} alt={name + " image"} className="h-full rounded-md aspect-square object-cover"/>
                     <div
-                        className="absolute top-0 right-0 px-1.5 py-1 rounded-tl-sm rounded-ee-md">
+                        className="absolute top-0 right-0">
                         {points &&
-                            <div className="flex flex-row gap-1 items-center">
+                            <div className="flex flex-row gap-1 items-center bg-tremor-background dark:bg-dark-tremor-background px-1.5 py-1 rounded-tr-sm rounded-es-md">
                                 <p className="m-0 p-0">{points}</p>
                                 <Coins size={20} color="var(--buddy-coins)" />
                                 {/* <EmojiEmotionsIcon ></EmojiEmotionsIcon> */}
@@ -65,13 +65,13 @@ export default function ProductListItem({
                 </div>
                 <div className="flex flex-col gap-1">
                     <div className="flex-1 transition-all duration-300">
-                        <p className="p-0 m-0 line-clamp-1">{name}</p>
+                        <p className="p-0 m-0 line-clamp-1 text-lg">{name}</p>
                     </div>
                     <div className="flex flex-col gap-1 items-start">
                         {showPrice &&
                             <div className="transition-all duration-300">
                                 <p className="p-0 m-0 line-clamp-1 font-semibold">{price}<span
-                                    className="font-normal">{" €/kg"}</span></p>
+                                    className="font-normal text-lg">{" €/kg"}</span></p>
                             </div>
                         }
                     </div>

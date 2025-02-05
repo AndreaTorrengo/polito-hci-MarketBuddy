@@ -1,14 +1,14 @@
 "use client";
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import { ButtonBase } from "@mui/material";
-import { Button } from "../generalPurposeComponents/Button.tsx";
-import { Market, Product, Vendor } from "../../models.ts";
-import ProductListItem, { ProductListItemProps } from "../PageVendorProducts/ProductListItem.tsx";
+import React, {useContext, useEffect, useMemo, useState} from "react";
+import {ButtonBase} from "@mui/material";
+import {Button} from "../generalPurposeComponents/Button.tsx";
+import {Market, Product, Vendor} from "../../models.ts";
+import ProductListItem, {ProductListItemProps} from "../PageVendorProducts/ProductListItem.tsx";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import API from "../../API.ts";
 import globalContext from "../../Context.tsx";
-import { TextInput } from "@tremor/react";
-import { Search, MapPin, User } from 'lucide-react';
+import {TextInput} from "@tremor/react";
+import {Search, MapPin, User} from 'lucide-react';
 
 interface PageAddProductsParams {
     allVends: Vendor[];
@@ -21,14 +21,14 @@ interface PageAddProductsParams {
 }
 
 export default function PageAddProducts({
-    actualVends,
-    allVends,
-    theme,
-    selectedMarket,
-    setFilteredVendors,
-    addProductId,
-    setAddProductId
-}: PageAddProductsParams) {
+                                            actualVends,
+                                            allVends,
+                                            theme,
+                                            selectedMarket,
+                                            setFilteredVendors,
+                                            addProductId,
+                                            setAddProductId
+                                        }: PageAddProductsParams) {
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) ?? '[]');
 
@@ -65,17 +65,17 @@ export default function PageAddProducts({
                     const products: Product[] = await API.getAllProducts();
                     // console.log(products)
                     setAllProducts(products.map(product => ({
-                        id: product.id,
-                        name: product.name,
-                        price: product.price,
-                        image: product.image,
-                        points: product.points,
-                        isSelected: false,
-                        editMode: true,
-                        showPrice: false
-                    }))
-                        .filter(product => !productsAlreadyAdded.some(item => item.id === product.id))
-                        .filter(product => availableProducts.some(item => item.id === product.id))
+                            id: product.id,
+                            name: product.name,
+                            price: product.price,
+                            image: product.image,
+                            points: product.points,
+                            isSelected: false,
+                            editMode: true,
+                            showPrice: false
+                        }))
+                            .filter(product => !productsAlreadyAdded.some(item => item.id === product.id))
+                            .filter(product => availableProducts.some(item => item.id === product.id))
                     );
                 } catch (error) {
                     console.error(error);
@@ -118,7 +118,7 @@ export default function PageAddProducts({
                     if (existingVendor) {
                         existingVendor.products.push(product);
                     } else {
-                        const newVendor = { ...vendor, products: [product] };
+                        const newVendor = {...vendor, products: [product]};
                         filteredVendors.push(newVendor);
                     }
                     productAdded = true;
@@ -192,7 +192,7 @@ export default function PageAddProducts({
                                                 xmlns="http://www.w3.org/2000/svg"
                                             >
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3"
-                                                    d="M5 13l4 4L19 7" />
+                                                      d="M5 13l4 4L19 7"/>
                                             </svg>
                                         </div>
                                     </div>
@@ -223,18 +223,20 @@ export default function PageAddProducts({
             </div>
 
             <div
-                className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle px-6 pt-[4em] flex flex-col gap-4 overflow-y-auto">
+                className="w-full h-full dark:bg-dark-tremor-background bg-tremor-background px-6 pt-[4em] flex flex-col gap-4 overflow-y-auto">
 
-                <TextInput
-                    placeholder="Search Products"
-                    id="search"
-                    name="search"
-                    type="search"
-                    className="py-1 ps-3 rounded-full"
-                    icon={Search}
-                    onChange={(e) => setSearchInput(e.target.value)}
-                    value={searchInput}
-                />
+                {filteredProducts.length > 0 &&
+                    <TextInput
+                        placeholder="Search Products"
+                        id="search"
+                        name="search"
+                        type="search"
+                        className="py-1 ps-3 rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle"
+                        icon={Search}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                        value={searchInput}
+                    />
+                }
 
                 <div className="w-full flex-1">
                     {/* Product list top bar */}
@@ -244,21 +246,21 @@ export default function PageAddProducts({
                             <div className="flex flex-row justify-between items-center w-1/2">
                                 <p className="m-0 p-0">{"Choose product/s"}</p>
                             </div>
-                                {addProductId == -1 ?
-                                    <div className="flex flex-row items-center">
-                                        <div className="flex flex-col">
-                                            <MapPin size={20} className="me-1" />
-                                        </div>
-                                        <div className="flex flex-col w-full">
-                                            <div className="flex flex-row">
-                                                <h3 className="text-sm font-bold text-left">{selectedMarket.name}</h3>
-                                            </div>
+                            {addProductId == -1 ?
+                                <div className="flex flex-row items-center">
+                                    <div className="flex flex-col">
+                                        <MapPin size={20} className="me-1"/>
+                                    </div>
+                                    <div className="flex flex-col w-full">
+                                        <div className="flex flex-row">
+                                            <h3 className="text-sm font-bold text-left">{selectedMarket.name}</h3>
                                         </div>
                                     </div>
+                                </div>
                                 :
                                 <div className="flex flex-row items-center">
                                     <div className="flex flex-row">
-                                            <User size={20} className="me-1" />
+                                        <User size={20} className="me-1"/>
                                     </div>
                                     <div className="flex flex-row">
                                         <h3 className="text-sm font-bold text-left">
@@ -288,15 +290,15 @@ export default function PageAddProducts({
                                             null
                                             :
                                             <ButtonBase key={product.id} component="div"
-                                                onClick={() => {
-                                                    addOrRemoveSelected(product.id);
-                                                }}
+                                                        onClick={() => {
+                                                            addOrRemoveSelected(product.id);
+                                                        }}
                                             >
                                                 <ProductListItem key={index} {...product} showPrice={false}
-                                                    editMode={true}
-                                                    isSelected={
-                                                        selectedProducts ? selectedProducts.has(product.id) : false
-                                                    } />
+                                                                 editMode={true}
+                                                                 isSelected={
+                                                                     selectedProducts ? selectedProducts.has(product.id) : false
+                                                                 }/>
                                             </ButtonBase>
                                     )))
                                     :
@@ -304,9 +306,9 @@ export default function PageAddProducts({
                                         addProductId == -1 ?
                                             <div className="flex flex-col h-80 items-center justify-center gap-4">
                                                 <p className="m-0 p-0 text-xl text-center">Product/s not available
-                                                    in <br /> <span className="font-bold">{
+                                                    in <br/> <span className="font-bold">{
                                                         selectedMarket ? selectedMarket.name : "your market"
-                                                    }</span> <br /> Please, try another market!</p>
+                                                    }</span> <br/> Please, try another market!</p>
                                                 <Button variant="contained" onClick={() => {
                                                     setAddProductId(null);
                                                 }}>
@@ -316,9 +318,9 @@ export default function PageAddProducts({
                                             :
                                             <div className="flex flex-col h-80 items-center justify-center gap-4">
                                                 <p className="m-0 p-0 text-xl text-center">Product/s not available
-                                                    for <br /> <span className="font-bold">{
+                                                    for <br/> <span className="font-bold">{
                                                         actualVendor ? actualVendor.name : "this vendor"
-                                                    }</span> <br /> Please, try another vendor!</p>
+                                                    }</span> <br/> Please, try another vendor!</p>
                                                 <Button variant="contained" onClick={() => {
                                                     setAddProductId(null);
                                                 }}>
@@ -332,12 +334,12 @@ export default function PageAddProducts({
                                     {
                                         addProductId != -1 ?
                                             <p className="m-0 p-0 text-xl text-center">No more products available
-                                                for <br /> {
+                                                for <br/> {
                                                     actualVendorsProducts ? (actualVendorsProducts.length >= 1 ? actualVendorsProducts.find(vendor => vendor.id === addProductId)?.name : "this vendor") : ""
                                                 }</p>
                                             :
                                             <p className="m-0 p-0 text-xl text-center">No more products available
-                                                in <br /> {
+                                                in <br/> {
                                                     selectedMarket ? selectedMarket.name : "your market"
                                                 }</p>
 
