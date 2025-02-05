@@ -16,6 +16,7 @@ import { Button } from "../generalPurposeComponents/Button.tsx";
 import { Market, Vendor, Product } from "../../models.ts";
 import { QRCodeSVG } from "qrcode.react";
 import globalContext from "../../Context.tsx";
+import { UserData } from "../PageProfile/UserData.tsx";
 
 interface PageVendorProductsParams {
     isOpen: boolean;
@@ -33,6 +34,8 @@ interface PageVendorProductsParams {
     setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
     closeAfter: () => void;
     filteredVendors: Vendor[];
+    userdata: UserData;
+    setUserdata: React.Dispatch<React.SetStateAction<UserData>>;
 }
 
 export default function PageVendorProducts({
@@ -47,7 +50,9 @@ export default function PageVendorProducts({
     filteredVendors,
     productsList,
     setProductsList,
-    closeAfter
+    closeAfter,
+    userdata,
+    setUserdata,
 }: Readonly<PageVendorProductsParams>) {
     const approot = document.getElementById("approot")!;
 
@@ -148,6 +153,21 @@ export default function PageVendorProducts({
         setIsOpen(false);
         setFilteredVendors(filteredVendors.filter(v => v.id !== vendor.id));
         showToastMessage && showToastMessage("Sale confirmed!", "success");
+
+        // Update stats
+        if (products != null) {
+            setUserdata((userdata: UserData) => {
+                const udCopy = Object.assign(new UserData(), userdata);
+                const coinsFromProducts = Array.from(products.values()).reduce((acc, product) => {
+                    if(product.points == undefined)
+                        return acc;
+                    return acc + product.points;
+                }, 0);
+                //console.log("Coins from selected products: ", coinsFromProducts);
+                udCopy.incrCoins(coinsFromProducts);
+                return udCopy;
+            });
+        }
     }
 
 
@@ -215,22 +235,22 @@ export default function PageVendorProducts({
                                                 <>
                                                     <SwitchButton selectedMarket={selectedMarket}
                                                         selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
-                                                    closeAfter={exitEditMode}
+                                                        closeAfter={exitEditMode}
                                                         setFilteredVendors={setFilteredVendors}
                                                         setSelectedProducts={setSelectedProducts}
                                                         setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                                         theme={theme}
                                                     />
                                                     <SignalErrorButton
-                                                    closeAfter={exitEditMode}
+                                                        closeAfter={exitEditMode}
                                                         selectedMarket={selectedMarket}
-                                                    selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
+                                                        selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
                                                         setFilteredVendors={setFilteredVendors}
-                                                    setSelectedProducts={setSelectedProducts}
+                                                        setSelectedProducts={setSelectedProducts}
                                                     />
-                                                <DeleteButton closeAfter={exitEditMode}
-                                                    selectedMarket={selectedMarket}
-                                                    selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
+                                                    <DeleteButton closeAfter={exitEditMode}
+                                                        selectedMarket={selectedMarket}
+                                                        selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
                                                         setFilteredVendors={setFilteredVendors}
                                                         theme={theme}
                                                     />

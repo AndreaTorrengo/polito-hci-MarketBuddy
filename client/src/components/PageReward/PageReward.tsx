@@ -12,7 +12,13 @@ import { ICONS, IconLocker } from '../PageProfile/Icons';
 
 const iconsMap: { [key: string]: JSX.Element } = {
   'coupon': <LocalOfferOutlined className='object-scale-down max-h-full m-auto' />,
-  'profile_picture': <img src={ICONS.find(i => i.id == 2)?.path} alt="planet" className='object-scale-down max-h-full m-auto' />,
+  'profile_picture_2': <img src={ICONS.find(i => i.id == 2)?.path} alt="planet" className='object-scale-down max-h-full m-auto' />,
+  'profile_picture_3': <img src={ICONS.find(i => i.id == 3)?.path} alt="planet" className='object-scale-down max-h-full m-auto' />,
+  'profile_picture_4': <img src={ICONS.find(i => i.id == 4)?.path} alt="planet" className='object-scale-down max-h-full m-auto' />,
+  'profile_picture_5': <img src={ICONS.find(i => i.id == 5)?.path} alt="planet" className='object-scale-down max-h-full m-auto' />,
+  'profile_picture_6': <img src={ICONS.find(i => i.id == 6)?.path} alt="planet" className='object-scale-down max-h-full m-auto' />,
+  'profile_picture_7': <img src={ICONS.find(i => i.id == 7)?.path} alt="planet" className='object-scale-down max-h-full m-auto' />,
+  'profile_picture_8': <img src={ICONS.find(i => i.id == 8)?.path} alt="planet" className='object-scale-down max-h-full m-auto' />,
 }
 
 export function RewardCard({ reward, confirmRewardRedemption = () => { } }: Readonly<{ reward: Reward, confirmRewardRedemption?: (reward: Reward) => void }>) {
@@ -64,9 +70,10 @@ export default function PageReward({ askConfirmation, userdata, setUserdata }: R
     });
     // If the redeemed reward is a profile picture, unlock it
     if (reward.icon.includes('profile_picture')) {
+      const iconId = parseInt(reward.icon.split('_')[2]);
       const iconLocker = new IconLocker();
       iconLocker.load();
-      iconLocker.unlock(reward.id);
+      iconLocker.unlock(iconId);
     }
 
     setRewards((prevRewards) => prevRewards.filter((r: Reward) => r.id !== reward.id));
@@ -75,7 +82,10 @@ export default function PageReward({ askConfirmation, userdata, setUserdata }: R
   }
 
   const confirmRewardRedemption = (reward: Reward) => {
-    askConfirmation(() => { redeemReward(reward); }, "Are you sure you want to redeem '" + reward.description + "' for " + reward.cost + " coins?");
+    if(reward.cost <= userdata.coins)
+      askConfirmation(() => { redeemReward(reward); }, "Are you sure you want to redeem '" + reward.description + "' for " + reward.cost + " coins?");
+    else
+      console.log("Waaaait a sec... Not enough coins!");
   }
 
   return (

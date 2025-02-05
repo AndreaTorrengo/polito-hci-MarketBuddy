@@ -3,6 +3,8 @@ import { Market, Vendor, Product } from "../../models";
 import PageVendorProducts from "../PageVendorProducts/PageVendorProducts";
 import { useState } from "react";
 import VendorGroup from "./VendorGroup";
+import { UserData } from "../PageProfile/UserData";
+import StatPopup from "../generalPurposeComponents/StatPopup";
 interface PageShoppingListProps {
     readonly theme: string;
     readonly productsList: { [key: string]: string[] };
@@ -22,6 +24,8 @@ interface PageShoppingListProps {
     setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
     productsWithoutAlternatives: Product[];
     closeAfter: () => void;
+    userdata: UserData;
+    setUserdata: React.Dispatch<React.SetStateAction<UserData>>;
 }
 
 export default function PageShoppingList({
@@ -43,12 +47,15 @@ export default function PageShoppingList({
     closeAfter,
     filteredVendors,
     setProductsWithoutAlternatives,
+    userdata,
+    setUserdata,
 }: Readonly<PageShoppingListProps>) {
     const [isVendorPageOpen, setIsVendorPageOpen] = useState(false);
     const [selectedVendor, setSelectedVendor] = useState<number>(-1);
 
 
     return (
+        <>
         <div id="ShoppingListPage" className="flex flex-col gap-2">
             {!isEditMode &&
                 <MissingProductsDialog
@@ -70,7 +77,8 @@ export default function PageShoppingList({
                                 vendor={vendor} isOpen={isVendorPageOpen}
                                 closeAfter={closeAfter}
                                 setIsOpen={(value: boolean) => setIsVendorPageOpen(value)}
-                                    theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} productsList={productsList} setProductsList={setProductsList} filteredVendors={filteredVendors} />}
+                                    theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} productsList={productsList} setProductsList={setProductsList} filteredVendors={filteredVendors} 
+                                    userdata={userdata} setUserdata={setUserdata}/>}
 
                             <VendorGroup id={vendor.id}
                                 openEditMode={openEditMode}
@@ -104,5 +112,7 @@ export default function PageShoppingList({
                 )
                 )}
         </div>
+        <StatPopup coins={userdata.coins} exp={userdata.experience} popup={true} />
+        </>
     );
 }
