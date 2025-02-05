@@ -8,16 +8,20 @@ interface VendorBadgesProps {
     quality: string;
     cordiality: string;
     convenience: string;
+    changeTab?: (event: React.MouseEvent<HTMLButtonElement>, tab: string) => void;
+    positionCallback?: () => void;
 }
 
-export default function VendorBadges({ market, quality, cordiality, convenience }: VendorBadgesProps) {
+export default function VendorBadges({ market, quality, cordiality, convenience, changeTab, positionCallback }: Readonly<VendorBadgesProps>) {
     return (
         <div className="flex flex-col w-full gap-6">
-            <div className="flex items-center justify-left" onClick={() => {
+            <button className="flex items-center justify-left font-medium" onClick={(e) => {
+                positionCallback && positionCallback();
+                changeTab && changeTab(e, "map");
             }}>
                 <LocationOnOutlinedIcon />
                 <p className="m-0 p-0">{market}</p>
-            </div>
+            </button>
             <div className='flex flex-row items-center justify-around'>
                 <div className="w-1/3 flex flex-col items-center justify-center" onClick={() => {
                 }}>

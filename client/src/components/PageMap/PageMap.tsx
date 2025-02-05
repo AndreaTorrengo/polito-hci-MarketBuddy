@@ -17,14 +17,22 @@ const UpdateMapCenter: React.FC<{ center: [number, number] }> = ({ center }) => 
     return null;
 };
 
-const OnFlyMarker: React.FC<{ center: [number, number], isMarketCenter: boolean }> = ({ center, isMarketCenter }) => {
+interface OnFlyMarkerProps {
+    center: [number, number];
+    isMarketCenter: boolean;
+    targetPosition: [number, number] | null;
+    setTargetPosition: React.Dispatch<React.SetStateAction<[number, number] | null>>;
+}
+
+const OnFlyMarker: React.FC<OnFlyMarkerProps> = ({ center, isMarketCenter, targetPosition, setTargetPosition }) => {
     const map = useMap();
 
-    useEffect(() => {
-        let offsetLatLng = center;
+    const flyToMarker = (map: L.Map, target: [number, number] | null, isMarketCenter: boolean, resetTarget: boolean) => {
+        if (!target) return;
+        let offsetLatLng: [number, number] = target;
         if (!isMarketCenter) {
-            const offset = + 230; // Adjust this value to set the fixed point on the screen (negative value to move higher)
-            const latLngPoint = map.latLngToContainerPoint(center);
+            const offset = +230; // Adjust this value to set the fixed point on the screen (negative value to move higher)
+            const latLngPoint = map.latLngToContainerPoint(target);
             const offsetPoint = L.point(latLngPoint.x, latLngPoint.y + offset);
             const latLng = map.containerPointToLatLng(offsetPoint);
             offsetLatLng = [latLng.lat, latLng.lng];
@@ -34,7 +42,13 @@ const OnFlyMarker: React.FC<{ center: [number, number], isMarketCenter: boolean 
             animate: true,
             duration: 0.5,
         });
-    }, [center, map, isMarketCenter]);
+
+        if (resetTarget)
+            setTargetPosition(null);
+    }
+
+    useEffect(() => flyToMarker(map, center, isMarketCenter, false), [center, map, isMarketCenter]);
+    useEffect(() => flyToMarker(map, targetPosition, false, true), [targetPosition, map]);
 
     return null;
 };
@@ -51,33 +65,38 @@ interface PageMapProps {
     setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
     productsWithoutAlternatives: Product[];
     closeAfter: () => void;
+    initialVendor?: Vendor | null;
+    setInitialVendor?: React.Dispatch<React.SetStateAction<Vendor | null>>;
 }
 
 const PageMap: React.FC<PageMapProps> = ({
     filteredVendors,
     theme,
     selectedMarket,
-    closeAfter,
     setFilteredVendors,
     setAddProductId,
     selectedReasons,
     setSelectedReasons,
     productsWithoutAlternatives,
     setProductsWithoutAlternatives,
+    initialVendor,
+    setInitialVendor
 }) => {
     const [markerPosition, setMarkerPosition] = useState<[number, number]>([
         selectedMarket.position[0],
         selectedMarket.position[1],
     ]);
-    const [center, setMapCenter] = useState<[number, number]>(selectedMarket.position as [number, number]);
-    const [selectedMarker, setSelectedMarker] = useState<[number, number] | null>(null);
-    const [selectedVendor, setSelectedVendor] = useState<Vendor>();
+    const [mapCenter, setMapCenter] = useState<[number, number]>(initialVendor?.position as [number, number] || selectedMarket.position as [number, number]);
+    const [selectedMarker, setSelectedMarker] = useState<[number, number] | null>(initialVendor?.position as [number, number] || null);
+    const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(initialVendor || null);
 
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(!!initialVendor); // Open vendor page if initialState is provided
+
+    const [targetPosition, setTargetPosition] = useState<[number, number] | null>(null);
 
     useEffect(() => {
         const vendorInFilteredVendors = selectedVendor ? filteredVendors.find(vendor => vendor.id === selectedVendor.id) : undefined;
-        setSelectedVendor(vendorInFilteredVendors);
+        setSelectedVendor(vendorInFilteredVendors || null);
         setSelectedMarker(vendorInFilteredVendors ? vendorInFilteredVendors.position as [number, number] : null);
     }, [filteredVendors]);
 
@@ -91,15 +110,14 @@ const PageMap: React.FC<PageMapProps> = ({
         useMapEvents({
             click(e) {
                 setSelectedMarker([e.latlng.lat, e.latlng.lng]);
-                setSelectedVendor(undefined);
+                setSelectedVendor(null);
                 setMapCenter(markerPosition);
-
             },
         });
         return null;
     };
 
-    //inizialize user marker position
+    // inizialize user marker position
     useEffect(() => {
         setMarkerPosition([selectedMarket.position[0], selectedMarket.position[1]]);
     }, [selectedMarket]);
@@ -111,7 +129,9 @@ const PageMap: React.FC<PageMapProps> = ({
             setMapCenter(selectedMarket.position as [number, number]);
             setSelectedMarker(selectedMarket.position as [number, number]);
         }
+        setInitialVendor && setInitialVendor(null);
     }, [isOpen]);
+
 
     // Handle movable marker movement
     useEffect(() => {
@@ -197,7 +217,7 @@ const PageMap: React.FC<PageMapProps> = ({
         <div className='w-full h-full'>
             <MapContainer
                 className='w-full h-full'
-                center={center}
+                center={mapCenter}
                 zoom={17}
                 maxZoom={18}
             >
@@ -205,10 +225,10 @@ const PageMap: React.FC<PageMapProps> = ({
                 <TileLayer className={theme === "dark" ? "dark-mode-filter" : ""} url={tileLayerUrl}
                     attribution={tileLayerAttribution} />
                 {/* Update map center dynamically */}
-                <OnFlyMarker center={center}
-                    isMarketCenter={center[0] === selectedMarket.position[0] && center[1] === selectedMarket.position[1]}
-                />
                 <UpdateMapCenter center={selectedMarket.position as [number, number]} />
+                <OnFlyMarker center={mapCenter}
+                    isMarketCenter={mapCenter[0] === selectedMarket.position[0] && mapCenter[1] === selectedMarket.position[1]} targetPosition={targetPosition} setTargetPosition={setTargetPosition}
+                />
                 {/* Vendors position */}
                 {filteredVendors?.map((vendor, idx) => {
                     const position: [number, number] = vendor.position as [number, number];
@@ -247,10 +267,10 @@ const PageMap: React.FC<PageMapProps> = ({
                 selectedVendor && (
                     <PageVendorProducts
                         productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
-                        closeAfter={closeAfter}
                         origin="map"
                         selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
-                        isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} filteredVendors={filteredVendors} />
+                        isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} filteredVendors={filteredVendors} setVendorBadgePositionCallback={() => { setTargetPosition(selectedMarker) }}
+                    />
                 )
             )}
             {/* Market selector

@@ -175,6 +175,9 @@ export default function TabsHero({
         setSelectedProducts(null);
     }
 
+    // Link vendor position to the map
+    const [initialSelectedMapVendor, setInitialSelectedMapVendor] = useState<Vendor | null>(null);
+
     return (
         <>
             {addProductId != null ?
@@ -329,6 +332,8 @@ export default function TabsHero({
                                     setSelectedReasons={setSelectedReasons}
                                     productsWithoutAlternatives={productsWithoutAlternatives}
                                     setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                                    initialVendor={initialSelectedMapVendor}
+                                    setInitialVendor={setInitialSelectedMapVendor}
                                 />
                             </div>
                         )}
@@ -351,7 +356,9 @@ export default function TabsHero({
                                 selectedReasons={selectedReasons}
                                 setSelectedReasons={setSelectedReasons}
                                 productsWithoutAlternatives={productsWithoutAlternatives}
-                                setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                            setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                            changeTab={handleChange}
+                            setInitialSelectedMapVendor={setInitialSelectedMapVendor}
                             />}
                     </div>
                 </div>

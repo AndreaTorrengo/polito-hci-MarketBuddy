@@ -16,7 +16,6 @@ import { Button } from "../generalPurposeComponents/Button.tsx";
 import { Market, Vendor, Product } from "../../models.ts";
 import { QRCodeSVG } from "qrcode.react";
 import globalContext from "../../Context.tsx";
-import { ClassNames } from "@emotion/react";
 
 interface PageVendorProductsParams {
     isOpen: boolean;
@@ -30,11 +29,10 @@ interface PageVendorProductsParams {
     setSelectedReasons: React.Dispatch<React.SetStateAction<string[]>>;
     setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
     productsWithoutAlternatives: Product[];
-    productsList: { [key: string]: string[] };
-    setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
-    closeAfter: () => void;
     filteredVendors: Vendor[];
     origin: "map" | "list";
+    changeTab?: (event: React.MouseEvent<HTMLButtonElement>, tab: string) => void;
+    setVendorBadgePositionCallback?: React.Dispatch<React.SetStateAction<Vendor | null>>;
 }
 
 export default function PageVendorProducts({
@@ -47,10 +45,9 @@ export default function PageVendorProducts({
     setAddProductId,
     setProductsWithoutAlternatives,
     filteredVendors,
-    productsList,
-    setProductsList,
-    closeAfter,
     origin,
+    changeTab,
+    setVendorBadgePositionCallback
 }: Readonly<PageVendorProductsParams>) {
     const approot = document.getElementById("approot")!;
 
@@ -265,7 +262,7 @@ export default function PageVendorProducts({
 
                             <VendorBadges market={vendor.market} quality={vendor.quality_rating}
                                 cordiality={vendor.cordiality_rating}
-                                convenience={vendor.convenience_rating} />
+                                convenience={vendor.convenience_rating} changeTab={changeTab} positionCallback={() => setVendorBadgePositionCallback && setVendorBadgePositionCallback(vendor)} />
                             <div className="w-full">
                                 <div className={`relative bottom-5 text-right w-full flex justify-end ${showUpArrow ? "opacity-10 animate-pulse" : "opacity-0"} transition-opacity duration-1000`}>
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
