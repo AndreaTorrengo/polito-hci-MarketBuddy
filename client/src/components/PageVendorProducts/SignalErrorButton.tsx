@@ -143,7 +143,7 @@ function DialogContent({ products, selectedReasons, handleReasonSelect }: Readon
             {[
                 { id: 'reason1', label: 'Missing product/s' },
                 { id: 'reason2', label: 'Poor quality' },
-                { id: 'reason3', label: 'Price too high' },
+                { id: 'reason3', label: 'Price error' },
                 { id: 'reason4', label: 'Improperly stored' }
             ].map(reason => (
                 <Button

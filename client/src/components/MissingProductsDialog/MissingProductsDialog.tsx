@@ -171,9 +171,9 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                     // variant='contained'
                     onClick={() => setIsOpen(true)}
                 >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div className='flex align-middle gap-2'>
                         <WarningIcon style={{ color: '#e34138' }} />
-                        <span>Some products require your attention!</span>
+                        <span>Some products are missing at this market!</span>
                     </div>
                 </Button>
             )}
