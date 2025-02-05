@@ -24,14 +24,14 @@ export default function PageRewardHistory() {
 
 
     return (
-        <div className='w-full h-full p-6'>
-            <div className='flex justify-around mb-6'>
+        <div className='w-full h-full px-6 py-4'>
+            <div className='flex justify-start gap-3 mb-4'>
                 <div className='flex align-middle'>
                     <button onClick={() => navigate(-1)}>
                         <ArrowBackOutlinedIcon />
                     </button>
                 </div>
-                <Title className="text-3xl align-middle">Redeemed Rewards</Title>
+                <h1 className="page-title">Redeemed Rewards</h1>
             </div>
             <div className='flex content-center justify-between'>
                 <ul className='flex flex-col gap-4 w-full'>

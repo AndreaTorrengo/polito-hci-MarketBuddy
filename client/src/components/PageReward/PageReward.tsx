@@ -35,13 +35,12 @@ export function RewardCard({ reward, confirmRewardRedemption = () => { } }: Read
   );
 }
 
-type AskConfirmation = (callback: () => void, message: string) => void;
 
-
-export default function PageReward({ askConfirmation, userdata, setUserdata }: Readonly<{ askConfirmation: AskConfirmation, userdata: UserData, setUserdata: Dispatch<SetStateAction<UserData>> }>) {
+export default function PageReward({ userdata, setUserdata }: Readonly<{ userdata: UserData, setUserdata: Dispatch<SetStateAction<UserData>> }>) {
   const [rewards, setRewards] = useState<Reward[]>([]);
   const navigate = useNavigate();
-  const showToastMessage = useContext(globalContext)?.showToastMessage;
+
+  const { askConfirmation, showToastMessage } = useContext(globalContext) ?? {};
 
   useEffect(() => {
     // Fetch rewards
@@ -69,13 +68,13 @@ export default function PageReward({ askConfirmation, userdata, setUserdata }: R
       iconLocker.unlock(reward.id);
     }
 
-    setRewards((prevRewards) => prevRewards.filter((r: Reward) => r.id !== reward.id));
+    // setRewards((prevRewards) => prevRewards.filter((r: Reward) => r.id !== reward.id));
     setRewards((prevRewards) => prevRewards.filter((r) => r.id !== reward.id));
     showToastMessage && showToastMessage("Reward redeemed successfully!", "success");
   }
 
   const confirmRewardRedemption = (reward: Reward) => {
-    askConfirmation(() => { redeemReward(reward); }, "Are you sure you want to redeem '" + reward.description + "' for " + reward.cost + " coins?");
+    askConfirmation && askConfirmation(() => { redeemReward(reward); }, "Are you sure you want to redeem '" + reward.description + "' for " + reward.cost + " coins?");
   }
 
   return (

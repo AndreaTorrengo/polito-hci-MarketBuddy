@@ -271,7 +271,7 @@ export default function App() {
               selectedMarket={selectedMarket} setSelectedMarket={selectMarket}
               productsList={productsList} setProductsList={setProductsList} />} />
             <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} leaderboardPath={`${paths[5]}`} userdata={userdata} setUserdata={setUserdata} />} />
-            <Route path={`${paths[2]}`} element={<PageReward askConfirmation={askConfirmation} userdata={userdata} setUserdata={setUserdata} />} />
+            <Route path={`${paths[2]}`} element={<PageReward userdata={userdata} setUserdata={setUserdata} />} />
             <Route path={`${paths[2]}/history`} element={<PageRewardHistory />} />
             <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} askConfirmation={askConfirmation} userdata={userdata} setUserdata={setUserdata} />} />
             <Route path={`${paths[4]}`} element={<PageNotFound />} />
