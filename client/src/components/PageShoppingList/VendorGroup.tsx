@@ -1,5 +1,5 @@
 import ProductItem, {ProductItemProps} from "./ProductItem";
-import { PiggyBank, Award, Smile } from "lucide-react";
+import { PiggyBank, Award, Smile, ChevronRight, CircleCheckBig, Circle } from "lucide-react";
 import {ButtonBase} from "@mui/material";
 import {Vendor} from "../../models";
 import React from "react";
@@ -41,42 +41,28 @@ export default function VendorGroup({
                     isEditMode &&
                     (
                         selectedProducts && selectedProducts.length === products.length ?
-                            <div onClick={
+                                <div className="flex items-center" onClick={
                                 () => {
                                     selectedOrRemoveAllProductsFromVendor(vendor.id, true);
                                 }
                             }>
-                                <div
-                                        className="rounded-full text-green-500 h-5 w-5 border-2 border-gray-300 transition-all duration-300">
-                                    <svg
-                                        className="h-6 w-6 text-black dark:text-white translate-y-[-0.3em] translate-x-[-0.1em] transition-all duration-300"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3"
-                                              d="M5 13l4 4L19 7"/>
-                                    </svg>
-                                </div>
+                                    <CircleCheckBig size={20} />
                             </div>
                             :
                             <div
-                                className="animate-fade transition-all duration-300"
+                                    className="flex items-center"
                                 onClick={
                                     () => {
                                         selectedOrRemoveAllProductsFromVendor(vendor.id, false);
                                     }
                                 }>
-                                <div
-                                        className="rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle h-5 w-5 border-2 border-gray-300 transition-all duration-300">
-                                </div>
+                                    <Circle size={20} color="gray" />
                             </div>
                     )
                 }
-                    <div className="flex flex-row items-center gap-2">
+                    <div className="flex flex-row items-center gap-0.5">
                         <span className="m-0 p-0 font-medium text-xl line-clamp-1">{vendor.name}</span>
-                        <svg className="mt-0.5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+                        <ChevronRight className="pt-0.5" />
                     </div>
                 </div>
 

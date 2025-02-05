@@ -11,7 +11,7 @@ import SignalErrorButton from "../PageVendorProducts/SignalErrorButton.tsx";
 import DeleteButton from "../PageVendorProducts/DeleteButton.tsx";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import { TextInput } from "@tremor/react";
-import { Search } from "lucide-react";
+import { Circle, CircleCheckBig, Search } from "lucide-react";
 import AddProductsButton from "../PageVendorProducts/AddProductsButton.tsx";
 import PageAddProducts from "../PageAddProducts/PageAddProducts.tsx";
 
@@ -192,46 +192,31 @@ export default function TabsHero({
                                 centerComponent={<h1
                                     className="line-clamp-1 m-0 p-0 text-md font-normal text-center">{selectedProducts ? (countSelectedProducts() + " Selected") : ""}</h1>}
                                 rightComponent={
-                                    <>
+                                    <div className='flex gap-3 items-center'>
                                         {
                                             selectedProducts && countSelectedProducts() === totalProducts ?
-                                                <div className="w-8 h-16 flex items-center justify-center" onClick={
+                                                <div className="flex items-center justify-center" onClick={
                                                     () => {
                                                         setSelectedProducts(new Map());
                                                     }
                                                 }>
-                                                    <div
-                                                        className="rounded-full text-green-500 h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
-                                                        <svg
-                                                            className="h-6 w-6 text-black dark:text-white translate-y-[-0.3em] translate-x-[-0.1em] transition-all duration-300"
-                                                            fill="none"
-                                                            stroke="currentColor"
-                                                            viewBox="0 0 24 24"
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                        >
-                                                            <path strokeLinecap="round" strokeLinejoin="round"
-                                                                strokeWidth="3"
-                                                                d="M5 13l4 4L19 7" />
-                                                        </svg>
-                                                    </div>
+                                                    <CircleCheckBig size={20} />
                                                 </div>
                                                 :
                                                 <div
-                                                    className="w-8 h-16 flex items-center justify-center animate-fade transition-all duration-300"
+                                                    className="flex items-center justify-center"
                                                     onClick={
                                                         () => {
                                                             selectAllProducts();
                                                         }
                                                     }>
-                                                    <div
-                                                        className="rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
-                                                    </div>
+                                                    <Circle size={20} color="gray" />
                                                 </div>
 
                                         }
 
                                         {selectedProducts && selectedProducts.size > 0 &&
-                                            <div className='flex'>
+                                            <>
                                                 <SwitchButton
                                                     setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                                     selectedMarket={selectedMarket}
@@ -248,11 +233,10 @@ export default function TabsHero({
                                                     selectedProducts={selectedProducts}
                                                     setFilteredVendors={setFilteredVendors} theme={theme}
                                                     closeAfter={closeAfter} />
-                                            </div>}
+                                            </>}
 
-                                    </>
-                                }>
-                            </TopBar>
+                                    </div>
+                                } />
                             :
                             <>
                                 <div className='flex justify-between mb-4'>

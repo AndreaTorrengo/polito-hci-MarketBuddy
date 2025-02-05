@@ -1,3 +1,4 @@
+import { Plus } from "lucide-react";
 import { Button } from "../generalPurposeComponents/Button";
 
 interface AddProductsButtonProps {
@@ -7,16 +8,10 @@ interface AddProductsButtonProps {
 export default function AddProductsButton({ onClick }: Readonly<AddProductsButtonProps>) {
 
     return (
-        <Button className="h-fit m-auto py-2" variant="outlined" color="primary" onClick={onClick} >
+        <Button className="h-fit py-2" variant="outlined" color="primary" onClick={onClick} >
             <div className="flex items-center justify-center gap-2 whitespace-nowrap" >
                 <p className="text-xs uppercase">Add Product/s</p>
-                <i>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                            d="M12 4v16m8-8H4" />
-                    </svg>
-                </i>
+                <Plus size={20} />
             </div>
         </Button>
     );

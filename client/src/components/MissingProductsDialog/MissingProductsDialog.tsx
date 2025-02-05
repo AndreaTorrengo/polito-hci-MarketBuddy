@@ -170,7 +170,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                     onClick={() => setIsOpen(true)}
                 >
                     <div className='flex align-middle gap-2'>
-                        <TriangleAlert color="red" />
+                        <TriangleAlert />
                         <span>Some products are missing at this market!</span>
                     </div>
                 </Button>
@@ -248,7 +248,9 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                         </div>
                                     ) : (
                                         <Button
-                                            onClick={() => { handleConfirm(missingProducts[currentIndex], []) }}
+                                                onClick={() => { handleConfirm(missingProducts[currentIndex], []) }}
+                                                variant='outlined'
+                                                color='primary'
                                         >
                                             Got it
                                         </Button>

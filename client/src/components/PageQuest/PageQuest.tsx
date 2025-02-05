@@ -78,7 +78,7 @@ export default function PageQuest(props: any) {
   return (
     <>
       <StatPopup coins={props.userdata.coins} exp={props.userdata.experience} popup={true}/>
-      <div className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle px-6 py-4">
+      <div className="w-full h-full px-6 py-4">
         <h1 className="page-title mb-4">Quests</h1>
         <div className="flex flex-col gap-4 relative">
           {quests.map((quest: any) =>
@@ -91,13 +91,13 @@ export default function PageQuest(props: any) {
                 } else requestClaim(quest.id);
               }}
             >
-              <Card className="bg-tremor-background dark:bg-dark-tremor-background p-4 relative">
+              <Card className="bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle p-4 relative">
                 <div className="absolute top-2 right-2 flex space-x-2">
-                  <div className="flex items-center space-x-1 text-violet-600">
+                  <div className="flex items-center space-x-1 text-[var(--experience)]">
                     <Hexagon />
                     <span className="font-semibold">{quest.exp}</span>
                   </div>
-                  <div className="flex items-center space-x-1 text-yellow-500">
+                  <div className="flex items-center space-x-1 text-[var(--buddy-coins)]">
                     <Coins />
                     <span className="font-semibold">{quest.coins}</span>
                   </div>
@@ -111,7 +111,7 @@ export default function PageQuest(props: any) {
                     value={parseProgress(quest.progress)}
                     color="blue"
                   />
-                  <span className="absolute inset-0 flex justify-center items-center text-white font-semibold">
+                  <span className="absolute inset-0 flex justify-center items-center  font-semibold">
                     {quest.progress}
                   </span>
                 </div>

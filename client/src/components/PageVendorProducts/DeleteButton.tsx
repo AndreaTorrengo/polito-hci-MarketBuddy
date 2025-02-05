@@ -6,6 +6,7 @@ import React, { useContext, useState } from 'react';
 import './Dialogs.css';
 import globalContext from "../../Context";
 import { ProductListItemProps } from "./ProductListItem";
+import { Trash, Trash2 } from "lucide-react";
 
 
 interface DeleteButtonProps {
@@ -75,11 +76,9 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
 
     return (
         <>
-            <SmallIconButton onClick={handleClick}>
-                <div className="flex items-center justify-center h-5 w-5">
-                    <svg fill="#db1f1f" width="2.5em" height="2.5em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5.755,20.283,4,8H20L18.245,20.283A2,2,0,0,1,16.265,22H7.735A2,2,0,0,1,5.755,20.283ZM21,4H16V3a1,1,0,0,0-1-1H9A1,1,0,0,0,8,3V4H3A1,1,0,0,0,3,6H21a1,1,0,0,0,0-2Z" /></svg>
-                </div>
-            </SmallIconButton>
+            <Button className="px-0" onClick={handleClick}>
+                <Trash2 size={20} color='red' />
+            </Button>
             <Dialog className={theme === 'dark' ? 'dark' : ''} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
                 <DialogPanel>
                     <h1 className="confirm-text" style={{ fontWeight: 'bold', fontSize: '1rem' }}>Confirm Delete</h1>

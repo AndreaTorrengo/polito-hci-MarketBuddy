@@ -15,7 +15,7 @@ import { Button } from "../generalPurposeComponents/Button.tsx";
 import { Market, Vendor, Product } from "../../models.ts";
 import { QRCodeSVG } from "qrcode.react";
 import globalContext from "../../Context.tsx";
-import { ScanQrCode } from "lucide-react";
+import { ArrowUpFromDot, Circle, CircleCheckBig, ScanQrCode } from "lucide-react";
 
 interface PageVendorProductsParams {
     isOpen: boolean;
@@ -172,47 +172,35 @@ export default function PageVendorProducts({
                                     centerComponent={<h1
                                         className="line-clamp-1 m-0 p-0 text-md font-normal text-center">{selectedProducts ? (selectedProducts.size + " Selected") : ""}</h1>}
                                     rightComponent={
-                                        <>
+                                        <div className="flex gap-3 items-center">
                                             {
                                                 selectedProducts && selectedProducts.size === products.length ?
-                                                    <div className="w-8 h-16 flex items-center justify-center"
+                                                    <div className="flex items-center justify-center"
                                                         onClick={
                                                             () => {
                                                                 setSelectedProducts(new Map());
                                                             }
                                                         }>
-                                                        <div
-                                                            className="rounded-full text-green-500 h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
-                                                            <svg
-                                                                className="h-6 w-6 text-black dark:text-white translate-y-[-0.3em] translate-x-[-0.1em] transition-all duration-300"
-                                                                fill="none"
-                                                                stroke="currentColor"
-                                                                viewBox="0 0 24 24"
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                            >
-                                                                <path strokeLinecap="round" strokeLinejoin="round"
-                                                                    strokeWidth="3"
-                                                                    d="M5 13l4 4L19 7" />
-                                                            </svg>
-                                                        </div>
+                                                        <CircleCheckBig size={20} />
                                                     </div>
                                                     :
                                                     <div
-                                                        className="w-8 h-16 flex items-center justify-center animate-fade transition-all duration-300"
+                                                        className="flex items-center justify-center"
                                                         onClick={
                                                             () => {
                                                                 setSelectedProducts(new Map(products.map(p => [p.id, p])));
                                                             }
                                                         }>
-                                                        <div
+                                                        {/* <div
                                                             className="rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
-                                                        </div>
+                                                        </div> */}
+                                                        <Circle size={20} color="gray" />
                                                     </div>
 
                                             }
 
                                             {selectedProducts && selectedProducts.size > 0 &&
-                                                <div className="flex">
+                                                <>
                                                     <SwitchButton
                                                         selectedMarket={selectedMarket}
                                                         selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
@@ -234,11 +222,9 @@ export default function PageVendorProducts({
                                                         setFilteredVendors={setFilteredVendors}
                                                         theme={theme}
                                                     />
-                                                </div>}
-
-                                        </>
-                                    }>
-                                </TopBar>
+                                                </>}
+                                        </div>
+                                    } />
                                 :
                                 <TopBar
                                     leftComponent={<h2
@@ -263,15 +249,11 @@ export default function PageVendorProducts({
                             <VendorBadges market={vendor.market} quality={vendor.quality_rating}
                                 cordiality={vendor.cordiality_rating}
                                 convenience={vendor.convenience_rating} changeTab={changeTab} positionCallback={() => setVendorBadgePositionCallback && setVendorBadgePositionCallback(vendor)} />
-                            <div className="w-full">
-                                <div className={`relative bottom-5 text-right w-full flex justify-end ${showUpArrow ? "opacity-10 animate-pulse" : "opacity-0"} transition-opacity duration-1000`}>
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="m5 9 7-7 7 7" />
-                                        <path d="M12 16V2" />
-                                        <circle cx="12" cy="21" r="1" />
-                                    </svg>
+
+                            <div className={`relative h-0 bottom-10 -right-2 text-right w-full flex justify-end ${showUpArrow ? "opacity-10 animate-pulse" : "opacity-0"} transition-opacity duration-1000`}>
+                                <ArrowUpFromDot />
                                 </div>
-                            </div>
+
                             <div className="w-full flex-1">
                                 {/* Product list top bar */}
                                 <div className="w-full flex flex-row justify-between items-center">

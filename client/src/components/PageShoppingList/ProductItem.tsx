@@ -1,4 +1,4 @@
-import { Coins } from 'lucide-react'
+import { Circle, CircleCheckBig, Coins } from 'lucide-react'
 
 export interface ProductItemProps {
     id: number;
@@ -19,34 +19,20 @@ export default function ProductItem({ image, name, points, price, isSelected, is
                 {
                     isEditMode &&
                     (isSelected ?
-                            <div className="w-8 h-16 flex items-center justify-center translate-x-[-0.8rem]">
-                                <div
-                                    className="rounded-full text-green-500 h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300 ">
-                                    <svg
-                                        className="h-6 w-6 text-black dark:text-white translate-y-[-0.3em] translate-x-[-0.1em] transition-all duration-300"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3"
-                                              d="M5 13l4 4L19 7"/>
-                                    </svg>
-                                </div>
-                            </div>
-                            :
-                            <div
-                                className="w-8 h-16 flex items-center justify-center animate-fade transition-all duration-300 translate-x-[-0.8rem]">
-                                <div
-                                    className="rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
-                                </div>
-                            </div>
+                        <div className="w-8 h-16 flex items-center justify-center translate-x-[-0.8rem]">
+                            <CircleCheckBig size={20} />
+                        </div>
+                        :
+                        <div
+                            className="w-8 h-16 flex items-center justify-center translate-x-[-0.8rem]">
+                            <Circle size={20} color="gray" />
+                        </div>
                     )
                 }
             </div>
 
             <div className="w-full h-full transition-all duration-300">
-                <img src={image} alt={name + " image"} className="rounded-md aspect-square object-cover"/>
+                <img src={image} alt={name + " image"} className="rounded-md aspect-square object-cover" />
                 <div className="absolute top-0 right-0 bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle px-1.5 rounded-tr-sm rounded-es-md">
                     {points &&
                         <div className="flex flex-row gap-1 items-center">

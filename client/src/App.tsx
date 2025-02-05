@@ -242,7 +242,7 @@ export default function App() {
     setToastContent(content);
     setToastVariant(variant);
     setShowToast(true);
-    if (variant === 'success') {
+    if (variant === 'success' || variant === 'info') {
       setTimeout(() => {
         setShowToast(false);
       }, 2500);

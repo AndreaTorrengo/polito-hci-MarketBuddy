@@ -5,10 +5,10 @@
 @tailwind utilities;
 
 :root {
-  --quality: #4b72a6;
-  --cordiality: #e3c144;
-  --convenience: #52a36a;
-  --buddy-coins: GoldenRod;
+  --quality: #4276b9;
+  --cordiality: #f1cb3e;
+  --convenience: #37b942;
+  --buddy-coins: rgb(236, 199, 30);
   --experience: #8b5cf6; /* Tailwind color violet.500 */
 }
 

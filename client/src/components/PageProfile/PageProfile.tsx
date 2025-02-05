@@ -41,10 +41,10 @@ export default function PageProfile({ theme, toggleTheme, userdata, setUserdata 
   }
 
   return (
-    <div className="w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle px-6 py-4">
+    <div className="w-full h-full px-6 py-4">
       <h1 className="page-title mb-4">Profile</h1>
-      <Card className="flex flex-col p-4">
-        <div className="grid gap-3 text-tremor-content dark:text-dark-tremor-content">
+      <Card className="flex flex-col p-4 bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle">
+        <div className="grid gap-3">
 
           <div className="flex items-center">
             <label htmlFor="color-theme-switch" className="min-w-32">Color theme:</label>
@@ -54,7 +54,7 @@ export default function PageProfile({ theme, toggleTheme, userdata, setUserdata 
 
           <div className="flex items-center">
             <label htmlFor="username-input" className="min-w-32">Username:</label>
-            <TextInput id="username-input" placeholder="Enter your username" value={userdata.username} disabled />
+            <TextInput className="bg-tremor-background dark:bg-dark-tremor-background" id="username-input" placeholder="Enter your username" value={userdata.username} disabled />
           </div>
 
           <div className="flex items-center">
@@ -87,11 +87,11 @@ export default function PageProfile({ theme, toggleTheme, userdata, setUserdata 
           </div>
         </Card>
 
-      <div className="flex flex-col items-start border-red-500 dark:border-red-600 border-2 my-4 p-2 rounded-lg">
+      <Card className="flex flex-col items-start bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle border-red-500 dark:border-red-600 border-2 my-4 p-2 rounded-lg">
         <h2 className='text-red-500 dark:text-red-600'>DEBUG</h2>
         <Button color="danger" variant='contained' className="m-1" onClick={clearStorage}>Reset Local Storage</Button>
         <Button color="danger" variant='contained' className="m-1" onClick={resetDB}>Reset Server Database</Button>
-      </div>
+      </Card>
 
     </div>
   );

@@ -1,8 +1,9 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useContext, useState } from "react";
 import { Card } from "@tremor/react";
 import { LOCKED_ICON_PATH, IconLocker } from "./Icons";
 import "tailwindcss/tailwind.css";
 import { UserData } from "./UserData";
+import globalContext from "../../Context";
 
 interface IconSelectorProps {
   icons: { id: number; path: string; }[];
@@ -15,6 +16,8 @@ const IconSelector: React.FC<IconSelectorProps> = ({ icons, userdata, setUserdat
   const iconLocker = new IconLocker();
   iconLocker.load();
 
+  const { showToastMessage } = useContext(globalContext) || {};
+
   const handleIconClick = (icon: { id: number; locked: boolean }) => {
     if (!icon.locked) {
       setSelectedIcon(icon.id);
@@ -24,12 +27,12 @@ const IconSelector: React.FC<IconSelectorProps> = ({ icons, userdata, setUserdat
         return udCopy;
       });
     } else {
-      console.log('TODO: replace this line with an informative dialog such as \'You can buy this icon on the reward page\'');
+      showToastMessage && showToastMessage("You can buy this icon on the reward page", "info");
     }
   };
 
   return (
-    <Card className="p-4 bg-tremor-background dark:bg-dark-tremor-background rounded-lg">
+    <Card className="p-4 bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle rounded-lg">
       <div className="grid grid-cols-4 gap-4 place-items-center">
         {icons.map((icon) => {
           const index = iconLocker.getItemIndex(icon.id);
@@ -42,7 +45,7 @@ const IconSelector: React.FC<IconSelectorProps> = ({ icons, userdata, setUserdat
             <div
               key={iconLItem.id}
               onClick={() => handleIconClick({ id: iconLItem.id, locked: iconLItem.locked })}
-              className={`w-14 h-14 bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle flex items-center justify-center rounded-lg transition cursor-pointer 
+              className={`w-14 h-14 bg-tremor-background dark:bg-dark-tremor-background flex items-center justify-center rounded-lg transition cursor-pointer
             ${iconLItem.locked
                   ? "cursor-not-allowed"
                   : selectedIcon === icon.id

@@ -104,7 +104,7 @@ export const Button = ({ variant, size, children, className, ...props }: LargeBu
 
     return (
         <button
-            className={`px-4 py-1 font-medium tracking-wide rounded animated flex align-middle text-center ${props.disabled ? 'opacity-60' : 'active:brightness-90'} ${className}`}
+            className={`px-4 py-1 font-medium tracking-wide rounded animated flex align-middle items-center text-center ${props.disabled ? 'opacity-60' : 'active:brightness-90'} ${className}`}
             {...props}
         >
             {children}

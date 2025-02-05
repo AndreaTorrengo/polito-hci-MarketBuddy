@@ -1,9 +1,9 @@
-import SmallIconButton from "../generalPurposeComponents/SmallIconButton";
 import { Market, Vendor, Product } from "../../models";
 import { Button } from '../generalPurposeComponents/Button';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import './Dialogs.css';
 import globalContext from "../../Context";
+import { MessageSquareWarning } from "lucide-react";
 
 interface SignalErrorButtonProps {
     selectedProducts: Map<number, number[]>;
@@ -124,13 +124,9 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
     }, [selectedReasons]);
 
     return (
-        <SmallIconButton onClick={() => { handleClick() }} >
-            <div className="flex items-center justify-center h-5 w-5">
-                <svg className="w-10 h-10 fill-current text-black dark:text-white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12.884 2.532c-.346-.654-1.422-.654-1.768 0l-9 17A.999.999 0 0 0 3 21h18a.998.998 0 0 0 .883-1.467L12.884 2.532zM13 18h-2v-2h2v2zm-2-4V9h2l.001 5H11z" />
-                </svg>
-            </div>
-        </SmallIconButton>
+        <Button className="px-0" onClick={() => { handleClick() }} >
+            <MessageSquareWarning size={20} />
+        </Button>
     );
 }
 
