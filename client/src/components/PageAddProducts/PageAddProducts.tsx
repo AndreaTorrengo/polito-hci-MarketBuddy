@@ -137,11 +137,11 @@ export default function PageAddProducts({
     function confirmAddAlert() {
         askConfirmation && askConfirmation(
             handleAdd,
-            <>
-                <span className="text-lg">The following products will be added to your shopping list:</span>
-                <span
-                    className="font-medium text-lg">{Array.from(selectedProducts.values()).map(product => product.name).join(', ')}</span>
-            </>,
+            <div className="flex flex-col">
+                <span className="text-lg font-medium">Confirm Add</span>
+                <span className="text-lg mb-2">The following products will be added to your shopping list:</span>
+                <span className="text-lg font-bold">{Array.from(selectedProducts.values()).map(product => product.name).join(', ')}</span>
+            </div>,
             'Cancel',
             'Confirm'
         );
@@ -175,6 +175,11 @@ export default function PageAddProducts({
                         className="line-clamp-1 m-0 p-0 text-md font-normal text-center">{selectedProducts ? (selectedProducts.size + " Selected") : ""}</h1>}
                     rightComponent={allProducts && allProducts.length > 0 &&
                         <div className="flex flex-row gap-2 items-center">
+                            {selectedProducts && selectedProducts.size > 0 &&
+                                <Button className="animate-fade duration-300" variant="outlined" onClick={confirmAddAlert}>
+                                    Add
+                                </Button>
+                            }
                             {
                                 selectedProducts && selectedProducts.size === allProducts.length ?
                                     <div className="w-8 h-16 flex items-center justify-center" onClick={
@@ -196,57 +201,63 @@ export default function PageAddProducts({
                                     </div>
 
                             }
-
-                            {selectedProducts && selectedProducts.size > 0 &&
-                                <Button variant="outlined" onClick={confirmAddAlert}>
-                                    Add
-                                </Button>
-                            }
-
                         </div>
                     }>
                 </TopBar>
             </div>
 
-            <div className="w-full h-full fixed pt-16 z-[9] dark:bg-dark-tremor-background bg-tremor-background px-6 flex flex-col gap-4">
+            <div
+                className="w-full h-full fixed pt-16 z-[9] dark:bg-dark-tremor-background bg-tremor-background px-6 flex flex-col gap-4">
+
                 {allProducts && allProducts.length > 0 &&
                     <TextInput
                         placeholder="Search Products"
                         id="search"
                         name="search"
                         type="search"
-                        className="py-1 ps-3 rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle"
+                    className="py-1 ps-3 rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle"
                         icon={Search}
                         onChange={(e) => setSearchInput(e.target.value)}
                         value={searchInput}
                     />
                 }
 
-                <div className="min-h-full h-full flex-1">
+                <div className="w-full flex-1">
                     {/* Product list top bar */}
                     {
                         allProducts && allProducts.length > 0 && filteredProducts.length > 0 &&
-                        <div className="w-full fixed z-10 flex flex-row justify-between items-center">
-                            <span className="m-0 p-0">{"Choose product/s"}</span>
-                            <div className="flex flex-row items-center">
-                                    {addProductId == -1 ?
-                                        <>
+                        <div className="w-full flex flex-row justify-between items-center">
+                            <div className="flex flex-row justify-between items-center w-1/2">
+                                <p className="m-0 p-0">{"Choose product/s"}</p>
+                            </div>
+                            {addProductId == -1 ?
+                                <div className="flex flex-row items-center">
+                                        <div className="flex flex-col">
                                             <MapPin size={20} className="me-1" />
+                                        </div>
+                                        <div className="flex flex-col w-full">
+                                            <div className="flex flex-row">
                                             <h3 className="text-sm font-bold text-left">{selectedMarket.name}</h3>
-                                        </>
-                                        :
-                                        <>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    :
+                                    <div className="flex flex-row items-center">
+                                        <div className="flex flex-row">
                                             <User size={20} className="me-1" />
+                                        </div>
+                                        <div className="flex flex-row">
                                         <h3 className="text-sm font-bold text-left">
                                             {actualVendor ? actualVendor.name : "this vendor"}
-                                        </h3>
-                                        </>
-                                    }
-                                </div>
+                                            </h3>
+                                        </div>
+                                    </div>
+                                }
                         </div>
                     }
+                </div>
                     {/* Product list */}
-                    <div className="w-full h-full mt-8 flex flex-col gap-3 overflow-auto">
+                <div className="w-full h-full flex flex-col gap-3 mt-2 pb-32 overflow-auto px-2.5">
                         {
                             allProducts && allProducts.length > 0 ?
                                 filteredProducts && filteredProducts.length > 0 ?
@@ -324,8 +335,7 @@ export default function PageAddProducts({
                                         Go Back
                                     </Button>
                                 </div>
-                        }
-                    </div>
+                    }
                 </div>
             </div>
         </div>
