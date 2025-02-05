@@ -80,10 +80,10 @@ export const Button = ({ variant, size, children, className, ...props }: LargeBu
 
     switch (variant) {
         case 'outlined':
-            className = `${className} shadow-md bg-transparent border-2 border-${bg_color} text-${bg_color} stroke-${bg_color} active:border-${active_bg_color} active:text-${active_bg_color} active:stroke-${active_bg_color} dark:border-${dark_bg_color} dark:text-${dark_bg_color} dark:stroke-${bg_color} active:dark:border-${active_dark_bg_color} active:dark:${active_dark_bg_color} active:dark:stroke-${active_dark_bg_color}`;
+            className = `${className} px-4 py-1 shadow-md bg-transparent border-2 border-${bg_color} text-${bg_color} stroke-${bg_color} active:border-${active_bg_color} active:text-${active_bg_color} active:stroke-${active_bg_color} dark:border-${dark_bg_color} dark:text-${dark_bg_color} dark:stroke-${bg_color} active:dark:border-${active_dark_bg_color} active:dark:${active_dark_bg_color} active:dark:stroke-${active_dark_bg_color}`;
             break;
         case 'contained':
-            className = `${className} shadow-md border-2 border-${bg_color} bg-${bg_color} text-${fg_color} stroke-${fg_color} active:bg-${active_bg_color} dark:bg-${dark_bg_color} dark:text-${dark_fg_color} active:dark:bg-${active_dark_bg_color}`;
+            className = `${className} px-4 py-1 shadow-md border-2 border-${bg_color} bg-${bg_color} text-${fg_color} stroke-${fg_color} active:bg-${active_bg_color} dark:bg-${dark_bg_color} dark:text-${dark_fg_color} active:dark:bg-${active_dark_bg_color}`;
             break;
         case 'text':
         default:
@@ -104,7 +104,7 @@ export const Button = ({ variant, size, children, className, ...props }: LargeBu
 
     return (
         <button
-            className={`px-4 py-1 font-medium tracking-wide rounded animated flex align-middle items-center text-center ${props.disabled ? 'opacity-60' : 'active:brightness-90'} ${className}`}
+            className={`font-medium tracking-wide rounded animated flex align-middle items-center text-center ${props.disabled ? 'opacity-60' : 'active:brightness-90'} ${className}`}
             {...props}
         >
             {children}
