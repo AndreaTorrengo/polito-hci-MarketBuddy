@@ -49,13 +49,13 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                     let alternatives: Product[] = [];
                     if (product === 'Pears' && selectedMarket.name === 'Crocetta Market') {
                         alternatives = [
-                            { id: 1, name: 'Kiwi', price: 1.5, points: undefined, image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg" },
-                            { id: 2, name: "Apples", price: 1.0, points: 15, image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg" }
+                            { id: 1, name: 'Kiwi', price: 1.5, points: undefined, image: "src/assets/products/kiwi.jpg" },
+                            { id: 2, name: "Apples", price: 1.0, points: 15, image: "src/assets/products/mele.jpg" }
                         ];
                     } else if (product === "Pears") {
-                        alternatives = [{ id: 3, name: "Apples", price: 1.0, points: 15, image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg" }];
+                        alternatives = [{ id: 3, name: "Apples", price: 1.0, points: 15, image: "src/assets/products/mele.jpg" }];
                     } else if (product === "Bream") {
-                        alternatives = [{ id: 10, name: "Cod", price: 9.5, points: undefined, image: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg" }];
+                        alternatives = [{ id: 10, name: "Cod", price: 9.5, points: undefined, image: "src/assets/products/cod.webp" }];
                     } else {
                         alternatives = [];
                     }
@@ -98,7 +98,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                 if (product) {
                     const existingVendor = updatedFilteredVendor.find(v => v.name === vendor.name);
                     if (existingVendor) {
-                        if(existingVendor.products.some((p: Product) => p.id === product.id)) return;
+                        if (existingVendor.products.some((p: Product) => p.id === product.id)) return;
                         existingVendor.products.push(product);
                     } else {
                         updatedFilteredVendor.push({
@@ -213,7 +213,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                         ) : (
                                             <>
                                                 <div className="col-span-full text-center" style={{ width: '260px', height: '138px' }}>
-                                                        <div className="text-center" style={{ width: '260px', height: '80px', marginTop: '2rem' }}>Sorry, but there don't seem to be any alternatives for this product at the market.</div>
+                                                    <div className="text-center" style={{ width: '260px', height: '80px', marginTop: '2rem' }}>Sorry, but there don't seem to be any alternatives for this product at the market.</div>
                                                 </div>
                                                 {missingProducts.length > 1 && (<div
                                                     style={{ position: 'absolute', top: '10px', right: '10px', background: 'transparent', border: 'none', fontSize: '1rem', color: theme === 'dark' ? '#EEEEEE' : '#333333', pointerEvents: 'none' }}
@@ -250,7 +250,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                         </div>
                                     ) : (
                                         <Button
-                                                onClick={() => { handleConfirm(missingProducts[currentIndex], []) }}
+                                            onClick={() => { handleConfirm(missingProducts[currentIndex], []) }}
                                         >
                                             Got it
                                         </Button>
