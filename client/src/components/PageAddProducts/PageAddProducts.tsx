@@ -211,7 +211,7 @@ export default function PageAddProducts({
             <div
                 className="w-full h-full dark:bg-dark-tremor-background bg-tremor-background px-6 pt-[4em] flex flex-col gap-4 overflow-y-auto">
 
-                {filteredProducts.length > 0 &&
+                { allProducts && allProducts.length > 0 &&
                     <TextInput
                         placeholder="Search Products"
                         id="search"
