@@ -41,7 +41,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
             <>
                 {/* The following products will be switched to other sellers */}
                 <span className="text-lg font-medium">Confirm Switch</span>
-                <span className="text-lg mb-2">For the following products we will find other sellers in this marketplace that match your preferences:</span>
+                <span className="text-lg mb-2">We will find other sellers in this marketplace that match your preferences for the following products:</span>
                 <span className="text-lg font-bold">{products.map((product) => product?.name).join(', ')}</span>
             </>
         );
@@ -117,7 +117,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
             <Dialog className={theme === 'dark' ? 'dark' : ''} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
                 <DialogPanel>
                     <h1 className="confirm-text" style={{ fontWeight: 'bold', fontSize: '1rem' }}>Confirm Switch</h1>
-                    <p className="message-text" style={{ marginTop: '10px' }}>For the following products we will find other sellers in this marketplace that match your preferences:</p>
+                    <p className="message-text" style={{ marginTop: '10px' }}>We will find other sellers in this marketplace that match your preferences for the following products:</p>
                     <div>
                         <div className="products-text">
                             {productsSwitching.map((product, index) => (
