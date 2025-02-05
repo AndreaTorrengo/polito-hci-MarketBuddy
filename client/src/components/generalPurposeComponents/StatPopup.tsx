@@ -69,7 +69,7 @@ export default function StatPopup({ coins, exp, popup }: Props) {
     <>
       {popup ?
         <div
-          className={`fixed top-5 right-5 transition-all duration-700 ease-in-out transform ${showPopup ? "translate-x-0 opacity-100" : "translate-x-5 opacity-0"
+          className={`fixed z-10 top-5 right-5 transition-all duration-700 ease-in-out transform ${showPopup ? "translate-x-0 opacity-100" : "translate-x-5 opacity-0"
             }`}
         >
           <Card className="p-4 bg-white shadow-lg border rounded-xl flex flex-col space-y-2 transition-opacity duration-1000">

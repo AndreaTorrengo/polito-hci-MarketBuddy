@@ -269,7 +269,8 @@ export default function App() {
               theme={theme} vendors={vendors}
               filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors}
               selectedMarket={selectedMarket} setSelectedMarket={selectMarket}
-              productsList={productsList} setProductsList={setProductsList} />} />
+              productsList={productsList} setProductsList={setProductsList}
+              userdata={userdata} setUserdata={setUserdata} />} />
             <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} leaderboardPath={`${paths[5]}`} userdata={userdata} setUserdata={setUserdata} />} />
             <Route path={`${paths[2]}`} element={<PageReward userdata={userdata} setUserdata={setUserdata} />} />
             <Route path={`${paths[2]}/history`} element={<PageRewardHistory />} />

@@ -10,7 +10,13 @@ import { Tag, History, Coins } from 'lucide-react';
 
 const iconsMap: { [key: string]: JSX.Element } = {
   'coupon': <Tag className='object-scale-down max-h-full m-auto' />,
-  'profile_picture': <img src={ICONS.find(i => i.id == 2)?.path} alt="planet" className='object-scale-down max-h-full m-auto' />,
+  'profile_picture_2': <img src={ICONS.find(i => i.id == 2)?.path} alt="planet" className='object-scale-down max-h-full m-auto' />,
+  'profile_picture_3': <img src={ICONS.find(i => i.id == 3)?.path} alt="planet" className='object-scale-down max-h-full m-auto' />,
+  'profile_picture_4': <img src={ICONS.find(i => i.id == 4)?.path} alt="planet" className='object-scale-down max-h-full m-auto' />,
+  'profile_picture_5': <img src={ICONS.find(i => i.id == 5)?.path} alt="planet" className='object-scale-down max-h-full m-auto' />,
+  'profile_picture_6': <img src={ICONS.find(i => i.id == 6)?.path} alt="planet" className='object-scale-down max-h-full m-auto' />,
+  'profile_picture_7': <img src={ICONS.find(i => i.id == 7)?.path} alt="planet" className='object-scale-down max-h-full m-auto' />,
+  'profile_picture_8': <img src={ICONS.find(i => i.id == 8)?.path} alt="planet" className='object-scale-down max-h-full m-auto' />,
 }
 
 export function RewardCard({ reward, confirmRewardRedemption = () => { } }: Readonly<{ reward: Reward, confirmRewardRedemption?: (reward: Reward) => void }>) {
@@ -61,9 +67,10 @@ export default function PageReward({ userdata, setUserdata }: Readonly<{ userdat
     });
     // If the redeemed reward is a profile picture, unlock it
     if (reward.icon.includes('profile_picture')) {
+      const iconId = parseInt(reward.icon.split('_')[2]);
       const iconLocker = new IconLocker();
       iconLocker.load();
-      iconLocker.unlock(reward.id);
+      iconLocker.unlock(iconId);
     }
 
     // setRewards((prevRewards) => prevRewards.filter((r: Reward) => r.id !== reward.id));
@@ -72,7 +79,10 @@ export default function PageReward({ userdata, setUserdata }: Readonly<{ userdat
   }
 
   const confirmRewardRedemption = (reward: Reward) => {
-    askConfirmation && askConfirmation(() => { redeemReward(reward); }, "Are you sure you want to redeem '" + reward.description + "' for " + reward.cost + " coins?");
+    if(reward.cost <= userdata.coins)
+      askConfirmation && askConfirmation(() => { redeemReward(reward); }, "Are you sure you want to redeem '" + reward.description + "' for " + reward.cost + " coins?");
+    else
+      showToastMessage && showToastMessage("You don't have enough coins to redeem this reward. You can earn more by completing quests!", "error");
   }
 
   return (

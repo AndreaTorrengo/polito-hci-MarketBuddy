@@ -16,6 +16,7 @@ import { Market, Vendor, Product } from "../../models.ts";
 import { QRCodeSVG } from "qrcode.react";
 import globalContext from "../../Context.tsx";
 import { ArrowUpFromDot, Circle, CircleCheckBig, ScanQrCode } from "lucide-react";
+import { UserData } from "../PageProfile/UserData.tsx";
 
 interface PageVendorProductsParams {
     isOpen: boolean;
@@ -33,6 +34,8 @@ interface PageVendorProductsParams {
     origin: "map" | "list";
     changeTab?: (event: React.MouseEvent<HTMLButtonElement>, tab: string) => void;
     setVendorBadgePositionCallback?: React.Dispatch<React.SetStateAction<Vendor | null>>;
+    userdata: UserData;
+    setUserdata: React.Dispatch<React.SetStateAction<UserData>>;
 }
 
 export default function PageVendorProducts({
@@ -47,7 +50,9 @@ export default function PageVendorProducts({
     filteredVendors,
     origin,
     changeTab,
-    setVendorBadgePositionCallback
+    setVendorBadgePositionCallback,
+    userdata,
+    setUserdata,
 }: Readonly<PageVendorProductsParams>) {
     const approot = document.getElementById("approot")!;
 
@@ -146,7 +151,23 @@ export default function PageVendorProducts({
         setIsOpen(false);
         setFilteredVendors(filteredVendors.filter(v => v.id !== vendor.id));
         showToastMessage && showToastMessage("Sale confirmed!", "success");
+
+        // Update stats
+        if (products != null) {
+            setUserdata((userdata: UserData) => {
+                const udCopy = Object.assign(new UserData(), userdata);
+                const coinsFromProducts = Array.from(products.values()).reduce((acc, product) => {
+                    if (product.points == undefined)
+                        return acc;
+                    return acc + product.points;
+                }, 0);
+                //console.log("Coins from selected products: ", coinsFromProducts);
+                udCopy.incrCoins(coinsFromProducts);
+                return udCopy;
+            });
+        }
     }
+
 
     const [showUpArrow, setShowUpArrow] = useState(false);
 
@@ -204,16 +225,16 @@ export default function PageVendorProducts({
                                                     <SwitchButton
                                                         selectedMarket={selectedMarket}
                                                         selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
-                                                        closeAfter={exitEditMode}
+                                                    closeAfter={exitEditMode}
                                                         setFilteredVendors={setFilteredVendors}
                                                         setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                                         theme={theme}
                                                     />
                                                     <SignalErrorButton
-                                                        closeAfter={exitEditMode}
+                                                    closeAfter={exitEditMode}
                                                         selectedMarket={selectedMarket}
-                                                        selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
-                                                        setFilteredVendors={setFilteredVendors}
+                                                    selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
+                                                    setFilteredVendors={setFilteredVendors}
                                                     />
                                                     <DeleteButton
                                                         closeAfter={exitEditMode}
@@ -252,7 +273,7 @@ export default function PageVendorProducts({
 
                             <div className={`relative h-0 bottom-10 -right-2 text-right w-full flex justify-end ${showUpArrow ? "opacity-10 animate-pulse" : "opacity-0"} transition-opacity duration-1000`}>
                                 <ArrowUpFromDot />
-                                </div>
+                            </div>
 
                             <div className="w-full flex-1">
                                 {/* Product list top bar */}
