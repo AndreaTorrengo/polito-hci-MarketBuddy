@@ -36,15 +36,19 @@ const FeedbackToast: React.FC<FeedbackToastProps> = ({ show, variant, children, 
 
     return (
         // left-1/2 -translate-x-1/2
-        <button hidden={!show}
-            className={`fixed z-50 top-32 right-4 py-2 px-3 text-sm rounded-md flex max-w-72 gap-2 transition-opacity duration-500 ${show ? 'opacity-100' : 'opacity-0 hidden'} ${color} ${className}`}
-            onClick={props.onClick}
+        <div
+            className={`fixed z-50 top-32 right-4 py-2 px-3 text-sm rounded-md flex max-w-72 gap-2 transition-opacity duration-300 pointer-events-none ${show ? 'opacity-100 pointer-events-auto' : 'opacity-0'} ${color} ${className}`}
             {...props}
         >
-            <span className='opacity-100 flex items-center'>{icon}</span>
-            <div className='flex items-center'>{children}</div>
-            <span className='opacity-80 cursor-pointer flex items-center'><X size={18} /></span>
-        </button>
+            <button
+                className="flex items-center"
+                onClick={props.onClick}
+            >
+                <span className='flex items-center'>{icon}</span>
+                <div className='flex items-center'>{children}</div>
+                <span className='cursor-pointer flex items-center'><X size={18} /></span>
+            </button>
+        </div>
     );
 
 };
