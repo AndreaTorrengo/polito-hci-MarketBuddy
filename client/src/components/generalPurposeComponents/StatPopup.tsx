@@ -97,7 +97,7 @@ export default function StatPopup({ coins, exp, popup }: Props) {
         </div>
         :
         <div className="">
-          <Card className="p-4 bg-white shadow-lg border rounded-xl flex flex-col space-y-2">
+          <Card className="p-4 bg-white shadow-lg rounded-xl flex flex-col space-y-2">
             <div className="flex items-center space-x-2 text-lg font-semibold">
               <Coins color="var(--buddy-coins)" />
               <span

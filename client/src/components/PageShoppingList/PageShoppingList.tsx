@@ -24,7 +24,7 @@ interface PageShoppingListProps {
     setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
     productsWithoutAlternatives: Product[];
     closeAfter: () => void;
-    changeTab?: (event: React.MouseEvent<HTMLButtonElement>, tab: string) => void;
+    changeTab?: (tab?: string) => void;
     setInitialSelectedMapVendor?: React.Dispatch<React.SetStateAction<Vendor | null>>;
     userdata: UserData;
     setUserdata: React.Dispatch<React.SetStateAction<UserData>>;
@@ -58,7 +58,7 @@ export default function PageShoppingList({
 
     return (
         <>
-            <div id="ShoppingListPage" className="flex h-full flex-col gap-2">
+            <div id="ShoppingListPage" className="flex h-full w-full flex-col gap-2">
             {!isEditMode &&
                 <MissingProductsDialog
                     theme={theme}

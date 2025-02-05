@@ -6,16 +6,16 @@ interface VendorBadgesProps {
     quality: string;
     cordiality: string;
     convenience: string;
-    changeTab?: (event: React.MouseEvent<HTMLButtonElement>, tab: string) => void;
+    changeTab?: (tab?: string) => void;
     positionCallback?: () => void;
 }
 
 export default function VendorBadges({ market, quality, cordiality, convenience, changeTab, positionCallback }: Readonly<VendorBadgesProps>) {
     return (
         <div className="flex flex-col w-full gap-6">
-            <button className="flex items-center justify-left font-medium" onClick={(e) => {
+            <button className="flex items-center justify-left font-medium" onClick={() => {
                 positionCallback && positionCallback();
-                changeTab && changeTab(e, "map");
+                changeTab && changeTab("map");
             }}>
                 <MapPin />
                 <p className="m-0 p-0">{market}</p>

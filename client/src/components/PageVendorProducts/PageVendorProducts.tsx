@@ -32,9 +32,8 @@ interface PageVendorProductsParams {
     productsWithoutAlternatives: Product[];
     filteredVendors: Vendor[];
     origin: "map" | "list";
-    changeTab?: (event: React.MouseEvent<HTMLButtonElement>, tab: string) => void;
+    changeTab?: (tab?: string) => void;
     setVendorBadgePositionCallback?: React.Dispatch<React.SetStateAction<Vendor | null>>;
-    userdata: UserData;
     setUserdata: React.Dispatch<React.SetStateAction<UserData>>;
 }
 
@@ -51,7 +50,6 @@ export default function PageVendorProducts({
     origin,
     changeTab,
     setVendorBadgePositionCallback,
-    userdata,
     setUserdata,
 }: Readonly<PageVendorProductsParams>) {
     const approot = document.getElementById("approot")!;
@@ -174,7 +172,7 @@ export default function PageVendorProducts({
 
     return (
         <>
-            <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot} detent={origin === 'list' ? "content-height" : "full-height"} initialSnap={origin === "map" ? 2 : undefined} snapPoints={[1.0, 0.6, 0.43, 0.39, 0.24]} onSnap={(snapIndex) => { snapIndex == 2 ? setShowUpArrow(true) : setShowUpArrow(false) }} className="!z-0">
+            <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot} detent={origin === 'list' ? "content-height" : "full-height"} initialSnap={origin === "map" ? 2 : undefined} snapPoints={[1.0, 0.6, 0.43, 0.39, 0.24]} onSnap={(snapIndex) => { snapIndex == 2 ? setShowUpArrow(true) : setShowUpArrow(false) }} className="!z-10">
                 <Sheet.Container>
                     <Sheet.Header
                         className="dark:bg-dark-tremor-background">

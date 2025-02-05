@@ -124,7 +124,7 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
     }, [selectedReasons]);
 
     return (
-        <Button className="px-0" onClick={() => { handleClick() }} >
+        <Button onClick={() => { handleClick() }} >
             <MessageSquareWarning size={20} />
         </Button>
     );

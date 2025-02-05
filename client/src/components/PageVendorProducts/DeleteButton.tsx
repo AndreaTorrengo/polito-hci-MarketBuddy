@@ -76,7 +76,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
 
     return (
         <>
-            <Button className="px-0" onClick={handleClick}>
+            <Button onClick={handleClick}>
                 <Trash2 size={20} color='red' />
             </Button>
             <Dialog className={theme === 'dark' ? 'dark' : ''} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>

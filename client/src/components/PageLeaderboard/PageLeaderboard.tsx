@@ -54,8 +54,29 @@ export default function PageLeaderboard({ userdata, setUserdata }: Readonly<Page
       </div>
       <div className="h-5/6 flex flex-col mt-4 p-4">
         {/* Tab Navigation */}
-        <div className="flex justify-center space-x-0 mb-4 rounded-md bg-tremor-border dark:bg-dark-tremor-border">
+        {/* <div className="flex justify-center space-x-0 mb-4 rounded-md bg-tremor-border dark:bg-dark-tremor-border"> */}
+        <button onClick={() => setActiveTab(activeTab === "Global" ? "Top 10" : "Global")} className="flex w-full place-self-center justify-center my-2 space-x-0 rounded-lg bg-tremor-border dark:bg-dark-tremor-border">
+          <button disabled={activeTab === "Global"}
+            className='w-1/4 px-4 py-2 rounded-lg z-[1] font-semibold uppercase bg-transparent translate-x-1/2'
+          >
+            Global
+          </button>
           <button
+            disabled
+            // hidden
+            className={`w-1/2 py-2 rounded-lg font-semibold uppercase bg-tremor-brand transition-transform duration-300 text-white ${activeTab === "Global"
+              ? "-translate-x-1/2"
+              : "translate-x-1/2"
+              }`}
+          >
+          </button>
+          <button disabled={activeTab === "Top 10"}
+            className='w-1/4 px-4 py-2 rounded-lg z-[1] font-semibold uppercase bg-transparent -translate-x-1/2'
+          >
+            Top 10
+          </button>
+        </button>
+        {/* <button
             onClick={() => setActiveTab("Global")}
             className={`w-full pl-4 py-2 rounded-md text-base font-semibold transition-colors uppercase ${activeTab === "Global"
               ? "bg-tremor-brand dark:bg-dark-tremor-brand text-white"
@@ -72,8 +93,8 @@ export default function PageLeaderboard({ userdata, setUserdata }: Readonly<Page
               }`}
           >
             Top 10
-          </button>
-        </div>
+          </button> */}
+        {/* </div> */}
 
         {/* Leaderboard List */}
         <div className="flex-1 overflow-auto">

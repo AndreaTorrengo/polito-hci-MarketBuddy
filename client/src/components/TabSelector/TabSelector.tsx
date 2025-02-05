@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import PageMap from '../PageMap/PageMap';
 import { Market, Vendor, Product } from '../../models';
 import PageShoppingList from '../PageShoppingList/PageShoppingList';
@@ -63,15 +61,22 @@ export default function TabsHero({
         return localStorage.getItem('activeTab') ?? 'list';
     });
 
-    const handleChange = (
-        event: React.MouseEvent<HTMLElement>,
-        newTab: string,
-    ) => {
-        if (newTab !== null) {
-            setActiveTab(newTab);
-            localStorage.setItem('activeTab', newTab);
-        }
-    };
+    // const handleChange = (
+    //     event: React.MouseEvent<HTMLElement>,
+    //     newTab: string,
+    // ) => {
+    //     if (newTab !== null) {
+    //         setActiveTab(newTab);
+    //         localStorage.setItem('activeTab', newTab);
+    //     }
+    // };
+
+    const changeTab = (newTab?: string) => {
+        if (!newTab)
+            newTab = activeTab === 'list' ? 'map' : 'list';
+        setActiveTab(newTab);
+        localStorage.setItem('activeTab', newTab);
+    }
 
     useEffect(() => {
         const savedTab = localStorage.getItem('activeTab');
@@ -198,6 +203,25 @@ export default function TabsHero({
                                     className="line-clamp-1 m-0 p-0 text-md font-normal text-center">{selectedProducts ? (countSelectedProducts() + " Selected") : ""}</h1>}
                                 rightComponent={
                                     <div className='flex gap-3 items-center'>
+                                        {selectedProducts && selectedProducts.size > 0 &&
+                                            <>
+                                                <SwitchButton
+                                                    setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                                                    selectedMarket={selectedMarket}
+                                                    selectedProducts={selectedProducts}
+                                                    setFilteredVendors={setFilteredVendors} theme={theme}
+                                                    closeAfter={closeAfter} />
+                                                <SignalErrorButton
+                                                    selectedMarket={selectedMarket}
+                                                    selectedProducts={selectedProducts}
+                                                    closeAfter={closeAfter}
+                                                    setFilteredVendors={setFilteredVendors} />
+                                                <DeleteButton
+                                                    selectedMarket={selectedMarket}
+                                                    selectedProducts={selectedProducts}
+                                                    setFilteredVendors={setFilteredVendors} theme={theme}
+                                                    closeAfter={closeAfter} />
+                                            </>}
                                         {
                                             selectedProducts && countSelectedProducts() === totalProducts ?
                                                 <div className="flex items-center justify-center" onClick={
@@ -219,26 +243,6 @@ export default function TabsHero({
                                                 </div>
 
                                         }
-
-                                        {selectedProducts && selectedProducts.size > 0 &&
-                                            <>
-                                                <SwitchButton
-                                                    setProductsWithoutAlternatives={setProductsWithoutAlternatives}
-                                                    selectedMarket={selectedMarket}
-                                                    selectedProducts={selectedProducts}
-                                                    setFilteredVendors={setFilteredVendors} theme={theme}
-                                                    closeAfter={closeAfter} />
-                                                <SignalErrorButton
-                                                    selectedMarket={selectedMarket}
-                                                    selectedProducts={selectedProducts}
-                                                    closeAfter={closeAfter}
-                                                    setFilteredVendors={setFilteredVendors} />
-                                                <DeleteButton
-                                                    selectedMarket={selectedMarket}
-                                                    selectedProducts={selectedProducts}
-                                                    setFilteredVendors={setFilteredVendors} theme={theme}
-                                                    closeAfter={closeAfter} />
-                                            </>}
 
                                     </div>
                                 } />
@@ -264,13 +268,52 @@ export default function TabsHero({
                                     }
                                     } />
                                 </div>
-                                <div style={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    marginBottom: '0.5rem',
-                                    marginTop: '0.5rem'
-                                }}>
-                                    <ToggleButtonGroup
+                                <button onClick={() => changeTab()} className="flex w-full place-self-center justify-center my-2 rounded-lg bg-tremor-border dark:bg-dark-tremor-border">
+                                    <button disabled={activeTab === "list"}
+                                        className='w-1/4 px-4 py-2 rounded-md z-[1] font-semibold uppercase bg-transparent translate-x-1/2'
+                                    >
+                                        List
+                                    </button>
+                                    <button
+                                        disabled
+                                        // hidden
+                                        className={`w-1/2 py-2 rounded-md font-semibold uppercase bg-tremor-brand transition-transform duration-300 text-white ${activeTab === "list"
+                                            ? "-translate-x-1/2"
+                                            : "translate-x-1/2"
+                                            }`}
+                                    >
+                                    </button>
+                                    <button disabled={activeTab === "map"}
+                                        className='w-1/4 px-4 py-2 rounded-md z-[1] font-semibold uppercase bg-transparent -translate-x-1/2'
+                                    >
+                                        Map
+                                    </button>
+                                </button>
+                                {/* <div className={`h-full rounded-lg bg-tremor-brand transition-transform duration-300 ${activeTab === "list" ? '-translate-x-1/2' : 'translate-x-1/2'}`}>
+                                        <button
+                                            // disabled
+                                            // hidden
+                                            onClick={() => changeTab("list")}
+                                            className={`w-1/2 pl-4 z-[2] py-2 rounded-md font-semibold uppercase bg-transparent ${activeTab === "list"
+                                            ? " text-white"
+                                            : ""
+                                            }`}
+                                    >
+                                        List
+                                    </button>
+                                    <button
+                                        // disabled
+                                        // hidden
+                                        onClick={() => changeTab("map")}
+                                        className={`w-1/2 pr-4 py-2 z-[2] rounded-md font-semibold uppercase bg-transparent ${activeTab === "map"
+                                            ? "text-white"
+                                            : ""
+                                            }`}
+                                    >
+                                        Map
+                                    </button>
+                                </div> */}
+                                {/* <ToggleButtonGroup
                                         color="primary"
                                         value={activeTab}
                                         exclusive
@@ -302,8 +345,7 @@ export default function TabsHero({
                                         >
                                             Map
                                         </ToggleButton>
-                                    </ToggleButtonGroup>
-                                </div>
+                                    </ToggleButtonGroup> */}
                             </>
                     }
 
@@ -323,6 +365,7 @@ export default function TabsHero({
                                     setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                     initialVendor={initialSelectedMapVendor}
                                     setInitialVendor={setInitialSelectedMapVendor}
+                                    setUserData={setUserdata}
                                 />
                             </div>
                         )}
@@ -346,7 +389,7 @@ export default function TabsHero({
                                 setSelectedReasons={setSelectedReasons}
                                 productsWithoutAlternatives={productsWithoutAlternatives}
                             setProductsWithoutAlternatives={setProductsWithoutAlternatives}
-                            changeTab={handleChange}
+                            changeTab={changeTab}
                             setInitialSelectedMapVendor={setInitialSelectedMapVendor}
                                 userdata={userdata}
                                 setUserdata={setUserdata}

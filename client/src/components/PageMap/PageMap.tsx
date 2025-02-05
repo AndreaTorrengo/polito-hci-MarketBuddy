@@ -67,6 +67,7 @@ interface PageMapProps {
     closeAfter: () => void;
     initialVendor?: Vendor | null;
     setInitialVendor?: React.Dispatch<React.SetStateAction<Vendor | null>>;
+    setUserData: React.Dispatch<React.SetStateAction<any>>;
 }
 
 const PageMap: React.FC<PageMapProps> = ({
@@ -80,7 +81,8 @@ const PageMap: React.FC<PageMapProps> = ({
     productsWithoutAlternatives,
     setProductsWithoutAlternatives,
     initialVendor,
-    setInitialVendor
+    setInitialVendor,
+    setUserData
 }) => {
     const [markerPosition, setMarkerPosition] = useState<[number, number]>([
         selectedMarket.position[0],
@@ -269,7 +271,7 @@ const PageMap: React.FC<PageMapProps> = ({
                         productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                         origin="map"
                         selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
-                        isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} filteredVendors={filteredVendors} setVendorBadgePositionCallback={() => { setTargetPosition(selectedMarker) }}
+                        isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} filteredVendors={filteredVendors} setVendorBadgePositionCallback={() => { setTargetPosition(selectedMarker) }} setUserdata={setUserData}
                     />
                 )
             )}

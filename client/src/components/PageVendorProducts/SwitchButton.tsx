@@ -111,7 +111,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ selectedProducts, selectedM
 
     return (
         <>
-            <Button className="px-0" onClick={handleClick}>
+            <Button onClick={handleClick}>
                 <ArrowLeftRight size={20} />
             </Button>
             <Dialog className={theme === 'dark' ? 'dark' : ''} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
