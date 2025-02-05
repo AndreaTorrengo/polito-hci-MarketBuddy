@@ -13,7 +13,7 @@ export interface ProductItemProps {
 export default function ProductItem({ image, name, points, price, isSelected, isEditMode }: Readonly<ProductItemProps>) {
 
     return (
-        <div className="relative rounded-md drop-shadow-lg aspect-square">
+        <div className="relative rounded-md drop-shadow-lg aspect-square dark:text-white">
 
             <div className="absolute left-3 top-[-1rem]">
                 {
