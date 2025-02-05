@@ -270,21 +270,21 @@ export default function TabsHero({
                                 </div>
                                 <button onClick={() => changeTab()} className="flex w-full place-self-center justify-center my-2 rounded-lg bg-tremor-border dark:bg-dark-tremor-border">
                                     <button disabled={activeTab === "list"}
-                                        className='w-1/4 px-4 py-2 rounded-md z-[1] font-semibold uppercase bg-transparent translate-x-1/2'
+                                        className='w-1/4 px-4 py-2 rounded-md text-center z-[1] font-semibold uppercase bg-transparent translate-x-1/2'
                                     >
                                         List
                                     </button>
                                     <button
                                         disabled
                                         // hidden
-                                        className={`w-1/2 py-2 rounded-md font-semibold uppercase bg-tremor-brand transition-transform duration-300 text-white ${activeTab === "list"
+                                        className={`w-1/2 h-full py-2 rounded-md font-semibold uppercase bg-tremor-brand transition-transform duration-300 text-white ${activeTab === "list"
                                             ? "-translate-x-1/2"
                                             : "translate-x-1/2"
                                             }`}
                                     >
                                     </button>
                                     <button disabled={activeTab === "map"}
-                                        className='w-1/4 px-4 py-2 rounded-md z-[1] font-semibold uppercase bg-transparent -translate-x-1/2'
+                                        className='w-1/4 px-4 py-2 rounded-md text-center z-[1] font-semibold uppercase bg-transparent -translate-x-1/2'
                                     >
                                         Map
                                     </button>

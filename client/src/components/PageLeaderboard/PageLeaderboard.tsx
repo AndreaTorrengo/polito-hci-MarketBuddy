@@ -57,21 +57,21 @@ export default function PageLeaderboard({ userdata, setUserdata }: Readonly<Page
         {/* <div className="flex justify-center space-x-0 mb-4 rounded-md bg-tremor-border dark:bg-dark-tremor-border"> */}
         <button onClick={() => setActiveTab(activeTab === "Global" ? "Top 10" : "Global")} className="flex w-full place-self-center justify-center my-2 space-x-0 rounded-lg bg-tremor-border dark:bg-dark-tremor-border">
           <button disabled={activeTab === "Global"}
-            className='w-1/4 px-4 py-2 rounded-lg z-[1] font-semibold uppercase bg-transparent translate-x-1/2'
+            className='w-1/4 px-4 py-2 rounded-lg z-[1] font-semibold uppercase bg-transparent text-center translate-x-1/2'
           >
             Global
           </button>
           <button
             disabled
             // hidden
-            className={`w-1/2 py-2 rounded-lg font-semibold uppercase bg-tremor-brand transition-transform duration-300 text-white ${activeTab === "Global"
+            className={`w-1/2 h-full py-2 rounded-lg font-semibold uppercase bg-tremor-brand transition-transform duration-300 text-white ${activeTab === "Global"
               ? "-translate-x-1/2"
               : "translate-x-1/2"
               }`}
           >
           </button>
           <button disabled={activeTab === "Top 10"}
-            className='w-1/4 px-4 py-2 rounded-lg z-[1] font-semibold uppercase bg-transparent -translate-x-1/2'
+            className='w-1/4 px-4 py-2 rounded-lg z-[1] font-semibold whitespace-nowrap text-center uppercase bg-transparent -translate-x-1/2'
           >
             Top 10
           </button>
