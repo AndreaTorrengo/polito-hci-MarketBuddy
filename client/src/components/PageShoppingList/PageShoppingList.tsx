@@ -58,7 +58,7 @@ export default function PageShoppingList({
 
     return (
         <>
-        <div id="ShoppingListPage" className="flex flex-col gap-2">
+            <div id="ShoppingListPage" className="flex h-full flex-col gap-2">
             {!isEditMode &&
                 <MissingProductsDialog
                     theme={theme}
@@ -67,7 +67,8 @@ export default function PageShoppingList({
                     selectedMarket={selectedMarket}
                     setFilteredVendors={setFilteredVendors}
                 />
-            }
+                }
+                <div className="overflow-auto">
             {
                 filteredProductsVendors.map((vendor) => (
                     vendor.products.length > 0 &&
@@ -114,7 +115,8 @@ export default function PageShoppingList({
                     </div>
                 )
                 )}
-        </div>
+                </div>
+            </div>
         <StatPopup coins={userdata.coins} exp={userdata.experience} popup={true} />
         </>
     );

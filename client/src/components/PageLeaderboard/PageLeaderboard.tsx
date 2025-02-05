@@ -45,14 +45,14 @@ export default function PageLeaderboard({ userdata, setUserdata }: Readonly<Page
   ];
 
   return (
-    <div className="flex flex-col w-full h-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle p-6">
-      <div className="flex flex-row w-full">
-        <TopBar
-          leftComponent={<BackButton />}
-          centerComponent={<h1 className="page-title mr-6">Leaderboard</h1>}
-        />
+    <div className='w-full h-full px-6 py-4'>
+      <div className='flex justify-start gap-3 mb-4'>
+        <div className='flex align-middle'>
+          <BackButton />
+        </div>
+        <h1 className="page-title">Leaderboard</h1>
       </div>
-      <div className="flex flex-col mt-4 overflow-hidden bg-tremor-content-inverted dark:bg-dark-tremor-content-inverted p-4 shadow-md rounded-lg">
+      <div className="h-5/6 flex flex-col mt-4 p-4">
         {/* Tab Navigation */}
         <div className="flex justify-center space-x-0 mb-4 rounded-md bg-tremor-border dark:bg-dark-tremor-border">
           <button
@@ -76,7 +76,7 @@ export default function PageLeaderboard({ userdata, setUserdata }: Readonly<Page
         </div>
 
         {/* Leaderboard List */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-auto">
           <ul key={"leaderboard-list"} className="h-full overflow-y-auto space-y-2">
             {activeTab === "Global" ?
               globalLeaderboard.map((player) => <LeaderboardItem key={player.position} player={player} currentPlayer={username} />) :
