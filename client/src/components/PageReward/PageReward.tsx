@@ -82,7 +82,7 @@ export default function PageReward({ userdata, setUserdata }: Readonly<{ userdat
     if(reward.cost <= userdata.coins)
       askConfirmation && askConfirmation(() => { redeemReward(reward); }, "Are you sure you want to redeem '" + reward.description + "' for " + reward.cost + " coins?");
     else
-      showToastMessage && showToastMessage("You don't have enough coins to redeem this reward. You can earn more by completing quests!", "error");
+      showToastMessage && showToastMessage("You don't have enough buddy-coins to redeem this reward. You can earn more by completing quests or buying some products!", "error");
   }
 
   return (
