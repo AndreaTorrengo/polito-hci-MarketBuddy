@@ -5,6 +5,7 @@ interface AppContextProps {
     showToastMessage?: (content: React.ReactNode | string, variant?: string) => void;
     setPopupText?: React.Dispatch<React.SetStateAction<string | ReactNode>>;
     setConfirmationCallback?: React.Dispatch<React.SetStateAction<() => void>>;
+    theme?: 'light' | 'dark';
 }
 
 const globalContext = createContext<AppContextProps | undefined>(undefined);
