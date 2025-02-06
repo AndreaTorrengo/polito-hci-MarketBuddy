@@ -56,7 +56,7 @@ export default function PageVendorProducts({
 
     const [isEditMode, setIsEditMode] = useState(false);
 
-    const products = useMemo(() => vendor.products.map((product) => ({
+    const products = useMemo(() => vendor ? vendor.products.map((product) => ({
         id: product.id,
         name: product.name,
         price: parseFloat((product.price * vendor.priceMultiplier).toFixed(2)),
@@ -65,7 +65,7 @@ export default function PageVendorProducts({
         editMode: false,
         isSelected: false,
         showPrice: true
-    })), [vendor.products, vendor.priceMultiplier]);
+    })) : [], [vendor]);
 
     const [selectedProducts, setSelectedProducts] = useState<Map<number, ProductListItemProps> | null>(null);
 
@@ -377,7 +377,7 @@ export default function PageVendorProducts({
                                 :
                                 <TopBar
                                     leftComponent={<h2
-                                        className="line-clamp-1 m-0 p-0 text-2xl font-bold">{vendor.name}</h2>}
+                                        className="line-clamp-1 m-0 p-0 text-2xl font-bold">{vendor ? vendor.name : ""}</h2>}
                                     rightComponent={
                                         <Button variant="outlined" color="bw" onClick={openQrCodeDialog}>
                                             <div className="flex flex-row items-center gap-4">
@@ -392,12 +392,12 @@ export default function PageVendorProducts({
                         <Sheet.Scroller className="px-6 pb-14 mt-4 flex flex-col gap-4">
                             {/* Vendor's Categories */}
                             <div className="w-full">
-                                <VendorCategoryList categories={vendor.categories} />
+                                <VendorCategoryList categories={vendor ? vendor.categories : []} />
                             </div>
 
-                            <VendorBadges market={vendor.market} quality={vendor.quality_rating}
-                                cordiality={vendor.cordiality_rating}
-                                convenience={vendor.convenience_rating} changeTab={changeTab}
+                            <VendorBadges market={vendor ?  vendor.market : ""} quality={vendor ? vendor.quality_rating : ""}
+                                cordiality={vendor ? vendor.cordiality_rating : ""}
+                                convenience={vendor ? vendor.convenience_rating : ""} changeTab={changeTab}
                                 positionCallback={() => setVendorBadgePositionCallback && setVendorBadgePositionCallback(vendor)} />
 
                             <div
@@ -412,7 +412,7 @@ export default function PageVendorProducts({
                                     <AddProductsButton onClick={() => setAddProductId(vendor.id)} />
                                 </div>
                                 {/* Product list */}
-                                <div key={vendor.id} className="w-full flex flex-col gap-3 mt-4">
+                                <div key={vendor ? vendor.id : 0} className="w-full flex flex-col gap-3 mt-4">
                                     {products.map((product, index) => (
                                         isEditMode ?
                                             <ButtonBase key={product.id} component="div"
