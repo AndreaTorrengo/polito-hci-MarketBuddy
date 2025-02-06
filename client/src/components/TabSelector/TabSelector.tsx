@@ -75,8 +75,7 @@ export default function TabsHero({
     }, []);
 
     //open edit mode when selecting a product
-    const openEditMode = (event: React.MouseEvent, vendorId: number, productId: number) => {
-        event.preventDefault();
+    const openEditMode = (vendorId: number, productId: number) => {
         const newMap = new Map<number, number[]>();
         if(productId == -1) {
             newMap.set(vendorId, filteredVendors.find(vendor => vendor.id === vendorId)?.products.map(product => product.id) ?? []);

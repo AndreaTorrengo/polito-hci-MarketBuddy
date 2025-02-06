@@ -9,7 +9,7 @@ interface PageShoppingListProps {
     readonly productsList: { [key: string]: string[] };
     readonly setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
     readonly selectedMarket: Market;
-    readonly openEditMode: (event: React.MouseEvent, vendorId: number, productId: number) => void;
+    readonly openEditMode: (vendorId: number, productId: number) => void;
     readonly addOrRemoveSelected: (vendorId: number, productId: number) => void;
     readonly isEditMode: boolean;
     readonly selectedProducts?: Map<number, number[]> | null;

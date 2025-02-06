@@ -102,8 +102,7 @@ export default function PageVendorProducts({
         setSelectedProducts(null);
     }
 
-    const openEditMode = (event: React.MouseEvent, productId: number) => {
-        event.preventDefault();
+    const openEditMode = (productId: number) => {
         const product = products.find(p => p.id === productId);
         if (!product) {
             throw new Error("Product not found");
@@ -193,6 +192,39 @@ export default function PageVendorProducts({
         };
     }, [targetRef, isEditMode]);
 
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+    const handleTouchStart = (productId: number) => {
+        if (!isEditMode) {
+            intervalRef.current = setInterval(() => {
+                openEditMode(productId);
+                clearInterval(intervalRef.current as NodeJS.Timeout);
+                intervalRef.current = null;
+            }, 700);
+        }
+    };
+
+    const handleTouchStop = () => {
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        }
+    };
+
+    const handleTouchMove = (event: React.TouchEvent) => {
+        const touch = event.touches[0];
+        const target = event.target as HTMLElement;
+        const rect = target.getBoundingClientRect();
+        if (
+            touch.clientX < rect.left ||
+            touch.clientX > rect.right ||
+            touch.clientY < rect.top ||
+            touch.clientY > rect.bottom
+        ) {
+            handleTouchStop();
+        }
+    };
+
     return (
         <>
             <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot}
@@ -255,7 +287,7 @@ export default function PageVendorProducts({
                                                         className={`flex flex-row items-center gap-3 ${selectedProducts && selectedProducts.size > 0 ? "" : "opacity-50 pointer-events-none"}`}>
                                                         <SwitchButton
                                                             selectedMarket={selectedMarket}
-                                                        selectedProducts={selectedProducts ? new Map().set(vendor.id, Array.from(selectedProducts.keys())) : new Map()}
+                                                            selectedProducts={new Map().set(vendor.id, selectedProducts ? Array.from(selectedProducts.keys()) : [])}
                                                             closeAfter={exitEditMode}
                                                             setFilteredVendors={setFilteredVendors}
                                                         setProductsWithoutAlternatives={setProductsWithoutAlternatives}
@@ -263,14 +295,14 @@ export default function PageVendorProducts({
                                                         <SignalErrorButton
                                                             closeAfter={exitEditMode}
                                                             selectedMarket={selectedMarket}
-                                                        selectedProducts={selectedProducts ? new Map().set(vendor.id, Array.from(selectedProducts.keys())) : new Map()}
+                                                            selectedProducts={new Map().set(vendor.id, selectedProducts ? Array.from(selectedProducts.keys()) : [])}
                                                             setFilteredVendors={setFilteredVendors}
                                                         />
                                                         <DeleteButton
                                                             closeAfter={exitEditMode}
                                                             selectedMarket={selectedMarket}
-                                                        selectedProducts={selectedProducts ? new Map().set(vendor.id, Array.from(selectedProducts.keys())) : new Map()}
-                                                        setFilteredVendors={setFilteredVendors}
+                                                            selectedProducts={new Map().set(vendor.id, selectedProducts ? Array.from(selectedProducts.keys()) : [])}
+                                                            setFilteredVendors={setFilteredVendors}
                                                         />
                                                     </div>}
                                                 <div
@@ -384,9 +416,13 @@ export default function PageVendorProducts({
                                     {products.map((product, index) => (
                                         isEditMode ?
                                             <ButtonBase key={product.id} component="div"
-                                                onClick={() => {
-                                                    addOrRemoveSelected(index);
-                                                }}
+                                                        onClick={() => {
+                                                            addOrRemoveSelected(index);
+                                                        }}
+                                                        onContextMenu={(e) => {
+                                                            //openEditMode(e, product.id);
+                                                            e.preventDefault()
+                                                        }}
                                             >
                                                 <ProductListItem key={product.id} {...product} editMode={true}
                                                     isSelected={
@@ -395,10 +431,13 @@ export default function PageVendorProducts({
                                             </ButtonBase>
                                             :
                                             <ButtonBase key={product.id} component="div"
-                                                onContextMenu={(e) => {
-                                                    //onLongPress(e, index);
-                                                    openEditMode(e, product.id);
-                                                }}
+                                                        onContextMenu={(e) => {
+                                                            //openEditMode(e, product.id);
+                                                            e.preventDefault()
+                                                        }}
+                                                        onTouchStart={() => handleTouchStart(product.id)}
+                                                        onTouchEnd={handleTouchStop}
+                                                        onTouchMove={handleTouchMove}
                                             >
                                                 <ProductListItem key={product.id} {...product} editMode={false} />
                                             </ButtonBase>
