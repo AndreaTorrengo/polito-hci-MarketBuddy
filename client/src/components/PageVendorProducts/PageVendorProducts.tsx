@@ -304,8 +304,7 @@ export default function PageVendorProducts({
                                                                     selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts ? selectedProducts.keys() : []))}                                                                    setFilteredVendors={setFilteredVendors}
                                                                     theme={theme}
                                                                     closeAfter={exitEditMode}>
-                                                                    <p className="p-0 m-0 text-sm"
-                                                                       style={{color: "red"}}>Delete</p>
+                                                                    <p className="p-0 m-0 text-sm">Delete</p>
                                                                 </DeleteButton>
                                                             </div>
                                                         </>

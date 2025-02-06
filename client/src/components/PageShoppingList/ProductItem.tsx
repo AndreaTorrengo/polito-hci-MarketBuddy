@@ -20,12 +20,12 @@ export default function ProductItem({ image, name, points, price, isSelected, is
                     isEditMode &&
                     (isSelected ?
                         <div className="w-8 h-16 flex items-center justify-center translate-x-[-0.8rem]">
-                            <CircleCheckBig size={20} />
+                            <CircleCheckBig size={20} color="black"/>
                         </div>
                         :
                         <div
                             className="w-8 h-16 flex items-center justify-center translate-x-[-0.8rem]">
-                            <Circle size={20} color="gray" />
+                            <Circle size={20} color="gray"/>
                         </div>
                     )
                 }

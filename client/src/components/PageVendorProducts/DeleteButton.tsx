@@ -80,11 +80,11 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
                 {
                     children ?
                         <div className="flex flex-col items-center gap-1 w-24">
-                            <Trash2 size={20} color='red' />
+                            <Trash2 size={20} />
                             {children}
                         </div>
                         :
-                            <Trash2 size={20} color='red' />
+                            <Trash2 size={20} />
                 }
             </ButtonBase>
             <Dialog className={theme === 'dark' ? 'dark' : ''} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
