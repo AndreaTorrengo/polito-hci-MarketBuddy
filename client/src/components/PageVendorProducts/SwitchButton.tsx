@@ -1,5 +1,6 @@
 import {Market, Vendor, Product} from "../../models";
-import {Dialog, DialogPanel} from '@tremor/react';
+import { DialogPanel } from '@tremor/react';
+import { Dialog } from '../generalPurposeComponents/Dialog';
 import {Button} from '../generalPurposeComponents/Button';
 import React, {useContext, useState} from 'react';
 import './Dialogs.css';
@@ -13,7 +14,6 @@ interface SwitchButtonProps {
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     closeAfter: () => void;
-    theme: string,
     setProductsWithoutAlternatives: React.Dispatch<React.SetStateAction<Product[]>>;
     children?: React.ReactNode;
 }
@@ -21,8 +21,7 @@ interface SwitchButtonProps {
 const SwitchButton: React.FC<SwitchButtonProps> = ({
                                                        selectedProducts,
                                                        selectedMarket,
-                                                       setFilteredVendors,
-                                                       theme,
+    setFilteredVendors,
                                                        setProductsWithoutAlternatives,
                                                        closeAfter,
                                                        children
@@ -130,7 +129,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({
                     <ArrowLeftRight size={20}/>
                 }
             </ButtonBase>
-            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isDialogOpen}
+            <Dialog open={isDialogOpen}
                     onClose={() => setIsDialogOpen(false)}>
                 <DialogPanel>
                     <h1 className="confirm-text" style={{fontWeight: 'bold', fontSize: '1rem'}}>Confirm Switch</h1>

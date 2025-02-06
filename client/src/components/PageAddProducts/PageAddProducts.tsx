@@ -1,19 +1,18 @@
 "use client";
-import React, {useContext, useEffect, useMemo, useState} from "react";
-import {ButtonBase} from "@mui/material";
-import {Button} from "../generalPurposeComponents/Button.tsx";
-import {Market, Product, Vendor} from "../../models.ts";
-import ProductListItem, {ProductListItemProps} from "../PageVendorProducts/ProductListItem.tsx";
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { ButtonBase } from "@mui/material";
+import { Button } from "../generalPurposeComponents/Button.tsx";
+import { Market, Product, Vendor } from "../../models.ts";
+import ProductListItem, { ProductListItemProps } from "../PageVendorProducts/ProductListItem.tsx";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import API from "../../API.ts";
 import globalContext from "../../Context.tsx";
-import {TextInput} from "@tremor/react";
-import {Search, MapPin, User, Circle, CircleCheckBig, Plus} from 'lucide-react';
+import { TextInput } from "@tremor/react";
+import { Search, MapPin, User, Circle, CircleCheckBig, Plus } from 'lucide-react';
 
 interface PageAddProductsParams {
     allVends: Vendor[];
     actualVends: Vendor[];
-    theme: string;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
@@ -21,14 +20,13 @@ interface PageAddProductsParams {
 }
 
 export default function PageAddProducts({
-                                            actualVends,
-                                            allVends,
-                                            theme,
-                                            selectedMarket,
-                                            setFilteredVendors,
-                                            addProductId,
-                                            setAddProductId
-                                        }: PageAddProductsParams) {
+    actualVends,
+    allVends,
+    selectedMarket,
+    setFilteredVendors,
+    addProductId,
+    setAddProductId
+}: Readonly<PageAddProductsParams>) {
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) ?? '[]');
 
@@ -65,17 +63,17 @@ export default function PageAddProducts({
                     const products: Product[] = await API.getAllProducts();
                     // console.log(products)
                     setAllProducts(products.map(product => ({
-                            id: product.id,
-                            name: product.name,
-                            price: product.price,
-                            image: product.image,
-                            points: product.points,
-                            isSelected: false,
-                            editMode: true,
-                            showPrice: false
-                        }))
-                            .filter(product => !productsAlreadyAdded.some(item => item.id === product.id))
-                            .filter(product => availableProducts.some(item => item.id === product.id))
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        image: product.image,
+                        points: product.points,
+                        isSelected: false,
+                        editMode: true,
+                        showPrice: false
+                    }))
+                        .filter(product => !productsAlreadyAdded.some(item => item.id === product.id))
+                        .filter(product => availableProducts.some(item => item.id === product.id))
                     );
                 } catch (error) {
                     console.error(error);
@@ -118,7 +116,7 @@ export default function PageAddProducts({
                     if (existingVendor) {
                         existingVendor.products.push(product);
                     } else {
-                        const newVendor = {...vendor, products: [product]};
+                        const newVendor = { ...vendor, products: [product] };
                         filteredVendors.push(newVendor);
                     }
                     productAdded = true;
@@ -183,7 +181,7 @@ export default function PageAddProducts({
                                             setSelectedProducts(new Map());
                                         }
                                     }>
-                                        <CircleCheckBig size={20}/>
+                                        <CircleCheckBig size={20} />
                                     </div>
                                     :
                                     <div
@@ -193,14 +191,14 @@ export default function PageAddProducts({
                                                 setSelectedProducts(new Map(allProducts.map(p => [p.id, p])));
                                             }
                                         }>
-                                        <Circle size={20} color="gray"/>
+                                        <Circle size={20} color="gray" />
                                     </div>
 
                             }
                             {/* Add Button */}
                             {selectedProducts && selectedProducts.size > 0 &&
                                 <ButtonBase className="animate-fade duration-300"
-                                            onClick={confirmAddAlert}>
+                                    onClick={confirmAddAlert}>
                                     <div className="flex flex-row items-center gap-1 border border-1 dark:border-white border-black rounded-md py-1 ps-1 pe-2">
                                         <Plus size={25} />
                                         <p className="p-0 m-0 text-md">Add</p>
@@ -239,7 +237,7 @@ export default function PageAddProducts({
                             {addProductId == -1 ?
                                 <div className="flex flex-row items-center">
                                     <div className="flex flex-col">
-                                        <MapPin size={20} className="me-1"/>
+                                            <MapPin size={20} className="me-1" />
                                     </div>
                                     <div className="flex flex-col w-full">
                                         <div className="flex flex-row">
@@ -250,7 +248,7 @@ export default function PageAddProducts({
                                 :
                                 <div className="flex flex-row items-center">
                                     <div className="flex flex-row">
-                                        <User size={20} className="me-1"/>
+                                            <User size={20} className="me-1" />
                                     </div>
                                     <div className="flex flex-row">
                                         <h3 className="text-sm font-bold text-left">
@@ -281,15 +279,15 @@ export default function PageAddProducts({
                                         null
                                         :
                                         <ButtonBase key={product.id} component="div"
-                                                    onClick={() => {
-                                                        addOrRemoveSelected(product.id);
-                                                    }}
+                                            onClick={() => {
+                                                addOrRemoveSelected(product.id);
+                                            }}
                                         >
                                             <ProductListItem key={index} {...product} showPrice={false}
-                                                             editMode={true}
-                                                             isSelected={
-                                                                 selectedProducts ? selectedProducts.has(product.id) : false
-                                                             }/>
+                                                editMode={true}
+                                                isSelected={
+                                                    selectedProducts ? selectedProducts.has(product.id) : false
+                                                } />
                                         </ButtonBase>
                                 )))
                                 :
@@ -297,9 +295,9 @@ export default function PageAddProducts({
                                     addProductId == -1 ?
                                         <div className="flex flex-col h-80 items-center justify-center gap-4">
                                             <p className="m-0 p-0 text-xl text-center">Product/s not available
-                                                in <br/> <span className="font-bold">{
+                                                in <br /> <span className="font-bold">{
                                                     selectedMarket ? selectedMarket.name : "your market"
-                                                }</span> <br/> Please, try another market!</p>
+                                                }</span> <br /> Please, try another market!</p>
                                             <Button variant="contained" onClick={() => {
                                                 setAddProductId(null);
                                             }}>
@@ -309,9 +307,9 @@ export default function PageAddProducts({
                                         :
                                         <div className="flex flex-col h-80 items-center justify-center gap-4">
                                             <p className="m-0 p-0 text-xl text-center">Product/s not available
-                                                for <br/> <span className="font-bold">{
+                                                for <br /> <span className="font-bold">{
                                                     actualVendor ? actualVendor.name : "this vendor"
-                                                }</span> <br/> Please, try another vendor!</p>
+                                                }</span> <br /> Please, try another vendor!</p>
                                             <Button variant="contained" onClick={() => {
                                                 setAddProductId(null);
                                             }}>
@@ -325,12 +323,12 @@ export default function PageAddProducts({
                                 {
                                     addProductId != -1 ?
                                         <p className="m-0 p-0 text-xl text-center">No more products available
-                                            for <br/> {
+                                            for <br /> {
                                                 actualVendorsProducts ? (actualVendorsProducts.length >= 1 ? actualVendorsProducts.find(vendor => vendor.id === addProductId)?.name : "this vendor") : ""
                                             }</p>
                                         :
                                         <p className="m-0 p-0 text-xl text-center">No more products available
-                                            in <br/> {
+                                            in <br /> {
                                                 selectedMarket ? selectedMarket.name : "your market"
                                             }</p>
 

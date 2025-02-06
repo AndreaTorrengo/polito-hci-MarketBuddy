@@ -1,18 +1,17 @@
 import React from 'react';
-import { Dialog, DialogPanel } from '@tremor/react';
+import { DialogPanel } from '@tremor/react';
+import { Dialog } from '../generalPurposeComponents/Dialog';
 import './Dialogs.css';
 
 
 interface FeedbackDeleteDialogProps {
     isOpen: boolean;
     onClose: () => void;
-    theme: string;
 }
 
-const FeedbackDeleteDialog: React.FC<FeedbackDeleteDialogProps> = ({ isOpen, onClose, theme }) => {
+const FeedbackDeleteDialog: React.FC<FeedbackDeleteDialogProps> = ({ isOpen, onClose }) => {
     return (
-        <>
-            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isOpen} onClose={onClose}>
+        <Dialog open={isOpen} onClose={onClose}>
                 <DialogPanel>
 
                     <button
@@ -25,8 +24,7 @@ const FeedbackDeleteDialog: React.FC<FeedbackDeleteDialogProps> = ({ isOpen, onC
                     <p className="message-text" style={{ marginTop: '10px' }}>Selected products have been successfully deleted from your shopping list</p>
 
                 </DialogPanel>
-            </Dialog>
-        </>
+        </Dialog>
     );
 };
 

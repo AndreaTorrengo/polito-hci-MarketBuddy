@@ -130,7 +130,7 @@ function LeaderboardItem(props: any) {
         <span className="font-medium">{props.player.name}</span>
       </div>
       <div className="text-right">
-        <span className="flex font-semibold gap-1 text-[var(--experience)]">{props.player.xp} <Hexagon /></span>
+        <span className="flex font-semibold gap-1 text-[var(--experience)] dark:text-[var(--dark-experience)]">{props.player.xp} <Hexagon /></span>
       </div>
     </li>);
 }

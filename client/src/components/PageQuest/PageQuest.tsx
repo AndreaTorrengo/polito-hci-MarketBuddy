@@ -77,7 +77,7 @@ export default function PageQuest(props: any) {
 
   return (
     <>
-      <StatPopup coins={props.userdata.coins} exp={props.userdata.experience} popup={true}/>
+      <StatPopup coins={props.userdata.coins} exp={props.userdata.experience} popup={true} />
       <div className="w-full h-full px-6 py-4">
         <h1 className="page-title mb-4">Quests</h1>
         <div className="flex flex-col gap-4 relative">
@@ -93,11 +93,11 @@ export default function PageQuest(props: any) {
             >
               <Card className="bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle p-4 relative">
                 <div className="absolute top-2 right-2 flex space-x-2">
-                  <div className="flex items-center space-x-1 text-[var(--experience)]">
+                  <div className="flex items-center space-x-1 text-[var(--experience)] dark:text-[var(--dark-experience)]">
                     <Hexagon />
                     <span className="font-semibold">{quest.exp}</span>
                   </div>
-                  <div className="flex items-center space-x-1 text-[var(--buddy-coins)]">
+                  <div className="flex items-center space-x-1 text-[var(--buddy-coins)] dark:text-[var(--dark-buddy-coins)]">
                     <Coins />
                     <span className="font-semibold">{quest.coins}</span>
                   </div>

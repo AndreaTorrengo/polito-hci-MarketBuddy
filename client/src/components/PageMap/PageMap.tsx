@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap, Tooltip, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -6,6 +6,7 @@ import { Vendor, Market, Product } from '../../models';
 import './pagemap.css';
 import tinycolor from 'tinycolor2';
 import PageVendorProducts from "../PageVendorProducts/PageVendorProducts.tsx";
+import globalContext from '../../Context.tsx';
 
 
 // Helper component to update map center dynamically
@@ -56,7 +57,6 @@ const OnFlyMarker: React.FC<OnFlyMarkerProps> = ({ center, isMarketCenter, targe
 
 interface PageMapProps {
     filteredVendors: Vendor[];
-    theme: string;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
@@ -72,7 +72,6 @@ interface PageMapProps {
 
 const PageMap: React.FC<PageMapProps> = ({
     filteredVendors,
-    theme,
     selectedMarket,
     setFilteredVendors,
     setAddProductId,
@@ -95,6 +94,8 @@ const PageMap: React.FC<PageMapProps> = ({
     const [isOpen, setIsOpen] = useState(!!initialVendor); // Open vendor page if initialState is provided
 
     const [targetPosition, setTargetPosition] = useState<[number, number] | null>(null);
+
+    const { theme } = useContext(globalContext) || {}
 
     useEffect(() => {
         const vendorInFilteredVendors = selectedVendor ? filteredVendors.find(vendor => vendor.id === selectedVendor.id) : undefined;
@@ -271,7 +272,7 @@ const PageMap: React.FC<PageMapProps> = ({
                         productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                         origin="map"
                         selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
-                        isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} filteredVendors={filteredVendors} setVendorBadgePositionCallback={() => { setTargetPosition(selectedMarker) }} setUserdata={setUserData}
+                        isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} filteredVendors={filteredVendors} setVendorBadgePositionCallback={() => { setTargetPosition(selectedMarker) }} setUserdata={setUserData}
                     />
                 )
             )}

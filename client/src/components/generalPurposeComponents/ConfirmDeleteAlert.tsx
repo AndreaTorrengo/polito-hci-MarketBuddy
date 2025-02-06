@@ -1,9 +1,9 @@
-import { Dialog, DialogPanel } from '@tremor/react';
+import { DialogPanel } from '@tremor/react';
+import { Dialog } from '../generalPurposeComponents/Dialog';
 import React, { useContext } from 'react';
 import globalContext from '../../Context';
 
 interface ConfirmDeleteAlertProps {
-    theme: string;
     isOpen: boolean;
     setIsOpen: (value: boolean) => void;
     handleDelete: () => Promise<void>;
@@ -11,16 +11,16 @@ interface ConfirmDeleteAlertProps {
 }
 
 const ConfirmDeleteAlert: React.FC<ConfirmDeleteAlertProps> = ({
-    theme,
     isOpen,
     setIsOpen,
     handleDelete,
     numberOfProducts,
 }) => {
 
-    const showToastMessage = useContext(globalContext)?.showToastMessage;
+    const { showToastMessage } = useContext(globalContext) || {};
+
     return (
-        <Dialog open={isOpen} static={true} onClose={() => { setIsOpen(false) }} className={`max-h-screen overflow-y-auto ${theme === 'dark' ? 'dark' : ''}`}>
+        <Dialog open={isOpen} static={true} onClose={() => { setIsOpen(false) }} className="max-h-screen overflow-y-auto">
             <DialogPanel className="dialog-panel max-h-screen overflow-y-auto">
                 <div className="flex flex-col gap-4">
                     <h1 className="text-2xl font-bold text-black dark:text-white">Delete Products</h1>

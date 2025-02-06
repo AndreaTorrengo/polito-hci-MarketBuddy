@@ -1,4 +1,5 @@
-import { Dialog, DialogPanel } from '@tremor/react';
+import { DialogPanel } from '@tremor/react';
+import { Dialog } from '../generalPurposeComponents/Dialog';
 import { Button } from '../generalPurposeComponents/Button';
 import { Vendor, Product, Market } from '../../models';
 import React, { useState, useEffect, useRef, useContext } from 'react';
@@ -9,7 +10,6 @@ import ProductItem from '../PageShoppingList/ProductItem';
 import { ChevronLeft, ChevronRight, TriangleAlert } from 'lucide-react'
 
 interface MissingProductsDialogProps {
-    theme: string;
     productsList: { [key: string]: string[] };
     setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
     selectedMarket: Market;
@@ -17,7 +17,6 @@ interface MissingProductsDialogProps {
 }
 
 const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
-    theme,
     productsList,
     setProductsList,
     selectedMarket,
@@ -173,7 +172,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                     <span>Some products are missing at this market!</span>
                 </Button>
             )}
-            {missingProducts.length > 0 && (<Dialog open={isOpen} static={true} onClose={handleClose} className={`max-h-screen overflow-y-auto z-40 ${theme === 'dark' ? 'dark' : ''}`}>
+            {missingProducts.length > 0 && (<Dialog open={isOpen} static={true} onClose={handleClose} className="max-h-screen overflow-y-auto z-40">
 
                 <DialogPanel {...handlers} className="dialog-panel max-h-screen overflow-y-auto">
 
@@ -198,8 +197,8 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                                             isEditMode={true}
                                                         />
                                                     </button>
-                                                    {missingProducts.length > 1 && (<div
-                                                        style={{ position: 'absolute', top: '10px', right: '10px', background: 'transparent', border: 'none', fontSize: '1rem', color: theme === 'dark' ? '#EEEEEE' : '#333333', pointerEvents: 'none' }}
+                                                    {missingProducts.length > 1 && (<div className='absolute top-[10px] right-[10px] bg-transparent border-none pointer-events-none text-[#333333] dark:text-[#EEEEEE]'
+                                                        style={{ fontSize: '1rem' }}
                                                     >
                                                         {currentIndex + 1}/{missingProducts.length}
                                                     </div>
@@ -211,8 +210,8 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                                                 <div className="col-span-full text-center" style={{ width: '260px', height: '138px' }}>
                                                     <div className="text-center" style={{ width: '260px', height: '80px', marginTop: '2rem' }}>Sorry, but there don't seem to be any alternatives for this product at the market.</div>
                                                 </div>
-                                                {missingProducts.length > 1 && (<div
-                                                    style={{ position: 'absolute', top: '10px', right: '10px', background: 'transparent', border: 'none', fontSize: '1rem', color: theme === 'dark' ? '#EEEEEE' : '#333333', pointerEvents: 'none' }}
+                                                    {missingProducts.length > 1 && (<div className='absolute top-[10px] right-[10px] bg-transparent border-none pointer-events-none text-[#333333] dark:text-[#EEEEEE]'
+                                                        style={{ fontSize: '1rem' }}
                                                 >
                                                     {currentIndex + 1}/{missingProducts.length}
                                                 </div>

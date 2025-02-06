@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import PageMap from '../PageMap/PageMap';
 import {Market, Vendor, Product} from '../../models';
 import PageShoppingList from '../PageShoppingList/PageShoppingList';
@@ -15,7 +15,6 @@ import PageAddProducts from "../PageAddProducts/PageAddProducts.tsx";
 import {UserData} from '../PageProfile/UserData.tsx';
 
 interface TabsHeroProps {
-    theme: string;
     vendors: Vendor[];
     filteredVendors: Vendor[];
     selectedMarket: Market;
@@ -32,7 +31,6 @@ interface TabsHeroProps {
 }
 
 export default function TabsHero({
-                                     theme,
                                      vendors,
                                      filteredVendors,
                                      selectedMarket,
@@ -46,7 +44,8 @@ export default function TabsHero({
                                      setProductsWithoutAlternatives,
                                      userdata,
                                      setUserdata,
-                                 }: Readonly<TabsHeroProps>): JSX.Element {
+}: Readonly<TabsHeroProps>): JSX.Element {
+
     const [selectedProducts, setSelectedProducts] = useState<Map<number, number[]> | null>(null);
     const [filteredProductsVendors, setFilteredProductsVendors] = useState<Vendor[]>(filteredVendors); //vendors with filtered products
     const [isEditMode, setIsEditMode] = useState(false);
@@ -192,7 +191,7 @@ export default function TabsHero({
         <>
             {addProductId != null ?
                 <PageAddProducts setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket}
-                                 actualVends={filteredVendors} allVends={vendors} theme={theme}
+                    actualVends={filteredVendors} allVends={vendors}
                                  setAddProductId={setAddProductId} addProductId={addProductId}/> :
                 <div className="flex flex-col h-full min-h-0 px-6 py-4">
                     {
@@ -257,7 +256,7 @@ export default function TabsHero({
                                                     setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                                     selectedMarket={selectedMarket}
                                                     selectedProducts={selectedProducts? selectedProducts : new Map<number, number[]>()}
-                                                    setFilteredVendors={setFilteredVendors} theme={theme}
+                                                setFilteredVendors={setFilteredVendors}
                                                     closeAfter={closeAfter}>
                                                     <p className="p-0 m-0 text-sm">Switch vendor</p>
                                                 </SwitchButton>
@@ -275,7 +274,7 @@ export default function TabsHero({
                                                 <DeleteButton
                                                     selectedMarket={selectedMarket}
                                                     selectedProducts={selectedProducts? selectedProducts : new Map<number, number[]>()}
-                                                    setFilteredVendors={setFilteredVendors} theme={theme}
+                                                setFilteredVendors={setFilteredVendors}
                                                     closeAfter={closeAfter}>
                                                     <p className="p-0 m-0 text-sm">Delete</p>
                                                 </DeleteButton>
@@ -392,7 +391,6 @@ export default function TabsHero({
                         {activeTab === 'map' && (
                             <div className="fixed inset-x-0 h-full">
                                 <PageMap
-                                    theme={theme}
                                     closeAfter={closeAfter}
                                     filteredVendors={filteredVendors}
                                     selectedMarket={selectedMarket}
@@ -413,8 +411,7 @@ export default function TabsHero({
                                 selectedProducts={selectedProducts}
                                 productsList={productsList}
                                 setProductsList={setProductsList}
-                                filteredVendors={filteredVendors}
-                                theme={theme}
+                            filteredVendors={filteredVendors}
                                 closeAfter={closeAfter}
                                 selectedMarket={selectedMarket}
                                 openEditMode={openEditMode}

@@ -1,5 +1,6 @@
 import { Market, Vendor, Product } from "../../models";
-import { Dialog, DialogPanel } from '@tremor/react';
+import { DialogPanel } from '@tremor/react';
+import { Dialog } from '../generalPurposeComponents/Dialog';
 import { Button } from '../generalPurposeComponents/Button';
 import React, { useContext, useState } from 'react';
 import './Dialogs.css';
@@ -12,16 +13,15 @@ interface DeleteButtonProps {
     selectedProducts: Map<number, number[]>;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
-    theme: string,
     closeAfter: () => void;
     children?: React.ReactNode;
 }
-const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, theme, closeAfter, children }) => {
+const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedMarket, setFilteredVendors, closeAfter, children }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const [productsSwitching, setProductsSwitching] = useState<Product[]>([]);
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
-    const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) || '[]');
+    const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) ?? '[]');
 
     const { showToastMessage, askConfirmation } = useContext(globalContext) || {};
 
@@ -87,7 +87,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
                             <Trash2 size={20} />
                 }
             </ButtonBase>
-            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+            <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
                 <DialogPanel>
                     <h1 className="confirm-text" style={{ fontWeight: 'bold', fontSize: '1rem' }}>Confirm Delete</h1>
                     <p className="message-text" style={{ marginTop: '10px' }}>The following products will be deleted from your shopping list:</p>

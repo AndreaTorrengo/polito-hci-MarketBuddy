@@ -10,18 +10,14 @@ import { Button } from '../generalPurposeComponents/Button';
 import globalContext from '../../Context';
 
 interface PageProfileProps {
-  theme: 'light' | 'dark';
   toggleTheme: () => void;
   askConfirmation: (onConfirm: () => void, text?: string, cancelButtonText?: string, confirmButtonText?: string) => void;
   userdata: UserData;
   setUserdata: Dispatch<SetStateAction<UserData>>;
 }
 
-export default function PageProfile({ theme, toggleTheme, userdata, setUserdata }: Readonly<PageProfileProps>) {
-
-  const context = useContext(globalContext);
-  const askConfirmation = context?.askConfirmation;
-  const showToastMessage = context?.showToastMessage;
+export default function PageProfile({ toggleTheme, userdata, setUserdata }: Readonly<PageProfileProps>) {
+  const { theme, askConfirmation, showToastMessage } = useContext(globalContext) || {};
 
   function clearStorage() {
     askConfirmation && askConfirmation(() => {
@@ -59,7 +55,7 @@ export default function PageProfile({ theme, toggleTheme, userdata, setUserdata 
 
           <div className="flex items-center">
             <label htmlFor="experience" className="min-w-32">Experience:</label>
-            <div id="experience" className="flex items-center space-x-2 text-[var(--experience)]">
+            <div id="experience" className={`flex items-center space-x-2 text-[var(--experience)] dark:text-[var(--dark-experience)]`}>
               <Hexagon />
               <span className="font-semibold">{userdata.experience}</span>
             </div>
@@ -67,7 +63,7 @@ export default function PageProfile({ theme, toggleTheme, userdata, setUserdata 
 
           <div className="flex items-center">
             <label htmlFor="buddy-coins" className="min-w-32">Buddy coins:</label>
-            <div id="buddy-coins" className="flex items-center space-x-2 text-[var(--buddy-coins)]">
+            <div id="buddy-coins" className={`flex items-center space-x-2 text-[var(--buddy-coins)] dark:text-[var(--dark-buddy-coins)]`}>
               <Coins />
               <span className="font-semibold">{userdata.coins}</span>
             </div>

@@ -1,9 +1,10 @@
-import ProductItem, {ProductItemProps} from "./ProductItem";
-import { PiggyBank, Award, Smile, ChevronRight, CircleCheckBig, Circle } from "lucide-react";
-import {ButtonBase} from "@mui/material";
-import {Vendor} from "../../models";
-import React from "react";
+import ProductItem, { ProductItemProps } from "./ProductItem";
+import { PiggyBank, Award, Smile, ChevronRight, CircleCheckBig, Circle, BadgeCent, CircleDollarSign, Euro, Wallet } from "lucide-react";
+import { ButtonBase } from "@mui/material";
+import { Vendor } from "../../models";
+import React, { useContext } from "react";
 import VendorCategoryList from "../PageVendorProducts/VendorCategoryList";
+import globalContext from "../../Context";
 
 export interface VendorGroupProps {
     id: number;
@@ -19,16 +20,17 @@ export interface VendorGroupProps {
 }
 
 export default function VendorGroup({
-                                        products,
-                                        vendor,
-                                        setVendorPageOpened,
-                                        setSelectedVendor,
-                                        openEditMode,
-                                        addOrRemoveSelected,
-                                        selectedProducts,
-                                        isEditMode,
-                                        selectedOrRemoveAllProductsFromVendor
-                                    }: VendorGroupProps) {
+    products,
+    vendor,
+    setVendorPageOpened,
+    setSelectedVendor,
+    openEditMode,
+    addOrRemoveSelected,
+    selectedProducts,
+    isEditMode,
+    selectedOrRemoveAllProductsFromVendor
+}: VendorGroupProps) {
+    const { theme } = useContext(globalContext) || {};
     return (
         <>
             <div className="flex flex-row gap-2 pb-2 mt-3 items-center justify-between cursor-pointer" onClick={() => {
@@ -36,30 +38,30 @@ export default function VendorGroup({
                 setVendorPageOpened(true)
             }}>
                 <div className="max-w-[50%] min-w-[30%] flex flex-row items-center gap-2">
-                {/* Show Select Indicator in Edit Mode */}
-                {
-                    isEditMode &&
-                    (
-                        selectedProducts && selectedProducts.length === products.length ?
+                    {/* Show Select Indicator in Edit Mode */}
+                    {
+                        isEditMode &&
+                        (
+                            selectedProducts && selectedProducts.length === products.length ?
                                 <div className="flex items-center" onClick={
-                                () => {
-                                    selectedOrRemoveAllProductsFromVendor(vendor.id, true);
-                                }
-                            }>
-                                    <CircleCheckBig size={20} />
-                            </div>
-                            :
-                            <div
-                                    className="flex items-center"
-                                onClick={
                                     () => {
-                                        selectedOrRemoveAllProductsFromVendor(vendor.id, false);
+                                        selectedOrRemoveAllProductsFromVendor(vendor.id, true);
                                     }
                                 }>
+                                    <CircleCheckBig size={20} />
+                                </div>
+                                :
+                                <div
+                                    className="flex items-center"
+                                    onClick={
+                                        () => {
+                                            selectedOrRemoveAllProductsFromVendor(vendor.id, false);
+                                        }
+                                    }>
                                     <Circle size={20} color="gray" />
-                            </div>
-                    )
-                }
+                                </div>
+                        )
+                    }
                     <div className="flex flex-row items-center gap-0.5">
                         <span className="m-0 p-0 font-medium text-xl line-clamp-1">{vendor.name}</span>
                         <ChevronRight className="pt-0.5" />
@@ -69,22 +71,19 @@ export default function VendorGroup({
                 <div className="overflow-x-auto min-w-[50%]">
                     {/* <div className="flex flex-col w-full gap-6"> */}
                     <div className='flex flex-row items-center justify-around gap-2'>
-                            <div className="w-1/3 flex flex-row items-center justify-center" onClick={() => {
-                            }}>
-                            <Award color="var(--quality)" />
+                        <div className="w-1/3 flex flex-row items-center justify-center">
+                            <Award color={`var(--${theme === 'dark' ? 'dark-' : ''}quality)`} />
                             <p className="m-0 p-0 ms-0.5 font-bold">{vendor.quality_rating}</p>
-                            </div>
-                            <div className="w-1/3 flex flex-row items-center justify-center" onClick={() => {
-                            }}>
-                            <Smile color="var(--cordiality)" />
-                            <p className="m-0 p-0 ms-0.5 font-bold">{vendor.cordiality_rating}</p>
-                            </div>
-                            <div className="w-1/3 flex flex-row items-center justify-center" onClick={() => {
-                            }}>
-                            <PiggyBank color="var(--convenience)" />
-                            <p className="m-0 p-0 ms-0.5 font-bold">{vendor.convenience_rating}</p>
-                            </div>
                         </div>
+                        <div className="w-1/3 flex flex-row items-center justify-center">
+                            <Smile color={`var(--${theme === 'dark' ? 'dark-' : ''}cordiality)`} />
+                            <p className="m-0 p-0 ms-0.5 font-bold">{vendor.cordiality_rating}</p>
+                        </div>
+                        <div className="w-1/3 flex flex-row items-center justify-center">
+                            <CircleDollarSign color={`var(--${theme === 'dark' ? 'dark-' : ''}convenience)`} />
+                            <p className="m-0 p-0 ms-0.5 font-bold">{vendor.convenience_rating}</p>
+                        </div>
+                    </div>
                     {/* </div> */}
                 </div>
             </div>
@@ -94,16 +93,16 @@ export default function VendorGroup({
             <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {products.map((product) => (
                     <ButtonBase key={product.id} component="div"
-                                onContextMenu={(e) => {
-                                    openEditMode(e, vendor.id, product.id);
-                                }}
-                                onClick={() => {
-                                    addOrRemoveSelected(vendor.id, product.id);
-                                }}
+                        onContextMenu={(e) => {
+                            openEditMode(e, vendor.id, product.id);
+                        }}
+                        onClick={() => {
+                            addOrRemoveSelected(vendor.id, product.id);
+                        }}
                     >
                         <ProductItem key={product.id} {...product}
-                                     isSelected={selectedProducts.includes(product.id) || false}
-                                     isEditMode={isEditMode}
+                            isSelected={selectedProducts.includes(product.id) || false}
+                            isEditMode={isEditMode}
                         />
                     </ButtonBase>
                 ))}

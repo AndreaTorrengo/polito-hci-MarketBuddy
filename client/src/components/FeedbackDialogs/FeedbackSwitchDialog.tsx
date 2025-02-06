@@ -1,19 +1,18 @@
 import React from 'react';
-import { Dialog, DialogPanel } from '@tremor/react';
+import { DialogPanel } from '@tremor/react';
+import { Dialog } from '../generalPurposeComponents/Dialog';
 import { Product } from '../../models';
 import './Dialogs.css';
 
 interface FeedbackSwitchDialogProps {
     isOpen: boolean;
     onClose: () => void;
-    theme: string;
     productsWithoutAlternatives: Product[];
 }
 
-const FeedbackSwitchDialog: React.FC<FeedbackSwitchDialogProps> = ({ isOpen, onClose, theme, productsWithoutAlternatives }) => {
+const FeedbackSwitchDialog: React.FC<FeedbackSwitchDialogProps> = ({ isOpen, onClose, productsWithoutAlternatives }) => {
     return (
-        <>
-            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isOpen} onClose={onClose}>
+        <Dialog open={isOpen} onClose={onClose}>
                 <DialogPanel>
                     <button
                         style={{ position: 'absolute', top: '0px', right: '10px', background: 'transparent', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}
@@ -40,8 +39,7 @@ const FeedbackSwitchDialog: React.FC<FeedbackSwitchDialogProps> = ({ isOpen, onC
                         </>
                     )}
                 </DialogPanel>
-            </Dialog>
-        </>
+        </Dialog>
     );
 };
 
