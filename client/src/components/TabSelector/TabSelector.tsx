@@ -143,7 +143,7 @@ export default function TabsHero({
         if (vendor) {
             const newSelectedProducts = new Map(selectedProducts);
             if (remove) {
-                newSelectedProducts.set(vendorId, []);
+                newSelectedProducts.delete(vendorId);
             } else {
                 const productIds = vendor.products.map((product) => product.id);
                 newSelectedProducts.set(vendorId, productIds);
@@ -249,15 +249,14 @@ export default function TabsHero({
 
                                         </div>
                                     }/>
-                                {selectedProducts && selectedProducts.size > 0 &&
                                 <div
                                     className="absolute w-full bottom-0 left-0 z-[11] pb-2 pt-2.5 dark:bg-dark-tremor-background-muted bg-tremor-background-muted border-t-[1px] border-tremor-border dark:border-dark-tremor-border">
-                                        <div className="flex flex-row items-center justify-evenly py-0.5">
+                                    <div className={`flex flex-row items-center justify-evenly py-0.5 ${selectedProducts && selectedProducts.size > 0 ? "" : "opacity-50 pointer-events-none"}`}>
                                             <div className="flex flex-col items-center gap-1 w-24">
                                                 <SwitchButton
                                                     setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                                     selectedMarket={selectedMarket}
-                                                    selectedProducts={selectedProducts}
+                                                    selectedProducts={selectedProducts? selectedProducts : new Map<number, number[]>()}
                                                     setFilteredVendors={setFilteredVendors} theme={theme}
                                                     closeAfter={closeAfter}>
                                                     <p className="p-0 m-0 text-sm">Switch vendor</p>
@@ -266,7 +265,7 @@ export default function TabsHero({
                                             <div className="flex flex-col items-center gap-1 w-24">
                                                 <SignalErrorButton
                                                     selectedMarket={selectedMarket}
-                                                    selectedProducts={selectedProducts}
+                                                    selectedProducts={selectedProducts? selectedProducts : new Map<number, number[]>()}
                                                     closeAfter={closeAfter}
                                                     setFilteredVendors={setFilteredVendors}>
                                                     <p className="p-0 m-0 text-sm">Report issue</p>
@@ -275,14 +274,14 @@ export default function TabsHero({
                                             <div className="flex flex-col items-center gap-1 w-24">
                                                 <DeleteButton
                                                     selectedMarket={selectedMarket}
-                                                    selectedProducts={selectedProducts}
+                                                    selectedProducts={selectedProducts? selectedProducts : new Map<number, number[]>()}
                                                     setFilteredVendors={setFilteredVendors} theme={theme}
                                                     closeAfter={closeAfter}>
                                                     <p className="p-0 m-0 text-sm" style={{color: "red"}}>Delete</p>
                                                 </DeleteButton>
                                             </div>
                                         </div>
-                                </div> }
+                                </div>
                             </>
                             :
                             <>

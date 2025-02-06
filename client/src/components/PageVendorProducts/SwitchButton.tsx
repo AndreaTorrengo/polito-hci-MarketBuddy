@@ -52,7 +52,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({
                 <span className="text-lg font-medium">Confirm Switch</span>
                 <span className="text-lg mb-2">We will find other sellers in this marketplace that match your preferences for the following products:</span>
                 <span className="text-lg font-bold">{products.map((product) => product?.name).join(', ')}</span>
-            </>
+            </>, "Cancel", "Switch"
         );
     };
 

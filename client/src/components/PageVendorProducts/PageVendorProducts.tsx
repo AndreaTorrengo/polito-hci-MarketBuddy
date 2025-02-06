@@ -272,16 +272,18 @@ export default function PageVendorProducts({
                                                     />
                                                 </>}
                                             <div
-                                                className={`absolute w-full bottom-0 left-0 z-[11] ${selectedProducts && selectedProducts.size>0 && "pb-2 pt-2.5 border-t-[1px] border-tremor-border dark:border-dark-tremor-border"} dark:bg-dark-tremor-background-muted bg-tremor-background-muted`}>
-                                                <div className="flex flex-row items-center justify-evenly py-0.5"
+                                                className={`absolute w-full bottom-0 left-0 z-[11] pb-2 pt-2.5 border-t-[1px] border-tremor-border dark:border-dark-tremor-border dark:bg-dark-tremor-background-muted bg-tremor-background-muted`}>
+                                                <div className={`flex flex-row items-center justify-evenly py-0.5 ${selectedProducts && selectedProducts.size > 0 ? "" : "opacity-50 pointer-events-none"}`}
                                                      ref={targetRef}>
-                                                    {isEditMode && selectedProducts && selectedProducts.size > 0 &&
+                                                    {isEditMode
+                                                        //&& selectedProducts && selectedProducts.size > 0
+                                                        &&
                                                         <>
                                                             <div className="flex flex-col items-center gap-1 w-24">
                                                                 <SwitchButton
                                                                     setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                                                     selectedMarket={selectedMarket}
-                                                                    selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
+                                                                    selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts ? selectedProducts.keys() : []))}
                                                                     setFilteredVendors={setFilteredVendors}
                                                                     theme={theme}
                                                                     closeAfter={exitEditMode}>
@@ -291,8 +293,7 @@ export default function PageVendorProducts({
                                                             <div className="flex flex-col items-center gap-1 w-24">
                                                                 <SignalErrorButton
                                                                     selectedMarket={selectedMarket}
-                                                                    selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
-                                                                    closeAfter={exitEditMode}
+                                                                    selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts ? selectedProducts.keys() : []))}                                                                    closeAfter={exitEditMode}
                                                                     setFilteredVendors={setFilteredVendors}>
                                                                     <p className="p-0 m-0 text-sm">Report issue</p>
                                                                 </SignalErrorButton>
@@ -300,8 +301,7 @@ export default function PageVendorProducts({
                                                             <div className="flex flex-col items-center gap-1 w-24">
                                                                 <DeleteButton
                                                                     selectedMarket={selectedMarket}
-                                                                    selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
-                                                                    setFilteredVendors={setFilteredVendors}
+                                                                    selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts ? selectedProducts.keys() : []))}                                                                    setFilteredVendors={setFilteredVendors}
                                                                     theme={theme}
                                                                     closeAfter={exitEditMode}>
                                                                     <p className="p-0 m-0 text-sm"

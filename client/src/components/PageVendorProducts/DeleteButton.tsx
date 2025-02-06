@@ -40,7 +40,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
                 <span className="text-lg font-medium">Confirm Delete</span>
                 <span className="text-lg mb-2">The following products will be deleted from your shopping list:</span>
                 <span className="text-lg font-bold">{products.map((product) => product?.name).join(', ')}</span>
-            </div>
+            </div>, "Cancel", "Delete", "error"
         );
     };
 

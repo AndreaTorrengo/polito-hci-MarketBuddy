@@ -221,13 +221,15 @@ export default function App() {
   const [cancelButtonText, setCancelButtonText] = useState("Cancel");
   const [confirmButtonText, setConfirmButtonText] = useState("Confirm");
   const [confirmationCallback, setConfirmationCallback] = useState<() => void>(() => { });
+  const [color, setColor] = useState("primary");
   const [showPopup, setShowPopup] = useState(false);
 
-  const askConfirmation = useCallback((onConfirm: () => void, text: string | ReactNode = "Are you sure?", cancelButtonText = "Cancel", confirmButtonText = "Confirm") => {
+  const askConfirmation = useCallback((onConfirm: () => void, text: string | ReactNode = "Are you sure?", cancelButtonText = "Cancel", confirmButtonText = "Confirm", color = "primary") => {
     setPopupText(text);
     setCancelButtonText(cancelButtonText);
     setConfirmButtonText(confirmButtonText);
     setConfirmationCallback(() => { return onConfirm });
+    setColor(color);
     setShowPopup(true);
   }, []);
   /****/
@@ -281,7 +283,7 @@ export default function App() {
         </Routes>
       </globalContext.Provider>
       {showPopup &&
-        <ConfirmPopup text={popupText} cancelButtonText={cancelButtonText} confirmButtonText={confirmButtonText} onConfirmCallback={confirmationCallback} closePopup={() => { setShowPopup(false); }} />
+        <ConfirmPopup text={popupText} cancelButtonText={cancelButtonText} confirmButtonText={confirmButtonText} onConfirmCallback={confirmationCallback} closePopup={() => { setShowPopup(false); }} color={color} />
       }
       <FeedbackToast show={showToast} variant={toastVariant} onClick={() => setShowToast(false)}>{toastContent}</FeedbackToast>
     </div>

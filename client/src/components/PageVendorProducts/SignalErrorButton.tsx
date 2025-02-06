@@ -40,7 +40,7 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
         });
         setProductsSwitching(products.filter((product): product is Product => product !== null && product !== undefined));
 
-        askConfirmation && askConfirmation(handleConfirm, <DialogContent products={products.filter((product): product is Product => product !== null && product !== undefined)} selectedReasons={selectedReasons} handleReasonSelect={handleReasonSelect} />);
+        askConfirmation && askConfirmation(handleConfirm, <DialogContent products={products.filter((product): product is Product => product !== null && product !== undefined)} selectedReasons={selectedReasons} handleReasonSelect={handleReasonSelect} />, "Cancel", "Report");
     };
 
     const handleConfirm = useCallback(() => {

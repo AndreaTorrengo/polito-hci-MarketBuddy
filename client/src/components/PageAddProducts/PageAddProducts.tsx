@@ -144,7 +144,7 @@ export default function PageAddProducts({
                     className="text-lg font-bold">{Array.from(selectedProducts.values()).map(product => product.name).join(', ')}</span>
             </div>,
             'Cancel',
-            'Confirm'
+            'Add'
         );
     }
 
