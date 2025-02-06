@@ -1,8 +1,8 @@
-import { Market, Vendor, Product } from "../../models";
-import { Button } from '../generalPurposeComponents/Button';
+import { Market, Vendor, Product } from "../../models.ts";
+import { Button } from '../generalPurposeComponents/Button.tsx';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import './Dialogs.css';
-import globalContext from "../../Context";
+import globalContext, { AppContextProps } from "../../Context.tsx";
 import {MessageSquareWarning} from "lucide-react";
 import {ButtonBase} from "@mui/material";
 
@@ -27,15 +27,19 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
 
     const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
 
-    const { showToastMessage, askConfirmation, setPopupText, setConfirmationCallback } = useContext(globalContext) || {};
+    const context = useContext<AppContextProps>(globalContext);
+    if (!context) {
+        throw new Error("globalContext must be used within a Provider");
+    }
+    const { showToastMessage, askConfirmation, setPopupText, setConfirmationCallback } = context;
 
     // console.log(selectedProducts);
 
     const handleClick = () => {
         const products = Array.from(selectedProducts.values()).flatMap(productIds => {
             return productIds.map((productId: number) => {
-                const vendor = filteredVendors.find(vendor => vendor.products.some(product => product.id === productId));
-                return vendor ? vendor.products.find(product => product.id === productId) : null;
+                const vendor = filteredVendors.find(vendor => vendor.products.some((product: { id: number; }) => product.id === productId));
+                return vendor ? vendor.products.find((product: { id: number; }) => product.id === productId) : null;
             });
         });
         setProductsSwitching(products.filter((product): product is Product => product !== null && product !== undefined));
@@ -49,9 +53,9 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
             selectedProducts.forEach((products, vendorId) => {
                 products.forEach((productId: number) => {
                     filteredVendors.forEach(vendor => {
-                        const product = vendor.products.find(product => product.id === productId);
+                        const product = vendor.products.find((product: { id: number; }) => product.id === productId);
                         if (vendor.id === vendorId && product) {
-                            const productIndex = vendor.products.findIndex(p => p.id === product.id);
+                            const productIndex = vendor.products.findIndex((p: { id: any; }) => p.id === product.id);
                             if (productIndex !== -1) {
                                 vendor.products.splice(productIndex, 1); // Remove the product from the vendor's product list
                             }
@@ -64,7 +68,7 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
 
                             // Check if any other vendor sells the removed product
                             const otherVendorSellingProduct = vendors.some(v =>
-                                v.id !== vendorId && v.products.some(p => p.id === productId)
+                                v.id !== vendorId && v.products.some((p: { id: number; }) => p.id === productId)
                             );
 
                             if (!otherVendorSellingProduct) {
@@ -74,7 +78,7 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
                             } else {
                                 // Add the product to the filtered vendor's product list if another vendor sells it
                                 vendors.forEach(v => {
-                                    if (v.id !== vendorId && v.products.some(p => p.id === productId)) {
+                                    if (v.id !== vendorId && v.products.some((p: { id: number; }) => p.id === productId)) {
                                         const filteredVendor = filteredVendors.find(fv => fv.id === v.id);
                                         if (filteredVendor) {
                                             filteredVendor.products.push(product);

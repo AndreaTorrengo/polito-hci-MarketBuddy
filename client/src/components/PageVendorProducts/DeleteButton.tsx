@@ -1,10 +1,10 @@
-import { Market, Vendor, Product } from "../../models";
+import { Market, Vendor, Product } from "../../models.tsx";
 import { DialogPanel } from '@tremor/react';
-import { Dialog } from '../generalPurposeComponents/Dialog';
-import { Button } from '../generalPurposeComponents/Button';
+import { Dialog } from '../generalPurposeComponents/Dialog.tsx';
+import { Button } from '../generalPurposeComponents/Button.tsx';
 import React, { useContext, useState } from 'react';
 import './Dialogs.css';
-import globalContext from "../../Context";
+import globalContext, { AppContextProps } from "../../Context.tsx";
 import {Trash2} from "lucide-react";
 import {ButtonBase} from "@mui/material";
 
@@ -23,15 +23,15 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
     const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
     const filteredVendors: Vendor[] = JSON.parse(localStorage.getItem(filteredVendorsKey) ?? '[]');
 
-    const { showToastMessage, askConfirmation } = useContext(globalContext) || {};
+    const { showToastMessage, askConfirmation } = useContext<AppContextProps>(globalContext);
 
     const handleClick = () => {
         // setIsDialogOpen(true);
 
         const products = Array.from(selectedProducts.values()).flatMap(productIds => {
             return productIds.map((productId: number) => {
-                const vendor = filteredVendors.find(vendor => vendor.products.some(product => product.id === productId));
-                return vendor ? vendor.products.find(product => product.id === productId) : null;
+                const vendor = filteredVendors.find(vendor => vendor.products.some((product: { id: number; }) => product.id === productId));
+                return vendor ? vendor.products.find((product: { id: number; }) => product.id === productId) : null;
             });
         });
         setProductsSwitching(products.filter((product): product is Product => product !== null && product !== undefined));
@@ -49,9 +49,9 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ selectedProducts, selectedM
         selectedProducts.forEach((products, vendorId) => {
             products.forEach((productId: number) => {
                 filteredVendors.forEach(vendor => {
-                    const product = vendor.products.find(product => product.id === productId);
+                    const product = vendor.products.find((product: { id: number; }) => product.id === productId);
                     if (vendor.id === vendorId && product) {
-                        const productIndex = vendor.products.findIndex(p => p.id === product.id);
+                        const productIndex = vendor.products.findIndex((p: { id: number; }) => p.id === product.id);
                         if (productIndex !== -1) {
                             vendor.products.splice(productIndex, 1); // Remove the product from the vendor's product list
                         }

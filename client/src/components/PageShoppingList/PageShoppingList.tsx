@@ -1,10 +1,11 @@
-import MissingProductsDialog from "../MissingProductsDialog/MissingProductsDialog";
-import { Market, Vendor, Product } from "../../models";
-import PageVendorProducts from "../PageVendorProducts/PageVendorProducts";
+import MissingProductsDialog from "../MissingProductsDialog/MissingProductsDialog.tsx";
+import { Market, Vendor, Product } from "../../models.tsx";
+import PageVendorProducts from "../PageVendorProducts/PageVendorProducts.tsx";
 import { useState } from "react";
-import VendorGroup from "./VendorGroup";
-import { UserData } from "../PageProfile/UserData";
-import StatPopup from "../generalPurposeComponents/StatPopup";
+import VendorGroup from "./VendorGroup.tsx";
+import { UserData } from "../PageProfile/UserData.tsx";
+import StatPopup from "../generalPurposeComponents/StatPopup.tsx";
+
 interface PageShoppingListProps {
     readonly productsList: { [key: string]: string[] };
     readonly setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
@@ -96,12 +97,12 @@ export default function PageShoppingList({
                                     }
                                 }}
                                 products={vendor.products.map(
-                                    (product) => ({
+                                    (product: Product) => ({
                                         id: product.id,
                                         name: product.name,
                                         price: parseFloat((product.price * vendor.priceMultiplier).toFixed(2)),
-                                        points: product.points,
                                         image: product.image,
+                                        points: product.points ?? 0,
                                         showPrice: true,
                                     }
                                     ))}

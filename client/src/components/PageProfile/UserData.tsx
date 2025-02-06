@@ -1,7 +1,7 @@
-/* This module provide a class model for UserData and 
+/* This module provide a class model for UserData and
  * a few function for reading and writing on localstorage
  */
-import { ICONS } from "./Icons";
+import { ICONS } from "./Icons.tsx";
 
 export class UserData {
     username: string;
@@ -17,7 +17,7 @@ export class UserData {
     }
     // Use this function to get a clone of this instance and use it to update the react state
     clone(): UserData {
-        let clone = new UserData();
+        const clone = new UserData();
         Object.assign(clone, this);
         return clone;
     }
@@ -53,13 +53,13 @@ export class UserData {
 }
 
 export function getUserdata(): UserData {
-    let userdataStr = localStorage.getItem('UserData');
+    const userdataStr = localStorage.getItem('UserData');
     let userdata;
     // If user is not already saved into localStorage, create a new one with default values
     if (!userdataStr) {
         userdata = new UserData();
         saveUserData(userdata);
-    } else 
+    } else
         userdata = JSON.parse(userdataStr);
     return userdata;
 }

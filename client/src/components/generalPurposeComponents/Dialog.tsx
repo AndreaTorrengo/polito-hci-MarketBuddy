@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Dialog as TremorDialog } from '@tremor/react';
-import globalContext from '../../Context';
+import globalContext from '../../Context.tsx';
 
 interface DialogProps {
     open: boolean;

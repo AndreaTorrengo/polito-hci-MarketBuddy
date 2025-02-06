@@ -1,13 +1,13 @@
 import { ProgressBar, Card, Title, Text } from "@tremor/react";
-import StatPopup from "../generalPurposeComponents/StatPopup";
-import { quest_array, getNewQuestId, getAndSaveNewQuestId, getCurrentQuests, saveCurrentQuests } from './Quests';
-import { UserData } from "../PageProfile/UserData";
+import StatPopup from "../generalPurposeComponents/StatPopup.tsx";
+import { quest_array, getNewQuestId, getAndSaveNewQuestId, getCurrentQuests, saveCurrentQuests } from './Quests.tsx';
+import { UserData } from "../PageProfile/UserData.tsx";
 import { Coins, Crown, Hexagon } from 'lucide-react'
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "../generalPurposeComponents/Button";
-import { Quest } from "../../models";
+import { Button } from "../generalPurposeComponents/Button.tsx";
+import { Quest } from "../../models.tsx";
 
 // Helper function to parse the progress string
 const parseProgress = (progress: string) => {
@@ -22,7 +22,7 @@ interface PageQuestProps {
   setUserdata: (userdata: UserData) => void;
 }
 
-export default function PageQuest(props: PageQuestProps) {
+export default function PageQuest({ userdata, leaderboardPath, setQuestPendingClaims, setUserdata }: Readonly<PageQuestProps>) {
   // Number of quests to generate. Must be < than quest_array length
   const N_QUESTS: number = 3;
   // Initial quests
@@ -32,9 +32,7 @@ export default function PageQuest(props: PageQuestProps) {
 
   // Effect triggered by state change of "quests"
   useEffect(() => {
-    props.setQuestPendingClaims((_oldValue: number) => {
-      return quests.filter((q: Quest) => q.completed).length;
-    });
+    setQuestPendingClaims(quests.filter((q: Quest) => q.completed).length);
   }, [quests]);
 
   // Handle claiming a quest
@@ -47,29 +45,27 @@ export default function PageQuest(props: PageQuestProps) {
     // Saves on localstorage and get the new value of newQuestId
     const newGeneratedId = getAndSaveNewQuestId(newQuestId);
 
-    setQuests((prevQuests: Quest[]) => {
-      let newQuests: Quest[] = [
-        ...prevQuests.map((quest: Quest) => {
-          if (quest.id !== questToClaim.id)
-            return quest;
-          else {
-            return quest_array.find((q: Quest) => q.id === newGeneratedId);
-          }
-        })];
-      saveCurrentQuests(newQuests);
-      return newQuests;
-    });
+    const newQuests = [
+      ...quests.map((quest: Quest) => {
+        if (quest.id !== questToClaim.id)
+          return quest;
+        else {
+          return quest_array.find((q: Quest) => q.id === newGeneratedId) as Quest;
+        }
+      })];
+
+    saveCurrentQuests(newQuests);
+    setQuests(newQuests);
     setNewQuestId(() => newGeneratedId);
 
     // Update stats
-    props.setUserdata((prevUserdata: UserData) => {
-      //let udCopy = prevUserdata.clone();
-      const udCopy = Object.assign(new UserData(), prevUserdata);
-      udCopy.incrCoins(questToClaim.coins);
-      udCopy.incrExperience(questToClaim.exp);
-      return udCopy;
-    });
+    const udCopy = Object.assign(new UserData(), userdata);
+    udCopy.incrCoins(questToClaim.coins);
+    udCopy.incrExperience(questToClaim.exp);
+
+    setUserdata(udCopy);
   };
+
   // Hard-coding for make a quest claimable
   const requestClaim = (id: number) => {
     setQuests((prevQuests: Quest[]) => {
@@ -84,7 +80,7 @@ export default function PageQuest(props: PageQuestProps) {
 
   return (
     <>
-      <StatPopup coins={props.userdata.coins} exp={props.userdata.experience} popup={true} />
+      <StatPopup coins={userdata.coins} exp={userdata.experience} popup={true} />
       <div className="w-full h-full px-6 py-4">
         <h1 className="page-title mb-4">Quests</h1>
         <div className="flex flex-col gap-4 relative">
@@ -136,7 +132,7 @@ export default function PageQuest(props: PageQuestProps) {
             color="primary"
             className="flex items-center gap-2 text-xl"
             onClick={() => {
-              navigate(props.leaderboardPath);
+              navigate(leaderboardPath);
             }}
           >
             <Crown size={30} />

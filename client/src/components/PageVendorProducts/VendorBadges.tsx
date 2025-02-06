@@ -1,7 +1,7 @@
 
 import { PiggyBank, Award, Smile, MapPin } from 'lucide-react';
 import { useContext } from 'react';
-import globalContext from '../../Context';
+import globalContext, { AppContextProps } from '../../Context.tsx';
 
 interface VendorBadgesProps {
     market: string;
@@ -13,7 +13,7 @@ interface VendorBadgesProps {
 }
 
 export default function VendorBadges({ market, quality, cordiality, convenience, changeTab, positionCallback }: Readonly<VendorBadgesProps>) {
-    const { theme } = useContext(globalContext) || {};
+    const { theme } = useContext<AppContextProps>(globalContext);
 
     return (
         <div className="flex flex-col w-full gap-6">

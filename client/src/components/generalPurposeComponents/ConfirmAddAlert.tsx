@@ -1,8 +1,8 @@
 import { DialogPanel } from '@tremor/react';
-import { Dialog } from '../generalPurposeComponents/Dialog'
+import { Dialog } from '../generalPurposeComponents/Dialog.tsx'
 import React, { useContext } from 'react';
-import globalContext from '../../Context';
-import { ProductListItemProps } from '../PageVendorProducts/ProductListItem';
+import globalContext from '../../Context.tsx';
+import { ProductListItemProps } from '../PageVendorProducts/ProductListItem.tsx';
 
 interface ConfirmAddAlertProps {
     theme: string;

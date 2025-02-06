@@ -1,11 +1,11 @@
-import {Market, Vendor, Product} from "../../models";
+import { Market, Vendor, Product } from "../../models.tsx";
 import { DialogPanel } from '@tremor/react';
-import { Dialog } from '../generalPurposeComponents/Dialog';
-import {Button} from '../generalPurposeComponents/Button';
+import { Dialog } from '../generalPurposeComponents/Dialog.tsx';
+import { Button } from '../generalPurposeComponents/Button.tsx';
 import React, {useContext, useState} from 'react';
 import './Dialogs.css';
-import globalContext from "../../Context";
-import {ProductListItemProps} from "./ProductListItem";
+import globalContext from "../../Context.tsx";
+import { ProductListItemProps } from "./ProductListItem.tsx";
 import {ArrowLeftRight} from "lucide-react";
 import {ButtonBase} from "@mui/material";
 

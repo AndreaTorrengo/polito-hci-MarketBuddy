@@ -1,20 +1,19 @@
 import { Outlet, Route, Routes } from "react-router-dom";
-import Navbar from "./components/Navbar/Navbar";
-import PageQuest from "./components/PageQuest/PageQuest";
-import PageReward from "./components/PageReward/PageReward";
-import PageRewardHistory from './components/PageReward/PageRewardHistory';
-import PageProfile from "./components/PageProfile/PageProfile";
-import PageNotFound from "./components/PageNotFound/PageNotFound";
-import PageLeaderboard from "./components/PageLeaderboard/PageLeaderboard";
+import Navbar from "./components/Navbar/Navbar.tsx";
+import PageQuest from "./components/PageQuest/PageQuest.tsx";
+import PageReward from "./components/PageReward/PageReward.tsx";
+import PageProfile from "./components/PageProfile/PageProfile.tsx";
+import PageNotFound from "./components/PageNotFound/PageNotFound.tsx";
+import PageLeaderboard from "./components/PageLeaderboard/PageLeaderboard.tsx";
 import PropTypes from "prop-types";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
-import API from "./API";
-import { Vendor, Product, Market } from "./models";
-import ConfirmPopup from "./components/ConfirmationPopup";
-import TabsHero from "./components/TabSelector/TabSelector";
-import { getUserdata, saveUserData, UserData } from "./components/PageProfile/UserData";
+import API from "./API.ts";
+import { Vendor, Product, Market } from "./models.tsx";
+import ConfirmPopup from "./components/ConfirmationPopup.tsx";
+import TabsHero from "./components/TabSelector/TabSelector.tsx";
+import { getUserdata, saveUserData, UserData } from "./components/PageProfile/UserData.tsx";
+import globalContext from "./Context.tsx";
 import FeedbackToast from "./components/generalPurposeComponents/FeedbackToast.tsx";
-import globalContext from "./Context";
 
 export default function App() {
   const paths = ["/", "/quests", "/rewards", "/profile", "*", "/leaderboard"];
@@ -36,10 +35,9 @@ export default function App() {
   useEffect(() => saveUserData(userdata), [userdata]);
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [filteredVendors, setFilteredVendors] = useState<Vendor[]>([]);
-  const [missingProducts, setMissingProducts] = useState<string[]>([]);
-  const [sortByQuality, setSortByQuality] = useState(true);
-  const [sortByConvenience, setSortByConvenience] = useState(true);
-  const [sortByCordiality, setSortByCordiality] = useState(false);
+  const [sortByQuality] = useState(true);
+  const [sortByConvenience] = useState(true);
+  const [sortByCordiality] = useState(false);
   const [productsList, setProductsList] = useState<{ [key: string]: string[] }>({
     "Porta Palazzo Market": [
       "Lettuce",
@@ -277,7 +275,7 @@ export default function App() {
             <Route path={`${paths[2]}`} element={<PageReward userdata={userdata} setUserdata={setUserdata} />} />
             <Route path={`${paths[3]}`} element={<PageProfile toggleTheme={toggleTheme} askConfirmation={askConfirmation} userdata={userdata} setUserdata={setUserdata} />} />
             <Route path={`${paths[4]}`} element={<PageNotFound />} />
-            <Route path={`${paths[5]}`} element={<PageLeaderboard userdata={userdata} setUserdata={setUserdata} />} />
+            <Route path={`${paths[5]}`} element={<PageLeaderboard userdata={userdata} />} />
           </Route>
         </Routes>
       </globalContext.Provider>

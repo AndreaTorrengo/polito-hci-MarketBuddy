@@ -1,10 +1,10 @@
-import ProductItem, { ProductItemProps } from "./ProductItem";
+import ProductItem, { ProductItemProps } from "./ProductItem.tsx";
 import { Award, Smile, ChevronRight, CircleCheckBig, Circle, CircleDollarSign } from "lucide-react";
 import { ButtonBase } from "@mui/material";
-import { Vendor } from "../../models";
+import { Vendor } from "../../models.tsx";
 import React, { useContext, useRef } from "react";
-import VendorCategoryList from "../PageVendorProducts/VendorCategoryList";
-import globalContext from "../../Context";
+import VendorCategoryList from "../PageVendorProducts/VendorCategoryList.tsx";
+import globalContext, { AppContextProps } from "../../Context.tsx";
 
 export interface VendorGroupProps {
     id: number;
@@ -30,22 +30,22 @@ export default function VendorGroup({
     isEditMode,
     selectedOrRemoveAllProductsFromVendor
 }: Readonly<VendorGroupProps>) {
-    const { theme } = useContext(globalContext) || {};
+    const { theme } = useContext<AppContextProps>(globalContext);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     const handleTouchStart = (vendorId: number, productId: number) => {
-        if(!isEditMode) {
+        if (!isEditMode) {
             intervalRef.current = setInterval(() => {
                 openEditMode(vendorId, productId)
             }, 700);
-    };
         }
+    }
     const handleTouchStop = () => {
 
         if (intervalRef.current) {
             clearInterval(intervalRef.current);
         }
-            intervalRef.current = null;
+        intervalRef.current = null;
     };
 
     const handleTouchMove = (event: React.TouchEvent) => {
@@ -100,7 +100,7 @@ export default function VendorGroup({
                     }
                     <div className="flex flex-row items-center gap-0.5">
                         <span className="m-0 p-0 font-medium text-xl line-clamp-1">{vendor.name}</span>
-                        <ChevronRight className="pt-0.5"/>
+                        <ChevronRight className="pt-0.5" />
                     </div>
                 </div>
 
@@ -124,20 +124,20 @@ export default function VendorGroup({
                 </div>
             </div>
             <div className="w-full pb-2">
-                <VendorCategoryList categories={vendor.categories}/>
+                <VendorCategoryList categories={vendor.categories} />
             </div>
             <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {products.map((product) => (
                     <ButtonBase key={product.id} component="div"
-                                onContextMenu={(e) => {
-                                    e.preventDefault();
-                                }}
-                                onClick={() => {
-                                    addOrRemoveSelected(vendor.id, product.id);
-                                }}
-                                onTouchEnd={handleTouchStop}
-                                onTouchStart={() => handleTouchStart(vendor.id, product.id)}
-                                onTouchMove={handleTouchMove}
+                        onContextMenu={(e) => {
+                            e.preventDefault();
+                        }}
+                        onClick={() => {
+                            addOrRemoveSelected(vendor.id, product.id);
+                        }}
+                        onTouchEnd={handleTouchStop}
+                        onTouchStart={() => handleTouchStart(vendor.id, product.id)}
+                        onTouchMove={handleTouchMove}
                     >
                         <ProductItem key={product.id} {...product}
                             isSelected={selectedProducts.includes(product.id) || false}

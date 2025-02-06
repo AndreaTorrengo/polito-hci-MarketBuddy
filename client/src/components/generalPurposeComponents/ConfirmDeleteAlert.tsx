@@ -1,7 +1,7 @@
 import { DialogPanel } from '@tremor/react';
-import { Dialog } from '../generalPurposeComponents/Dialog';
+import { Dialog } from '../generalPurposeComponents/Dialog.tsx';
 import React, { useContext } from 'react';
-import globalContext from '../../Context';
+import globalContext from '../../Context.tsx';
 
 interface ConfirmDeleteAlertProps {
     isOpen: boolean;

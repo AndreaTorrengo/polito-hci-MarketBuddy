@@ -1,8 +1,8 @@
 import React, {useState, useEffect, useMemo} from 'react';
-import PageMap from '../PageMap/PageMap';
-import {Market, Vendor, Product} from '../../models';
-import PageShoppingList from '../PageShoppingList/PageShoppingList';
-import MarketSelectorSheet from '../MarketSelectorSheet/MarketSelectorSheet';
+import PageMap from '../PageMap/PageMap.tsx';
+import { Market, Vendor, Product } from '../../models.ts';
+import PageShoppingList from '../PageShoppingList/PageShoppingList.tsx';
+import MarketSelectorSheet from '../MarketSelectorSheet/MarketSelectorSheet.tsx';
 import {ButtonBase} from "@mui/material";
 import SwitchButton from "../PageVendorProducts/SwitchButton.tsx";
 import SignalErrorButton from "../PageVendorProducts/SignalErrorButton.tsx";

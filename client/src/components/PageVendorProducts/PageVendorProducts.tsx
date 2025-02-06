@@ -8,7 +8,7 @@ import { Sheet } from 'react-modal-sheet';
 import VendorBadges from "./VendorBadges.tsx";
 import { ButtonBase } from "@mui/material";
 import { DialogPanel } from "@tremor/react";
-import { Dialog } from '../generalPurposeComponents/Dialog';
+import { Dialog } from '../generalPurposeComponents/Dialog.tsx';
 import ContextMenu, { ContextMenuProps } from "../generalPurposeComponents/ContextMenu.tsx";
 import SwitchButton from "./SwitchButton.tsx";
 import DeleteButton from "./DeleteButton.tsx";

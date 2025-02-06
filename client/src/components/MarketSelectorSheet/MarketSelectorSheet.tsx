@@ -3,9 +3,9 @@ import { List, ListItem, TextInput } from "@tremor/react";
 import { Sheet } from "react-modal-sheet";
 import { useEffect, useState } from "react";
 import { Search, ChevronDown, MapPin, Store, Navigation } from 'lucide-react'
-import { Market } from "../../models";
-import TorinoMarkets from "../../markets.json";
-import { Button } from "../generalPurposeComponents/Button";
+import { Market } from "../../models.tsx";
+import { Button } from "../generalPurposeComponents/Button.tsx";
+import TorinoMarkets from "../../markets.json" assert { type: "json" };
 
 
 

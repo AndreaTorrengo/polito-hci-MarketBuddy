@@ -1,9 +1,9 @@
+import "tailwindcss/tailwind.css";
 import React, { Dispatch, SetStateAction, useContext, useState } from "react";
 import { Card } from "@tremor/react";
-import { LOCKED_ICON_PATH, IconLocker } from "./Icons";
-import "tailwindcss/tailwind.css";
-import { UserData } from "./UserData";
-import globalContext from "../../Context";
+import { LOCKED_ICON_PATH, IconLocker } from "./Icons.tsx";
+import { UserData } from "./UserData.tsx";
+import globalContext from "../../Context.tsx";
 
 interface IconSelectorProps {
   icons: { id: number; path: string; }[];

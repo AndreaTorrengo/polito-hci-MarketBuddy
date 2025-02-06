@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-catch */
 const API_URL = 'http://localhost:3001/api';
-import { Vendor, Product } from './models';
+import { Vendor, Product } from './models.ts';
 
 const getAllProducts = async () => {
     try {
@@ -18,8 +18,8 @@ const getAllProducts = async () => {
                 productData.id,
                 productData.name,
                 productData.price,
-                productData.points,
-                productData.image
+                productData.image,
+                productData.points
         ));
     } catch (error) {
         throw error;
@@ -49,12 +49,12 @@ const getVendorsByMarket = async (market: string) => {
             vendorData.priceMultiplier,
             vendorData.categories,
             vendorData.badges,
-            vendorData.products.map((productData: any) => new Product(
+            vendorData.products.map((productData: Product) => new Product(
                 productData.id,
                 productData.name,
                 productData.price,
-                productData.points,
-                productData.image
+                productData.image,
+                productData.points
             ))
         ));
     } catch (error) {

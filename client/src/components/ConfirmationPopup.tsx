@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "./generalPurposeComponents/Button";
+import { Button } from "./generalPurposeComponents/Button.tsx";
 export default function ConfirmPopup({ text, cancelButtonText, confirmButtonText, closePopup, onConfirmCallback, color }: Readonly<{ text: string | React.ReactNode, cancelButtonText: string, confirmButtonText: string, closePopup: () => void, onConfirmCallback: () => void , color: string }>) {
     return (
         <>
