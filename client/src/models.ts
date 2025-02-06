@@ -65,12 +65,14 @@ class Reward {
     description: string;
     cost: number;
     icon: string;
+    redeemed?: boolean;
 
-    constructor(id: number, description: string, cost: number, icon: string) {
+    constructor(id: number, description: string, cost: number, icon: string, redeemed: boolean = false) {
         this.id = id;
         this.description = description;
         this.cost = cost;
         this.icon = icon;
+        this.redeemed = redeemed;
     }
 }
 

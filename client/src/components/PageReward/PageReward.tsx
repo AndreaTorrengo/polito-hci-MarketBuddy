@@ -1,12 +1,14 @@
-import { useContext, Dispatch, SetStateAction, useEffect, useState } from 'react';
-import API from '../../API';
+import { useContext, Dispatch, SetStateAction, useState } from 'react';
 import { Reward } from '../../models';
-import { useNavigate } from 'react-router-dom';
 import globalContext from '../../Context';
 import StatPopup from '../generalPurposeComponents/StatPopup';
 import { UserData } from '../PageProfile/UserData';
 import { ICONS, IconLocker } from '../PageProfile/Icons';
-import { Tag, History, Coins } from 'lucide-react';
+import { Tag, History, Coins, ArrowLeft } from 'lucide-react';
+
+import rewardsJSON from '../../assets/rewards.json';
+
+const rewardsData: Reward[] = rewardsJSON;
 
 const iconsMap: { [key: string]: JSX.Element } = {
   'coupon': <Tag className='object-scale-down max-h-full m-auto' />,
@@ -20,7 +22,6 @@ const iconsMap: { [key: string]: JSX.Element } = {
 }
 
 export function RewardCard({ reward, confirmRewardRedemption = () => { } }: Readonly<{ reward: Reward, confirmRewardRedemption?: (reward: Reward) => void }>) {
-
   return (
     <button className='flex justify-between w-full h-full items-center py-2 px-4 rounded-tremor-default bg-tremor-background-muted dark:bg-dark-tremor-background-muted animated active:brightness-75 dark:active:brightness-125' onClick={() => confirmRewardRedemption(reward)}>
       <div className='flex'>
@@ -41,24 +42,19 @@ export function RewardCard({ reward, confirmRewardRedemption = () => { } }: Read
 
 
 export default function PageReward({ userdata, setUserdata }: Readonly<{ userdata: UserData, setUserdata: Dispatch<SetStateAction<UserData>> }>) {
-  const [rewards, setRewards] = useState<Reward[]>([]);
-  const navigate = useNavigate();
+  const [rewards, setRewards] = useState<Reward[]>(rewardsData.map(reward => {
+    const redeemedRewards = JSON.parse(localStorage.getItem('rewards') ?? '{}');
+    return {
+      ...reward,
+      redeemed: !!redeemedRewards[reward.id]
+    };
+  }));
+
+  const [showHistory, setShowHistory] = useState(false);
 
   const { askConfirmation, showToastMessage } = useContext(globalContext) ?? {};
 
-  useEffect(() => {
-    // Fetch rewards
-    API.getRewards()
-      .then((rewards) => {
-        setRewards(rewards);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
-
   const redeemReward = (reward: Reward) => {
-    API.redeemReward(reward.id);
     // Feedback to confirm the operation was successful: update the user's coins
     setUserdata((userdataObj: UserData) => {
       const udCopy = Object.assign(new UserData(), userdataObj);
@@ -74,12 +70,13 @@ export default function PageReward({ userdata, setUserdata }: Readonly<{ userdat
     }
 
     // setRewards((prevRewards) => prevRewards.filter((r: Reward) => r.id !== reward.id));
-    setRewards((prevRewards) => prevRewards.filter((r) => r.id !== reward.id));
+    setRewards((prevRewards) => prevRewards.map((r: Reward) => r.id === reward.id ? { ...r, redeemed: true } : r));
+    localStorage.setItem('rewards', JSON.stringify({ ...JSON.parse(localStorage.getItem('rewards') ?? '{}'), [reward.id]: true }));
     showToastMessage && showToastMessage("Reward redeemed successfully!", "success");
   }
 
   const confirmRewardRedemption = (reward: Reward) => {
-    if(reward.cost <= userdata.coins)
+    if (reward.cost <= userdata.coins)
       askConfirmation && askConfirmation(() => { redeemReward(reward); }, "Are you sure you want to redeem '" + reward.description + "' for " + reward.cost + " coins?");
     else
       showToastMessage && showToastMessage("You don't have enough buddy-coins to redeem this reward. You can earn more by completing quests or buying some products!", "info");
@@ -87,23 +84,49 @@ export default function PageReward({ userdata, setUserdata }: Readonly<{ userdat
 
   return (
     <div className='w-full h-full px-6 py-4'>
-      <div className='flex justify-between mb-4'>
-        <h1 className="page-title">Rewards</h1>
-        <StatPopup coins={userdata.coins} exp={userdata.experience} popup={false} />
-        <div className='flex'>
-          <button onClick={() => navigate('history')}>
+      <div className='flex justify-between gap-3 mb-4'>
+        {showHistory ?
+          <h1 className='page-title'>
+            <button onClick={() => setShowHistory(false)}>
+              <ArrowLeft />
+            </button>
+            <span className='ms-2'>
+              Redeemed Rewards
+            </span>
+          </h1>
+          :
+          <h1 className='page-title'>Rewards</h1>
+        }
+        <div className='flex gap-2'>
+          {!showHistory && <button onClick={() => setShowHistory(true)}>
             <History />
-          </button>
+          </button>}
+          <StatPopup coins={userdata.coins} exp={userdata.experience} popup={false} />
         </div>
       </div>
-      <div className='flex content-center justify-between'>
-        <ul className='flex flex-col gap-4 w-full'>
-          {rewards.map((reward: Reward) => (
-            <li key={reward.id} className=''>
-              <RewardCard reward={reward} confirmRewardRedemption={confirmRewardRedemption} />
-            </li>
-          ))}
-        </ul>
+      <div className='flex content-center justify-between items-center'>
+        {
+          !showHistory ?
+            <ul className='flex flex-col gap-4 w-full'>
+              {rewards.filter(r => !r.redeemed).map((reward: Reward) => (
+                <li key={reward.id}>
+                  <RewardCard reward={reward} confirmRewardRedemption={confirmRewardRedemption} />
+                </li>))}
+            </ul>
+            :
+            (
+              rewards.filter(r => r.redeemed).length > 0 ?
+                <ul className='flex flex-col gap-4 w-full'>
+                  {rewards.filter(r => r.redeemed).map((reward: Reward) => (
+                    <li key={reward.id}>
+                      <RewardCard reward={reward} />
+                    </li>))}
+                </ul>
+                :
+                <span className='flex items-center text-center text-3xl align-middle mt-80'>You haven't redeemed any reward yet</span>
+            )
+        }
+
       </div>
     </div >
   );

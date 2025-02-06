@@ -1,0 +1,56 @@
+[
+    {
+        "id": 0,
+        "description": "10% Off Zalando",
+        "cost": 200,
+        "icon": "coupon"
+    },
+    {
+        "id": 1,
+        "description": "15% Off Mondadori",
+        "cost": 200,
+        "icon": "coupon"
+    },
+    {
+        "id": 2,
+        "description": "Profile Picture",
+        "cost": 200,
+        "icon": "profile_picture_2"
+    },
+    {
+        "id": 3,
+        "description": "Profile Picture",
+        "cost": 200,
+        "icon": "profile_picture_3"
+    },
+    {
+        "id": 4,
+        "description": "Profile Picture",
+        "cost": 200,
+        "icon": "profile_picture_4"
+    },
+    {
+        "id": 5,
+        "description": "Profile Picture",
+        "cost": 200,
+        "icon": "profile_picture_5"
+    },
+    {
+        "id": 6,
+        "description": "Profile Picture",
+        "cost": 200,
+        "icon": "profile_picture_6"
+    },
+    {
+        "id": 7,
+        "description": "Profile Picture",
+        "cost": 200,
+        "icon": "profile_picture_7"
+    },
+    {
+        "id": 8,
+        "description": "Profile Picture",
+        "cost": 200,
+        "icon": "profile_picture_8"
+    }
+]

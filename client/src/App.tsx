@@ -275,7 +275,6 @@ export default function App() {
               userdata={userdata} setUserdata={setUserdata} />} />
             <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} leaderboardPath={`${paths[5]}`} userdata={userdata} setUserdata={setUserdata} />} />
             <Route path={`${paths[2]}`} element={<PageReward userdata={userdata} setUserdata={setUserdata} />} />
-            <Route path={`${paths[2]}/history`} element={<PageRewardHistory />} />
             <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} askConfirmation={askConfirmation} userdata={userdata} setUserdata={setUserdata} />} />
             <Route path={`${paths[4]}`} element={<PageNotFound />} />
             <Route path={`${paths[5]}`} element={<PageLeaderboard userdata={userdata} setUserdata={setUserdata} />} />
