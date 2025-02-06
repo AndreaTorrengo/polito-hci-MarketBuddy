@@ -252,7 +252,7 @@ export default function TabsHero({
                                                 selectedProducts={selectedProducts || new Map<number, number[]>()}
                                                 setFilteredVendors={setFilteredVendors}
                                                     closeAfter={closeAfter}>
-                                                    <p className="p-0 m-0 text-sm">Switch vendor</p>
+                                                <p className="p-0 m-0 text-sm">Switch Vendor</p>
                                                 </SwitchButton>
                                             </div>
                                             <div className="flex flex-col items-center gap-1 w-1/3">
@@ -261,7 +261,7 @@ export default function TabsHero({
                                                 selectedProducts={selectedProducts || new Map<number, number[]>()}
                                                     closeAfter={closeAfter}
                                                     setFilteredVendors={setFilteredVendors}>
-                                                    <p className="p-0 m-0 text-sm">Report issue</p>
+                                                <p className="p-0 m-0 text-sm">Report Issue</p>
                                                 </SignalErrorButton>
                                             </div>
                                             <div className="flex flex-col items-center gap-1 w-1/3">
@@ -270,7 +270,7 @@ export default function TabsHero({
                                                 selectedProducts={selectedProducts || new Map<number, number[]>()}
                                                 setFilteredVendors={setFilteredVendors}
                                                     closeAfter={closeAfter}>
-                                                    <p className="p-0 m-0 text-sm">Delete</p>
+                                                <p className="p-0 m-0 text-sm">Delete</p>
                                                 </DeleteButton>
                                             </div>
                                         </div>

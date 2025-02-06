@@ -2,7 +2,7 @@ import ProductItem, { ProductItemProps } from "./ProductItem";
 import { Award, Smile, ChevronRight, CircleCheckBig, Circle, CircleDollarSign } from "lucide-react";
 import { ButtonBase } from "@mui/material";
 import { Vendor } from "../../models";
-import React, {useContext, useRef} from "react";
+import React, { useContext, useRef } from "react";
 import VendorCategoryList from "../PageVendorProducts/VendorCategoryList";
 import globalContext from "../../Context";
 
@@ -104,26 +104,26 @@ export default function VendorGroup({
                     </div>
                 </div>
 
-                <div className="overflow-x-auto min-w-[50%]">
+                <div className="min-w-[50%]">
                     {/* <div className="flex flex-col w-full gap-6"> */}
                     <div className='flex flex-row items-center justify-around gap-2'>
                         <div className="w-1/3 flex flex-row items-center justify-center">
                             <Award color={`var(--${theme === 'dark' ? 'dark-' : ''}quality)`} />
-                            <p className="m-0 p-0 ms-0.5 font-bold">{vendor.quality_rating}</p>
+                            <p className="m-0 p-0 ms-0.5 font-semibold">{vendor.quality_rating}</p>
                         </div>
                         <div className="w-1/3 flex flex-row items-center justify-center">
                             <Smile color={`var(--${theme === 'dark' ? 'dark-' : ''}cordiality)`} />
-                            <p className="m-0 p-0 ms-0.5 font-bold">{vendor.cordiality_rating}</p>
+                            <p className="m-0 p-0 ms-0.5 font-semibold">{vendor.cordiality_rating}</p>
                         </div>
                         <div className="w-1/3 flex flex-row items-center justify-center">
                             <CircleDollarSign color={`var(--${theme === 'dark' ? 'dark-' : ''}convenience)`} />
-                            <p className="m-0 p-0 ms-0.5 font-bold">{vendor.convenience_rating}</p>
+                            <p className="m-0 p-0 ms-0.5 font-semibold">{vendor.convenience_rating}</p>
                         </div>
                     </div>
                     {/* </div> */}
                 </div>
             </div>
-            <div className="w-full pb-2 overflow-x-auto">
+            <div className="w-full pb-2">
                 <VendorCategoryList categories={vendor.categories}/>
             </div>
             <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 gap-3">
