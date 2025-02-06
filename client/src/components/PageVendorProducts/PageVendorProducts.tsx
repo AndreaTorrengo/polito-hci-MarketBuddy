@@ -211,6 +211,20 @@ export default function PageVendorProducts({
         }
     };
 
+    const handleTouchMove = (event: React.TouchEvent) => {
+        const touch = event.touches[0];
+        const target = event.target as HTMLElement;
+        const rect = target.getBoundingClientRect();
+        if (
+            touch.clientX < rect.left ||
+            touch.clientX > rect.right ||
+            touch.clientY < rect.top ||
+            touch.clientY > rect.bottom
+        ) {
+            handleTouchStop();
+        }
+    };
+
     return (
         <>
             <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot}
@@ -273,7 +287,7 @@ export default function PageVendorProducts({
                                                         className={`flex flex-row items-center gap-3 ${selectedProducts && selectedProducts.size > 0 ? "" : "opacity-50 pointer-events-none"}`}>
                                                         <SwitchButton
                                                             selectedMarket={selectedMarket}
-                                                            selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
+                                                            selectedProducts={new Map().set(vendor.id, selectedProducts ? Array.from(selectedProducts.keys()) : [])}
                                                             closeAfter={exitEditMode}
                                                             setFilteredVendors={setFilteredVendors}
                                                             setProductsWithoutAlternatives={setProductsWithoutAlternatives}
@@ -282,13 +296,13 @@ export default function PageVendorProducts({
                                                         <SignalErrorButton
                                                             closeAfter={exitEditMode}
                                                             selectedMarket={selectedMarket}
-                                                            selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
+                                                            selectedProducts={new Map().set(vendor.id, selectedProducts ? Array.from(selectedProducts.keys()) : [])}
                                                             setFilteredVendors={setFilteredVendors}
                                                         />
                                                         <DeleteButton
                                                             closeAfter={exitEditMode}
                                                             selectedMarket={selectedMarket}
-                                                            selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
+                                                            selectedProducts={new Map().set(vendor.id, selectedProducts ? Array.from(selectedProducts.keys()) : [])}
                                                             setFilteredVendors={setFilteredVendors}
                                                             theme={theme}
                                                         />
@@ -427,6 +441,7 @@ export default function PageVendorProducts({
                                                         }}
                                                         onTouchStart={() => handleTouchStart(product.id)}
                                                         onTouchEnd={handleTouchStop}
+                                                        onTouchMove={handleTouchMove}
                                             >
                                                 <ProductListItem key={product.id} {...product} editMode={false}/>
                                             </ButtonBase>

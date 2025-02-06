@@ -4,8 +4,6 @@ import {ButtonBase} from "@mui/material";
 import {Vendor} from "../../models";
 import React, { useRef } from "react";
 import VendorCategoryList from "../PageVendorProducts/VendorCategoryList";
-import {DomEvent} from "leaflet";
-import preventDefault = DomEvent.preventDefault;
 
 export interface VendorGroupProps {
     id: number;
@@ -46,6 +44,20 @@ export default function VendorGroup({
         if (intervalRef.current) {
             clearInterval(intervalRef.current);
             intervalRef.current = null;
+        }
+    };
+
+    const handleTouchMove = (event: React.TouchEvent) => {
+        const touch = event.touches[0];
+        const target = event.target as HTMLElement;
+        const rect = target.getBoundingClientRect();
+        if (
+            touch.clientX < rect.left ||
+            touch.clientX > rect.right ||
+            touch.clientY < rect.top ||
+            touch.clientY > rect.bottom
+        ) {
+            handleTouchStop();
         }
     };
 
@@ -127,6 +139,7 @@ export default function VendorGroup({
                                 }}
                                 onTouchEnd={handleTouchStop}
                                 onTouchStart={() => handleTouchStart(vendor.id, product.id)}
+                                onTouchMove={handleTouchMove}
                     >
                         <ProductItem key={product.id} {...product}
                                      isSelected={selectedProducts.includes(product.id) || false}
