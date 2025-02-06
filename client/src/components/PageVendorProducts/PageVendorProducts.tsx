@@ -166,7 +166,6 @@ export default function PageVendorProducts({
         }
     }
 
-
     const [showUpArrow, setShowUpArrow] = useState(false);
 
     //observe div
@@ -273,13 +272,13 @@ export default function PageVendorProducts({
                                                 </>}
                                             <div
                                                 className={`absolute w-full bottom-0 left-0 z-[11] pb-2 pt-2.5 border-t-[1px] border-tremor-border dark:border-dark-tremor-border dark:bg-dark-tremor-background-muted bg-tremor-background-muted`}>
-                                                <div className={`flex flex-row items-center justify-evenly py-0.5 ${selectedProducts && selectedProducts.size > 0 ? "" : "opacity-50 pointer-events-none"}`}
+                                                <div className={`flex flex-row items-center justify-evenly px-2 py-0.5 ${selectedProducts && selectedProducts.size > 0 ? "" : "opacity-50 pointer-events-none"}`}
                                                      ref={targetRef}>
                                                     {isEditMode
                                                         //&& selectedProducts && selectedProducts.size > 0
                                                         &&
                                                         <>
-                                                            <div className="flex flex-col items-center gap-1 w-24">
+                                                            <div className="flex flex-col items-center gap-1 w-1/3">
                                                                 <SwitchButton
                                                                     setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                                                     selectedMarket={selectedMarket}
@@ -290,7 +289,7 @@ export default function PageVendorProducts({
                                                                     <p className="p-0 m-0 text-sm">Switch vendor</p>
                                                                 </SwitchButton>
                                                             </div>
-                                                            <div className="flex flex-col items-center gap-1 w-24">
+                                                            <div className="flex flex-col items-center gap-1 w-1/3">
                                                                 <SignalErrorButton
                                                                     selectedMarket={selectedMarket}
                                                                     selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts ? selectedProducts.keys() : []))}                                                                    closeAfter={exitEditMode}
@@ -298,7 +297,7 @@ export default function PageVendorProducts({
                                                                     <p className="p-0 m-0 text-sm">Report issue</p>
                                                                 </SignalErrorButton>
                                                             </div>
-                                                            <div className="flex flex-col items-center gap-1 w-24">
+                                                            <div className="flex flex-col items-center gap-1 w-1/3`">
                                                                 <DeleteButton
                                                                     selectedMarket={selectedMarket}
                                                                     selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts ? selectedProducts.keys() : []))}                                                                    setFilteredVendors={setFilteredVendors}

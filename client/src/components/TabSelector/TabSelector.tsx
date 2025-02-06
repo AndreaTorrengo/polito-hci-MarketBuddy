@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import PageMap from '../PageMap/PageMap';
 import {Market, Vendor, Product} from '../../models';
 import PageShoppingList from '../PageShoppingList/PageShoppingList';
@@ -55,7 +55,7 @@ export default function TabsHero({
     const [addProductId, setAddProductId] = useState<number | null>(null) //the id is -1 in case of add Products from shopping list page or vendorId from vendor Page
 
     //total number of products
-    const totalProducts = filteredVendors.reduce((acc, vendor) => acc + vendor.products.length, 0);
+    const totalProducts = useMemo(() => filteredVendors.reduce((acc, vendor) => acc + vendor.products.length, 0), [filteredVendors]);
 
     const [activeTab, setActiveTab] = useState(() => {
         return localStorage.getItem('activeTab') ?? 'list';
@@ -89,7 +89,12 @@ export default function TabsHero({
     const openEditMode = (event: React.MouseEvent, vendorId: number, productId: number) => {
         event.preventDefault();
         const newMap = new Map<number, number[]>();
-        newMap.set(vendorId, [productId]);
+        if(productId == -1) {
+            newMap.set(vendorId, filteredVendors.find(vendor => vendor.id === vendorId)?.products.map(product => product.id) ?? []);
+        }
+        else {
+            newMap.set(vendorId, [productId]);
+        }
         setSelectedProducts(newMap);
 
         //disable filter when in edit mode
@@ -251,8 +256,8 @@ export default function TabsHero({
                                     }/>
                                 <div
                                     className="absolute w-full bottom-0 left-0 z-[11] pb-2 pt-2.5 dark:bg-dark-tremor-background-muted bg-tremor-background-muted border-t-[1px] border-tremor-border dark:border-dark-tremor-border">
-                                    <div className={`flex flex-row items-center justify-evenly py-0.5 ${selectedProducts && selectedProducts.size > 0 ? "" : "opacity-50 pointer-events-none"}`}>
-                                            <div className="flex flex-col items-center gap-1 w-24">
+                                    <div className={`flex flex-row items-center justify-around px-2 py-0.5 ${selectedProducts && selectedProducts.size > 0 ? "" : "opacity-50 pointer-events-none"}`}>
+                                            <div className="flex flex-col items-center gap-1 w-1/3">
                                                 <SwitchButton
                                                     setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                                     selectedMarket={selectedMarket}
@@ -262,7 +267,7 @@ export default function TabsHero({
                                                     <p className="p-0 m-0 text-sm">Switch vendor</p>
                                                 </SwitchButton>
                                             </div>
-                                            <div className="flex flex-col items-center gap-1 w-24">
+                                            <div className="flex flex-col items-center gap-1 w-1/3">
                                                 <SignalErrorButton
                                                     selectedMarket={selectedMarket}
                                                     selectedProducts={selectedProducts? selectedProducts : new Map<number, number[]>()}
@@ -271,7 +276,7 @@ export default function TabsHero({
                                                     <p className="p-0 m-0 text-sm">Report issue</p>
                                                 </SignalErrorButton>
                                             </div>
-                                            <div className="flex flex-col items-center gap-1 w-24">
+                                            <div className="flex flex-col items-center gap-1 w-1/3">
                                                 <DeleteButton
                                                     selectedMarket={selectedMarket}
                                                     selectedProducts={selectedProducts? selectedProducts : new Map<number, number[]>()}
@@ -405,6 +410,7 @@ export default function TabsHero({
                                     initialVendor={initialSelectedMapVendor}
                                     setInitialVendor={setInitialSelectedMapVendor}
                                     setUserData={setUserdata}
+                                    filteredProductsVendors={filteredProductsVendors}
                                 />
                             </div>
                         )}

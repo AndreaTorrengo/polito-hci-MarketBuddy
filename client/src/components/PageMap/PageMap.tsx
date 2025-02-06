@@ -68,6 +68,7 @@ interface PageMapProps {
     initialVendor?: Vendor | null;
     setInitialVendor?: React.Dispatch<React.SetStateAction<Vendor | null>>;
     setUserData: React.Dispatch<React.SetStateAction<any>>;
+    filteredProductsVendors: Vendor[];
 }
 
 const PageMap: React.FC<PageMapProps> = ({
@@ -82,7 +83,8 @@ const PageMap: React.FC<PageMapProps> = ({
     setProductsWithoutAlternatives,
     initialVendor,
     setInitialVendor,
-    setUserData
+    setUserData,
+    filteredProductsVendors
 }) => {
     const [markerPosition, setMarkerPosition] = useState<[number, number]>([
         selectedMarket.position[0],
@@ -232,7 +234,8 @@ const PageMap: React.FC<PageMapProps> = ({
                     isMarketCenter={mapCenter[0] === selectedMarket.position[0] && mapCenter[1] === selectedMarket.position[1]} targetPosition={targetPosition} setTargetPosition={setTargetPosition}
                 />
                 {/* Vendors position */}
-                {filteredVendors?.map((vendor, idx) => {
+                {filteredProductsVendors?.filter(vendor => vendor.products.length > 0)
+                    .map((vendor, idx) => {
                     const position: [number, number] = vendor.position as [number, number];
                     const isFiltered = filteredVendors.some(filteredVendor => filteredVendor.id === vendor.id);
                     const icon = selectedMarker === position
@@ -244,7 +247,7 @@ const PageMap: React.FC<PageMapProps> = ({
                             eventHandlers={{
                                 click: () => {
                                     handleMarkerClick(position);
-                                    setSelectedVendor(vendor);
+                                    setSelectedVendor(filteredVendors.find(v => v.id == vendor.id) as Vendor);
                                     if (!isOpen) {
                                         setIsOpen(true);
                                     }

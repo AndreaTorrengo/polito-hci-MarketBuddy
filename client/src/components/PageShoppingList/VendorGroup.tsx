@@ -34,8 +34,10 @@ export default function VendorGroup({
             <div className="flex flex-row gap-2 pb-2 mt-3 items-center justify-between cursor-pointer" onClick={() => {
                 setSelectedVendor();
                 setVendorPageOpened(true)
+            }} onContextMenu={(e) => {
+                openEditMode(e, vendor.id, -1);
             }}>
-                <div className="max-w-[50%] min-w-[30%] flex flex-row items-center gap-2">
+                <div className="max-w-[50%] min-w-[30%] flex flex-row items-center gap-2 select-none">
                 {/* Show Select Indicator in Edit Mode */}
                 {
                     isEditMode &&
