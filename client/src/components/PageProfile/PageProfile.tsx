@@ -1,13 +1,13 @@
 import { Hexagon, Coins } from 'lucide-react'
-import { DarkModeCustomSwitch } from './darkModeSwitch';
-import API from '../../API';
 import { Dispatch, SetStateAction, useContext } from 'react';
-import { UserData } from './UserData';
-import { ICONS } from "./Icons";
-import IconSelector from './IconSelector';
+import { DarkModeCustomSwitch } from './darkModeSwitch.tsx';
+import API from '../../API.ts';
+import { UserData } from './UserData.tsx';
+import { ICONS } from "./Icons.tsx";
+import IconSelector from './IconSelector.tsx';
 import { Card, TextInput } from '@tremor/react';
-import { Button } from '../generalPurposeComponents/Button';
-import globalContext from '../../Context';
+import { Button } from '../generalPurposeComponents/Button.tsx';
+import globalContext, { AppContextProps } from '../../Context.tsx';
 
 interface PageProfileProps {
   toggleTheme: () => void;
@@ -17,7 +17,7 @@ interface PageProfileProps {
 }
 
 export default function PageProfile({ toggleTheme, userdata, setUserdata }: Readonly<PageProfileProps>) {
-  const { theme, askConfirmation, showToastMessage } = useContext(globalContext) || {};
+  const { theme, askConfirmation, showToastMessage } = useContext<AppContextProps>(globalContext);
 
   function clearStorage() {
     askConfirmation && askConfirmation(() => {

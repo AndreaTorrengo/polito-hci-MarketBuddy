@@ -8,7 +8,7 @@ const Dao = {
       const database = await db;
       const products = await database.all('SELECT * FROM products');
 
-      return products.map(product => new Product(product.id, product.name, product.price, product.points, product.image));
+      return products.map(product => new Product(product.id, product.name, product.price, product.image, product.points));
     } catch (error) {
       throw new Error('Failed to retrieve products');
     }
@@ -35,7 +35,7 @@ const Dao = {
           vendor.price_multiplier,
           categories.map(c => c.name),
           badges.map(b => b.name),
-          products.map(p => new Product(p.id, p.name, p.price, p.points, p.image))
+          products.map(p => new Product(p.id, p.name, p.price, p.image, p.points))
         );
       }));
 

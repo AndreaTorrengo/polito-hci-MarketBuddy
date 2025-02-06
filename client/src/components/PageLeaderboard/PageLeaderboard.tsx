@@ -1,7 +1,7 @@
 import { useState } from "react";
-import BackButton from "../generalPurposeComponents/BackButton";
-import { DEFAULT_ICON_PATH, ICONS } from "../PageProfile/Icons";
-import { UserData } from "../PageProfile/UserData";
+import BackButton from "../generalPurposeComponents/BackButton.tsx";
+import { DEFAULT_ICON_PATH, ICONS } from "../PageProfile/Icons.tsx";
+import { UserData } from "../PageProfile/UserData.tsx";
 import { Hexagon } from "lucide-react";
 
 interface PageLeaderboardProps {
@@ -13,7 +13,7 @@ export default function PageLeaderboard({ userdata }: Readonly<PageLeaderboardPr
   const user_exp = userdata.experience;
   const username = userdata.username;
   const userIconPath = UserData.getIconPath(userdata.iconId);
-  const iconPaths = ICONS.map(i => i.path);
+  const iconPaths = ICONS.map((i: { path: string; }) => i.path);
 
   const globalLeaderboard = [
     // Example data for global leaderboard

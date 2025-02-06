@@ -1,5 +1,5 @@
 import { Plus } from "lucide-react";
-import { Button } from "../generalPurposeComponents/Button";
+import { Button } from "../generalPurposeComponents/Button.tsx";
 
 interface AddProductsButtonProps {
     onClick: () => void;

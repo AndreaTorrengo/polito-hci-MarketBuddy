@@ -1,12 +1,12 @@
 import { DialogPanel } from '@tremor/react';
-import { Dialog } from '../generalPurposeComponents/Dialog';
-import { Button } from '../generalPurposeComponents/Button';
-import { Vendor, Product, Market } from '../../models';
+import { Dialog } from '../generalPurposeComponents/Dialog.tsx';
+import { Button } from '../generalPurposeComponents/Button.tsx';
+import { Vendor, Product, Market } from '../../models.tsx';
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import './MissingProductsDialog.css';
-import globalContext from '../../Context';
-import ProductItem from '../PageShoppingList/ProductItem';
+import globalContext from '../../Context.tsx';
+import ProductItem from '../PageShoppingList/ProductItem.tsx';
 import { ChevronLeft, ChevronRight, TriangleAlert } from 'lucide-react'
 
 interface MissingProductsDialogProps {
@@ -91,7 +91,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
         selectedAlternatives.forEach(alternative => {
             const vendor = vendors.find(v => v.products.some((product: Product) => product.name === alternative.name));
             if (vendor) {
-                const product = vendor.products.find(p => p.name === alternative.name);
+                const product = vendor.products.find((p: { name: string; }) => p.name === alternative.name);
                 if (product) {
                     const existingVendor = updatedFilteredVendor.find(v => v.name === vendor.name);
                     if (existingVendor) {
@@ -187,7 +187,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
 
                                     <div className={`flex justify-center gap-4 grid-cols-${randomAlternatives[missingProducts[currentIndex]]?.length >= 4 ? '4' : randomAlternatives[missingProducts[currentIndex]]?.length}`}>
                                         {Array.isArray(randomAlternatives[missingProducts[currentIndex]]) && randomAlternatives[missingProducts[currentIndex]].length > 0 ? (
-                                            randomAlternatives[missingProducts[currentIndex]].map((alternative, altIndex) => (
+                                            randomAlternatives[missingProducts[currentIndex]].map((alternative) => (
                                                 <div key={alternative.id}>
                                                     <button onClick={() => handleSelectAlternative(missingProducts[currentIndex], alternative)} style={{ width: '120px', height: '120px' }}>
                                                         <ProductItem

@@ -1,7 +1,7 @@
 import React from 'react';
 import { DialogPanel } from '@tremor/react';
-import { Dialog } from '../generalPurposeComponents/Dialog';
-import { Product } from '../../models';
+import { Dialog } from '../generalPurposeComponents/Dialog.tsx';
+import { Product } from '../../models.tsx';
 import './Dialogs.css';
 
 interface FeedbackSwitchDialogProps {

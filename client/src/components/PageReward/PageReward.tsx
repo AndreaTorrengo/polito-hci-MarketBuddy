@@ -1,12 +1,12 @@
 import { useContext, Dispatch, SetStateAction, useState } from 'react';
-import { Reward } from '../../models';
-import globalContext from '../../Context';
-import StatPopup from '../generalPurposeComponents/StatPopup';
-import { UserData } from '../PageProfile/UserData';
-import { ICONS, IconLocker } from '../PageProfile/Icons';
+import { Reward } from '../../models.tsx';
+import globalContext from '../../Context.tsx';
+import StatPopup from '../generalPurposeComponents/StatPopup.tsx';
+import { UserData } from '../PageProfile/UserData.tsx';
+import { ICONS, IconLocker } from '../PageProfile/Icons.tsx';
 import { Tag, History, Coins, ArrowLeft } from 'lucide-react';
 
-import rewardsJSON from '../../assets/rewards.json';
+import rewardsJSON from '../../assets/rewards.json' assert { type: "json" };
 
 const rewardsData: Reward[] = rewardsJSON;
 

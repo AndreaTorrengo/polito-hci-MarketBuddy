@@ -1,8 +1,7 @@
-import { useEffect, useState, useRef, useContext } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Card } from "@tremor/react";
 import { ArrowUp, ArrowDown, Hexagon, Coins } from "lucide-react";
 import PropTypes from "prop-types";
-import globalContext from "../../Context";
 
 type Props = {
   coins: number;
@@ -41,8 +40,6 @@ export default function StatPopup({ coins, exp, popup, className }: Props) {
   const [prevExp, setPrevExp] = useState(exp);
   const [displayCoins, setDisplayCoins] = useState(coins);
   const [displayExp, setDisplayExp] = useState(exp);
-
-  const { theme } = useContext(globalContext) || {};
 
   useEffect(() => {
     if (coins !== prevCoins || exp !== prevExp) {

@@ -106,7 +106,7 @@ export default function PageAddProducts({
     }
 
     function handleAdd() {
-        selectedProducts.forEach((_, productId) => {
+        selectedProducts.forEach((_product, productId) => {
             let productAdded = false;
             allVends.forEach(vendor => {
                 if (productAdded) return;

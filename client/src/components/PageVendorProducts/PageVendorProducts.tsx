@@ -8,7 +8,7 @@ import { Sheet } from 'react-modal-sheet';
 import VendorBadges from "./VendorBadges.tsx";
 import { ButtonBase } from "@mui/material";
 import { DialogPanel } from "@tremor/react";
-import { Dialog } from '../generalPurposeComponents/Dialog';
+import { Dialog } from '../generalPurposeComponents/Dialog.tsx';
 import ContextMenu, { ContextMenuProps } from "../generalPurposeComponents/ContextMenu.tsx";
 import SwitchButton from "./SwitchButton.tsx";
 import DeleteButton from "./DeleteButton.tsx";
@@ -321,7 +321,7 @@ export default function PageVendorProducts({
                                                                         selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts ? selectedProducts.keys() : []))}
                                                                 setFilteredVendors={setFilteredVendors}
                                                                         closeAfter={exitEditMode}>
-                                                                        <p className="p-0 m-0 text-sm">Switch vendor</p>
+                                                                <p className="p-0 m-0 text-sm">Switch Vendor</p>
                                                                     </SwitchButton>
                                                                 </div>
                                                                 <div className="flex flex-col items-center gap-1 w-1/3">
@@ -330,7 +330,7 @@ export default function PageVendorProducts({
                                                                         selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts ? selectedProducts.keys() : []))}
                                                                         closeAfter={exitEditMode}
                                                                         setFilteredVendors={setFilteredVendors}>
-                                                                        <p className="p-0 m-0 text-sm">Report issue</p>
+                                                                <p className="p-0 m-0 text-sm">Report Issue</p>
                                                                     </SignalErrorButton>
                                                                 </div>
                                                                 <div className="flex flex-col items-center gap-1 w-1/3">
@@ -339,7 +339,7 @@ export default function PageVendorProducts({
                                                                         selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts ? selectedProducts.keys() : []))}
                                                                 setFilteredVendors={setFilteredVendors}
                                                                         closeAfter={exitEditMode}>
-                                                                        <p className="p-0 m-0 text-sm">Delete</p>
+                                                                <p className="p-0 m-0 text-sm">Delete</p>
                                                                     </DeleteButton>
                                                                 </div>
                                                             </>

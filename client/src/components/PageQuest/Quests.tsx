@@ -1,4 +1,4 @@
-import { Quest } from "../../models";
+import { Quest } from "../../models.ts";
 
 
 export const quest_array: Quest[] = [

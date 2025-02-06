@@ -30,15 +30,15 @@ class Product {
     id: number;
     name: string;
     price: number;
-    points?: number;
     image: string;
+    points?: number;
 
-    constructor(id: number, name: string, price: number, points: number, image: string) {
+    constructor(id: number, name: string, price: number, image: string, points?: number) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.points = points;
         this.image = image;
+        this.points = points;
 
     }
 }
@@ -76,7 +76,7 @@ class Reward {
     }
 }
 
-interface Quest {
+class Quest {
     id: number;
     coins: number;
     exp: number;
@@ -84,6 +84,16 @@ interface Quest {
     description: string;
     progress: string;
     completed: boolean;
+
+    constructor(id: number, coins: number, exp: number, title: string, description: string, progress: string, completed: boolean) {
+        this.id = id;
+        this.coins = coins;
+        this.exp = exp;
+        this.title = title;
+        this.description = description;
+        this.progress = progress;
+        this.completed = completed;
+    }
 }
 
 

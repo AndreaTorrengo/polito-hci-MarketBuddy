@@ -1,8 +1,8 @@
 import React, {useState, useEffect, useMemo} from 'react';
-import PageMap from '../PageMap/PageMap';
-import {Market, Vendor, Product} from '../../models';
-import PageShoppingList from '../PageShoppingList/PageShoppingList';
-import MarketSelectorSheet from '../MarketSelectorSheet/MarketSelectorSheet';
+import PageMap from '../PageMap/PageMap.tsx';
+import { Market, Vendor, Product } from '../../models.ts';
+import PageShoppingList from '../PageShoppingList/PageShoppingList.tsx';
+import MarketSelectorSheet from '../MarketSelectorSheet/MarketSelectorSheet.tsx';
 import {ButtonBase} from "@mui/material";
 import SwitchButton from "../PageVendorProducts/SwitchButton.tsx";
 import SignalErrorButton from "../PageVendorProducts/SignalErrorButton.tsx";
@@ -252,7 +252,7 @@ export default function TabsHero({
                                                 selectedProducts={selectedProducts || new Map<number, number[]>()}
                                                 setFilteredVendors={setFilteredVendors}
                                                     closeAfter={closeAfter}>
-                                                    <p className="p-0 m-0 text-sm">Switch vendor</p>
+                                                <p className="p-0 m-0 text-sm">Switch Vendor</p>
                                                 </SwitchButton>
                                             </div>
                                             <div className="flex flex-col items-center gap-1 w-1/3">
@@ -261,7 +261,7 @@ export default function TabsHero({
                                                 selectedProducts={selectedProducts || new Map<number, number[]>()}
                                                     closeAfter={closeAfter}
                                                     setFilteredVendors={setFilteredVendors}>
-                                                    <p className="p-0 m-0 text-sm">Report issue</p>
+                                                <p className="p-0 m-0 text-sm">Report Issue</p>
                                                 </SignalErrorButton>
                                             </div>
                                             <div className="flex flex-col items-center gap-1 w-1/3">
@@ -270,7 +270,7 @@ export default function TabsHero({
                                                 selectedProducts={selectedProducts || new Map<number, number[]>()}
                                                 setFilteredVendors={setFilteredVendors}
                                                     closeAfter={closeAfter}>
-                                                    <p className="p-0 m-0 text-sm">Delete</p>
+                                                <p className="p-0 m-0 text-sm">Delete</p>
                                                 </DeleteButton>
                                             </div>
                                         </div>
