@@ -46,13 +46,13 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                     let alternatives: Product[] = [];
                     if (product === 'Pears' && selectedMarket.name === 'Crocetta Market') {
                         alternatives = [
-                            { id: 1, name: 'Kiwi', price: 1.5, points: undefined, image: "src/assets/products/kiwi.jpg" },
-                            { id: 2, name: "Apples", price: 1.0, points: 15, image: "src/assets/products/mele.jpg" }
+                            { id: 1, name: 'Kiwi', price: 1.5, points: undefined, image: "products/kiwi.jpg" },
+                            { id: 2, name: "Apples", price: 1.0, points: 15, image: "products/mele.jpg" }
                         ];
                     } else if (product === "Pears") {
-                        alternatives = [{ id: 3, name: "Apples", price: 1.0, points: 15, image: "src/assets/products/mele.jpg" }];
+                        alternatives = [{ id: 3, name: "Apples", price: 1.0, points: 15, image: "products/mele.jpg" }];
                     } else if (product === "Bream") {
-                        alternatives = [{ id: 10, name: "Cod", price: 9.5, points: undefined, image: "src/assets/products/cod.webp" }];
+                        alternatives = [{ id: 10, name: "Cod", price: 9.5, points: undefined, image: "products/cod.webp" }];
                     } else {
                         alternatives = [];
                     }

@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 const corsOptions = {
-  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  origin: ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:4173'],
   optionsSuccessStatus: 200,
   credentials: true
 };
