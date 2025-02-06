@@ -227,15 +227,15 @@ export default function TabsHero({
                                                 </>}
                                             {
                                                 selectedProducts && countSelectedProducts() === totalProducts ?
-                                                    <div className="flex items-center justify-center" onClick={
+                                                    <button className="flex items-center justify-center" onClick={
                                                         () => {
                                                             setSelectedProducts(new Map());
                                                         }
                                                     }>
                                                         <CircleCheckBig size={20}/>
-                                                    </div>
+                                                    </button>
                                                     :
-                                                    <div
+                                                    <button
                                                         className="flex items-center justify-center"
                                                         onClick={
                                                             () => {
@@ -243,7 +243,7 @@ export default function TabsHero({
                                                             }
                                                         }>
                                                         <Circle size={20} color="gray"/>
-                                                    </div>
+                                                    </button>
 
                                             }
 
@@ -310,7 +310,7 @@ export default function TabsHero({
                                 <button onClick={() => changeTab()}
                                         className="flex w-full place-self-center justify-center my-2 rounded-lg bg-tremor-border dark:bg-dark-tremor-border">
                                     <button disabled={activeTab === "list"}
-                                        className='w-1/4 px-4 py-2 rounded-md text-center z-[1] font-semibold uppercase bg-transparent translate-x-1/2'
+                                        className={`w-1/4 px-4 py-2 rounded-md text-center z-[1] font-semibold uppercase bg-transparent translate-x-1/2 ${activeTab === 'list' ? 'text-white' : ''}`}
                                     >
                                         List
                                     </button>
@@ -324,7 +324,7 @@ export default function TabsHero({
                                     >
                                     </button>
                                     <button disabled={activeTab === "map"}
-                                        className='w-1/4 px-4 py-2 rounded-md text-center z-[1] font-semibold uppercase bg-transparent -translate-x-1/2'
+                                        className={`w-1/4 px-4 py-2 rounded-md text-center z-[1] font-semibold uppercase bg-transparent -translate-x-1/2 ${activeTab === 'map' ? 'text-white' : ''}`}
                                     >
                                         Map
                                     </button>
