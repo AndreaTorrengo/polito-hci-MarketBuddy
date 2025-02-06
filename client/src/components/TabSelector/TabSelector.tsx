@@ -284,7 +284,7 @@ export default function TabsHero({
                                     <MarketSelectorSheet className="!p-0" selectedMarket={selectedMarket}
                                                          setSelectedMarket={setSelectedMarket}/>
                                 </div>
-                                <div className='flex flex-row gap-6'>
+                                <div className='flex flex-row gap-6 items-center'>
                                     <TextInput
                                         placeholder="Search Products"
                                         id="search"

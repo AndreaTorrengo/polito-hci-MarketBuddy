@@ -163,7 +163,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
         <>
             {missingProducts.length > 0 && (
                 <Button
-                    className="my-1 py-2 px-5 bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle "
+                    className="my-1 py-2 px-5 text-sm bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle "
                     color='danger'
                     // variant='contained'
                     onClick={() => setIsOpen(true)}

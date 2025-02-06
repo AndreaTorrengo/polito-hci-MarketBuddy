@@ -376,7 +376,7 @@ export default function PageVendorProducts({
                             <div className="w-full flex-1">
                                 {/* Product list top bar */}
                                 <div className="w-full flex flex-row justify-between items-center">
-                                    <p className="m-0 p-0">Your planned purchases</p>
+                                    <p className="m-0 p-0 text-sm">Your planned purchases</p>
                                     <AddProductsButton onClick={() => setAddProductId(vendor.id)} />
                                 </div>
                                 {/* Product list */}
