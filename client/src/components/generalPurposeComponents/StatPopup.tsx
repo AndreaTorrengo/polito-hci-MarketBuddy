@@ -7,6 +7,7 @@ type Props = {
   coins: number;
   exp: number;
   popup: boolean;
+  className?: string;
 };
 
 // Function to animate numbers
@@ -32,7 +33,7 @@ const animateValue = (start: number, end: number, setter: (val: number) => void)
   });
 };
 
-export default function StatPopup({ coins, exp, popup }: Props) {
+export default function StatPopup({ coins, exp, popup, className }: Props) {
   const countDownRef = useRef(0); // use for popup auto dismiss
   const [showPopup, setShowPopup] = useState(false);
   const [prevCoins, setPrevCoins] = useState(coins);
@@ -83,7 +84,7 @@ export default function StatPopup({ coins, exp, popup }: Props) {
                 {displayExp}
               </span>
             </div>
-            <div className="flex items-center space-x-2 text-lg font-semibold">
+            <div className="flex items-center space-x-2 text-lg font-semibold ">
               <Coins color="var(--buddy-coins)" />
               <span
                 className={`flex items-center transition-all duration-300 ${coins >= prevCoins ? "text-[var(--buddy-coins)]" : "text-red-600"
@@ -96,19 +97,14 @@ export default function StatPopup({ coins, exp, popup }: Props) {
           </Card>
         </div>
         :
-        <div className="">
-          <Card className="p-4 bg-white shadow-lg rounded-xl flex flex-col space-y-2">
-            <div className="flex items-center space-x-2 text-lg font-semibold">
-              <Coins color="var(--buddy-coins)" />
-              <span
-                className={`flex items-center transition-all duration-300 ${coins >= prevCoins ? "text-[var(--buddy-coins)]" : "text-red-600"
-                  }`}
-              >
-                {showPopup ? <ArrowDown /> : <span></span>}
-                {displayCoins}
-              </span>
-            </div>
-          </Card>
+        <div className={`flex items-center text-lg font-semibold text-[var(--buddy-coins)] ${className}`}>
+          <ArrowDown className={`transition-opacity duration-300 ${showPopup ? 'opacity-100' : 'opacity-0'}`} />
+          <div
+            className='flex items-center justify-left px-1 w-20 transition-all duration-300'
+          >
+            <Coins color="var(--buddy-coins)" />
+            <span className="pl-2 text-left">{displayCoins}</span>
+          </div>
         </div>}
     </>
   );

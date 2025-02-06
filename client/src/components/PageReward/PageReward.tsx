@@ -23,7 +23,7 @@ const iconsMap: { [key: string]: JSX.Element } = {
 
 export function RewardCard({ reward, confirmRewardRedemption = () => { } }: Readonly<{ reward: Reward, confirmRewardRedemption?: (reward: Reward) => void }>) {
   return (
-    <button className='flex justify-between w-full h-full items-center py-2 px-4 rounded-tremor-default bg-tremor-background-muted dark:bg-dark-tremor-background-muted animated active:brightness-75 dark:active:brightness-125' onClick={() => confirmRewardRedemption(reward)}>
+    <button className={`flex justify-between w-full h-full items-center py-2 px-4 rounded-tremor-default bg-tremor-background-muted dark:bg-dark-tremor-background-muted animated ${!reward.redeemed && "active:brightness-75 dark:active:brightness-125"}`} onClick={() => confirmRewardRedemption(reward)}>
       <div className='flex'>
         <div className='h-10 w-10 flex items-center'>
           {iconsMap[reward.icon] || <p>{reward.icon}</p>}
@@ -97,11 +97,11 @@ export default function PageReward({ userdata, setUserdata }: Readonly<{ userdat
           :
           <h1 className='page-title'>Rewards</h1>
         }
-        <div className='flex gap-2'>
+        <div className='flex'>
           {!showHistory && <button onClick={() => setShowHistory(true)}>
             <History />
           </button>}
-          <StatPopup coins={userdata.coins} exp={userdata.experience} popup={false} />
+          <StatPopup className="pl-1.5" coins={userdata.coins} exp={userdata.experience} popup={false} />
         </div>
       </div>
       <div className='flex content-center justify-between items-center'>
