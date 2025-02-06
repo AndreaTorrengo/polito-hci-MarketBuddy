@@ -102,8 +102,7 @@ export default function PageVendorProducts({
         setSelectedProducts(null);
     }
 
-    const openEditMode = (event: React.MouseEvent, productId: number) => {
-        event.preventDefault();
+    const openEditMode = (productId: number) => {
         const product = products.find(p => p.id === productId);
         if (!product) {
             throw new Error("Product not found");
@@ -192,6 +191,25 @@ export default function PageVendorProducts({
             }
         };
     }, [targetRef, isEditMode]);
+
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+    const handleTouchStart = (productId: number) => {
+        if (!isEditMode) {
+            intervalRef.current = setInterval(() => {
+                openEditMode(productId);
+                clearInterval(intervalRef.current as NodeJS.Timeout);
+                intervalRef.current = null;
+            }, 700);
+        }
+    };
+
+    const handleTouchStop = () => {
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        }
+    };
 
     return (
         <>
@@ -391,6 +409,10 @@ export default function PageVendorProducts({
                                                         onClick={() => {
                                                             addOrRemoveSelected(index);
                                                         }}
+                                                        onContextMenu={(e) => {
+                                                            //openEditMode(e, product.id);
+                                                            e.preventDefault()
+                                                        }}
                                             >
                                                 <ProductListItem key={product.id} {...product} editMode={true}
                                                                  isSelected={
@@ -400,9 +422,11 @@ export default function PageVendorProducts({
                                             :
                                             <ButtonBase key={product.id} component="div"
                                                         onContextMenu={(e) => {
-                                                            //onLongPress(e, index);
-                                                            openEditMode(e, product.id);
+                                                            //openEditMode(e, product.id);
+                                                            e.preventDefault()
                                                         }}
+                                                        onTouchStart={() => handleTouchStart(product.id)}
+                                                        onTouchEnd={handleTouchStop}
                                             >
                                                 <ProductListItem key={product.id} {...product} editMode={false}/>
                                             </ButtonBase>
