@@ -66,7 +66,7 @@ export default function PageShoppingList({
                     setFilteredVendors={setFilteredVendors}
                 />
                 }
-                <div className="overflow-auto">
+                <div className="overflow-y-auto">
                     {
                 filteredProductsVendors.map((vendor) => (
                     vendor.products.length > 0 &&

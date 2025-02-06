@@ -222,7 +222,7 @@ export default function PageAddProducts({
                         id="search"
                         name="search"
                         type="search"
-                        className="py-1 ps-3 rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle"
+                    className="py-1 ps-1 rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle"
                         icon={Search}
                         onChange={(e) => setSearchInput(e.target.value)}
                         value={searchInput}

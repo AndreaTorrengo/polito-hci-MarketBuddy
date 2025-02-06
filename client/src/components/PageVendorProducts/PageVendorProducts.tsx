@@ -448,7 +448,7 @@ export default function PageVendorProducts({
                 </Sheet.Container>
                 {
                     origin != "map" ?
-                        <Sheet.Backdrop onTap={() => handleClose()} style={{ backgroundColor: "transparent" }} /> : <></>
+                        <Sheet.Backdrop onTap={() => handleClose()} /> : <></>
                 }
             </Sheet>
             <Dialog open={isQrCodeDialogOpen} onClose={() => {

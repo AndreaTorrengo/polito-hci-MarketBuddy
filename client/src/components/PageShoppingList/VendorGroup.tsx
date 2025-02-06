@@ -73,7 +73,7 @@ export default function VendorGroup({
                 onTouchEnd={handleTouchStop}
                 onTouchStart={() => handleTouchStart(vendor.id, -1)}
             >
-                <div className="max-w-[50%] min-w-[30%] flex flex-row items-center gap-2 select-none">
+                <div className="flex flex-row items-center gap-2 select-none">
                     {/* Show Select Indicator in Edit Mode */}
                     {
                         isEditMode &&
@@ -104,21 +104,19 @@ export default function VendorGroup({
                     </div>
                 </div>
 
-                <div className="min-w-[50%]">
+                <div className="flex w-1/2 justify-evenly items-center">
                     {/* <div className="flex flex-col w-full gap-6"> */}
-                    <div className='flex flex-row items-center justify-around gap-2'>
-                        <div className="w-1/3 flex flex-row items-center justify-center">
-                            <Award color={`var(--${theme === 'dark' ? 'dark-' : ''}quality)`} />
-                            <p className="m-0 p-0 ms-0.5 font-semibold">{vendor.quality_rating}</p>
-                        </div>
-                        <div className="w-1/3 flex flex-row items-center justify-center">
-                            <Smile color={`var(--${theme === 'dark' ? 'dark-' : ''}cordiality)`} />
-                            <p className="m-0 p-0 ms-0.5 font-semibold">{vendor.cordiality_rating}</p>
-                        </div>
-                        <div className="w-1/3 flex flex-row items-center justify-center">
-                            <CircleDollarSign color={`var(--${theme === 'dark' ? 'dark-' : ''}convenience)`} />
-                            <p className="m-0 p-0 ms-0.5 font-semibold">{vendor.convenience_rating}</p>
-                        </div>
+                    <div className="w-1/3 flex pe-1 flex-row items-center justify-end">
+                        <Award color={`var(--${theme === 'dark' ? 'dark-' : ''}quality)`} />
+                        <p className="m-0 p-0 font-semibold text-left">{vendor.quality_rating}</p>
+                    </div>
+                    <div className="w-1/3 flex pe-1 flex-row items-center justify-end">
+                        <Smile color={`var(--${theme === 'dark' ? 'dark-' : ''}cordiality)`} size={22} />
+                        <p className="m-0 p-0 font-semibold text-left">{vendor.cordiality_rating}</p>
+                    </div>
+                    <div className="w-1/3 flex pe-1 flex-row items-center justify-end">
+                        <CircleDollarSign color={`var(--${theme === 'dark' ? 'dark-' : ''}convenience)`} size={22} />
+                        <p className="m-0 p-0 font-semibold text-left">{vendor.convenience_rating}</p>
                     </div>
                     {/* </div> */}
                 </div>
