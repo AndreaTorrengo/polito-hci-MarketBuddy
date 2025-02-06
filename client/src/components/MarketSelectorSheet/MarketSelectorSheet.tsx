@@ -49,9 +49,9 @@ export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket,
 
   return (
     <>
-      <Button variant="text" color="bw" className={`flex items-center justify-around tracking-tight font-bold ms-auto ${className}`} onClick={() => setIsOpen(true)}>
+      <Button variant="text" color="bw" className={`flex items-center justify-around tracking-tighter ms-auto ${className}`} onClick={() => setIsOpen(true)}>
         <MapPin size={20} />
-        <p className="flex text-md px-0.5 truncate shrink">{selectedMarket.name}</p>
+        <p className="flex text-md px-0.5 truncate shrink font-">{selectedMarket.name}</p>
         <ChevronDown size={20} className="mt-0.5" />
       </Button>
       <Sheet isOpen={isOpen} onClose={() => setIsOpen(false)} detent='content-height' mountPoint={approot} >
