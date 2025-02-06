@@ -166,7 +166,6 @@ export default function PageVendorProducts({
         }
     }
 
-
     const [showUpArrow, setShowUpArrow] = useState(false);
 
     //observe div
@@ -215,13 +214,14 @@ export default function PageVendorProducts({
                             {isEditMode ?
                                 <TopBar
                                     leftComponent={<ButtonBase className="text-md font-semibold"
-                                        onClick={exitEditMode}><p
-                                            className="m-0 p-0">Cancel</p></ButtonBase>}
-                                    centerComponent={<h1
-                                        className="line-clamp-1 m-0 p-0 text-md font-normal text-center">{selectedProducts ? (selectedProducts.size + " Selected") : ""}</h1>}
-                                    rightComponent={
-                                        <div className="flex gap-3 items-center">
-                                            {
+                                                               onClick={exitEditMode}><p
+                                        className="m-0 p-0">Cancel</p></ButtonBase>}
+                                    centerComponent={
+                                        <div className="flex flex-row items-center gap-3">
+                                            <h1
+                                                className="line-clamp-1 m-0 p-0 text-md font-normal text-center">{selectedProducts ? (selectedProducts.size + " Selected") : ""}</h1>
+                                            { !isVisible &&
+                                                (
                                                 selectedProducts && selectedProducts.size === products.length ?
                                                     <div className="flex items-center justify-center"
                                                         onClick={
@@ -244,71 +244,104 @@ export default function PageVendorProducts({
                                                         </div> */}
                                                         <Circle size={20} color="gray" />
                                                     </div>
-
+                                                )
                                             }
-
-                                            {selectedProducts && selectedProducts.size > 0 && !isVisible &&
-                                                <>
-                                                    <SwitchButton
-                                                        selectedMarket={selectedMarket}
-                                                        selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
-                                                        closeAfter={exitEditMode}
-                                                        setFilteredVendors={setFilteredVendors}
-                                                    setProductsWithoutAlternatives={setProductsWithoutAlternatives}
-                                                    />
-                                                    <SignalErrorButton
-                                                        closeAfter={exitEditMode}
-                                                        selectedMarket={selectedMarket}
-                                                        selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
-                                                        setFilteredVendors={setFilteredVendors}
-                                                    />
-                                                    <DeleteButton
-                                                        closeAfter={exitEditMode}
-                                                        selectedMarket={selectedMarket}
-                                                        selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts.keys()))}
-                                                    setFilteredVendors={setFilteredVendors}
-                                                    />
-                                                </>}
-                                            <div
-                                                className={`absolute w-full bottom-0 left-0 z-[11] pb-2 pt-2.5 border-t-[1px] border-tremor-border dark:border-dark-tremor-border dark:bg-dark-tremor-background-muted bg-tremor-background-muted`}>
-                                                <div className={`flex flex-row items-center justify-evenly py-0.5 ${selectedProducts && selectedProducts.size > 0 ? "" : "opacity-50 pointer-events-none"}`}
-                                                    ref={targetRef}>
-                                                    {isEditMode
-                                                        //&& selectedProducts && selectedProducts.size > 0
-                                                        &&
-                                                        <>
-                                                            <div className="flex flex-col items-center gap-1 w-24">
-                                                                <SwitchButton
-                                                                    setProductsWithoutAlternatives={setProductsWithoutAlternatives}
-                                                                    selectedMarket={selectedMarket}
-                                                                    selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts ? selectedProducts.keys() : []))}
-                                                                setFilteredVendors={setFilteredVendors}
-                                                                    closeAfter={exitEditMode}>
-                                                                    <p className="p-0 m-0 text-sm">Switch vendor</p>
-                                                                </SwitchButton>
-                                                            </div>
-                                                            <div className="flex flex-col items-center gap-1 w-24">
-                                                                <SignalErrorButton
-                                                                    selectedMarket={selectedMarket}
-                                                                selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts ? selectedProducts.keys() : []))} closeAfter={exitEditMode}
-                                                                    setFilteredVendors={setFilteredVendors}>
-                                                                    <p className="p-0 m-0 text-sm">Report issue</p>
-                                                                </SignalErrorButton>
-                                                            </div>
-                                                            <div className="flex flex-col items-center gap-1 w-24">
-                                                                <DeleteButton
-                                                                    selectedMarket={selectedMarket}
-                                                                selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts ? selectedProducts.keys() : []))} setFilteredVendors={setFilteredVendors}
-                                                                    closeAfter={exitEditMode}>
-                                                                    <p className="p-0 m-0 text-sm">Delete</p>
-                                                                </DeleteButton>
-                                                            </div>
-                                                        </>
-                                                    }
-                                                </div>
-                                            </div>
                                         </div>
-                                    } />
+                                    }
+                                    rightComponent={
+                                            <div className="flex gap-6 items-center">
+                                                {!isVisible &&
+                                                    <div
+                                                        className={`flex flex-row items-center gap-3 ${selectedProducts && selectedProducts.size > 0 ? "" : "opacity-50 pointer-events-none"}`}>
+                                                        <SwitchButton
+                                                            selectedMarket={selectedMarket}
+                                                        selectedProducts={selectedProducts ? new Map().set(vendor.id, Array.from(selectedProducts.keys())) : new Map()}
+                                                            closeAfter={exitEditMode}
+                                                            setFilteredVendors={setFilteredVendors}
+                                                        setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                                                        />
+                                                        <SignalErrorButton
+                                                            closeAfter={exitEditMode}
+                                                            selectedMarket={selectedMarket}
+                                                        selectedProducts={selectedProducts ? new Map().set(vendor.id, Array.from(selectedProducts.keys())) : new Map()}
+                                                            setFilteredVendors={setFilteredVendors}
+                                                        />
+                                                        <DeleteButton
+                                                            closeAfter={exitEditMode}
+                                                            selectedMarket={selectedMarket}
+                                                        selectedProducts={selectedProducts ? new Map().set(vendor.id, Array.from(selectedProducts.keys())) : new Map()}
+                                                        setFilteredVendors={setFilteredVendors}
+                                                        />
+                                                    </div>}
+                                                <div
+                                                    className={`absolute w-full bottom-0 left-0 z-[11] pb-2 pt-2.5 border-t-[1px] border-tremor-border dark:border-dark-tremor-border dark:bg-dark-tremor-background-muted bg-tremor-background-muted`}>
+                                                    <div
+                                                        className={`flex flex-row items-center justify-around px-2 py-0.5 ${selectedProducts && selectedProducts.size > 0 ? "" : "opacity-50 pointer-events-none"}`}
+                                                        ref={targetRef}>
+                                                        {isEditMode
+                                                            //&& selectedProducts && selectedProducts.size > 0
+                                                            &&
+                                                            <>
+                                                                <div className="flex flex-col items-center gap-1 w-1/3">
+                                                                    <SwitchButton
+                                                                        setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                                                                        selectedMarket={selectedMarket}
+                                                                        selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts ? selectedProducts.keys() : []))}
+                                                                setFilteredVendors={setFilteredVendors}
+                                                                        closeAfter={exitEditMode}>
+                                                                        <p className="p-0 m-0 text-sm">Switch vendor</p>
+                                                                    </SwitchButton>
+                                                                </div>
+                                                                <div className="flex flex-col items-center gap-1 w-1/3">
+                                                                    <SignalErrorButton
+                                                                        selectedMarket={selectedMarket}
+                                                                        selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts ? selectedProducts.keys() : []))}
+                                                                        closeAfter={exitEditMode}
+                                                                        setFilteredVendors={setFilteredVendors}>
+                                                                        <p className="p-0 m-0 text-sm">Report issue</p>
+                                                                    </SignalErrorButton>
+                                                                </div>
+                                                                <div className="flex flex-col items-center gap-1 w-1/3">
+                                                                    <DeleteButton
+                                                                        selectedMarket={selectedMarket}
+                                                                        selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts ? selectedProducts.keys() : []))}
+                                                                setFilteredVendors={setFilteredVendors}
+                                                                        closeAfter={exitEditMode}>
+                                                                        <p className="p-0 m-0 text-sm">Delete</p>
+                                                                    </DeleteButton>
+                                                                </div>
+                                                            </>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                { isVisible &&
+                                                    (
+                                                    selectedProducts && selectedProducts.size === products.length ?
+                                                        <div className="flex items-center justify-center"
+                                                             onClick={
+                                                                 () => {
+                                                                     setSelectedProducts(new Map());
+                                                                 }
+                                                             }>
+                                                            <CircleCheckBig size={20}/>
+                                                        </div>
+                                                        :
+                                                        <div
+                                                            className="flex items-center justify-center"
+                                                            onClick={
+                                                                () => {
+                                                                    setSelectedProducts(new Map(products.map(p => [p.id, p])));
+                                                                }
+                                                            }>
+                                                            {/* <div
+                                                            className="rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
+                                                        </div> */}
+                                                            <Circle size={20} color="gray"/>
+                                                        </div>
+                                                    )
+                                                }
+                                            </div>
+                                    }/>
                                 :
                                 <TopBar
                                     leftComponent={<h2

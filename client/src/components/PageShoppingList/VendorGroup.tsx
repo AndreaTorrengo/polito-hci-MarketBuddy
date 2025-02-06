@@ -1,5 +1,5 @@
 import ProductItem, { ProductItemProps } from "./ProductItem";
-import { PiggyBank, Award, Smile, ChevronRight, CircleCheckBig, Circle, BadgeCent, CircleDollarSign, Euro, Wallet } from "lucide-react";
+import { Award, Smile, ChevronRight, CircleCheckBig, Circle, CircleDollarSign } from "lucide-react";
 import { ButtonBase } from "@mui/material";
 import { Vendor } from "../../models";
 import React, { useContext } from "react";
@@ -29,20 +29,22 @@ export default function VendorGroup({
     selectedProducts,
     isEditMode,
     selectedOrRemoveAllProductsFromVendor
-}: VendorGroupProps) {
+}: Readonly<VendorGroupProps>) {
     const { theme } = useContext(globalContext) || {};
     return (
         <>
             <div className="flex flex-row gap-2 pb-2 mt-3 items-center justify-between cursor-pointer" onClick={() => {
                 setSelectedVendor();
                 setVendorPageOpened(true)
+            }} onContextMenu={(e) => {
+                openEditMode(e, vendor.id, -1);
             }}>
-                <div className="max-w-[50%] min-w-[30%] flex flex-row items-center gap-2">
-                    {/* Show Select Indicator in Edit Mode */}
-                    {
-                        isEditMode &&
-                        (
-                            selectedProducts && selectedProducts.length === products.length ?
+                <div className="max-w-[50%] min-w-[30%] flex flex-row items-center gap-2 select-none">
+                {/* Show Select Indicator in Edit Mode */}
+                {
+                    isEditMode &&
+                    (
+                        selectedProducts && selectedProducts.length === products.length ?
                                 <div className="flex items-center" onClick={
                                     () => {
                                         selectedOrRemoveAllProductsFromVendor(vendor.id, true);

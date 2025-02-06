@@ -7,6 +7,7 @@ import './pagemap.css';
 import tinycolor from 'tinycolor2';
 import PageVendorProducts from "../PageVendorProducts/PageVendorProducts.tsx";
 import globalContext from '../../Context.tsx';
+import { UserData } from '../PageProfile/UserData.tsx';
 
 
 // Helper component to update map center dynamically
@@ -67,7 +68,8 @@ interface PageMapProps {
     closeAfter: () => void;
     initialVendor?: Vendor | null;
     setInitialVendor?: React.Dispatch<React.SetStateAction<Vendor | null>>;
-    setUserData: React.Dispatch<React.SetStateAction<any>>;
+    setUserData: React.Dispatch<React.SetStateAction<UserData>>;
+    filteredProductsVendors: Vendor[];
 }
 
 const PageMap: React.FC<PageMapProps> = ({
@@ -81,7 +83,8 @@ const PageMap: React.FC<PageMapProps> = ({
     setProductsWithoutAlternatives,
     initialVendor,
     setInitialVendor,
-    setUserData
+    setUserData,
+    filteredProductsVendors
 }) => {
     const [markerPosition, setMarkerPosition] = useState<[number, number]>([
         selectedMarket.position[0],
@@ -233,19 +236,20 @@ const PageMap: React.FC<PageMapProps> = ({
                     isMarketCenter={mapCenter[0] === selectedMarket.position[0] && mapCenter[1] === selectedMarket.position[1]} targetPosition={targetPosition} setTargetPosition={setTargetPosition}
                 />
                 {/* Vendors position */}
-                {filteredVendors?.map((vendor, idx) => {
+                {filteredProductsVendors?.filter(vendor => vendor.products.length > 0)
+                    .map((vendor) => {
                     const position: [number, number] = vendor.position as [number, number];
                     const isFiltered = filteredVendors.some(filteredVendor => filteredVendor.id === vendor.id);
                     const icon = selectedMarker === position
                         ? selectedIcon
                         : (isFiltered ? filteredIcon : unselectedIcon);
                     return (
-                        <Marker key={idx} position={position}
+                        <Marker key={vendor.id} position={position}
                             icon={icon}
                             eventHandlers={{
                                 click: () => {
                                     handleMarkerClick(position);
-                                    setSelectedVendor(vendor);
+                                    setSelectedVendor(filteredVendors.find(v => v.id == vendor.id) as Vendor);
                                     if (!isOpen) {
                                         setIsOpen(true);
                                     }

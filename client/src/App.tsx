@@ -12,7 +12,7 @@ import API from "./API";
 import { Vendor, Product, Market } from "./models";
 import ConfirmPopup from "./components/ConfirmationPopup";
 import TabsHero from "./components/TabSelector/TabSelector";
-import { getUserdata, saveUserData } from "./components/PageProfile/UserData";
+import { getUserdata, saveUserData, UserData } from "./components/PageProfile/UserData";
 import FeedbackToast from "./components/generalPurposeComponents/FeedbackToast.tsx";
 import globalContext from "./Context";
 
@@ -31,7 +31,7 @@ export default function App() {
   });
   const [questPendingClaims, setQuestPendingClaims] = useState(0);
   const [activeTab, setActiveTab] = useState(paths.indexOf(window.location.pathname));
-  const [userdata, setUserdata] = useState(getUserdata());
+  const [userdata, setUserdata] = useState<UserData>(getUserdata());
   // Update localstorage each time userdata state changes
   useEffect(() => saveUserData(userdata), [userdata]);
   const [vendors, setVendors] = useState<Vendor[]>([]);

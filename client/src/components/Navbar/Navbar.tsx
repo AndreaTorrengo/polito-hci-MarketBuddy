@@ -5,7 +5,14 @@ import { CircleUserRound, Trophy, ShoppingBag, ClipboardList } from 'lucide-reac
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
-export default function Navbar(props: any) {
+interface NavbarProps {
+  paths: string[];
+  activeTab: number;
+  setActiveTab: (tabIndex: number) => void;
+  questPendingClaims: number;
+}
+
+export default function Navbar(props: Readonly<NavbarProps>) {
   const navigate = useNavigate();
 
   const tabs = [

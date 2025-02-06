@@ -1,4 +1,7 @@
-export const quest_array: any[] = [
+import { Quest } from "../../models";
+
+
+export const quest_array: Quest[] = [
     { id: 1, coins: 50, exp: 100, title: "Traveller", description: "Visit 2 different vendors", progress: "2/2", completed: true },
     { id: 2, coins: 50, exp: 50, title: "Hiker", description: "Walk for 1000m", progress: "128/1000", completed: false },
     { id: 3, coins: 150, exp: 100, title: "Fisherman", description: "Complete a purchase from a fishmonger", progress: "1/1", completed: true },
@@ -7,7 +10,7 @@ export const quest_array: any[] = [
     { id: 6, coins: 50, exp: 50, title: "Backpacker", description: "Walk for 2000m", progress: "512/2000", completed: false },
 ];
 export function getNewQuestId(N_QUESTS: number = 3): number {
-    let id: string | null = localStorage.getItem('newQuestId');
+    const id: string | null = localStorage.getItem('newQuestId');
     if (id == null)
         return N_QUESTS;
     return Number.parseInt(id);
@@ -19,7 +22,7 @@ function nextQuestId(id: number): number {
  * then return it
  */
 export function getAndSaveNewQuestId(value: number = 1): number {
-    let current_quests_ids = getCurrentQuests().map(q => q.id);
+    const current_quests_ids = getCurrentQuests().map(q => q.id);
     let newval = nextQuestId(value);
     if(current_quests_ids.length == quest_array.length) {
         throw new Error("N_QUEST must be strictly less than quest_array.length");
@@ -29,11 +32,12 @@ export function getAndSaveNewQuestId(value: number = 1): number {
     localStorage.setItem('newQuestId', newval.toString());
     return newval;
 }
-export function getCurrentQuests(N_QUESTS: number = 3): any[] {
-    let ls_quests: string | null = localStorage.getItem('currentQuests');
+
+export function getCurrentQuests(N_QUESTS: number = 3): Quest[] {
+    const ls_quests: string | null = localStorage.getItem('currentQuests');
     let quests = [];
     if (ls_quests == null) {
-        let n = N_QUESTS;
+        const n = N_QUESTS;
         quests = quest_array.slice(0, n);
         saveCurrentQuests(quests);
     } else {
@@ -41,6 +45,6 @@ export function getCurrentQuests(N_QUESTS: number = 3): any[] {
     }
     return quests;
 }
-export function saveCurrentQuests(current_quests: any[]) {
+export function saveCurrentQuests(current_quests: Quest[]) {
     localStorage.setItem('currentQuests', JSON.stringify(current_quests));
 }

@@ -75,11 +75,11 @@ export default function PageShoppingList({
                                 origin="list"
                                 productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                 selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
-                                vendor={vendor} isOpen={isVendorPageOpen}
+                                vendor={filteredVendors.find(v => v.id == vendor.id) as Vendor} isOpen={isVendorPageOpen}
                                 setIsOpen={(value: boolean) => setIsVendorPageOpen(value)}
                                 setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} filteredVendors={filteredVendors}
                                     changeTab={changeTab} setVendorBadgePositionCallback={setInitialSelectedMapVendor}
-                                    userdata={userdata} setUserdata={setUserdata}/>}
+                                    setUserdata={setUserdata} />}
 
                             <VendorGroup id={vendor.id}
                                 openEditMode={openEditMode}

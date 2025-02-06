@@ -1,18 +1,14 @@
-import { Title } from "@tremor/react";
-import { Dispatch, SetStateAction, useState } from "react";
-import TopBar from "../generalPurposeComponents/TopBar";
+import { useState } from "react";
 import BackButton from "../generalPurposeComponents/BackButton";
-import PropTypes from "prop-types";
 import { DEFAULT_ICON_PATH, ICONS } from "../PageProfile/Icons";
 import { UserData } from "../PageProfile/UserData";
 import { Hexagon } from "lucide-react";
 
 interface PageLeaderboardProps {
   userdata: UserData;
-  setUserdata: Dispatch<SetStateAction<UserData>>;
 }
 
-export default function PageLeaderboard({ userdata, setUserdata }: Readonly<PageLeaderboardProps>) {
+export default function PageLeaderboard({ userdata }: Readonly<PageLeaderboardProps>) {
   const [activeTab, setActiveTab] = useState("Global");
   const user_exp = userdata.experience;
   const username = userdata.username;
@@ -110,7 +106,17 @@ export default function PageLeaderboard({ userdata, setUserdata }: Readonly<Page
   );
 }
 
-function LeaderboardItem(props: any) {
+interface LeaderboardItemProps {
+  player: {
+    icon: string;
+    name: string;
+    position: number;
+    xp: number;
+  };
+  currentPlayer: string;
+}
+
+function LeaderboardItem(props: Readonly<LeaderboardItemProps>) {
   return (
     <li
       key={`li-${props.player.position}`}
@@ -121,7 +127,7 @@ function LeaderboardItem(props: any) {
         <div className="justify-items-center">
           {/* <span className="text-xl">{props.player.icon}</span> */}
           <div className="w-8 h-8">
-            <img src={props.player.icon} className='object-scale-down max-h-full m-auto' />
+            <img src={props.player.icon} alt={`${props.player.name}'s icon`} className='object-scale-down max-h-full m-auto' />
           </div>
           <span className="font-semibold block text-xs">
             {props.player.position}
@@ -133,8 +139,4 @@ function LeaderboardItem(props: any) {
         <span className="flex font-semibold gap-1 text-[var(--experience)] dark:text-[var(--dark-experience)]">{props.player.xp} <Hexagon /></span>
       </div>
     </li>);
-}
-LeaderboardItem.propTypes = {
-  player: PropTypes.object,
-  currentPlayer: PropTypes.string
 }
