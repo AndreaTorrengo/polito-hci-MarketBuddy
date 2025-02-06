@@ -6,7 +6,6 @@ import VendorGroup from "./VendorGroup";
 import { UserData } from "../PageProfile/UserData";
 import StatPopup from "../generalPurposeComponents/StatPopup";
 interface PageShoppingListProps {
-    readonly theme: string;
     readonly productsList: { [key: string]: string[] };
     readonly setProductsList: React.Dispatch<React.SetStateAction<{ [key: string]: string[] }>>;
     readonly selectedMarket: Market;
@@ -31,7 +30,6 @@ interface PageShoppingListProps {
 }
 
 export default function PageShoppingList({
-    theme,
     selectedMarket,
     productsList,
     setProductsList,
@@ -60,8 +58,7 @@ export default function PageShoppingList({
         <>
             <div id="ShoppingListPage" className="flex h-full w-full flex-col gap-2">
             {!isEditMode &&
-                <MissingProductsDialog
-                    theme={theme}
+                    <MissingProductsDialog
                     productsList={productsList}
                     setProductsList={setProductsList}
                     selectedMarket={selectedMarket}
@@ -80,9 +77,9 @@ export default function PageShoppingList({
                                 selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
                                 vendor={filteredVendors.find(v => v.id == vendor.id) as Vendor} isOpen={isVendorPageOpen}
                                 setIsOpen={(value: boolean) => setIsVendorPageOpen(value)}
-                                theme={theme} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} filteredVendors={filteredVendors}
+                                setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} filteredVendors={filteredVendors}
                                     changeTab={changeTab} setVendorBadgePositionCallback={setInitialSelectedMapVendor}
-                                    userdata={userdata} setUserdata={setUserdata}/>}
+                                    setUserdata={setUserdata} />}
 
                             <VendorGroup id={vendor.id}
                                 openEditMode={openEditMode}

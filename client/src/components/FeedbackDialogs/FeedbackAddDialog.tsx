@@ -1,17 +1,17 @@
 import React from 'react';
-import { Dialog, DialogPanel } from '@tremor/react';
+import { DialogPanel } from '@tremor/react';
+import { Dialog } from '../generalPurposeComponents/Dialog';
 import './Dialogs.css';
 
 
 interface FeedbackAddDialogProps {
     isOpen: boolean;
     onClose: () => void;
-    theme: string;
 }
 
-const FeedbackAddDialog: React.FC<FeedbackAddDialogProps> = ({ isOpen, onClose, theme }) => {
+const FeedbackAddDialog: React.FC<FeedbackAddDialogProps> = ({ isOpen, onClose }) => {
     return (
-        <Dialog className={theme === 'dark' ? 'dark' : ''} open={isOpen} onClose={onClose}>
+        <Dialog open={isOpen} onClose={onClose}>
             <DialogPanel>
                         <button
                             style={{ position: 'absolute', top: '0px', right: '10px', background: 'transparent', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}

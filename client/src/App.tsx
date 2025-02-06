@@ -12,7 +12,7 @@ import API from "./API";
 import { Vendor, Product, Market } from "./models";
 import ConfirmPopup from "./components/ConfirmationPopup";
 import TabsHero from "./components/TabSelector/TabSelector";
-import { getUserdata, saveUserData } from "./components/PageProfile/UserData";
+import { getUserdata, saveUserData, UserData } from "./components/PageProfile/UserData";
 import FeedbackToast from "./components/generalPurposeComponents/FeedbackToast.tsx";
 import globalContext from "./Context";
 
@@ -31,7 +31,7 @@ export default function App() {
   });
   const [questPendingClaims, setQuestPendingClaims] = useState(0);
   const [activeTab, setActiveTab] = useState(paths.indexOf(window.location.pathname));
-  const [userdata, setUserdata] = useState(getUserdata());
+  const [userdata, setUserdata] = useState<UserData>(getUserdata());
   // Update localstorage each time userdata state changes
   useEffect(() => saveUserData(userdata), [userdata]);
   const [vendors, setVendors] = useState<Vendor[]>([]);
@@ -253,8 +253,8 @@ export default function App() {
   /****/
 
   const contextValue = useMemo(() => ({
-    askConfirmation, showToastMessage, setPopupText, setConfirmationCallback
-  }), [askConfirmation, showToastMessage, setPopupText, setConfirmationCallback]);
+    askConfirmation, showToastMessage, setPopupText, setConfirmationCallback, theme
+  }), [askConfirmation, showToastMessage, setPopupText, setConfirmationCallback, theme]);
 
   //feedback dialogs states
   const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
@@ -268,14 +268,14 @@ export default function App() {
             <Route index path={`${paths[0]}`} element={<TabsHero
               productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
               selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
-              theme={theme} vendors={vendors}
+              vendors={vendors}
               filteredVendors={filteredVendors} setFilteredVendors={setFilteredVendors}
               selectedMarket={selectedMarket} setSelectedMarket={selectMarket}
               productsList={productsList} setProductsList={setProductsList}
               userdata={userdata} setUserdata={setUserdata} />} />
             <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} leaderboardPath={`${paths[5]}`} userdata={userdata} setUserdata={setUserdata} />} />
             <Route path={`${paths[2]}`} element={<PageReward userdata={userdata} setUserdata={setUserdata} />} />
-            <Route path={`${paths[3]}`} element={<PageProfile theme={theme} toggleTheme={toggleTheme} askConfirmation={askConfirmation} userdata={userdata} setUserdata={setUserdata} />} />
+            <Route path={`${paths[3]}`} element={<PageProfile toggleTheme={toggleTheme} askConfirmation={askConfirmation} userdata={userdata} setUserdata={setUserdata} />} />
             <Route path={`${paths[4]}`} element={<PageNotFound />} />
             <Route path={`${paths[5]}`} element={<PageLeaderboard userdata={userdata} setUserdata={setUserdata} />} />
           </Route>

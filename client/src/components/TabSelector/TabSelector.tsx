@@ -15,7 +15,6 @@ import PageAddProducts from "../PageAddProducts/PageAddProducts.tsx";
 import {UserData} from '../PageProfile/UserData.tsx';
 
 interface TabsHeroProps {
-    theme: string;
     vendors: Vendor[];
     filteredVendors: Vendor[];
     selectedMarket: Market;
@@ -32,7 +31,6 @@ interface TabsHeroProps {
 }
 
 export default function TabsHero({
-                                     theme,
                                      vendors,
                                      filteredVendors,
                                      selectedMarket,
@@ -46,7 +44,8 @@ export default function TabsHero({
                                      setProductsWithoutAlternatives,
                                      userdata,
                                      setUserdata,
-                                 }: Readonly<TabsHeroProps>): JSX.Element {
+}: Readonly<TabsHeroProps>): JSX.Element {
+
     const [selectedProducts, setSelectedProducts] = useState<Map<number, number[]> | null>(null);
     const [filteredProductsVendors, setFilteredProductsVendors] = useState<Vendor[]>(filteredVendors); //vendors with filtered products
     const [isEditMode, setIsEditMode] = useState(false);
@@ -60,16 +59,6 @@ export default function TabsHero({
     const [activeTab, setActiveTab] = useState(() => {
         return localStorage.getItem('activeTab') ?? 'list';
     });
-
-    // const handleChange = (
-    //     event: React.MouseEvent<HTMLElement>,
-    //     newTab: string,
-    // ) => {
-    //     if (newTab !== null) {
-    //         setActiveTab(newTab);
-    //         localStorage.setItem('activeTab', newTab);
-    //     }
-    // };
 
     const changeTab = (newTab?: string) => {
         if (!newTab)
@@ -196,7 +185,7 @@ export default function TabsHero({
         <>
             {addProductId != null ?
                 <PageAddProducts setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket}
-                                 actualVends={filteredVendors} allVends={vendors} theme={theme}
+                    actualVends={filteredVendors} allVends={vendors}
                                  setAddProductId={setAddProductId} addProductId={addProductId}/> :
                 <div className="flex flex-col h-full min-h-0 px-6 py-4">
                     {
@@ -260,8 +249,8 @@ export default function TabsHero({
                                                 <SwitchButton
                                                     setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                                     selectedMarket={selectedMarket}
-                                                    selectedProducts={selectedProducts? selectedProducts : new Map<number, number[]>()}
-                                                    setFilteredVendors={setFilteredVendors} theme={theme}
+                                                selectedProducts={selectedProducts || new Map<number, number[]>()}
+                                                setFilteredVendors={setFilteredVendors}
                                                     closeAfter={closeAfter}>
                                                     <p className="p-0 m-0 text-sm">Switch vendor</p>
                                                 </SwitchButton>
@@ -269,7 +258,7 @@ export default function TabsHero({
                                             <div className="flex flex-col items-center gap-1 w-1/3">
                                                 <SignalErrorButton
                                                     selectedMarket={selectedMarket}
-                                                    selectedProducts={selectedProducts? selectedProducts : new Map<number, number[]>()}
+                                                selectedProducts={selectedProducts || new Map<number, number[]>()}
                                                     closeAfter={closeAfter}
                                                     setFilteredVendors={setFilteredVendors}>
                                                     <p className="p-0 m-0 text-sm">Report issue</p>
@@ -278,8 +267,8 @@ export default function TabsHero({
                                             <div className="flex flex-col items-center gap-1 w-1/3">
                                                 <DeleteButton
                                                     selectedMarket={selectedMarket}
-                                                    selectedProducts={selectedProducts? selectedProducts : new Map<number, number[]>()}
-                                                    setFilteredVendors={setFilteredVendors} theme={theme}
+                                                selectedProducts={selectedProducts || new Map<number, number[]>()}
+                                                setFilteredVendors={setFilteredVendors}
                                                     closeAfter={closeAfter}>
                                                     <p className="p-0 m-0 text-sm">Delete</p>
                                                 </DeleteButton>
@@ -396,7 +385,6 @@ export default function TabsHero({
                         {activeTab === 'map' && (
                             <div className="fixed inset-x-0 h-full">
                                 <PageMap
-                                    theme={theme}
                                     closeAfter={closeAfter}
                                     filteredVendors={filteredVendors}
                                     selectedMarket={selectedMarket}
@@ -418,8 +406,7 @@ export default function TabsHero({
                                 selectedProducts={selectedProducts}
                                 productsList={productsList}
                                 setProductsList={setProductsList}
-                                filteredVendors={filteredVendors}
-                                theme={theme}
+                            filteredVendors={filteredVendors}
                                 closeAfter={closeAfter}
                                 selectedMarket={selectedMarket}
                                 openEditMode={openEditMode}

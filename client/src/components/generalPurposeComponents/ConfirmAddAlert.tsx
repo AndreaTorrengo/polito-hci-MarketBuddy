@@ -1,4 +1,5 @@
-import { Button, Dialog, DialogPanel } from '@tremor/react';
+import { DialogPanel } from '@tremor/react';
+import { Dialog } from '../generalPurposeComponents/Dialog'
 import React, { useContext } from 'react';
 import globalContext from '../../Context';
 import { ProductListItemProps } from '../PageVendorProducts/ProductListItem';

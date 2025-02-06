@@ -76,4 +76,15 @@ class Reward {
     }
 }
 
-export { Vendor, Product, Reward, Market };
+interface Quest {
+    id: number;
+    coins: number;
+    exp: number;
+    title: string;
+    description: string;
+    progress: string;
+    completed: boolean;
+}
+
+
+export { Vendor, Product, Reward, Market, Quest };

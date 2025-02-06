@@ -41,9 +41,9 @@ export default function ProductListItem({
                     <div
                         className="absolute top-0 right-0">
                         {points &&
-                            <div className="flex flex-row gap-1 items-center bg-tremor-background dark:bg-dark-tremor-background px-1.5 py-1 rounded-tr-sm rounded-es-md">
+                            <div className="flex flex-row gap-1 items-center bg-tremor-background dark:bg-dark-tremor-background px-1.5 py-1 rounded-tr-sm rounded-es-md text-[var(--buddy-coins)] dark:text-[var(--dark-buddy-coins)]">
                                 <p className="m-0 p-0">{points}</p>
-                                <Coins size={20} color="var(--buddy-coins)" />
+                                <Coins size={20} />
                                 {/* <EmojiEmotionsIcon ></EmojiEmotionsIcon> */}
                             </div>
                         }

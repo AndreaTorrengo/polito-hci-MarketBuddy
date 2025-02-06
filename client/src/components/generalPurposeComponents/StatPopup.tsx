@@ -1,7 +1,8 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import { Card } from "@tremor/react";
 import { ArrowUp, ArrowDown, Hexagon, Coins } from "lucide-react";
 import PropTypes from "prop-types";
+import globalContext from "../../Context";
 
 type Props = {
   coins: number;
@@ -41,6 +42,8 @@ export default function StatPopup({ coins, exp, popup, className }: Props) {
   const [displayCoins, setDisplayCoins] = useState(coins);
   const [displayExp, setDisplayExp] = useState(exp);
 
+  const { theme } = useContext(globalContext) || {};
+
   useEffect(() => {
     if (coins !== prevCoins || exp !== prevExp) {
       //console.log(exp + " " + prevExp);
@@ -66,6 +69,7 @@ export default function StatPopup({ coins, exp, popup, className }: Props) {
     }
   }, [coins, exp]);
 
+
   return (
     <>
       {popup ?
@@ -73,22 +77,20 @@ export default function StatPopup({ coins, exp, popup, className }: Props) {
           className={`fixed z-10 top-5 right-5 transition-all duration-700 ease-in-out pointer-events-none transform ${showPopup ? "translate-x-0 opacity-100 pointer-events-auto" : "translate-x-5 opacity-0"
             }`}
         >
-          <Card className="p-4 bg-white shadow-lg border rounded-xl flex flex-col space-y-2 transition-opacity duration-1000">
-            <div className="flex items-center space-x-2 text-lg font-semibold">
-              <Hexagon color="var(--experience)" />
+          <Card className="p-4 shadow-lg border rounded-xl flex flex-col space-y-2 transition-opacity duration-1000">
+            <div className="flex items-center space-x-2 text-lg font-semibold text-[var(--experience)] dark:text-[var(--dark-experience)]">
+              <Hexagon />
               <span
-                className={`flex items-center transition-all duration-300 ${exp >= prevExp ? "text-[var(--experience)]" : "text-red-600"
-                  }`}
+                className={"flex items-center transition-all duration-300"}
               >
                 {exp >= prevExp ? <ArrowUp /> : <ArrowDown />}
                 {displayExp}
               </span>
             </div>
-            <div className="flex items-center space-x-2 text-lg font-semibold ">
-              <Coins color="var(--buddy-coins)" />
+            <div className="flex items-center space-x-2 text-lg font-semibold text-[var(--buddy-coins)] dark:text-[var(--dark-buddy-coins)] ">
+              <Coins />
               <span
-                className={`flex items-center transition-all duration-300 ${coins >= prevCoins ? "text-[var(--buddy-coins)]" : "text-red-600"
-                  }`}
+                className="flex items-center transition-all duration-300 "
               >
                 {coins >= prevCoins ? <ArrowUp /> : <ArrowDown />}
                 {displayCoins}
@@ -97,12 +99,12 @@ export default function StatPopup({ coins, exp, popup, className }: Props) {
           </Card>
         </div>
         :
-        <div className={`flex items-center text-lg font-semibold text-[var(--buddy-coins)] ${className}`}>
+        <div className={`flex items-center text-lg font-semibold text-[var(--buddy-coins)] dark:text-[var(--dark-buddy-coins)] ${className}`}>
           <ArrowDown className={`transition-opacity duration-300 ${showPopup ? 'opacity-100' : 'opacity-0'}`} />
           <div
             className='flex items-center justify-left px-1 w-20 transition-all duration-300'
           >
-            <Coins color="var(--buddy-coins)" />
+            <Coins />
             <span className="pl-2 text-left">{displayCoins}</span>
           </div>
         </div>}

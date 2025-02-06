@@ -35,9 +35,9 @@ export default function ProductItem({ image, name, points, price, isSelected, is
                 <img src={image} alt={name + " image"} className="rounded-md aspect-square object-cover" />
                 <div className="absolute top-0 right-0 bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle px-1.5 rounded-tr-sm rounded-es-md">
                     {points &&
-                        <div className="flex flex-row gap-1 items-center">
+                        <div className="flex flex-row gap-1 items-center text-[var(--buddy-coins)] dark:text-[var(--dark-buddy-coins)]">
                             <p className="m-0 p-0">{points}</p>
-                            <Coins size={20} color='var(--buddy-coins)' />
+                            <Coins size={20} />
                         </div>
                     }
                 </div>

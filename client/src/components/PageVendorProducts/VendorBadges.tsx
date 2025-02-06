@@ -1,5 +1,7 @@
 
 import { PiggyBank, Award, Smile, MapPin } from 'lucide-react';
+import { useContext } from 'react';
+import globalContext from '../../Context';
 
 interface VendorBadgesProps {
     market: string;
@@ -11,6 +13,8 @@ interface VendorBadgesProps {
 }
 
 export default function VendorBadges({ market, quality, cordiality, convenience, changeTab, positionCallback }: Readonly<VendorBadgesProps>) {
+    const { theme } = useContext(globalContext) || {};
+
     return (
         <div className="flex flex-col w-full gap-6">
             <button className="flex items-center justify-left font-medium" onClick={() => {
@@ -22,17 +26,17 @@ export default function VendorBadges({ market, quality, cordiality, convenience,
             </button>
             <div className='flex flex-row items-center justify-around'>
                 <div className="w-1/3 flex flex-col items-center justify-center">
-                    <Award color="var(--quality)" />
+                    <Award color={`var(--${theme === 'dark' ? 'dark-' : ''}quality)`} />
                     <p className="m-0 px-1 text-sm font-light">Quality</p>
                     <p className="m-0 p-0 font-bold">{quality}</p>
                 </div>
                 <div className="w-1/3 flex flex-col items-center justify-center" >
-                    <Smile color="var(--cordiality)" />
+                    <Smile color={`var(--${theme === 'dark' ? 'dark-' : ''}cordiality)`} />
                     <p className="m-0 px-1 text-sm font-light">Cordiality</p>
                     <p className="m-0 p-0 font-bold">{cordiality}</p>
                 </div>
                 <div className="w-1/3 flex flex-col items-center justify-center" >
-                    <PiggyBank color="var(--convenience)" />
+                    <PiggyBank color={`var(--${theme === 'dark' ? 'dark-' : ''}convenience)`} />
                     <p className="m-0 px-1 text-sm font-light">Convenience</p>
                     <p className="m-0 p-0 font-bold">{convenience}</p>
                 </div>

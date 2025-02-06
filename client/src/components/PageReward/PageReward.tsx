@@ -32,9 +32,9 @@ export function RewardCard({ reward, confirmRewardRedemption = () => { } }: Read
           <p>{reward.description}</p>
         </div>
       </div>
-      <div className='flex items-center ms-8'>
+      <div className='flex items-center ms-8 text-[var(--buddy-coins)] dark:text-[var(--dark-buddy-coins)]'>
         <p>{reward.cost}</p>
-        <Coins color='var(--buddy-coins)' className='ms-2' />
+        <Coins className='ms-2' />
       </div>
     </button>
   );

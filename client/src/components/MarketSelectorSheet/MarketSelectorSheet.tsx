@@ -49,10 +49,10 @@ export default function MarketSelectorSheet({ selectedMarket, setSelectedMarket,
 
   return (
     <>
-      <Button variant="text" color="bw" className={`flex items-center align-middle gap-1 font-bold ms-auto ${className}`} onClick={() => setIsOpen(true)}>
-        <MapPin />
-        <span className="">{selectedMarket.name}</span>
-        <ChevronDown />
+      <Button variant="text" color="bw" className={`flex items-center justify-around tracking-tight font-bold ms-auto ${className}`} onClick={() => setIsOpen(true)}>
+        <MapPin size={20} />
+        <p className="flex text-md px-0.5 truncate shrink">{selectedMarket.name}</p>
+        <ChevronDown size={20} className="mt-0.5" />
       </Button>
       <Sheet isOpen={isOpen} onClose={() => setIsOpen(false)} detent='content-height' mountPoint={approot} >
         <Sheet.Container>

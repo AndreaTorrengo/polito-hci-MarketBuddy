@@ -1,9 +1,10 @@
-import ProductItem, {ProductItemProps} from "./ProductItem";
-import {PiggyBank, Award, Smile, ChevronRight, CircleCheckBig, Circle} from "lucide-react";
-import {ButtonBase} from "@mui/material";
-import {Vendor} from "../../models";
-import React, { useRef } from "react";
+import ProductItem, { ProductItemProps } from "./ProductItem";
+import { Award, Smile, ChevronRight, CircleCheckBig, Circle, CircleDollarSign } from "lucide-react";
+import { ButtonBase } from "@mui/material";
+import { Vendor } from "../../models";
+import React, {useContext, useRef} from "react";
 import VendorCategoryList from "../PageVendorProducts/VendorCategoryList";
+import globalContext from "../../Context";
 
 export interface VendorGroupProps {
     id: number;
@@ -19,17 +20,17 @@ export interface VendorGroupProps {
 }
 
 export default function VendorGroup({
-                                        products,
-                                        vendor,
-                                        setVendorPageOpened,
-                                        setSelectedVendor,
-                                        openEditMode,
-                                        addOrRemoveSelected,
-                                        selectedProducts,
-                                        isEditMode,
-                                        selectedOrRemoveAllProductsFromVendor
-                                    }: VendorGroupProps) {
-
+    products,
+    vendor,
+    setVendorPageOpened,
+    setSelectedVendor,
+    openEditMode,
+    addOrRemoveSelected,
+    selectedProducts,
+    isEditMode,
+    selectedOrRemoveAllProductsFromVendor
+}: Readonly<VendorGroupProps>) {
+    const { theme } = useContext(globalContext) || {};
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     const handleTouchStart = (vendorId: number, productId: number) => {
@@ -37,14 +38,14 @@ export default function VendorGroup({
             intervalRef.current = setInterval(() => {
                 openEditMode(vendorId, productId)
             }, 700);
-        }
     };
-
+        }
     const handleTouchStop = () => {
+
         if (intervalRef.current) {
             clearInterval(intervalRef.current);
-            intervalRef.current = null;
         }
+            intervalRef.current = null;
     };
 
     const handleTouchMove = (event: React.TouchEvent) => {
@@ -83,7 +84,7 @@ export default function VendorGroup({
                                         selectedOrRemoveAllProductsFromVendor(vendor.id, true);
                                     }
                                 }>
-                                    <CircleCheckBig size={20}/>
+                                    <CircleCheckBig size={20} />
                                 </div>
                                 :
                                 <div
@@ -93,7 +94,7 @@ export default function VendorGroup({
                                             selectedOrRemoveAllProductsFromVendor(vendor.id, false);
                                         }
                                     }>
-                                    <Circle size={20} color="gray"/>
+                                    <Circle size={20} color="gray" />
                                 </div>
                         )
                     }
@@ -106,19 +107,16 @@ export default function VendorGroup({
                 <div className="overflow-x-auto min-w-[50%]">
                     {/* <div className="flex flex-col w-full gap-6"> */}
                     <div className='flex flex-row items-center justify-around gap-2'>
-                        <div className="w-1/3 flex flex-row items-center justify-center" onClick={() => {
-                        }}>
-                            <Award color="var(--quality)"/>
+                        <div className="w-1/3 flex flex-row items-center justify-center">
+                            <Award color={`var(--${theme === 'dark' ? 'dark-' : ''}quality)`} />
                             <p className="m-0 p-0 ms-0.5 font-bold">{vendor.quality_rating}</p>
                         </div>
-                        <div className="w-1/3 flex flex-row items-center justify-center" onClick={() => {
-                        }}>
-                            <Smile color="var(--cordiality)"/>
+                        <div className="w-1/3 flex flex-row items-center justify-center">
+                            <Smile color={`var(--${theme === 'dark' ? 'dark-' : ''}cordiality)`} />
                             <p className="m-0 p-0 ms-0.5 font-bold">{vendor.cordiality_rating}</p>
                         </div>
-                        <div className="w-1/3 flex flex-row items-center justify-center" onClick={() => {
-                        }}>
-                            <PiggyBank color="var(--convenience)"/>
+                        <div className="w-1/3 flex flex-row items-center justify-center">
+                            <CircleDollarSign color={`var(--${theme === 'dark' ? 'dark-' : ''}convenience)`} />
                             <p className="m-0 p-0 ms-0.5 font-bold">{vendor.convenience_rating}</p>
                         </div>
                     </div>
@@ -142,8 +140,8 @@ export default function VendorGroup({
                                 onTouchMove={handleTouchMove}
                     >
                         <ProductItem key={product.id} {...product}
-                                     isSelected={selectedProducts.includes(product.id) || false}
-                                     isEditMode={isEditMode}
+                            isSelected={selectedProducts.includes(product.id) || false}
+                            isEditMode={isEditMode}
                         />
                     </ButtonBase>
                 ))}

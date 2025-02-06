@@ -1,28 +1,29 @@
 "use client";
 import TopBar from "../generalPurposeComponents/TopBar.tsx";
 import VendorCategoryList from "./VendorCategoryList.tsx";
-import React, {useContext, useEffect, useMemo, useRef, useState} from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import AddProductsButton from "./AddProductsButton.tsx";
-import ProductListItem, {ProductListItemProps} from "./ProductListItem.tsx";
-import {Sheet} from 'react-modal-sheet';
+import ProductListItem, { ProductListItemProps } from "./ProductListItem.tsx";
+import { Sheet } from 'react-modal-sheet';
 import VendorBadges from "./VendorBadges.tsx";
-import {ButtonBase, Dialog, DialogContent} from "@mui/material";
-import ContextMenu, {ContextMenuProps} from "../generalPurposeComponents/ContextMenu.tsx";
+import { ButtonBase } from "@mui/material";
+import { DialogPanel } from "@tremor/react";
+import { Dialog } from '../generalPurposeComponents/Dialog';
+import ContextMenu, { ContextMenuProps } from "../generalPurposeComponents/ContextMenu.tsx";
 import SwitchButton from "./SwitchButton.tsx";
 import DeleteButton from "./DeleteButton.tsx";
 import SignalErrorButton from "./SignalErrorButton.tsx";
-import {Button} from "../generalPurposeComponents/Button.tsx";
-import {Market, Vendor, Product} from "../../models.ts";
-import {QRCodeSVG} from "qrcode.react";
+import { Button } from "../generalPurposeComponents/Button.tsx";
+import { Market, Vendor, Product } from "../../models.ts";
+import { QRCodeSVG } from "qrcode.react";
 import globalContext from "../../Context.tsx";
-import {ArrowUpFromDot, Circle, CircleCheckBig, ScanQrCode} from "lucide-react";
-import {UserData} from "../PageProfile/UserData.tsx";
+import { ArrowUpFromDot, Circle, CircleCheckBig, ScanQrCode } from "lucide-react";
+import { UserData } from "../PageProfile/UserData.tsx";
 
 interface PageVendorProductsParams {
     isOpen: boolean;
     setIsOpen: (value: boolean) => void
     vendor: Vendor;
-    theme: string;
     selectedMarket: Market;
     setFilteredVendors: React.Dispatch<React.SetStateAction<Vendor[]>>;
     setAddProductId: React.Dispatch<React.SetStateAction<number | null>>;
@@ -38,20 +39,19 @@ interface PageVendorProductsParams {
 }
 
 export default function PageVendorProducts({
-                                               selectedMarket,
-                                               setFilteredVendors,
-                                               theme,
-                                               isOpen,
-                                               setIsOpen,
-                                               vendor,
-                                               setAddProductId,
-                                               setProductsWithoutAlternatives,
-                                               filteredVendors,
-                                               origin,
-                                               changeTab,
-                                               setVendorBadgePositionCallback,
-                                               setUserdata,
-                                           }: Readonly<PageVendorProductsParams>) {
+    selectedMarket,
+    setFilteredVendors,
+    isOpen,
+    setIsOpen,
+    vendor,
+    setAddProductId,
+    setProductsWithoutAlternatives,
+    filteredVendors,
+    origin,
+    changeTab,
+    setVendorBadgePositionCallback,
+    setUserdata,
+}: Readonly<PageVendorProductsParams>) {
     const approot = document.getElementById("approot")!;
 
     const [isEditMode, setIsEditMode] = useState(false);
@@ -69,11 +69,11 @@ export default function PageVendorProducts({
 
     const [selectedProducts, setSelectedProducts] = useState<Map<number, ProductListItemProps> | null>(null);
 
-    const {showToastMessage} = useContext(globalContext) || {};
+    const { showToastMessage, theme } = useContext(globalContext) || {};
 
     const [contextMenuProps, setContextMenuProps] = useState<ContextMenuProps>({
         onClose: () => {
-            setContextMenuProps({...contextMenuProps, isOpen: false});
+            setContextMenuProps({ ...contextMenuProps, isOpen: false });
         },
         isOpen: false,
         x: 0,
@@ -83,14 +83,14 @@ export default function PageVendorProducts({
                 label: "Delete",
                 onClick: () => {
                     console.log("Delete");
-                    setContextMenuProps({...contextMenuProps, isOpen: false});
+                    setContextMenuProps({ ...contextMenuProps, isOpen: false });
                 }
             },
             {
                 label: "Edit",
                 onClick: () => {
                     console.log("Edit");
-                    setContextMenuProps({...contextMenuProps, isOpen: false});
+                    setContextMenuProps({ ...contextMenuProps, isOpen: false });
                 }
             }
         ]
@@ -177,7 +177,7 @@ export default function PageVendorProducts({
             ([entry]) => {
                 setIsVisible(entry.isIntersecting);
             },
-            {threshold: 0.1}
+            { threshold: 0.1 }
         );
 
         const currentTarget = targetRef.current;
@@ -228,11 +228,11 @@ export default function PageVendorProducts({
     return (
         <>
             <Sheet isOpen={isOpen} onClose={handleClose} mountPoint={approot}
-                   detent={origin === 'list' ? "content-height" : "full-height"}
-                   initialSnap={origin === "map" ? 2 : undefined} snapPoints={[1.0, 0.6, 0.43, 0.39, 0.24]}
-                   onSnap={(snapIndex) => {
-                       snapIndex == 2 ? setShowUpArrow(true) : setShowUpArrow(false)
-                   }} className="!z-10">
+                detent={origin === 'list' ? "content-height" : "full-height"}
+                initialSnap={origin === "map" ? 2 : undefined} snapPoints={[1.0, 0.6, 0.43, 0.39, 0.24]}
+                onSnap={(snapIndex) => {
+                    snapIndex == 2 ? setShowUpArrow(true) : setShowUpArrow(false)
+                }} className="!z-10">
                 <Sheet.Container>
                     <Sheet.Header
                         className="dark:bg-dark-tremor-background">
@@ -256,12 +256,12 @@ export default function PageVendorProducts({
                                                 (
                                                 selectedProducts && selectedProducts.size === products.length ?
                                                     <div className="flex items-center justify-center"
-                                                         onClick={
-                                                             () => {
-                                                                 setSelectedProducts(new Map());
-                                                             }
-                                                         }>
-                                                        <CircleCheckBig size={20}/>
+                                                        onClick={
+                                                            () => {
+                                                                setSelectedProducts(new Map());
+                                                            }
+                                                        }>
+                                                        <CircleCheckBig size={20} />
                                                     </div>
                                                     :
                                                     <div
@@ -274,7 +274,7 @@ export default function PageVendorProducts({
                                                         {/* <div
                                                             className="rounded-full bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle h-5 w-5 border-2 border-[#bbbbbb] transition-all duration-300">
                                                         </div> */}
-                                                        <Circle size={20} color="gray"/>
+                                                        <Circle size={20} color="gray" />
                                                     </div>
                                                 )
                                             }
@@ -290,8 +290,7 @@ export default function PageVendorProducts({
                                                             selectedProducts={new Map().set(vendor.id, selectedProducts ? Array.from(selectedProducts.keys()) : [])}
                                                             closeAfter={exitEditMode}
                                                             setFilteredVendors={setFilteredVendors}
-                                                            setProductsWithoutAlternatives={setProductsWithoutAlternatives}
-                                                            theme={theme}
+                                                        setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                                         />
                                                         <SignalErrorButton
                                                             closeAfter={exitEditMode}
@@ -304,7 +303,6 @@ export default function PageVendorProducts({
                                                             selectedMarket={selectedMarket}
                                                             selectedProducts={new Map().set(vendor.id, selectedProducts ? Array.from(selectedProducts.keys()) : [])}
                                                             setFilteredVendors={setFilteredVendors}
-                                                            theme={theme}
                                                         />
                                                     </div>}
                                                 <div
@@ -321,8 +319,7 @@ export default function PageVendorProducts({
                                                                         setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                                                         selectedMarket={selectedMarket}
                                                                         selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts ? selectedProducts.keys() : []))}
-                                                                        setFilteredVendors={setFilteredVendors}
-                                                                        theme={theme}
+                                                                setFilteredVendors={setFilteredVendors}
                                                                         closeAfter={exitEditMode}>
                                                                         <p className="p-0 m-0 text-sm">Switch vendor</p>
                                                                     </SwitchButton>
@@ -340,8 +337,7 @@ export default function PageVendorProducts({
                                                                     <DeleteButton
                                                                         selectedMarket={selectedMarket}
                                                                         selectedProducts={new Map().set(vendor.id, Array.from(selectedProducts ? selectedProducts.keys() : []))}
-                                                                        setFilteredVendors={setFilteredVendors}
-                                                                        theme={theme}
+                                                                setFilteredVendors={setFilteredVendors}
                                                                         closeAfter={exitEditMode}>
                                                                         <p className="p-0 m-0 text-sm">Delete</p>
                                                                     </DeleteButton>
@@ -386,7 +382,7 @@ export default function PageVendorProducts({
                                         <Button variant="outlined" color="bw" onClick={openQrCodeDialog}>
                                             <div className="flex flex-row items-center gap-4">
                                                 <span>Confirm Purchase</span>
-                                                <ScanQrCode/>
+                                                <ScanQrCode />
                                             </div>
                                         </Button>
                                     }>
@@ -396,24 +392,24 @@ export default function PageVendorProducts({
                         <Sheet.Scroller className="px-6 pb-14 mt-4 flex flex-col gap-4">
                             {/* Vendor's Categories */}
                             <div className="w-full">
-                                <VendorCategoryList categories={vendor.categories}/>
+                                <VendorCategoryList categories={vendor.categories} />
                             </div>
 
                             <VendorBadges market={vendor.market} quality={vendor.quality_rating}
-                                          cordiality={vendor.cordiality_rating}
-                                          convenience={vendor.convenience_rating} changeTab={changeTab}
-                                          positionCallback={() => setVendorBadgePositionCallback && setVendorBadgePositionCallback(vendor)}/>
+                                cordiality={vendor.cordiality_rating}
+                                convenience={vendor.convenience_rating} changeTab={changeTab}
+                                positionCallback={() => setVendorBadgePositionCallback && setVendorBadgePositionCallback(vendor)} />
 
                             <div
                                 className={`relative h-0 bottom-10 -right-2 text-right w-full flex justify-end ${showUpArrow ? "opacity-10 animate-pulse" : "opacity-0"} transition-opacity duration-1000`}>
-                                <ArrowUpFromDot/>
+                                <ArrowUpFromDot />
                             </div>
 
                             <div className="w-full flex-1">
                                 {/* Product list top bar */}
                                 <div className="w-full flex flex-row justify-between items-center">
                                     <p className="m-0 p-0">Your planned purchases</p>
-                                    <AddProductsButton onClick={() => setAddProductId(vendor.id)}/>
+                                    <AddProductsButton onClick={() => setAddProductId(vendor.id)} />
                                 </div>
                                 {/* Product list */}
                                 <div key={vendor.id} className="w-full flex flex-col gap-3 mt-4">
@@ -429,9 +425,9 @@ export default function PageVendorProducts({
                                                         }}
                                             >
                                                 <ProductListItem key={product.id} {...product} editMode={true}
-                                                                 isSelected={
-                                                                     selectedProducts ? selectedProducts.has(product.id) : false
-                                                                 }/>
+                                                    isSelected={
+                                                        selectedProducts ? selectedProducts.has(product.id) : false
+                                                    } />
                                             </ButtonBase>
                                             :
                                             <ButtonBase key={product.id} component="div"
@@ -443,7 +439,7 @@ export default function PageVendorProducts({
                                                         onTouchEnd={handleTouchStop}
                                                         onTouchMove={handleTouchMove}
                                             >
-                                                <ProductListItem key={product.id} {...product} editMode={false}/>
+                                                <ProductListItem key={product.id} {...product} editMode={false} />
                                             </ButtonBase>
                                     ))}
                                 </div>
@@ -453,24 +449,23 @@ export default function PageVendorProducts({
                 </Sheet.Container>
                 {
                     origin != "map" ?
-                        <Sheet.Backdrop onTap={() => handleClose()} style={{backgroundColor: "transparent"}}/> : <></>
+                        <Sheet.Backdrop onTap={() => handleClose()} style={{ backgroundColor: "transparent" }} /> : <></>
                 }
             </Sheet>
             <Dialog open={isQrCodeDialogOpen} onClose={() => {
                 setIsQrCodeDialogOpen(false);
                 setIsOpen(true)
             }} onClick={() => setIsQrCodeDialogOpen(false)}>
-                {/* <DialogTitle>QR Code</DialogTitle> */}
-                <DialogContent
-                    className={`flex flex-col items-center justify-between gap-4 font-medium text-xl text-center ${theme === "dark" ? "bg-dark-tremor-background text-white" : "bg-tremor-background text-black"}`}
+                <DialogPanel
+                    className={"flex text-black dark:text-white flex-col items-center justify-between gap-4 font-medium text-xl text-center"}
                     onClick={confirmSale}>
                     <span>You are buying the following products:</span>
                     <span className="font-bold">{products.map(p => p.name).join(', ')}</span>
                     <QRCodeSVG bgColor={theme === "dark" ? "oklch(0.21 0.034 264.665)" : "white"}
-                               fgColor={theme === "dark" ? "white" : "black"}
-                               value={products.map(p => p.name).join(', ')} size={256} marginSize={4} level="Q"/>
+                        fgColor={theme === "dark" ? "white" : "black"}
+                        value={products.map(p => p.name).join(', ')} size={256} marginSize={4} level="Q" />
                     <p>Show this to the vendor to confirm the purchase!</p>
-                </DialogContent>
+                </DialogPanel>
             </Dialog>
         </>
     );

@@ -1,18 +1,17 @@
 import React from 'react';
-import { Dialog, DialogPanel } from '@tremor/react';
+import { DialogPanel } from '@tremor/react';
+import { Dialog } from '../generalPurposeComponents/Dialog';
 import './Dialogs.css';
 
 interface FeedbackReportDialogProps {
     isOpen: boolean;
     onClose: () => void;
-    theme: string;
     selectedReasons: string[];
 }
 
-const FeedbackReportDialog: React.FC<FeedbackReportDialogProps> = ({ isOpen, onClose, theme, selectedReasons }) => {
+const FeedbackReportDialog: React.FC<FeedbackReportDialogProps> = ({ isOpen, onClose, selectedReasons }) => {
     return (
-        <>
-            <Dialog className={theme === 'dark' ? 'dark' : ''} open={isOpen} onClose={() => { onClose }}>
+        <Dialog open={isOpen} onClose={onClose}>
                 <DialogPanel>
                     <button
                         style={{ position: 'absolute', top: '0px', right: '10px', background: 'transparent', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}
@@ -33,8 +32,7 @@ const FeedbackReportDialog: React.FC<FeedbackReportDialogProps> = ({ isOpen, onC
                         </>
                     )}
                 </DialogPanel>
-            </Dialog>
-        </>
+        </Dialog>
     );
 };
 

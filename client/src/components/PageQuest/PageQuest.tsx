@@ -4,18 +4,25 @@ import { quest_array, getNewQuestId, getAndSaveNewQuestId, getCurrentQuests, sav
 import { UserData } from "../PageProfile/UserData";
 import { Coins, Crown, Hexagon } from 'lucide-react'
 
-import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../generalPurposeComponents/Button";
+import { Quest } from "../../models";
 
 // Helper function to parse the progress string
-const parseProgress = (progress: any) => {
+const parseProgress = (progress: string) => {
   const [current, total] = progress.split("/").map(Number);
   return (current / total) * 100;
 };
 
-export default function PageQuest(props: any) {
+interface PageQuestProps {
+  setQuestPendingClaims: (value: number) => void;
+  leaderboardPath: string;
+  userdata: UserData;
+  setUserdata: (userdata: UserData) => void;
+}
+
+export default function PageQuest(props: PageQuestProps) {
   // Number of quests to generate. Must be < than quest_array length
   const N_QUESTS: number = 3;
   // Initial quests
@@ -26,12 +33,12 @@ export default function PageQuest(props: any) {
   // Effect triggered by state change of "quests"
   useEffect(() => {
     props.setQuestPendingClaims((_oldValue: number) => {
-      return quests.filter((q: any) => q.completed).length;
+      return quests.filter((q: Quest) => q.completed).length;
     });
   }, [quests]);
 
   // Handle claiming a quest
-  const handleClaim = (questToClaim: any) => {
+  const handleClaim = (questToClaim: Quest) => {
     // Add a new quest to the same position of the one claimed
     // Find index of the claimed quest
     // let qindex = quests.map((q: any) => q.id).indexOf(id);
@@ -40,13 +47,13 @@ export default function PageQuest(props: any) {
     // Saves on localstorage and get the new value of newQuestId
     const newGeneratedId = getAndSaveNewQuestId(newQuestId);
 
-    setQuests((prevQuests: any) => {
-      const newQuests = [
-        ...prevQuests.map((quest: any) => {
+    setQuests((prevQuests: Quest[]) => {
+      let newQuests: Quest[] = [
+        ...prevQuests.map((quest: Quest) => {
           if (quest.id !== questToClaim.id)
             return quest;
           else {
-            return quest_array.find((q: any) => q.id === newGeneratedId);
+            return quest_array.find((q: Quest) => q.id === newGeneratedId);
           }
         })];
       saveCurrentQuests(newQuests);
@@ -55,9 +62,9 @@ export default function PageQuest(props: any) {
     setNewQuestId(() => newGeneratedId);
 
     // Update stats
-    props.setUserdata((userdata: UserData) => {
-      //let udCopy = userdata.clone();
-      const udCopy = Object.assign(new UserData(), userdata);
+    props.setUserdata((prevUserdata: UserData) => {
+      //let udCopy = prevUserdata.clone();
+      const udCopy = Object.assign(new UserData(), prevUserdata);
       udCopy.incrCoins(questToClaim.coins);
       udCopy.incrExperience(questToClaim.exp);
       return udCopy;
@@ -65,8 +72,8 @@ export default function PageQuest(props: any) {
   };
   // Hard-coding for make a quest claimable
   const requestClaim = (id: number) => {
-    setQuests((prevQuests: any) => {
-      const newQuests = [...prevQuests.map((q: any) => {
+    setQuests((prevQuests: Quest[]) => {
+      const newQuests = [...prevQuests.map((q: Quest) => {
         const questTotalProgress = q.progress.split('/')[1];
         return q.id === id ? { ...q, 'progress': `${questTotalProgress}/${questTotalProgress}`, 'completed': true } : q;
       })];
@@ -77,11 +84,11 @@ export default function PageQuest(props: any) {
 
   return (
     <>
-      <StatPopup coins={props.userdata.coins} exp={props.userdata.experience} popup={true}/>
+      <StatPopup coins={props.userdata.coins} exp={props.userdata.experience} popup={true} />
       <div className="w-full h-full px-6 py-4">
         <h1 className="page-title mb-4">Quests</h1>
         <div className="flex flex-col gap-4 relative">
-          {quests.map((quest: any) =>
+          {quests.map((quest: Quest) =>
             <div id={`${quest.id}`} key={quest.id}
               // slide-in transition when rendering quests
               className={`relative bg-tremor-background dark:bg-dark-tremor-background shadow-md rounded-lg overflow-hidden transform transition-all duration-500 animate-slide-in`}
@@ -93,11 +100,11 @@ export default function PageQuest(props: any) {
             >
               <Card className="bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle p-4 relative">
                 <div className="absolute top-2 right-2 flex space-x-2">
-                  <div className="flex items-center space-x-1 text-[var(--experience)]">
+                  <div className="flex items-center space-x-1 text-[var(--experience)] dark:text-[var(--dark-experience)]">
                     <Hexagon />
                     <span className="font-semibold">{quest.exp}</span>
                   </div>
-                  <div className="flex items-center space-x-1 text-[var(--buddy-coins)]">
+                  <div className="flex items-center space-x-1 text-[var(--buddy-coins)] dark:text-[var(--dark-buddy-coins)]">
                     <Coins />
                     <span className="font-semibold">{quest.coins}</span>
                   </div>
@@ -139,10 +146,4 @@ export default function PageQuest(props: any) {
       </div>
     </>
   );
-}
-PageQuest.propTypes = {
-  setQuestPendingClaims: PropTypes.func,
-  leaderboardPath: PropTypes.string,
-  userdata: PropTypes.object,
-  setUserdata: PropTypes.func,
 }
