@@ -164,15 +164,13 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
         <>
             {missingProducts.length > 0 && (
                 <Button
-                    className="my-1 py-2 px-5 bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle"
+                    className="my-1 py-2 px-5 bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle "
                     color='danger'
                     // variant='contained'
                     onClick={() => setIsOpen(true)}
                 >
-                    <div className='flex align-middle gap-2'>
-                        <TriangleAlert />
-                        <span>Some products are missing at this market!</span>
-                    </div>
+                    <TriangleAlert />
+                    <span>Some products are missing at this market!</span>
                 </Button>
             )}
             {missingProducts.length > 0 && (<Dialog open={isOpen} static={true} onClose={handleClose} className={`max-h-screen overflow-y-auto z-40 ${theme === 'dark' ? 'dark' : ''}`}>
@@ -273,7 +271,7 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
                             {missingProducts.map((_, index) => (
                                 <span
                                     key={index}
-                                    className={`mx-1 h-2 w-2 rounded-full ${index === currentIndex ? 'bg-blue-500' : 'bg-gray-300'}`}
+                                    className={`mx-1 h-2 w-2 rounded-full ${index === currentIndex ? 'bg-tremor-brand' : 'bg-gray-300'}`}
                                 />
                             ))}
                         </div>
