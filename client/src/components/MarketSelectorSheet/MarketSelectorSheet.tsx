@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Search, ChevronDown, MapPin, Store, Navigation } from 'lucide-react'
 import { Market } from "../../models.tsx";
 import { Button } from "../generalPurposeComponents/Button.tsx";
-import TorinoMarkets from "../../markets.json" assert { type: "json" };
+import TorinoMarkets from "../../markets.json" with { type: "json" };
 
 
 

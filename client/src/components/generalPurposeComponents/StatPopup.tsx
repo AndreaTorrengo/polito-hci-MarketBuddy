@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Card } from "@tremor/react";
 import { ArrowUp, ArrowDown, Hexagon, Coins } from "lucide-react";
-import PropTypes from "prop-types";
 
 type Props = {
   coins: number;
@@ -33,7 +32,7 @@ const animateValue = (start: number, end: number, setter: (val: number) => void)
   });
 };
 
-export default function StatPopup({ coins, exp, popup, className }: Props) {
+export default function StatPopup({ coins, exp, popup, className }: Readonly<Props>) {
   const countDownRef = useRef(0); // use for popup auto dismiss
   const [showPopup, setShowPopup] = useState(false);
   const [prevCoins, setPrevCoins] = useState(coins);
@@ -71,7 +70,7 @@ export default function StatPopup({ coins, exp, popup, className }: Props) {
     <>
       {popup ?
         <div
-          className={`fixed z-10 top-5 right-5 transition-all duration-700 ease-in-out pointer-events-none transform ${showPopup ? "translate-x-0 opacity-100 pointer-events-auto" : "translate-x-5 opacity-0"
+          className={`fixed top-5 right-5 transition-all duration-700 ease-in-out pointer-events-none transform ${showPopup ? "translate-x-0 opacity-100 pointer-events-auto" : "translate-x-5 opacity-0"
             }`}
         >
           <Card className="p-4 shadow-lg border rounded-xl flex flex-col space-y-2 transition-opacity duration-1000">
@@ -107,9 +106,4 @@ export default function StatPopup({ coins, exp, popup, className }: Props) {
         </div>}
     </>
   );
-}
-StatPopup.propTypes = {
-  coins: PropTypes.number,
-  exp: PropTypes.number,
-  popup: PropTypes.bool,  // Choose between showing a popup or static <div>
 }

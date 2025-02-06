@@ -396,6 +396,7 @@ export default function TabsHero({
                                     setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                     initialVendor={initialSelectedMapVendor}
                                     setInitialVendor={setInitialSelectedMapVendor}
+                                    userdata={userdata}
                                     setUserData={setUserdata}
                                     filteredProductsVendors={filteredProductsVendors}
                                 />

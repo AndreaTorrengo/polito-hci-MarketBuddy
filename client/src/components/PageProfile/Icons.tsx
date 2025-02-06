@@ -29,7 +29,7 @@ export class IconLocker {
             this.lockingStatus = JSON.parse(data);
         }
     }
-    getItemIndex(id: number) { 
+    getItemIndex(id: number) {
         return this.lockingStatus.findIndex(i => i.id === id);
     }
     unlock(id: number) {

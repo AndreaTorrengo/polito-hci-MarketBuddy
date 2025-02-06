@@ -67,7 +67,7 @@ export default function PageShoppingList({
                 />
                 }
                 <div className="overflow-auto">
-            {
+                    {
                 filteredProductsVendors.map((vendor) => (
                     vendor.products.length > 0 &&
                     <div key={vendor.id}>
@@ -76,10 +76,14 @@ export default function PageShoppingList({
                                 origin="list"
                                 productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                 selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
-                                vendor={filteredVendors.find(v => v.id == vendor.id) as Vendor} isOpen={isVendorPageOpen}
-                                setIsOpen={(value: boolean) => setIsVendorPageOpen(value)}
-                                setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} filteredVendors={filteredVendors}
-                                    changeTab={changeTab} setVendorBadgePositionCallback={setInitialSelectedMapVendor}
+                                vendor={filteredVendors.find(v => v.id == vendor.id) as Vendor}
+                                isOpen={isVendorPageOpen}
+                                setIsOpen={setIsVendorPageOpen}
+                                setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket}
+                                setAddProductId={setAddProductId}
+                                filteredVendors={filteredVendors}
+                                changeTab={changeTab} setVendorBadgePositionCallback={setInitialSelectedMapVendor}
+                                userdata={userdata}
                                     setUserdata={setUserdata} />}
 
                             <VendorGroup id={vendor.id}

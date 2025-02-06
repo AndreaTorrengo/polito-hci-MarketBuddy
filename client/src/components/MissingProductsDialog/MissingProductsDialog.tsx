@@ -163,13 +163,15 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
         <>
             {missingProducts.length > 0 && (
                 <Button
-                    className="my-1 py-2 px-5 text-sm bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle "
+                    className="my-1 py-2 px-5 text-sm bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle"
                     color='danger'
                     // variant='contained'
                     onClick={() => setIsOpen(true)}
                 >
-                    <TriangleAlert />
-                    <span>Some products are missing at this market!</span>
+                    <div className='flex justify-around gap-2 items-center'>
+                        <TriangleAlert />
+                        <span>Some products are missing at this market!</span>
+                    </div>
                 </Button>
             )}
             {missingProducts.length > 0 && (<Dialog open={isOpen} static={true} onClose={handleClose} className="max-h-screen overflow-y-auto z-40">

@@ -6,7 +6,7 @@ import { UserData } from '../PageProfile/UserData.tsx';
 import { ICONS, IconLocker } from '../PageProfile/Icons.tsx';
 import { Tag, History, Coins, ArrowLeft } from 'lucide-react';
 
-import rewardsJSON from '../../assets/rewards.json' assert { type: "json" };
+import rewardsJSON from '../../assets/rewards.json' with { type: "json" };
 
 const rewardsData: Reward[] = rewardsJSON;
 

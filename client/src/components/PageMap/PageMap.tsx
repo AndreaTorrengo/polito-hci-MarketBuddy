@@ -8,6 +8,7 @@ import tinycolor from 'tinycolor2';
 import PageVendorProducts from "../PageVendorProducts/PageVendorProducts.tsx";
 import globalContext from '../../Context.tsx';
 import { UserData } from '../PageProfile/UserData.tsx';
+import StatPopup from '../generalPurposeComponents/StatPopup.tsx';
 
 
 // Helper component to update map center dynamically
@@ -73,6 +74,7 @@ interface PageMapProps {
     closeAfter: () => void;
     initialVendor?: Vendor | null;
     setInitialVendor?: React.Dispatch<React.SetStateAction<Vendor | null>>;
+    userdata: UserData;
     setUserData: React.Dispatch<React.SetStateAction<UserData>>;
     filteredProductsVendors: Vendor[];
 }
@@ -88,6 +90,7 @@ const PageMap: React.FC<PageMapProps> = ({
     setProductsWithoutAlternatives,
     initialVendor,
     setInitialVendor,
+    userdata,
     setUserData,
     filteredProductsVendors
 }) => {
@@ -278,10 +281,19 @@ const PageMap: React.FC<PageMapProps> = ({
             {selectedMarker && (
                 selectedVendor && (
                     <PageVendorProducts
-                        productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                         origin="map"
-                        selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
-                        isOpen={isOpen} setIsOpen={setIsOpen} vendor={selectedVendor} setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket} setAddProductId={setAddProductId} filteredVendors={filteredVendors} setVendorBadgePositionCallback={() => { setTargetPosition(selectedMarker) }} setUserdata={setUserData}
+                        productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
+                        selectedReasons={selectedReasons}
+                        setSelectedReasons={setSelectedReasons}
+                        vendor={selectedVendor}
+                        isOpen={isOpen}
+                        setIsOpen={setIsOpen}
+                        setFilteredVendors={setFilteredVendors}
+                        selectedMarket={selectedMarket}
+                        setAddProductId={setAddProductId}
+                        filteredVendors={filteredVendors} setVendorBadgePositionCallback={() => { setTargetPosition(selectedMarker) }}
+                        userdata={userdata}
+                        setUserdata={setUserData}
                     />
                 )
             )}
@@ -306,7 +318,7 @@ const PageMap: React.FC<PageMapProps> = ({
         }
       />
       */}
-
+            <StatPopup coins={userdata.coins} exp={userdata.experience} popup={true} />
         </div>
     );
 };

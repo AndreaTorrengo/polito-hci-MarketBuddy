@@ -30,16 +30,15 @@ class Product {
     id: number;
     name: string;
     price: number;
-    points: number;
     image: string;
+    points: number;
 
-    constructor(id: number, name: string, price: number, points: number, image: string) {
+    constructor(id: number, name: string, price: number, image: string, points: number) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.points = points;
         this.image = image;
-
+        this.points = points;
     }
 }
 

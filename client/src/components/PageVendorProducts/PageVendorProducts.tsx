@@ -35,6 +35,7 @@ interface PageVendorProductsParams {
     origin: "map" | "list";
     changeTab?: (tab?: string) => void;
     setVendorBadgePositionCallback?: React.Dispatch<React.SetStateAction<Vendor | null>>;
+    userdata: UserData;
     setUserdata: React.Dispatch<React.SetStateAction<UserData>>;
 }
 
@@ -50,6 +51,7 @@ export default function PageVendorProducts({
     origin,
     changeTab,
     setVendorBadgePositionCallback,
+    userdata,
     setUserdata,
 }: Readonly<PageVendorProductsParams>) {
     const approot = document.getElementById("approot")!;
@@ -151,17 +153,14 @@ export default function PageVendorProducts({
 
         // Update stats
         if (products != null) {
-            setUserdata((userdata: UserData) => {
-                const udCopy = Object.assign(new UserData(), userdata);
-                const coinsFromProducts = Array.from(products.values()).reduce((acc, product) => {
-                    if (product.points == undefined)
-                        return acc;
-                    return acc + product.points;
-                }, 0);
-                //console.log("Coins from selected products: ", coinsFromProducts);
-                udCopy.incrCoins(coinsFromProducts);
-                return udCopy;
-            });
+            const udCopy = Object.assign(new UserData(), userdata);
+            const coinsFromProducts = Array.from(products.values()).reduce((acc, product) => {
+                if (product.points == undefined)
+                    return acc;
+                return acc + product.points;
+            }, 0);
+            udCopy.incrCoins(coinsFromProducts);
+            setUserdata(udCopy);
         }
     }
 
