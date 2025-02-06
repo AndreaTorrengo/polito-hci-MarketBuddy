@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap, Tooltip, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -29,8 +29,10 @@ interface OnFlyMarkerProps {
 const OnFlyMarker: React.FC<OnFlyMarkerProps> = ({ center, isMarketCenter, targetPosition, setTargetPosition }) => {
     const map = useMap();
 
-    const flyToMarker = (map: L.Map, target: [number, number] | null, isMarketCenter: boolean, resetTarget: boolean) => {
+    const flyToMarker = useCallback((map: L.Map, target: [number, number] | null, isMarketCenter: boolean, resetTarget: boolean) => {
         if (!target) return;
+
+
         let offsetLatLng: [number, number] = target;
         if (!isMarketCenter) {
             const offset = +230; // Adjust this value to set the fixed point on the screen (negative value to move higher)
@@ -40,17 +42,20 @@ const OnFlyMarker: React.FC<OnFlyMarkerProps> = ({ center, isMarketCenter, targe
             offsetLatLng = [latLng.lat, latLng.lng];
         }
 
-        map.flyTo(offsetLatLng, map.getZoom(), {
-            animate: true,
-            duration: 0.5,
-        });
-
         if (resetTarget)
             setTargetPosition(null);
-    }
 
-    useEffect(() => flyToMarker(map, center, isMarketCenter, false), [center, map, isMarketCenter]);
-    useEffect(() => flyToMarker(map, targetPosition, false, true), [targetPosition, map]);
+        if (map.distance(offsetLatLng, map.getCenter()) > 1e-9) {
+            map.flyTo(offsetLatLng, map.getZoom(), {
+                animate: true,
+                duration: 0.5,
+            });
+        }
+
+    }, [setTargetPosition]);
+
+    useEffect(() => flyToMarker(map, center, isMarketCenter, false), [center, flyToMarker, isMarketCenter, map]);
+    useEffect(() => flyToMarker(map, targetPosition, false, true), [flyToMarker, map, targetPosition]);
 
     return null;
 };
@@ -107,10 +112,10 @@ const PageMap: React.FC<PageMapProps> = ({
     }, [filteredVendors]);
 
 
-    const handleMarkerClick = (position: [number, number]) => {
+    const handleMarkerClick = useCallback((position: [number, number]) => {
         setSelectedMarker(position);
         setMapCenter(position);
-    };
+    }, []);
 
     const MapClickHandler = () => {
         useMapEvents({
@@ -167,7 +172,7 @@ const PageMap: React.FC<PageMapProps> = ({
         };
     }, [markerPosition]);
 
-    const createIcon = (color: string) => {
+    const createIcon = useCallback((color: string) => {
 
         const darkenColor = (color: string, amount: number) => {
             return tinycolor(color).darken(amount).toString();
@@ -206,7 +211,7 @@ const PageMap: React.FC<PageMapProps> = ({
             iconAnchor: [22, 30],
             popupAnchor: [0, -30],
         });
-    };
+    }, [theme]);
 
     const unselectedIcon = createIcon('#447FC4');
     const selectedIcon = createIcon('red');
@@ -238,32 +243,32 @@ const PageMap: React.FC<PageMapProps> = ({
                 {/* Vendors position */}
                 {filteredProductsVendors?.filter(vendor => vendor.products.length > 0)
                     .map((vendor) => {
-                    const position: [number, number] = vendor.position as [number, number];
-                    const isFiltered = filteredVendors.some(filteredVendor => filteredVendor.id === vendor.id);
-                    const icon = selectedMarker === position
-                        ? selectedIcon
-                        : (isFiltered ? filteredIcon : unselectedIcon);
-                    return (
-                        <Marker key={vendor.id} position={position}
-                            icon={icon}
-                            eventHandlers={{
-                                click: () => {
-                                    handleMarkerClick(position);
-                                    setSelectedVendor(filteredVendors.find(v => v.id == vendor.id) as Vendor);
-                                    if (!isOpen) {
-                                        setIsOpen(true);
-                                    }
-                                },
-                            }}>
+                        const position: [number, number] = vendor.position as [number, number];
+                        const isFiltered = filteredVendors.some(filteredVendor => filteredVendor.id === vendor.id);
+                        const icon = selectedMarker === position
+                            ? selectedIcon
+                            : (isFiltered ? filteredIcon : unselectedIcon);
+                        return (
+                            <Marker key={vendor.id} position={position}
+                                icon={icon}
+                                eventHandlers={{
+                                    click: () => {
+                                        handleMarkerClick(position);
+                                        setSelectedVendor(filteredVendors.find(v => v.id == vendor.id) as Vendor);
+                                        if (!isOpen) {
+                                            setIsOpen(true);
+                                        }
+                                    },
+                                }}>
 
-                            <Tooltip direction="top" offset={[115, 10]} opacity={1} permanent
-                                key={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}
-                                className={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}>
-                                <span>{vendor.name}</span>
-                            </Tooltip>
-                        </Marker>
-                    );
-                })}
+                                <Tooltip direction="top" offset={[115, 10]} opacity={1} permanent
+                                    key={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}
+                                    className={selectedMarker === position ? 'selected-tooltip' : isFiltered ? 'filtered-tooltip' : 'custom-tooltip'}>
+                                    <span>{vendor.name}</span>
+                                </Tooltip>
+                            </Marker>
+                        );
+                    })}
 
                 {/* User current position */}
                 <CircleMarker center={markerPosition} radius={10} color="white" fillColor="blue" fillOpacity={1}>
