@@ -115,8 +115,8 @@ export default {
           "100%": { transform: "translateX(100%)", opacity: 0 },
         },
         "quest-pulse": {
-          "0%": {opacity: 1},
-          "100%": {opacity: 1}
+          "0%": { opacity: 1 },
+          "100%": { opacity: 1 }
         },
         fadeIn: {
           from: { opacity: 0 },
@@ -160,5 +160,25 @@ export default {
         /^(fill-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/,
     },
   ],
-  plugins: [formsPlugin],
+  plugins: [
+    formsPlugin,
+    function ({ addBase, theme }) {
+      function extractColorVars(colorObj, colorGroup = '') {
+        return Object.keys(colorObj).reduce((vars, colorKey) => {
+          const value = colorObj[colorKey];
+
+          const newVars =
+            typeof value === 'string'
+              ? { [`--color${colorGroup}-${colorKey}`]: value }
+              : extractColorVars(value, `-${colorKey}`);
+
+          return { ...vars, ...newVars };
+        }, {});
+      }
+
+      addBase({
+        ':root': extractColorVars(theme('colors')),
+      });
+    },
+  ],
 }
