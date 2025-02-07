@@ -9,7 +9,7 @@ export class UserData {
     experience: number;
     iconId: number;
 
-    constructor(username: string = 'user', coins: number = 100, experience: number = 1200, iconId: number = 1) {
+    constructor(username: string = 'You', coins: number = 100, experience: number = 1200, iconId: number = 1) {
         this.username = username;
         this.coins = coins;
         this.experience = experience;
