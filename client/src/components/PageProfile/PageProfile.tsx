@@ -37,7 +37,7 @@ export default function PageProfile({ toggleTheme, userdata, setUserdata }: Read
   }
 
   return (
-    <div className="w-full h-full px-6 pt-4">
+    <div className="w-full h-full px-4 pt-4">
       <h1 className="page-title mb-4">Profile</h1>
       <Card className="flex flex-col p-4 bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle">
         <div className="grid gap-3">

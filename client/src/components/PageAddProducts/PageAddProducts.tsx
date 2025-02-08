@@ -163,7 +163,7 @@ export default function PageAddProducts({
         <div className="w-full h-full">
             {/* TopBar */}
             {/* <ConfirmAddAlert theme={theme} setIsOpen={setIsAddAlertOpen} isOpen={isAddAlertOpen} products={selectedProducts} handleAdd={handleAdd} /> */}
-            <div className="px-8 w-full fixed z-10 dark:bg-dark-tremor-background bg-tremor-background">
+            <div className="px-4 w-full fixed z-10 dark:bg-dark-tremor-background bg-tremor-background">
                 <TopBar
                     leftComponent={selectedProducts &&
                         <ButtonBase className="text-md font-semibold" onClick={() => {
@@ -214,7 +214,7 @@ export default function PageAddProducts({
             </div>
 
             <div
-                className="w-full h-full fixed pt-16 z-[9] dark:bg-dark-tremor-background bg-tremor-background px-6 flex flex-col gap-4">
+                className="w-full h-full fixed pt-16 z-[9] dark:bg-dark-tremor-background bg-tremor-background px-4 flex flex-col gap-4">
 
                 {allProducts && allProducts.length > 0 &&
                     <TextInput

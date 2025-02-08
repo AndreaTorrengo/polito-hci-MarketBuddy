@@ -191,7 +191,7 @@ export default function TabsHero({
                 <PageAddProducts setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket}
                     actualVends={filteredVendors} allVends={vendors}
                     setAddProductId={setAddProductId} addProductId={addProductId} /> :
-                <div className="flex flex-col h-full min-h-0 px-6 pt-4">
+                <div className="flex flex-col h-full min-h-0 px-4 pt-4">
                     {
                         isEditMode ?
                             <>

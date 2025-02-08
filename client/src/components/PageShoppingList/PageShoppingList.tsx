@@ -74,7 +74,7 @@ export default function PageShoppingList({
                     {
                 filteredProductsVendors.map((vendor) => (
                     vendor.products.length > 0 &&
-                    <div key={vendor.id} className="bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle rounded-lg pb-4 px-4 pt-1 my-4">
+                    <div key={vendor.id} className="bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle rounded-lg pb-4 px-3 pt-1 my-4">
                         {selectedVendor === vendor.id &&
                                 <PageVendorProducts
                                 origin="list"

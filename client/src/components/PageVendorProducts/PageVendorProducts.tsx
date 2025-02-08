@@ -271,7 +271,7 @@ export default function PageVendorProducts({
                     </Sheet.Header>
                     <Sheet.Content className="dark:bg-dark-tremor-background pb-10">
                         {/* ContextMenu */}
-                        <div className="px-5">
+                        <div className="px-4">
                             <ContextMenu {...contextMenuProps} />
 
                             {/* TopBar */}
@@ -421,7 +421,7 @@ export default function PageVendorProducts({
                                 </TopBar>
                             }
                         </div>
-                        <Sheet.Scroller className="px-6 pb-14 mt-4 flex flex-col gap-4">
+                        <Sheet.Scroller className="px-4 pb-14 mt-4 flex flex-col gap-4">
                             {/* Vendor's Categories */}
                             <div className="w-full">
                                 <VendorCategoryList categories={vendor ? vendor.categories : []} page={"vendor"} />
