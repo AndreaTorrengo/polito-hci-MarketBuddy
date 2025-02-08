@@ -266,7 +266,7 @@ export default function App() {
   const [productsWithoutAlternatives, setProductsWithoutAlternatives] = useState<Product[]>([]);
   // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-PageNotFound, 5-Leaderboard
   return (
-    <div id='approot' className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')} onContextMenu={(e) => { e.preventDefault() }}>
+    <div id='approot' className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')} >
       <globalContext.Provider value={contextValue}>
         <Routes>
           <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
@@ -296,7 +296,7 @@ export default function App() {
 
 function Layout(props: Readonly<{ paths: string[], activeTab: number, questPendingClaims: number, setActiveTab: (tab: number) => void }>) {
   return (
-    <div className="flex flex-col h-screen bg-tremor-background dark:bg-dark-tremor-background">
+    <div className="flex flex-col h-screen bg-tremor-background dark:bg-dark-tremor-background" onContextMenu={(e) => { e.preventDefault() }}>
       <div className="flex-grow overflow-y-auto flex-1">
         <Outlet />
       </div>
