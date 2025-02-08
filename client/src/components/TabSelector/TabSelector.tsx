@@ -303,7 +303,7 @@ export default function TabsHero({
                                     }
                                     } />
                                 </div>
-                                <button onClick={() => changeTab()}
+                                <div onClick={() => changeTab()}
                                     className="flex w-full place-self-center justify-center my-2 rounded-lg bg-tremor-border dark:bg-dark-tremor-border">
                                     <button disabled={activeTab === "list"}
                                         className={`w-1/4 px-4 py-2 rounded-lg text-center z-[1] font-semibold uppercase bg-transparent translate-x-1/2 ${activeTab === 'list' ? 'text-white' : ''}`}
@@ -324,7 +324,7 @@ export default function TabsHero({
                                     >
                                         Map
                                     </button>
-                                </button>
+                                </div>
                                 {/* <div className={`h-full rounded-lg bg-tremor-brand transition-transform duration-300 ${activeTab === "list" ? '-translate-x-1/2' : 'translate-x-1/2'}`}>
                                         <button
                                             // disabled

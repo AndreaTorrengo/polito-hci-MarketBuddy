@@ -264,7 +264,7 @@ export default function PageAddProducts({
                     }
                 </div>
                 {/* Product list */}
-                <div className="w-full h-full flex flex-col gap-3 mt-2 pb-32 overflow-auto px-2.5">
+                <div className="w-full h-full flex flex-col gap-3 mt-2 pb-24 overflow-auto px-2.5">
                     {
                         allProducts && allProducts.length > 0 ?
                             filteredProducts && filteredProducts.length > 0 ?
