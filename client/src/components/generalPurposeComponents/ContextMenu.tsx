@@ -77,18 +77,18 @@ export default function ContextMenu({ isOpen, x, y, items, onClose }: ContextMen
         <motion.div
             ref={menuRef}
             className="absolute"
-            style={{top: `${position.y - 50}px`, left: `${position.x}px`}}
-            initial={{opacity: 0, scale: 0.95}}
-            animate={{opacity: 1, scale: 1}}
-            exit={{opacity: 0, scale: 0.95}}
-            transition={{duration: 0.3}}
+            style={{ top: `${position.y - 50}px`, left: `${position.x}px` }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.3 }}
         >
             <div
                 className="bg-white dark:bg-dark-tremor-background rounded-lg border border-[#ddeeee] dark:border-[#444444]">
                 {items.map((item, index) => (
                     <div key={index}
-                         className="px-2.5 py-2 hover:bg-[#f5f5f5] dark:hover:bg-dark-tremor-background border-b border-[#ddeeee] dark:border-[#444444] last:border-0"
-                         onClick={item.onClick}>
+                        className="px-2.5 py-2 hover:bg-[#f5f5f5] dark:hover:bg-dark-tremor-background border-b border-[#ddeeee] dark:border-[#444444] last:border-0"
+                        onClick={item.onClick}>
                         {item.label}
                     </div>
                 ))}

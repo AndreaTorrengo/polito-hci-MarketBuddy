@@ -83,7 +83,7 @@ export default function PageReward({ userdata, setUserdata }: Readonly<{ userdat
   }
 
   return (
-    <div className='w-full h-full px-6 py-4'>
+    <div className='w-full h-full px-6 pt-4'>
       <div className='flex justify-between gap-3 mb-4'>
         {showHistory ?
           <h1 className='page-title'>

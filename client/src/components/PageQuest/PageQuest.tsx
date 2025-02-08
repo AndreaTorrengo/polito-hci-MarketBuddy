@@ -80,7 +80,7 @@ export default function PageQuest({ quests, setQuests, userdata, leaderboardPath
   return (
     <>
       <StatPopup coins={userdata.coins} exp={userdata.experience} popup={true} />
-      <div className="w-full h-full px-6 py-4">
+      <div className="w-full h-full px-6 pt-4">
         <h1 className="page-title mb-4">Quests</h1>
         <div className="flex flex-col gap-4 relative">
           {quests.map((quest: Quest) =>

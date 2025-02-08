@@ -201,7 +201,7 @@ export default function PageAddProducts({
                                     <ButtonBase className="animate-fade duration-300"
                                                 onClick={confirmAddAlert}>
                                         <div
-                                            className="flex flex-row items-center gap-1 border border-1 dark:border-white border-black rounded-md py-1 ps-1 pe-2">
+                                            className="flex flex-row items-center gap-1 border border-1 dark:border-white border-black rounded-lg py-1 ps-1 pe-2">
                                             <Plus size={25}/>
                                             <p className="p-0 m-0 text-md">Add</p>
                                         </div>

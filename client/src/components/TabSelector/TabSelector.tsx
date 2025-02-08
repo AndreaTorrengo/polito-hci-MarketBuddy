@@ -191,7 +191,7 @@ export default function TabsHero({
                 <PageAddProducts setFilteredVendors={setFilteredVendors} selectedMarket={selectedMarket}
                     actualVends={filteredVendors} allVends={vendors}
                     setAddProductId={setAddProductId} addProductId={addProductId} /> :
-                <div className="flex flex-col h-full min-h-0 px-6 py-4">
+                <div className="flex flex-col h-full min-h-0 px-6 pt-4">
                     {
                         isEditMode ?
                             <>
@@ -306,21 +306,21 @@ export default function TabsHero({
                                 <button onClick={() => changeTab()}
                                     className="flex w-full place-self-center justify-center my-2 rounded-lg bg-tremor-border dark:bg-dark-tremor-border">
                                     <button disabled={activeTab === "list"}
-                                        className={`w-1/4 px-4 py-2 rounded-md text-center z-[1] font-semibold uppercase bg-transparent translate-x-1/2 ${activeTab === 'list' ? 'text-white' : ''}`}
+                                        className={`w-1/4 px-4 py-2 rounded-lg text-center z-[1] font-semibold uppercase bg-transparent translate-x-1/2 ${activeTab === 'list' ? 'text-white' : ''}`}
                                     >
                                         List
                                     </button>
                                     <button
                                         disabled
                                         // hidden
-                                        className={`w-1/2 h-full py-2 rounded-md font-semibold uppercase bg-tremor-brand transition-transform duration-300 text-white ${activeTab === "list"
+                                        className={`w-1/2 h-full py-2 rounded-lg font-semibold uppercase bg-tremor-brand transition-transform duration-300 text-white ${activeTab === "list"
                                             ? "-translate-x-1/2"
                                             : "translate-x-1/2"
                                             }`}
                                     >
                                     </button>
                                     <button disabled={activeTab === "map"}
-                                        className={`w-1/4 px-4 py-2 rounded-md text-center z-[1] font-semibold uppercase bg-transparent -translate-x-1/2 ${activeTab === 'map' ? 'text-white' : ''}`}
+                                        className={`w-1/4 px-4 py-2 rounded-lg text-center z-[1] font-semibold uppercase bg-transparent -translate-x-1/2 ${activeTab === 'map' ? 'text-white' : ''}`}
                                     >
                                         Map
                                     </button>
@@ -330,7 +330,7 @@ export default function TabsHero({
                                             // disabled
                                             // hidden
                                             onClick={() => changeTab("list")}
-                                            className={`w-1/2 pl-4 z-[2] py-2 rounded-md font-semibold uppercase bg-transparent ${activeTab === "list"
+                                            className={`w-1/2 pl-4 z-[2] py-2 rounded-lg font-semibold uppercase bg-transparent ${activeTab === "list"
                                             ? " text-white"
                                             : ""
                                             }`}
@@ -341,7 +341,7 @@ export default function TabsHero({
                                         // disabled
                                         // hidden
                                         onClick={() => changeTab("map")}
-                                        className={`w-1/2 pr-4 py-2 z-[2] rounded-md font-semibold uppercase bg-transparent ${activeTab === "map"
+                                        className={`w-1/2 pr-4 py-2 z-[2] rounded-lg font-semibold uppercase bg-transparent ${activeTab === "map"
                                             ? "text-white"
                                             : ""
                                             }`}

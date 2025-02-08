@@ -70,11 +70,11 @@ export default function PageShoppingList({
                     setFilteredVendors={setFilteredVendors}
                 />
                 }
-                <div className="overflow-y-auto">
+                <div className="h-full overflow-y-auto">
                     {
                 filteredProductsVendors.map((vendor) => (
                     vendor.products.length > 0 &&
-                    <div key={vendor.id}>
+                    <div key={vendor.id} className="bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle rounded-lg pb-4 px-4 pt-1 mb-4">
                         {selectedVendor === vendor.id &&
                                 <PageVendorProducts
                                 origin="list"

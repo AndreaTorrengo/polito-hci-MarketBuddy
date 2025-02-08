@@ -17,15 +17,16 @@ export default function Navbar(props: Readonly<NavbarProps>) {
 
   const tabs = [
     { id: 0, label: "Shopping", icon: <ShoppingBag size={28} /> },
-    { id: 1, label: "Quests", icon: props.questPendingClaims != 0 ?
-      <div className="inline-block relative">
+    {
+      id: 1, label: "Quests", icon: props.questPendingClaims != 0 ?
+        <div className="inline-block relative">
+          <ClipboardList size={28} />
+          <span className="flex absolute h-3 w-3 top-2 right-0 -mt-2 -mr-1">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-tremor-brand-subtle opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-tremor-brand"></span>
+          </span>
+        </div> :
         <ClipboardList size={28} />
-        <span className="flex absolute h-3 w-3 top-2 right-0 -mt-2 -mr-1">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-tremor-brand-subtle opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-3 w-3 bg-tremor-brand"></span>
-        </span>
-      </div> :
-      <ClipboardList size={28} />
     },
     { id: 2, label: "Rewards", icon: <Trophy size={28} /> },
     { id: 3, label: "Profile", icon: <CircleUserRound size={28} /> },
