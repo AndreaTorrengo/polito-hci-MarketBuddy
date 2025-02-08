@@ -66,16 +66,16 @@ export default function PageQuest({ quests, setQuests, userdata, leaderboardPath
   };
 
   // Hard-coding for make a quest claimable
-  const requestClaim = (id: number) => {
-    // setQuests((prevQuests: Quest[]) => {
-    //   const newQuests = [...prevQuests.map((q: Quest) => {
-    //     const questTotalProgress = q.progress.split('/')[1];
-    //     return q.id === id ? { ...q, 'progress': `${questTotalProgress}/${questTotalProgress}`, 'completed': true } : q;
-    //   })];
-    //   saveCurrentQuests(newQuests);
-    //   return newQuests;
-    // });
-  };
+  // const requestClaim = (id: number) => {
+  //   setQuests((prevQuests: Quest[]) => {
+  //     const newQuests = [...prevQuests.map((q: Quest) => {
+  //       const questTotalProgress = q.progress.split('/')[1];
+  //       return q.id === id ? { ...q, 'progress': `${questTotalProgress}/${questTotalProgress}`, 'completed': true } : q;
+  //     })];
+  //     saveCurrentQuests(newQuests);
+  //     return newQuests;
+  //   });
+  // };
 
   return (
     <>
@@ -88,9 +88,9 @@ export default function PageQuest({ quests, setQuests, userdata, leaderboardPath
               // slide-in transition when rendering quests
               className={`relative bg-tremor-background dark:bg-dark-tremor-background shadow-md rounded-lg overflow-hidden transform transition-all duration-500 animate-slide-in`}
               onClick={() => {
-                if (quest.completed) {
-                  handleClaim(quest);
-                } else requestClaim(quest.id);
+                // if (quest.completed) {
+                handleClaim(quest);
+                // } else requestClaim(quest.id);
               }}
             >
               <Card className="bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle p-4 relative">
