@@ -104,7 +104,7 @@ export default function VendorGroup({
                     </div>
                 </div>
 
-                <div className="flex w-1/2 justify-evenly items-center">
+                <div className="flex w-1/2 grow justify-evenly items-center">
                     {/* <div className="flex flex-col w-full gap-6"> */}
                     <div className="w-1/3 flex pe-1 flex-row items-center justify-end">
                         <Award color={`var(--${theme === 'dark' ? 'dark-' : ''}quality)`} />
@@ -122,7 +122,7 @@ export default function VendorGroup({
                 </div>
             </div>
             <div className="w-full pb-2">
-                <VendorCategoryList categories={vendor.categories} />
+                <VendorCategoryList categories={vendor.categories} page="list" />
             </div>
             <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {products.map((product) => (

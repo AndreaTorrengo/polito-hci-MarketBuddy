@@ -424,7 +424,7 @@ export default function PageVendorProducts({
                         <Sheet.Scroller className="px-6 pb-14 mt-4 flex flex-col gap-4">
                             {/* Vendor's Categories */}
                             <div className="w-full">
-                                <VendorCategoryList categories={vendor ? vendor.categories : []} />
+                                <VendorCategoryList categories={vendor ? vendor.categories : []} page={"vendor"} />
                             </div>
 
                             <VendorBadges market={vendor ?  vendor.market : ""} quality={vendor ? vendor.quality_rating : ""}
