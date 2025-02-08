@@ -165,7 +165,7 @@ function DialogContent({ products, selectedReasons, handleReasonSelect }: Readon
                 >
                     <input
                         type="checkbox"
-                        className="checkbox mr-2.5"
+                        className="checkbox mr-2.5 pointer-events-none"
                         checked={selectedReasons.includes(reason.id)}
                         onChange={() => handleReasonSelect(reason.id)}
                     />
