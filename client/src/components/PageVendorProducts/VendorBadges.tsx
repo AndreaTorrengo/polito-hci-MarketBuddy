@@ -1,5 +1,5 @@
 
-import { PiggyBank, Award, Smile, MapPin, CircleDollarSign } from 'lucide-react';
+import { Award, Smile, MapPin, CircleDollarSign } from 'lucide-react';
 import { useContext } from 'react';
 import globalContext, { AppContextProps } from '../../Context.tsx';
 
