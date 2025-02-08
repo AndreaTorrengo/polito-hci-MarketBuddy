@@ -266,7 +266,7 @@ export default function App() {
   const [productsWithoutAlternatives, setProductsWithoutAlternatives] = useState<Product[]>([]);
   // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-PageNotFound, 5-Leaderboard
   return (
-    <div id='approot' className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
+    <div id='approot' className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')} onContextMenu={(e) => { e.preventDefault() }}>
       <globalContext.Provider value={contextValue}>
         <Routes>
           <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
