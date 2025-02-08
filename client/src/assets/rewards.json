@@ -2,13 +2,13 @@
     {
         "id": 0,
         "description": "10% Off Zalando",
-        "cost": 1000,
+        "cost": 4000,
         "icon": "coupon"
     },
     {
         "id": 1,
         "description": "15% Off Mondadori",
-        "cost": 1000,
+        "cost": 4000,
         "icon": "coupon"
     },
     {
@@ -44,13 +44,13 @@
     {
         "id": 7,
         "description": "Profile icon: Moon",
-        "cost": 4000,
+        "cost": 1500,
         "icon": "profile_picture_7"
     },
     {
         "id": 8,
         "description": "Profile icon: Sun",
-        "cost": 4000,
+        "cost": 1500,
         "icon": "profile_picture_8"
     }
 ]

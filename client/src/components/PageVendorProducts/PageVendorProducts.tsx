@@ -14,7 +14,7 @@ import SwitchButton from "./SwitchButton.tsx";
 import DeleteButton from "./DeleteButton.tsx";
 import SignalErrorButton from "./SignalErrorButton.tsx";
 import { Button } from "../generalPurposeComponents/Button.tsx";
-import { Market, Vendor, Product } from "../../models.ts";
+import { Market, Vendor, Product, Quest } from "../../models.ts";
 import { QRCodeSVG } from "qrcode.react";
 import globalContext from "../../Context.tsx";
 import { ArrowUpFromDot, Circle, CircleCheckBig, ScanQrCode } from "lucide-react";
@@ -37,9 +37,13 @@ interface PageVendorProductsParams {
     setVendorBadgePositionCallback?: React.Dispatch<React.SetStateAction<Vendor | null>>;
     userdata: UserData;
     setUserdata: React.Dispatch<React.SetStateAction<UserData>>;
+    quests: Quest[];
+    setQuests: React.Dispatch<React.SetStateAction<Quest[]>>;
 }
 
 export default function PageVendorProducts({
+    quests,
+    setQuests,
     selectedMarket,
     setFilteredVendors,
     isOpen,
@@ -162,6 +166,35 @@ export default function PageVendorProducts({
             udCopy.incrCoins(coinsFromProducts);
             setUserdata(udCopy);
         }
+
+
+        // hardcoded quests update
+        const newQuests = quests.map((quest) => {
+            if (quest.id == 1) {
+                if (quest.progress == "0/2")
+                    quest.progress = "1/2";
+                else if (quest.progress == "1/2") {
+                    quest.progress = "2/2";
+                    quest.completed = true;
+                }
+            }
+            if (quest.id == 3 && vendor.categories.includes("Fishmonger")) {
+                quest.completed = true;
+                quest.progress = "1/1";
+            }
+            if (quest.id == 5) {
+                if (quest.progress == "0/3")
+                    quest.progress = "1/3";
+                else if (quest.progress == "1/3")
+                    quest.progress = "2/3";
+                else if (quest.progress == "2/3") {
+                    quest.progress = "3/3";
+                    quest.completed = true;
+                }
+            }
+            return quest;
+        });
+        setQuests(newQuests);
     }
 
     const [showUpArrow, setShowUpArrow] = useState(false);
