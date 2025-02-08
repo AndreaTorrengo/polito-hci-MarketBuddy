@@ -2,55 +2,55 @@
     {
         "id": 0,
         "description": "10% Off Zalando",
-        "cost": 200,
+        "cost": 1000,
         "icon": "coupon"
     },
     {
         "id": 1,
         "description": "15% Off Mondadori",
-        "cost": 200,
+        "cost": 1000,
         "icon": "coupon"
     },
     {
         "id": 2,
         "description": "Profile icon: Earth",
-        "cost": 200,
+        "cost": 1000,
         "icon": "profile_picture_2"
     },
     {
         "id": 3,
         "description": "Profile icon: Mars",
-        "cost": 200,
+        "cost": 1000,
         "icon": "profile_picture_3"
     },
     {
         "id": 4,
         "description": "Profile icon: Jupiter",
-        "cost": 200,
+        "cost": 1000,
         "icon": "profile_picture_4"
     },
     {
         "id": 5,
         "description": "Profile icon: Saturn",
-        "cost": 200,
+        "cost": 1000,
         "icon": "profile_picture_5"
     },
     {
         "id": 6,
         "description": "Profile icon: Neptune",
-        "cost": 200,
+        "cost": 1000,
         "icon": "profile_picture_6"
     },
     {
         "id": 7,
         "description": "Profile icon: Moon",
-        "cost": 300,
+        "cost": 4000,
         "icon": "profile_picture_7"
     },
     {
         "id": 8,
         "description": "Profile icon: Sun",
-        "cost": 300,
+        "cost": 4000,
         "icon": "profile_picture_8"
     }
 ]
