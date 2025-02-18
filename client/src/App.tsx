@@ -14,6 +14,7 @@ import TabsHero from "./components/TabSelector/TabSelector.tsx";
 import { getUserdata, saveUserData, UserData } from "./components/PageProfile/UserData.tsx";
 import globalContext from "./Context.tsx";
 import FeedbackToast from "./components/generalPurposeComponents/FeedbackToast.tsx";
+import { getCurrentQuests } from "./components/PageQuest/Quests.tsx";
 
 export default function App() {
   const paths = ["/", "/quests", "/rewards", "/profile", "*", "/leaderboard"];
@@ -189,6 +190,13 @@ export default function App() {
     setSelectedMarket(market);
   }
 
+  /* Quests */
+  // Number of quests to generate. Must be < than quest_array length
+  const N_QUESTS: number = 3;
+  // Initial quests
+  const [quests, setQuests] = useState(getCurrentQuests(N_QUESTS));
+  /****/
+
   /* Theme */
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     if (!localStorage.theme) {
@@ -258,11 +266,11 @@ export default function App() {
   const [productsWithoutAlternatives, setProductsWithoutAlternatives] = useState<Product[]>([]);
   // 0-PageShoppingList, 1-PageQuest, 2-PageReward, 3-PageProfile, 4-PageNotFound, 5-Leaderboard
   return (
-    <div id='approot' className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')}>
+    <div id='approot' className={'dark:bg-dark-tremor-background dark:text-dark-tremor-content-strong' + (theme === 'dark' ? ' dark' : '')} >
       <globalContext.Provider value={contextValue}>
         <Routes>
           <Route element={<Layout paths={paths} activeTab={activeTab} setActiveTab={setActiveTab} questPendingClaims={questPendingClaims} />}>
-            <Route index path={`${paths[0]}`} element={<TabsHero
+            <Route index path={`${paths[0]}`} element={<TabsHero quests={quests} setQuests={setQuests}
               productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
               selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
               vendors={vendors}
@@ -270,7 +278,7 @@ export default function App() {
               selectedMarket={selectedMarket} setSelectedMarket={selectMarket}
               productsList={productsList} setProductsList={setProductsList}
               userdata={userdata} setUserdata={setUserdata} />} />
-            <Route path={`${paths[1]}`} element={<PageQuest setQuestPendingClaims={setQuestPendingClaims} leaderboardPath={`${paths[5]}`} userdata={userdata} setUserdata={setUserdata} />} />
+            <Route path={`${paths[1]}`} element={<PageQuest quests={quests} setQuests={setQuests} setQuestPendingClaims={setQuestPendingClaims} leaderboardPath={`${paths[5]}`} userdata={userdata} setUserdata={setUserdata} />} />
             <Route path={`${paths[2]}`} element={<PageReward userdata={userdata} setUserdata={setUserdata} />} />
             <Route path={`${paths[3]}`} element={<PageProfile toggleTheme={toggleTheme} askConfirmation={askConfirmation} userdata={userdata} setUserdata={setUserdata} />} />
             <Route path={`${paths[4]}`} element={<PageNotFound />} />
@@ -288,7 +296,7 @@ export default function App() {
 
 function Layout(props: Readonly<{ paths: string[], activeTab: number, questPendingClaims: number, setActiveTab: (tab: number) => void }>) {
   return (
-    <div className="flex flex-col h-screen bg-tremor-background dark:bg-dark-tremor-background">
+    <div className="flex flex-col h-screen bg-tremor-background dark:bg-dark-tremor-background" onContextMenu={(e) => { e.preventDefault() }}>
       <div className="flex-grow overflow-y-auto flex-1">
         <Outlet />
       </div>

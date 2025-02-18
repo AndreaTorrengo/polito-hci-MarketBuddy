@@ -41,7 +41,7 @@ export default function PageLeaderboard({ userdata }: Readonly<PageLeaderboardPr
   ];
 
   return (
-    <div className='w-full h-full px-6 py-4'>
+    <div className='w-full h-full px-6 pt-4'>
       <div className='flex justify-start gap-3 mb-4'>
         <div className='flex align-middle'>
           <BackButton />
@@ -50,7 +50,7 @@ export default function PageLeaderboard({ userdata }: Readonly<PageLeaderboardPr
       </div>
       <div className="h-5/6 flex flex-col mt-4 p-4">
         {/* Tab Navigation */}
-        {/* <div className="flex justify-center space-x-0 mb-4 rounded-md bg-tremor-border dark:bg-dark-tremor-border"> */}
+        {/* <div className="flex justify-center space-x-0 mb-4 rounded-lg bg-tremor-border dark:bg-dark-tremor-border"> */}
         <button onClick={() => setActiveTab(activeTab === "Global" ? "Top 10" : "Global")} className="flex w-full place-self-center justify-center my-2 space-x-0 rounded-lg bg-tremor-border dark:bg-dark-tremor-border">
           <button disabled={activeTab === "Global"}
             className='w-1/4 px-4 py-2 rounded-lg z-[1] font-semibold uppercase bg-transparent text-center translate-x-1/2'
@@ -74,7 +74,7 @@ export default function PageLeaderboard({ userdata }: Readonly<PageLeaderboardPr
         </button>
         {/* <button
             onClick={() => setActiveTab("Global")}
-            className={`w-full pl-4 py-2 rounded-md text-base font-semibold transition-colors uppercase ${activeTab === "Global"
+            className={`w-full pl-4 py-2 rounded-lg text-base font-semibold transition-colors uppercase ${activeTab === "Global"
               ? "bg-tremor-brand dark:bg-dark-tremor-brand text-white"
               : "bg-tremor-border dark:bg-dark-tremor-border text-gray-700 dark:text-gray-400"
               }`}
@@ -83,7 +83,7 @@ export default function PageLeaderboard({ userdata }: Readonly<PageLeaderboardPr
           </button>
           <button
             onClick={() => setActiveTab("Top 10")}
-            className={`w-full pr-4 py-2 rounded-md text-base font-semibold transition-colors uppercase ${activeTab === "Top 10"
+            className={`w-full pr-4 py-2 rounded-lg text-base font-semibold transition-colors uppercase ${activeTab === "Top 10"
               ? "bg-tremor-brand dark:bg-dark-tremor-brand text-white"
               : "bg-tremor-border dark:bg-dark-tremor-border text-gray-700 dark:text-gray-400"
               }`}
@@ -120,7 +120,7 @@ function LeaderboardItem(props: Readonly<LeaderboardItemProps>) {
   return (
     <li
       key={`li-${props.player.position}`}
-      className={`flex justify-between items-center p-3 shadow rounded-md ${props.player.name == props.currentPlayer ? 'bg-tremor-brand-muted dark:bg-dark-tremor-brand-muted' :
+      className={`flex justify-between items-center p-3 shadow rounded-lg ${props.player.name == props.currentPlayer ? 'bg-tremor-brand-muted dark:bg-dark-tremor-brand-muted' :
         'bg-tremor-background-muted dark:bg-dark-tremor-background-muted'}
    `}>
       <div className="flex items-center space-x-4">

@@ -1,8 +1,8 @@
-import { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap, Tooltip, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Vendor, Market, Product } from '../../models.tsx';
+import { Vendor, Market, Product, Quest } from '../../models.tsx';
 import './pagemap.css';
 import tinycolor from 'tinycolor2';
 import PageVendorProducts from "../PageVendorProducts/PageVendorProducts.tsx";
@@ -77,6 +77,8 @@ interface PageMapProps {
     userdata: UserData;
     setUserData: React.Dispatch<React.SetStateAction<UserData>>;
     filteredProductsVendors: Vendor[];
+    quests: Quest[];
+    setQuests: React.Dispatch<React.SetStateAction<Quest[]>>;
 }
 
 const PageMap: React.FC<PageMapProps> = ({
@@ -92,7 +94,9 @@ const PageMap: React.FC<PageMapProps> = ({
     setInitialVendor,
     userdata,
     setUserData,
-    filteredProductsVendors
+    filteredProductsVendors,
+    quests,
+    setQuests
 }) => {
     const [markerPosition, setMarkerPosition] = useState<[number, number]>([
         selectedMarket.position[0],
@@ -294,6 +298,8 @@ const PageMap: React.FC<PageMapProps> = ({
                         filteredVendors={filteredVendors} setVendorBadgePositionCallback={() => { setTargetPosition(selectedMarker) }}
                         userdata={userdata}
                         setUserdata={setUserData}
+                        quests={quests}
+                        setQuests={setQuests}
                     />
                 )
             )}

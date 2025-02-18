@@ -1,5 +1,5 @@
 import MissingProductsDialog from "../MissingProductsDialog/MissingProductsDialog.tsx";
-import { Market, Vendor, Product } from "../../models.tsx";
+import { Market, Vendor, Product, Quest } from "../../models.tsx";
 import PageVendorProducts from "../PageVendorProducts/PageVendorProducts.tsx";
 import { useState } from "react";
 import VendorGroup from "./VendorGroup.tsx";
@@ -28,6 +28,8 @@ interface PageShoppingListProps {
     setInitialSelectedMapVendor?: React.Dispatch<React.SetStateAction<Vendor | null>>;
     userdata: UserData;
     setUserdata: React.Dispatch<React.SetStateAction<UserData>>;
+    quests: Quest[];
+    setQuests: React.Dispatch<React.SetStateAction<Quest[]>>;
 }
 
 export default function PageShoppingList({
@@ -51,6 +53,8 @@ export default function PageShoppingList({
     setInitialSelectedMapVendor,
     userdata,
     setUserdata,
+    quests,
+    setQuests
 }: Readonly<PageShoppingListProps>) {
     const [isVendorPageOpen, setIsVendorPageOpen] = useState(false);
     const [selectedVendor, setSelectedVendor] = useState<number>(-1);
@@ -66,13 +70,13 @@ export default function PageShoppingList({
                     setFilteredVendors={setFilteredVendors}
                 />
                 }
-                <div className="overflow-y-auto">
+                <div className="h-full overflow-y-auto">
                     {
                 filteredProductsVendors.map((vendor) => (
                     vendor.products.length > 0 &&
-                    <div key={vendor.id}>
+                    <div key={vendor.id} className="bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle rounded-lg pb-4 px-3 pt-1 my-4">
                         {selectedVendor === vendor.id &&
-                            <PageVendorProducts
+                                <PageVendorProducts
                                 origin="list"
                                 productsWithoutAlternatives={productsWithoutAlternatives} setProductsWithoutAlternatives={setProductsWithoutAlternatives}
                                 selectedReasons={selectedReasons} setSelectedReasons={setSelectedReasons}
@@ -84,7 +88,10 @@ export default function PageShoppingList({
                                 filteredVendors={filteredVendors}
                                 changeTab={changeTab} setVendorBadgePositionCallback={setInitialSelectedMapVendor}
                                 userdata={userdata}
-                                    setUserdata={setUserdata} />}
+                                    setUserdata={setUserdata}
+                                    quests={quests}
+                                    setQuests={setQuests}
+                                />}
 
                             <VendorGroup id={vendor.id}
                                 openEditMode={openEditMode}

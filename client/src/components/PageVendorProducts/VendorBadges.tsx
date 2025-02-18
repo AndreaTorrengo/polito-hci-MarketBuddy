@@ -1,5 +1,5 @@
 
-import { PiggyBank, Award, Smile, MapPin } from 'lucide-react';
+import { Award, Smile, MapPin, CircleDollarSign } from 'lucide-react';
 import { useContext } from 'react';
 import globalContext, { AppContextProps } from '../../Context.tsx';
 
@@ -36,7 +36,7 @@ export default function VendorBadges({ market, quality, cordiality, convenience,
                     <p className="m-0 p-0 font-bold">{cordiality}</p>
                 </div>
                 <div className="w-1/3 flex flex-col items-center justify-center" >
-                    <PiggyBank color={`var(--${theme === 'dark' ? 'dark-' : ''}convenience)`} />
+                    <CircleDollarSign color={`var(--${theme === 'dark' ? 'dark-' : ''}convenience)`} />
                     <p className="m-0 px-1 text-sm font-light">Convenience</p>
                     <p className="m-0 p-0 font-bold">{convenience}</p>
                 </div>

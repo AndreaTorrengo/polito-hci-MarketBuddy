@@ -163,7 +163,7 @@ export default function PageAddProducts({
         <div className="w-full h-full">
             {/* TopBar */}
             {/* <ConfirmAddAlert theme={theme} setIsOpen={setIsAddAlertOpen} isOpen={isAddAlertOpen} products={selectedProducts} handleAdd={handleAdd} /> */}
-            <div className="px-8 w-full fixed z-10 dark:bg-dark-tremor-background bg-tremor-background">
+            <div className="px-4 w-full fixed z-10 dark:bg-dark-tremor-background bg-tremor-background">
                 <TopBar
                     leftComponent={selectedProducts &&
                         <ButtonBase className="text-md font-semibold" onClick={() => {
@@ -201,7 +201,7 @@ export default function PageAddProducts({
                                     <ButtonBase className="animate-fade duration-300"
                                                 onClick={confirmAddAlert}>
                                         <div
-                                            className="flex flex-row items-center gap-1 border border-1 dark:border-white border-black rounded-md py-1 ps-1 pe-2">
+                                            className="flex flex-row items-center gap-1 border border-1 dark:border-white border-black rounded-lg py-1 ps-1 pe-2">
                                             <Plus size={25}/>
                                             <p className="p-0 m-0 text-md">Add</p>
                                         </div>
@@ -214,7 +214,7 @@ export default function PageAddProducts({
             </div>
 
             <div
-                className="w-full h-full fixed pt-16 z-[9] dark:bg-dark-tremor-background bg-tremor-background px-6 flex flex-col gap-4">
+                className="w-full h-full fixed pt-16 z-[9] dark:bg-dark-tremor-background bg-tremor-background px-4 flex flex-col gap-4">
 
                 {allProducts && allProducts.length > 0 &&
                     <TextInput
@@ -264,7 +264,7 @@ export default function PageAddProducts({
                     }
                 </div>
                 {/* Product list */}
-                <div className="w-full h-full flex flex-col gap-3 mt-2 pb-32 overflow-auto px-2.5">
+                <div className="w-full h-full flex flex-col gap-3 mt-2 pb-24 overflow-auto px-2.5">
                     {
                         allProducts && allProducts.length > 0 ?
                             filteredProducts && filteredProducts.length > 0 ?

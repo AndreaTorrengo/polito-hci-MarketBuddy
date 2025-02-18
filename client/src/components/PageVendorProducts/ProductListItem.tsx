@@ -37,7 +37,7 @@ export default function ProductListItem({
             <div
                 className="flex flex-row bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle items-center gap-2 w-full p-2.5 rounded-lg drop-shadow-lg overflow-hidden transition-all duration-300">
                 <div className="w-16 h-16 transition-all duration-300">
-                    <img src={image} alt={name + " image"} className="h-full rounded-md aspect-square object-cover" />
+                    <img src={image} alt={name + " image"} className="h-full rounded-lg aspect-square object-cover" />
                     <div
                         className="absolute top-0 right-0">
                         {points &&

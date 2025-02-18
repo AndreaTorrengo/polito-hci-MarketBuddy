@@ -1,10 +1,12 @@
 import { Market, Vendor, Product } from "../../models.ts";
 import { Button } from '../generalPurposeComponents/Button.tsx';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import './Dialogs.css';
 import globalContext, { AppContextProps } from "../../Context.tsx";
-import {MessageSquareWarning} from "lucide-react";
-import {ButtonBase} from "@mui/material";
+import { MessageSquareWarning } from "lucide-react";
+import { ButtonBase } from "@mui/material";
+import { DialogPanel } from "@tremor/react"
+import Dialog from "../generalPurposeComponents/Dialog.tsx";
 
 interface SignalErrorButtonProps {
     selectedProducts: Map<number, number[]>;
@@ -27,13 +29,13 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
 
     const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
 
+    const [open, setOpen] = useState(false);
+
     const context = useContext<AppContextProps>(globalContext);
     if (!context) {
         throw new Error("globalContext must be used within a Provider");
     }
-    const { showToastMessage, askConfirmation, setPopupText, setConfirmationCallback } = context;
-
-    // console.log(selectedProducts);
+    const { showToastMessage } = context;
 
     const handleClick = () => {
         const products = Array.from(selectedProducts.values()).flatMap(productIds => {
@@ -44,7 +46,7 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
         });
         setProductsSwitching(products.filter((product): product is Product => product !== null && product !== undefined));
 
-        askConfirmation && askConfirmation(handleConfirm, <DialogContent products={products.filter((product): product is Product => product !== null && product !== undefined)} selectedReasons={selectedReasons} handleReasonSelect={handleReasonSelect} />, "Cancel", "Report");
+        setOpen(true);
     };
 
     const handleConfirm = useCallback(() => {
@@ -101,7 +103,6 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
         setFilteredVendors(filteredVendors);
         localStorage.setItem(filteredVendorsKey, JSON.stringify(filteredVendors));
         localStorage.setItem(missingProductsKey, JSON.stringify(missingProduct));
-        // setSelectedReasons([]);
         closeAfter();
         showToastMessage && showToastMessage(message, 'success');
     }, [selectedReasons]);
@@ -117,35 +118,27 @@ const SignalErrorButton: React.FC<SignalErrorButtonProps> = ({ selectedProducts,
         else
             setSelectedReasons(oldReasons => oldReasons.includes(reason) ? oldReasons.filter(r => r !== reason) : [...oldReasons, reason]);
 
-        // console.log(reason);
-        // console.log(selectedReasons);
     }, [selectedReasons]);
 
-    useEffect(() => {
-        setConfirmationCallback && setConfirmationCallback(() => { return handleConfirm });
-    }, [handleConfirm]);
-
-    useEffect(() => {
-        setPopupText && setPopupText(<DialogContent products={productsSwitching} selectedReasons={selectedReasons} handleReasonSelect={handleReasonSelect} />);
-    }, [selectedReasons]);
-
-    return (
-                <ButtonBase onClick={() => { handleClick() }} >
-                    {
-                        children ?
-                            <div className="flex flex-col items-center gap-1 w-24">
-                                <MessageSquareWarning size={20} />
-                                {children}
-                            </div>
-                            :
-                            <MessageSquareWarning size={20} />
-                    }
-                </ButtonBase>
+    return (<>
+        <ButtonBase onClick={() => { handleClick() }} >
+            {
+                children ?
+                    <div className="flex flex-col items-center gap-1 w-24">
+                        <MessageSquareWarning size={20} />
+                        {children}
+                    </div>
+                    :
+                    <MessageSquareWarning size={20} />
+            }
+        </ButtonBase>
+        <Dialog open={open} onClose={() => setOpen(false)}> <ConfirmationDialog products={productsSwitching} selectedReasons={selectedReasons} handleReasonSelect={handleReasonSelect} closePopup={() => setOpen(false)} handleConfirm={handleConfirm} /></Dialog >
+    </>
     );
 }
 
-function DialogContent({ products, selectedReasons, handleReasonSelect }: Readonly<{ products: Product[], selectedReasons: string[], handleReasonSelect: (reason: string) => void }>) {
-    return <>
+function ConfirmationDialog({ products, selectedReasons, handleReasonSelect, closePopup, handleConfirm }: Readonly<{ products: Product[], selectedReasons: string[], handleReasonSelect: (reason: string) => void, closePopup: () => void, handleConfirm: () => void }>) {
+    return <DialogPanel className="p-4 m-4 rounded-lg shadow-md bg-tremor-background-muted dark:bg-dark-tremor-background-muted justify-between flex flex-col h-fit z-40 border border-tremor-border dark:border-dark-tremor-border text-black dark:text-white">
         <span className="text-lg font-medium">Confirm Report</span>
         <span className="text-lg mb-2">Choose why you decided to report these products:</span>
         <span className="text-lg font-bold">{products.map((product) => product?.name).join(', ')}</span>
@@ -165,7 +158,7 @@ function DialogContent({ products, selectedReasons, handleReasonSelect }: Readon
                 >
                     <input
                         type="checkbox"
-                        className="checkbox mr-2.5"
+                        className="checkbox mr-2.5 pointer-events-none"
                         checked={selectedReasons.includes(reason.id)}
                         onChange={() => handleReasonSelect(reason.id)}
                     />
@@ -173,7 +166,11 @@ function DialogContent({ products, selectedReasons, handleReasonSelect }: Readon
                 </Button>
             ))}
         </div>
-    </>
+        <div className="flex flex-row justify-end space-x-4 mt-6">
+            <Button color='bw' variant='outlined' onClick={() => closePopup()}>Cancel</Button>
+            <Button color='primary' variant='contained' onClick={() => { closePopup(); handleConfirm(); }} disabled={selectedReasons.length === 0}>Report</Button>
+        </div>
+    </DialogPanel >
 }
 
 export default SignalErrorButton

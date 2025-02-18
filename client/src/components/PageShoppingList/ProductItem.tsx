@@ -13,7 +13,7 @@ export interface ProductItemProps {
 export default function ProductItem({ image, name, points, price, isSelected, isEditMode }: Readonly<ProductItemProps>) {
 
     return (
-        <div className="relative rounded-md drop-shadow-lg aspect-square dark:text-white">
+        <div className="relative rounded-lg drop-shadow-lg aspect-square dark:text-white">
 
             <div className="absolute left-3 top-[-1rem]">
                 {
@@ -32,9 +32,9 @@ export default function ProductItem({ image, name, points, price, isSelected, is
             </div>
 
             <div className="w-full h-full transition-all duration-300">
-                <img src={image} alt={name + " image"} className="rounded-md aspect-square object-cover" />
-                <div className="absolute top-0 right-0 bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle px-1.5 rounded-tr-sm rounded-es-md">
-                    {points !== 0 &&
+                <img src={image} alt={name + " image"} className="rounded-lg aspect-square object-cover" />
+                <div className="absolute top-0 right-0 bg-tremor-background dark:bg-dark-tremor-background px-1.5 rounded-tr-md rounded-es-lg">
+                    {points !== 0 && points &&
                         <div className="flex flex-row gap-1 items-center text-[var(--buddy-coins)] dark:text-[var(--dark-buddy-coins)]">
                             <p className="m-0 p-0">{points}</p>
                             <Coins size={20} />
@@ -42,7 +42,7 @@ export default function ProductItem({ image, name, points, price, isSelected, is
                     }
                 </div>
                 <div
-                    className="absolute bottom-0 left-0 w-full h-[55%] bg-gradient-to-t from-[#222222] to-transparent rounded-sm"></div>
+                    className="absolute bottom-0 left-0 w-full h-[55%] bg-gradient-to-t from-[#222222] to-transparent rounded-md"></div>
                 <p className="text-sm absolute w-full m-0 p-0 line-clamp-1 text-center text-white translate-y-[-3em]">
                     {name}
                 </p>

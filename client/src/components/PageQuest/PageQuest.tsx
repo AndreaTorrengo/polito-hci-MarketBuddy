@@ -1,6 +1,6 @@
 import { ProgressBar, Card, Title, Text } from "@tremor/react";
 import StatPopup from "../generalPurposeComponents/StatPopup.tsx";
-import { quest_array, getNewQuestId, getAndSaveNewQuestId, getCurrentQuests, saveCurrentQuests } from './Quests.tsx';
+import { quest_array, getNewQuestId, getAndSaveNewQuestId, saveCurrentQuests } from './Quests.tsx';
 import { UserData } from "../PageProfile/UserData.tsx";
 import { Coins, Crown, Hexagon } from 'lucide-react'
 
@@ -16,17 +16,16 @@ const parseProgress = (progress: string) => {
 };
 
 interface PageQuestProps {
+  quests: Quest[];
+  setQuests: React.Dispatch<React.SetStateAction<Quest[]>>;
   setQuestPendingClaims: (value: number) => void;
   leaderboardPath: string;
   userdata: UserData;
   setUserdata: (userdata: UserData) => void;
 }
 
-export default function PageQuest({ userdata, leaderboardPath, setQuestPendingClaims, setUserdata }: Readonly<PageQuestProps>) {
-  // Number of quests to generate. Must be < than quest_array length
-  const N_QUESTS: number = 3;
-  // Initial quests
-  const [quests, setQuests] = useState(getCurrentQuests(N_QUESTS));
+export default function PageQuest({ quests, setQuests, userdata, leaderboardPath, setQuestPendingClaims, setUserdata }: Readonly<PageQuestProps>) {
+
   const [newQuestId, setNewQuestId] = useState(getNewQuestId());
   const navigate = useNavigate();
 
@@ -67,21 +66,21 @@ export default function PageQuest({ userdata, leaderboardPath, setQuestPendingCl
   };
 
   // Hard-coding for make a quest claimable
-  const requestClaim = (id: number) => {
-    setQuests((prevQuests: Quest[]) => {
-      const newQuests = [...prevQuests.map((q: Quest) => {
-        const questTotalProgress = q.progress.split('/')[1];
-        return q.id === id ? { ...q, 'progress': `${questTotalProgress}/${questTotalProgress}`, 'completed': true } : q;
-      })];
-      saveCurrentQuests(newQuests);
-      return newQuests;
-    });
-  };
+  // const requestClaim = (id: number) => {
+  //   setQuests((prevQuests: Quest[]) => {
+  //     const newQuests = [...prevQuests.map((q: Quest) => {
+  //       const questTotalProgress = q.progress.split('/')[1];
+  //       return q.id === id ? { ...q, 'progress': `${questTotalProgress}/${questTotalProgress}`, 'completed': true } : q;
+  //     })];
+  //     saveCurrentQuests(newQuests);
+  //     return newQuests;
+  //   });
+  // };
 
   return (
     <>
       <StatPopup coins={userdata.coins} exp={userdata.experience} popup={true} />
-      <div className="w-full h-full px-6 py-4">
+      <div className="w-full h-full px-4 pt-4">
         <h1 className="page-title mb-4">Quests</h1>
         <div className="flex flex-col gap-4 relative">
           {quests.map((quest: Quest) =>
@@ -91,7 +90,8 @@ export default function PageQuest({ userdata, leaderboardPath, setQuestPendingCl
               onClick={() => {
                 if (quest.completed) {
                   handleClaim(quest);
-                } else requestClaim(quest.id);
+                }
+                // else requestClaim(quest.id);
               }}
             >
               <Card className="bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle p-4 relative">
