@@ -146,9 +146,12 @@ export default function PageVendorProducts({
     }
 
     function confirmSale() {
+        const newFilteredVendors = filteredVendors.filter(v => v.id !== vendor.id);
         setIsQrCodeDialogOpen(false);
         setIsOpen(false);
-        setFilteredVendors(filteredVendors.filter(v => v.id !== vendor.id));
+        setFilteredVendors(() => newFilteredVendors);
+        const filteredVendorsKey = `filteredVendors_${selectedMarket.name}`;
+        localStorage.setItem(filteredVendorsKey, JSON.stringify(newFilteredVendors));
         showToastMessage && showToastMessage("Sale confirmed!", "success");
 
         // Update stats
