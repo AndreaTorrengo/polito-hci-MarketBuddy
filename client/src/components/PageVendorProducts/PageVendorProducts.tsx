@@ -19,6 +19,7 @@ import { QRCodeSVG } from "qrcode.react";
 import globalContext from "../../Context.tsx";
 import { ArrowUpFromDot, Circle, CircleCheckBig, ScanQrCode } from "lucide-react";
 import { UserData } from "../PageProfile/UserData.tsx";
+import { saveCurrentQuests } from "../PageQuest/Quests.tsx";
 
 interface PageVendorProductsParams {
     isOpen: boolean;
@@ -198,6 +199,7 @@ export default function PageVendorProducts({
             return quest;
         });
         setQuests(newQuests);
+        saveCurrentQuests(newQuests);
     }
 
     const [showUpArrow, setShowUpArrow] = useState(false);
