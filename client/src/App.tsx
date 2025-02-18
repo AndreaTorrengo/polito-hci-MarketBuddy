@@ -8,7 +8,7 @@ import PageLeaderboard from "./components/PageLeaderboard/PageLeaderboard.tsx";
 import PropTypes from "prop-types";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import API from "./API.ts";
-import { Vendor, Product, Market } from "./models.tsx";
+import { Vendor, Product, Market, Quest } from "./models.tsx";
 import ConfirmPopup from "./components/ConfirmationPopup.tsx";
 import TabsHero from "./components/TabSelector/TabSelector.tsx";
 import { getUserdata, saveUserData, UserData } from "./components/PageProfile/UserData.tsx";
@@ -29,11 +29,21 @@ export default function App() {
     address: "Piazza della Repubblica, 10122 Torino TO, Italy",
     distance: 0.5
   });
+
+  /* Quests */
+  // Number of quests to generate. Must be < than quest_array length
+  const N_QUESTS: number = 3;
+  const [quests, setQuests] = useState(getCurrentQuests(N_QUESTS)); // Initial quests
   const [questPendingClaims, setQuestPendingClaims] = useState(0);
+  // Effect triggered by state change of "quests"
+  useEffect(() => {
+    setQuestPendingClaims(quests.filter((q: Quest) => q.completed).length);
+  }, [quests]);
   const [activeTab, setActiveTab] = useState(paths.indexOf(window.location.pathname));
+  /* Userdata */
   const [userdata, setUserdata] = useState<UserData>(getUserdata());
-  // Update localstorage each time userdata state changes
-  useEffect(() => saveUserData(userdata), [userdata]);
+  useEffect(() => saveUserData(userdata), [userdata]); // Update localstorage each time userdata state changes
+  /* Shopping List */
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [filteredVendors, setFilteredVendors] = useState<Vendor[]>([]);
   const [sortByQuality] = useState(true);
@@ -189,13 +199,6 @@ export default function App() {
     localStorage.market = market;
     setSelectedMarket(market);
   }
-
-  /* Quests */
-  // Number of quests to generate. Must be < than quest_array length
-  const N_QUESTS: number = 3;
-  // Initial quests
-  const [quests, setQuests] = useState(getCurrentQuests(N_QUESTS));
-  /****/
 
   /* Theme */
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {

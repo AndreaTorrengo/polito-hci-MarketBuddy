@@ -24,15 +24,12 @@ interface PageQuestProps {
   setUserdata: (userdata: UserData) => void;
 }
 
-export default function PageQuest({ quests, setQuests, userdata, leaderboardPath, setQuestPendingClaims, setUserdata }: Readonly<PageQuestProps>) {
+export default function PageQuest({ quests, setQuests, userdata, leaderboardPath, setUserdata }: Readonly<PageQuestProps>) {
 
   const [newQuestId, setNewQuestId] = useState(getNewQuestId());
   const navigate = useNavigate();
 
-  // Effect triggered by state change of "quests"
-  useEffect(() => {
-    setQuestPendingClaims(quests.filter((q: Quest) => q.completed).length);
-  }, [quests]);
+  
 
   // Handle claiming a quest
   const handleClaim = (questToClaim: Quest) => {
