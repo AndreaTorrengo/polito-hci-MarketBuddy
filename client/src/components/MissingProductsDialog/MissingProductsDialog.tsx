@@ -118,6 +118,8 @@ const MissingProductsDialog: React.FC<MissingProductsDialogProps> = ({
         if (selectedAlternatives.length !== 0) {
             showToastMessage && showToastMessage('Product added to shopping list!', 'success');
         }
+        
+        handleClose();
     };
 
     const handleClose = () => {
